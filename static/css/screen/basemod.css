@@ -70,7 +70,9 @@
   * (en) Styling of layout specific elements
   * (de) Gestaltung layoutabhängiger Elemente
   */
-
+  #vbox * {
+    vertical-align:middle;
+  }
   #header h1 {
     font-weight:bold;
     font-size:2.5em;
