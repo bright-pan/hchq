@@ -1,0 +1,113 @@
+﻿/**
+ * "Yet Another Multicolumn Layout" - (X)HTML/CSS framework
+ * (en) stylesheet for screen layout
+ * (de) Stylesheet für das Bildschirm-Layout
+ *
+ * @creator       YAML Builder V1.2.1 (http://builder.yaml.de)
+ * @file          basemod.css
+ * @-yaml-minver  3.3
+ */
+
+@media screen, projection
+{
+  /** 
+   * (en) Forcing vertical scrollbars in IE8, Firefox, Webkit & Opera 
+   * (de) Erzwingen vertikaler Scrollbalken in IE8, Firefox, Webkit & Opera 
+   *
+   * @workaround
+   * @affected IE8, FF, Webkit, Opera
+   * @css-for all
+   * @valid CSS3
+   */
+
+  body { overflow-y: scroll; }
+
+  /*-------------------------------------------------------------------------*/
+
+  /* (en) Marginal areas & page background */
+  /* (de) Randbereiche & Seitenhintergrund */
+  body { background: #4d87c7 url("../../images/bg_blue.png") repeat-x top left fixed; padding: 10px 0; }
+
+  /* Layout Alignment | Layout-Ausrichtung */
+  .page_margins { margin: 0 auto; }
+
+  /* Layout Properties | Layout-Eigenschaften */
+  .page_margins { width: auto;  min-width: 740px; max-width: 90em; background: #fff; }
+  .page { padding: 10px; }
+  #header { position:relative; padding: 45px 2em 1em 20px; color: #000; background:#edf2f8 url("../../images/bg_header.png") repeat-x bottom left; }
+  #topnav { position:absolute; top:10px; right:10px; text-align:right; color: #aaa; background: transparent; }
+  #nav { overflow:hidden; }
+  div.hlist { background-color: #c8ddf3 }
+  #main { margin: 10px 0; background: #fff; }
+  #teaser { clear:both; padding: 0 20px; margin: 10px 0; }
+  #footer { padding: 10px 20px; color:#666; background: #f9f9f9; border-top: 5px #efefef solid; }
+
+  /* (en) navigation: horizontal adjustment | (de) horizontale Ausrichtung  */
+  #nav ul { margin-left: 20px; }
+
+  /*-------------------------------------------------------------------------*/
+
+  /**
+   * (en) Formatting content container
+   * (de) Formatierung der Inhalts-Container
+   *
+   */
+
+  #col1 { float: left; width: 20%}
+  #col2 { display:none}
+  #col3 { width: auto; margin: 0 0 0 20%}
+  #col1_content { padding: 0 10px 0 20px }
+  #col3_content { padding: 0 20px 0 10px }
+
+
+  /* set column dividers */ 
+  #col3 { border-left: 1px #ddd solid }
+	
+  /*-------------------------------------------------------------------------*/
+/**
+  * ------------------------------------------------------------------------------------------------- #
+  *
+  * (en) Styling of layout specific elements
+  * (de) Gestaltung layoutabhängiger Elemente
+  */
+
+  #header h1 {
+    font-weight:bold;
+    font-size:2.5em;
+    letter-spacing:-2px;
+    line-height:65%;
+    color:#000;
+  }
+
+  #header span { color:#999; }
+
+  #topnav a { color:#999; font-weight:normal; background:transparent; text-decoration:none; }
+  #topnav a:focus,
+  #topnav a:hover,
+  #topnav a:active { text-decoration:underline; background-color:transparent; }
+
+  #footer a { color:#999; background:transparent; font-weight:bold; }
+  #footer a:focus,
+  #footer a:hover,
+  #footer a:active {color:#4D87C7; background-color:transparent; text-decoration:underline; }
+
+ /**
+  * ------------------------------------------------------------------------------------------------- #
+  *
+  * Skiplinks 
+  *
+  * (en) Visual styling for skiplink navigation
+  * (de) Visuelle Gestaltung der Skiplink-Navigation
+  *
+  * @section content-skiplinks
+  */
+  
+  #skiplinks a.skip:focus,
+  #skiplinks a.skip:active { 
+	color:#fff; 
+	background:#333; 
+	border-bottom:1px #000 solid;
+	padding:10px 0;
+	text-decoration:none;
+  }
+}
