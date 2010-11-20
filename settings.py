@@ -41,6 +41,10 @@ LANGUAGE_CODE = 'zh-cn'
 
 SITE_ID = 1
 
+SITE_NAME = '会昌县环情孕情管理系统'
+META_KEYWORDS = '环孕检, 计生服务站, 计生委, 检查结果, 检查对象, 检查项目'
+META_DESCRIPTION = '环孕检系统是会昌县计生服务站题提供的环孕检集中管理服务，用户跟踪检查对象的环孕检结果，和个人信息，并生成报表。'
+
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -97,6 +101,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
 #    'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    'hchq.untils.context_processors.hchq',
 )
 
 INSTALLED_APPS = (
@@ -111,4 +116,5 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'djangodblog',
     'hchq.account',
+    'hchq.untils',
 )
