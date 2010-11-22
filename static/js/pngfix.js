@@ -1,4 +1,4 @@
-﻿ var blank = new Image();
+ var blank = new Image();
  blank.src = '/static/images/blank.gif';
  
  $(document).ready(function() {
