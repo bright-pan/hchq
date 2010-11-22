@@ -114,7 +114,15 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'djangodblog',
+    # 'djangodblog',
+
+    # django-sentry app
+    'sentry',
+    'sentry.client',
+    'paging',
+    'indexer',
+
+    # local app
     'hchq.account',
     'hchq.untils',
 )
