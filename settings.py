@@ -121,6 +121,9 @@ INSTALLED_APPS = (
     'sentry.client',
     'paging',
     'indexer',
+    'sentry.plugins.sentry_servers',
+    'sentry.plugins.sentry_sites',
+    'sentry.plugins.sentry_urls',
 
     # local app
     'hchq.account',
