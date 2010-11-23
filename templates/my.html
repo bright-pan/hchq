@@ -1,20 +1,27 @@
-{% extends "base.html" %}
+{% extends "my_layout.html" %}
 
 {% block site_wrapper %}
   <div class="page_margins">
     <div class="page">
       <div id="header">
+        {% block topnav %}
         <div id="topnav">
           <!-- start: skip link navigation -->
           <a class="skip" title="skip link" href="#navigation">Skip to the navigation</a><span class="hideme">.</span>
           <a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span>
           <!-- end: skip link navigation --><a href="#">登入</a> | <a href="#">通知</a> | <a href="#">下载</a>
         </div>
+        {% endblock %}
         <div id="vbox">
         <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
         </div>
+        <div id="header_describe">
+        {% block header_describe %}
         <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
+        {% endblock %}
+        </div>
       </div>
+      {% block nav %}
       <div id="nav">
         <!-- skiplink anchor: navigation -->
         <a id="navigation" name="navigation"></a>
@@ -29,14 +36,20 @@
           </ul>
         </div>
       </div>
+      {% endblock %}
+      
+      {% block teaser %}
       <div id="teaser">
         <h3>H3 Heading</h3>
         <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
       </div>
+      {% endblock %}
+      
       <div id="main">
         <div id="col1">
           <div id="col1_content" class="clearfix">
             <!-- add your content here -->
+            {% block col1_content %}
             <h5>H5 Heading</h5>
             <ul>
               <li>List Item 1</li>
@@ -45,11 +58,14 @@
               <li>List Item 4</li>
               <li>List Item 5</li>
             </ul>
+            {% endblock %}
+            
           </div>
         </div>
         <div id="col3">
           <div id="col3_content" class="clearfix">
             <!-- add your content here -->
+            {% block col3_content %}
             <div class="subcolumns">
               <div class="c33l">
                 <div class="subc">
@@ -86,7 +102,8 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+            {% endblock %}
+          </div>            
           <!-- IE Column Clearing -->
           <div id="ie_clearing"> &#160; </div>
         </div>

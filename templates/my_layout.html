@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block site_wrapper %}
+  <div class="page_margins">
+    <div class="page">
+      <div id="header">
+        {% block topnav %}
+        {% endblock %}
+        <div id="vbox">
+        <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
+        </div>
+        <div id="header_describe">
+        {% block header_describe %}
+        {% endblock %}
+        </div>
+      </div>
+      {% block nav %}
+      {% endblock %}
+      
+      {% block teaser %}
+      {% endblock %}
+      
+      <div id="main">
+        <div id="col1">
+          <div id="col1_content" class="clearfix">
+            <!-- add your content here -->
+            {% block col1_content %}
+            {% endblock %}
+          </div>
+        </div>
+        <div id="col3">
+          <div id="col3_content" class="clearfix">
+            <!-- add your content here -->
+            {% block col3_content %}
+            {% endblock %}
+          </div>            
+          <!-- IE Column Clearing -->
+          <div id="ie_clearing"> &#160; </div>
+        </div>
+      </div>
+      <!-- begin: #footer -->
+      <div id="footer">
+        <p>©2010 江西省会昌县人口与计划生育委员会</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
