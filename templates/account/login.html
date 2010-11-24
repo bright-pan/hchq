@@ -1,4 +1,4 @@
-{% extends "../my_layout.html" %}
+{% extends "my_layout.html" %}
 
 {% block topnav %}
 <div id="topnav">
@@ -7,7 +7,7 @@
   <a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span>
   <!-- end: skip link navigation -->{% if user.is_authenticated %}你好,<a href="/account/login">{{ user.username }}</a> | <a href="#">通知</a> | <a href="#">下载</a>
 {% else %}
-<a href="/account/login">登入</a> | <a href="#">通知</a> | <a href="#">下载</a>
+<a href="/account/login">登入</a> | <a href="/account/login">通知</a> | <a href="/account/login">下载</a>
 {% endif %}
 </div>
 {% endblock %}
