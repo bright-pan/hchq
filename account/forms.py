@@ -7,6 +7,7 @@ class login_form(forms.Form):
     """
     用户登入表单
     """
+    user = None
     username_error_messages={'required': _(u'请输入用户名称！'),
                              'max_length': _(u'输入的用户名称长度大于10个汉字！'),
                              'do_not_exist': _(u'你所输入的用户不存在！'),
@@ -60,5 +61,8 @@ class login_form(forms.Form):
         return self.user
     
     def get_user_id(self):
-        return self.user.id
+        if self.user is None:
+            return None
+        else:
+            return self.user.id
         
