@@ -38,7 +38,7 @@ class login_form(forms.Form):
     
     def clean_username(self):
         try:
-            username = self.data.get('username')
+            username = self.cleaned_data.get('username')
             User.objects.get(username=username)
         except ObjectDoesNotExist:
             raise forms.ValidationError(self.username_error_messages['do_not_exist'])
@@ -47,8 +47,8 @@ class login_form(forms.Form):
     def clean_password(self):
 
         try:
-            username = self.data.get('username')
-            password = self.data.get('password')
+            username = self.cleaned_data.get('username')
+            password = self.cleaned_data.get('password')
             from django.contrib.auth import authenticate
             self.user = authenticate(username = username, password = password)
             if self.user is None:
