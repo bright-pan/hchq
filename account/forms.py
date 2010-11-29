@@ -2,6 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.db.models import ObjectDoesNotExist
 
 class login_form(forms.Form):
     """
@@ -16,7 +17,7 @@ class login_form(forms.Form):
                              'max_length': _(u'输入的用户密码长度大于10个汉字！'),
                              'password_error': _(u'输入的用户密码不正确，请重新输入！'),
                              }
-
+    
     username = forms.CharField(
         max_length=30,
         required=True, 

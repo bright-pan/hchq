@@ -1,0 +1,33 @@
+<form method="post" action="" class="yform">{% csrf_token %}
+  <fieldset>
+    <legend>用户登入信息</legend>
+    {% if form.username.errors %}
+    <div class="type-text error">
+      <strong class="message">{{ form.username.errors }}</strong>
+      {{ form.username.label_tag }}<sup>{{ form.username.help_text}}</sup>
+      {{ form.username }}
+    </div>
+    {% else %}
+    <div class="type-text">
+      {{ form.username.label_tag }}<sup>{{ form.username.help_text}}</sup>
+      {{ form.username }}
+    </div>
+    {% endif %}
+    {% if form.password.errors %}
+    <div class="type-text error">
+      <strong class="message">{{ form.password.errors }}</strong>
+      {{ form.password.label_tag }}<sup>{{ form.password.help_text}}</sup>
+      {{ form.password }}
+    </div>
+    {% else %}
+    <div class="type-text">
+      {{ form.password.label_tag }}<sup>{{ form.password.help_text}}</sup>
+      {{ form.password }}
+    </div>
+    {% endif %}
+    <div class="type-button">
+      <input type="submit" value="登入" class="submit"/>      
+    </div>
+    <input type="hidden" name="next" value="/account/login" />
+  </fieldset>
+</form>

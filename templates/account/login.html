@@ -5,7 +5,7 @@
   <!-- start: skip link navigation -->
   <a class="skip" title="skip link" href="#navigation">Skip to the navigation</a><span class="hideme">.</span>
   <a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span>
-  <!-- end: skip link navigation -->{% if user.is_authenticated %}你好,<a href="/account/login">{{ user.username }}</a> | <a href="#">通知</a> | <a href="#">下载</a>
+  <!-- end: skip link navigation -->{% if user.is_authenticated %}你好,<a href="/account/login">{{ user.username }}</a> | <a href="/account/logout">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
 {% else %}
 <a href="/account/login">登入</a> | <a href="/account/login">通知</a> | <a href="/account/login">下载</a>
 {% endif %}
@@ -16,5 +16,12 @@
 {% block nav %}{% endblock %}
 {% block teaser %}{% endblock %}
 {% block col1_content %}{% endblock %}
-{% block col3_content %}{% endblock %}
+{% block col3_content %}
+{% if not user.is_authenticated %}
+<h3>系统用户登入</h3>
+{% include 'account/login_form.html' %}
+{% else %}
+<h1>你好,{{ user.username }}</h1>
+{% endif %}
+{% endblock %}
 
