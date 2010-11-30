@@ -1,0 +1,18 @@
+{% extends "account/person_layout.html" %}
+
+{% block header_describe %}{% endblock %}
+{% block teaser %}{% endblock %}
+
+{% block col1_content %}
+<h6 class="vlist">个人管理</h6>
+<ul class="vlist">
+  <li class="active"><strong>个人资料</strong></li>
+  <li><a href="{% url account_person_password_modify %}">密码修改</a></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endblock %}
+
+{% block col3_content %}
+<h1>你好,{{ user.username }}</h1>
+{% endblock %}
+

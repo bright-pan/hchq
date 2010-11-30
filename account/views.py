@@ -38,7 +38,7 @@ def exit(request, template_name = 'my.html', next = '/'):
 
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
-def modify_password(request, template_name = '', next = '/'):
+def person_password_modify(request, template_name = '', next = '/'):
     
     page_title = u'修改密码'
     post_data = None
@@ -55,3 +55,17 @@ def modify_password(request, template_name = '', next = '/'):
     else:
         modify_password_form = ModifyPasswordForm()
         return render_to_response(template_name, {'form': modify_password_form, 'page_title': page_title}, context_instance=RequestContext(request))        
+
+
+@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+def person_management(request, template_name = 'my.html', next = '/'):
+    
+    page_title = u'个人信息'
+    return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))    
+
+@csrf_protect
+@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+def test_person_password_modify(request, template_name = 'my.html', next = '/'):
+    
+    page_title = u'密码修改'
+    return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))

@@ -1,0 +1,50 @@
+{% extends "my_layout.html" %}
+
+{% block topnav %}
+<div id="topnav">
+  <!-- start: skip link navigation -->
+  <a class="skip" title="skip link" href="#navigation">Skip to the navigation</a><span class="hideme">.</span>
+  <a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span>
+  <!-- end: skip link navigation -->{% if user.is_authenticated %}你好,<a href="{% url account_login %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
+{% else %}
+<a href="{% url account_login %}">登入</a> | <a href="/account/login">通知</a> | <a href="/account/login">下载</a>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block header_describe %}{% endblock %}
+
+{% block nav %}
+{% if not user.is_authenticated %}
+
+{% else %}
+<ul>
+  <li class="active"><strong>个人管理</strong></li>
+  <li><a href="#">系统管理</a></li>
+  <li><a href="#">进入系统</a></li>
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block teaser %}{% endblock %}
+{% block col1_content %}
+{% if not user.is_authenticated %}
+
+{% else %}
+<h6 class="vlist">个人管理</h6>
+<ul class="vlist">
+  <li class="active"><strong>个人资料</strong></li>
+  <li><a href="#">密码修改</a></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endif %}
+{% endblock %}
+{% block col3_content %}
+{% if not user.is_authenticated %}
+<h3>系统用户登入</h3>
+{% include 'account/login_form.html' %}
+{% else %}
+<h1>你好,{{ user.username }}</h1>
+{% endif %}
+{% endblock %}
+

@@ -39,7 +39,7 @@ class LoginForm(forms.Form):
     
     def clean_username(self):
         try:
-            username = self.cleaned_data.get('username')
+            username = self.data.get('username')
             User.objects.get(username=username)
         except ObjectDoesNotExist:
             raise forms.ValidationError(self.username_error_messages['do_not_exist'])
@@ -48,8 +48,8 @@ class LoginForm(forms.Form):
     def clean_password(self):
 
         try:
-            username = self.cleaned_data.get('username')
-            password = self.cleaned_data.get('password')
+            username = self.data.get('username')
+            password = self.data.get('password')
             from django.contrib.auth import authenticate
             self.user = authenticate(username = username, password = password)
             if self.user is None:
@@ -82,7 +82,7 @@ class ModifyPasswordForm(forms.Form):
         max_length=30,
         required=True, 
         label=_(u'新密码'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.PasswordInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：123456'),
         error_messages = modify_password_error_messages,
@@ -91,7 +91,7 @@ class ModifyPasswordForm(forms.Form):
         max_length=30,
         required=True, 
         label=_(u'确认新密码'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.PasswordInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'请重新输入密码，例如：123456'),
         error_messages = modify_password_error_messages,
@@ -99,22 +99,22 @@ class ModifyPasswordForm(forms.Form):
     
     def clean_password_new(self):
         try:
-            password_new_copy = self.cleaned_data.get('password_new')
-            password_confirm_copy = self.cleaned_data.get('password_confirm')        
+            password_new_copy = self.data.get('password_new')
+            password_confirm_copy = self.data.get('password_confirm')        
             if password_new_copy != password_confirm_copy:
-                raise forms.ValidationError(self.modify_password_error_message['password_confirm_error'])
+                raise forms.ValidationError(self.modify_password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(self.modify_password_error_message['password_form_error'])
+            raise forms.ValidationError(self.modify_password_error_messages['password_form_error'])
         return password_new_copy
 
     def clean_password_confirm(self):
         try:
-            password_new_copy = self.cleaned_data.get('password_new')
-            password_confirm_copy = self.cleaned_data.get('password_confirm')        
+            password_new_copy = self.data.get('password_new')
+            password_confirm_copy = self.data.get('password_confirm')        
             if password_new_copy != password_confirm_copy:
-                raise forms.ValidationError(self.modify_password_error_message['password_confirm_error'])
+                raise forms.ValidationError(self.modify_password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(self.modify_password_error_message['password_form_error'])
+            raise forms.ValidationError(self.modify_password_error_messages['password_form_error'])
         return password_confirm_copy
 
     def password_save(self, user=None):
@@ -122,7 +122,7 @@ class ModifyPasswordForm(forms.Form):
         修改用户密码并保存。
         """
         if user is not None and user.is_authenticated():
-            user.set_password(self.cleaned_data_get('password_confirm'))
+            user.set_password(self.cleaned_data.get('password_confirm'))
             user.save()
             return True
         return False

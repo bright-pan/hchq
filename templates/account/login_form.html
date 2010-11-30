@@ -1,6 +1,6 @@
 <form method="post" action="" class="yform">{% csrf_token %}
   <fieldset>
-    <legend>用户登入信息</legend>
+    <legend>请输入用户名和密码</legend>
     {% if form.username.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.username.errors }}</strong>
