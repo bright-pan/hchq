@@ -13,9 +13,32 @@
 {% endblock %}
 
 {% block header_describe %}{% endblock %}
-{% block nav %}{% endblock %}
+
+{% block nav %}
+{% if not user.is_authenticated %}
+
+{% else %}
+<ul>
+  <li class="active"><strong>个人管理</strong></li>
+  <li><a href="#">系统管理</a></li>
+  <li><a href="#">进入系统</a></li>
+</ul>
+{% endif %}
+{% endblock %}
+
 {% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
+{% block col1_content %}
+{% if not user.is_authenticated %}
+
+{% else %}
+<h6 class="vlist">个人管理</h6>
+<ul class="vlist">
+  <li class="active"><strong>个人资料</strong></li>
+  <li><a href="#">密码修改</a></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endif %}
+{% endblock %}
 {% block col3_content %}
 {% if not user.is_authenticated %}
 <h3>系统用户登入</h3>

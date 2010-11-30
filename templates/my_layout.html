@@ -14,12 +14,16 @@
         {% endblock %}
         </div>
       </div>
-      {% block nav %}
-      {% endblock %}
-      
+      <div id="nav">
+        <!-- skiplink anchor: navigation -->
+        <a id="navigation" name="navigation"></a>
+        <div class="hlist">
+          <!-- main navigation: horizontal list -->
+          {% block nav %}{% endblock %}
+        </div>
+      </div>
       {% block teaser %}
       {% endblock %}
-      
       <div id="main">
         <div id="col1">
           <div id="col1_content" class="clearfix">
