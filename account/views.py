@@ -14,10 +14,9 @@ def my_layout_test(request, template_name = 'my.html'):
 
 @csrf_protect
 @never_cache
-def login(request, template_name = 'account/login.html'):
-#    return render_to_response(template_name, context_instance=RequestContext(request))
-    next = request.GET.get('next') or '/'
-    print next
+def login(request, template_name = 'account/login.html', next = '/'):
+
+    page_title = u'用户登入'
     #loginform = login_form()
     if request.method == 'POST':
         loginform = login_form(request.POST)
@@ -26,12 +25,12 @@ def login(request, template_name = 'account/login.html'):
             login(request, loginform.get_user())
             return HttpResponseRedirect(next)
         else:
-            return render_to_response(template_name, {'form': loginform}, context_instance=RequestContext(request))
+            return render_to_response(template_name, {'form': loginform, 'page_title': page_title}, context_instance=RequestContext(request))
     else:
         loginform = login_form()
-        return render_to_response(template_name, {'form': loginform}, context_instance=RequestContext(request))
+        return render_to_response(template_name, {'form': loginform, 'page_title': page_title}, context_instance=RequestContext(request))
 
-def exit(request, template_name = 'my.html'):
+def exit(request, template_name = 'my.html', next = '/'):
     from django.contrib.auth import logout
     logout(request)
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect(next)
