@@ -1,3 +1,5 @@
 1. add django-sentry trace exception for this site.
 2. use yaml css framework for this site.
 3. use jquery javascript framework for this site.
+4. use PIL for image process.
+5. use django-sentry trace exception.
