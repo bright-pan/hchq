@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-import settings
+from hchq import settings
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin

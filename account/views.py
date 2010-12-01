@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import user_passes_test
 
-from account.forms import LoginForm,ModifyPasswordForm
+from hchq.account.forms import LoginForm,ModifyPasswordForm
 
 # Create your views here.
 def my_layout_test(request, template_name = 'my.html'):
