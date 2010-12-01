@@ -126,6 +126,8 @@ INSTALLED_APPS = (
     'sentry.plugins.sentry_urls',
 
     # local app
-    'hchq.account',
     'hchq.untils',
+    'hchq.account',
+    'hchq.service_area',
+
 )

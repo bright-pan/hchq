@@ -1,4 +1,4 @@
-{% extends "account/service_area_layout.html" %}
+{% extends "service_area/service_area_layout.html" %}
 
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
@@ -6,7 +6,7 @@
 {% block col1_content %}
 <h6 class="vlist">服务区域管理</h6>
 <ul class="vlist">
-  <li><a href="{% url account_person_management %}">服务区域查询</a></li>
+  <li><a href="{% url service_area_add %}">服务区域查询</a></li>
   <li class="active"><strong>服务区域添加</strong></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>

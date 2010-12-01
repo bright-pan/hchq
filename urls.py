@@ -27,6 +27,15 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('',
+
+      (r'^service_area/', include('hchq.service_area.urls')),
+#      (r'^account/logout$', logout, {'template_name' : 'account/logout.html'}),
+#      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
+#      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
+                        
+)
+
+urlpatterns += patterns('',
                         
       (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root' : settings.MEDIA_ROOT}),
                         

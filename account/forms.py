@@ -112,7 +112,7 @@ class ModifyPasswordForm(forms.Form):
             if password_new_copy != password_confirm_copy:
                 raise forms.ValidationError(gl.password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.password_error_messages['password_form_error'])
+            raise forms.ValidationError(gl.password_error_messages['form_error'])
         return password_confirm_copy
 
     def password_save(self, user=None):
