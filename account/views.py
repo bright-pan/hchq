@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import user_passes_test
-
+from django.contrib.auth import get_user
 from hchq.account.forms import LoginForm,ModifyPasswordForm
 
 # Create your views here.
@@ -41,14 +41,14 @@ def exit(request, template_name = 'my.html', next = '/'):
 def person_password_modify(request, template_name = '', next = '/'):
     
     page_title = u'修改密码'
+    user = get_user(request)
     post_data = None
     modify_password_form = None
     if request.method == 'POST':
         post_data = request.POST.copy()
         modify_password_form = ModifyPasswordForm(post_data)
         if modify_password_form.is_valid():
-            from django.contrib.auth import get_user            
-            modify_password_form.password_save(get_user(request))
+            modify_password_form.password_save(user)
             return HttpResponseRedirect(next)
         else:
             return render_to_response(template_name, {'form': modify_password_form, 'page_title': page_title}, context_instance=RequestContext(request))
