@@ -13,7 +13,7 @@ class ServiceArea(models.Model):
 
     class Meta:
         db_table = 'service_area'
-        ordering = ['-created_at']
+        ordering = ['created_at']
 
     def __unicode__(self):
         return self.name

@@ -113,3 +113,25 @@
 	text-decoration:none;
   }
 }
+
+
+/*CSS style pagination*/
+
+DIV.pagination {
+	PADDING-RIGHT: 6px; BORDER-TOP: #9c9a9c 1px dotted; PADDING-LEFT: 0px; FONT-SIZE: 13px; PADDING-BOTTOM: 4px; COLOR: #313031; PADDING-TOP: 4px; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #cecfce; TEXT-ALIGN: right
+}
+DIV.pagination A {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; PADDING-BOTTOM: 1px; MARGIN: 0px 1px; COLOR: #0030ce; PADDING-TOP: 1px; TEXT-DECORATION: underline
+}
+DIV.pagination A:hover {
+	
+}
+DIV.pagination A:active {
+	
+}
+DIV.pagination SPAN.current {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 1px; COLOR: #000; PADDING-TOP: 1px; BACKGROUND-COLOR: #fff
+}
+DIV.pagination SPAN.disabled {
+	DISPLAY: none
+}

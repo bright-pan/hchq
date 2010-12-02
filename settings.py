@@ -131,3 +131,5 @@ INSTALLED_APPS = (
     'hchq.service_area',
 
 )
+
+SERVICE_AREA_PER_PAGE = 10

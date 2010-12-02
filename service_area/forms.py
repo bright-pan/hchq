@@ -44,5 +44,9 @@ class ServiceAreaAddForm(forms.Form):
                 service_area_name_obj, created = ServiceArea.objects.get_or_create(name=service_area_name_copy, creater=user)
                 if created is True:
                     service_area_name_list.append(service_area_name_obj)
+                else:
+                    if service_area_name_obj.is_active == False:
+                        service_area_name_obj.is_active = True
+                        service_area_name_obj.save()
         return service_area_name_list
 

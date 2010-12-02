@@ -11,9 +11,57 @@
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
 {% endblock %}
-
 {% block col3_content %}
-<h3>添加服务区域</h3>
-{% include 'service_area/service_area_add_form.html' %}
+<div class="subcolumns">
+  <div class="c66l">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+      <h3>服务区域预览</h3>
+      <table class="full">
+        <caption>服务区域(共{{ results_page.paginator.count}}项)</caption>
+        <tbody>
+          <tr>
+            <th>编号</th>
+            <th>名称</th>
+          </tr>
+          {% for result in results_page.object_list %}
+          <tr>
+            <th>{{ result.id }}</th>
+            <td><a href="">{{ result.name }}<a></td>
+          </tr>
+          {% empty %}
+          <p class="">没有服务区域可以预览！</p>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="pagination">
+          {% if results_page.has_previous %}
+          <a href="">上一页</a>
+          {% else %}
+          <span class="disable">
+            上一页
+          </span>
+          {% endif %}
+          <span class="current">
+            第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
+          </span>
+          {% if results_page.has_next %}
+          <a href="">下一页</a>
+          {% else %}
+          <span class="disable">
+            上一页
+          </span>          
+          {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="c33r">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+      <h3>添加服务区域</h3>
+      {% include 'service_area/service_area_add_form.html' %}
+    </div>
+  </div>
+</div>
 {% endblock %}
 
