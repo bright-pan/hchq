@@ -17,19 +17,20 @@ from hchq import settings
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def service_area_add(request, template_name='my.html', next='/', page='1'):
-
+    """
+    服务区添加视图，带添加预览功能！
+    """
     page_title = u'添加服务区域'
     user = get_user(request)
     post_data = None
-    query_set = ServiceArea.objects.filter(is_active = True)
-    results_page = pagination_results(page, query_set, settings.SERVICE_AREA_PER_PAGE)
 
     if request.method == 'POST':
         post_data = request.POST.copy()
         service_area_add_form = ServiceAreaAddForm(post_data)
         if service_area_add_form.is_valid():
             service_area_add_form.service_area_save(user)
-
+        query_set = ServiceArea.objects.filter(is_active = True)
+        results_page = pagination_results(page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
                                   {'form': service_area_add_form,
                                    'page_title': page_title,
@@ -38,6 +39,8 @@ def service_area_add(request, template_name='my.html', next='/', page='1'):
                                   context_instance=RequestContext(request))
     else:
         service_area_add_form = ServiceAreaAddForm()
+        query_set = ServiceArea.objects.filter(is_active = True)
+        results_page = pagination_results(page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
                                   {'form': service_area_add_form,
                                    'page_title': page_title,
