@@ -6,7 +6,7 @@
 {% block col1_content %}
 <h6 class="vlist">服务区域管理</h6>
 <ul class="vlist">
-  <li><a href="{% url service_area_add %}">服务区域查询</a></li>
+  <li><a href="{% url service_area_add 1 %}">服务区域查询</a></li>
   <li class="active"><strong>服务区域添加</strong></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
@@ -36,7 +36,7 @@
       </table>
       <div class="pagination">
           {% if results_page.has_previous %}
-          <a href="">上一页</a>
+          <a href="{% url service_area_add results_page.previous_page_number %}">上一页</a>
           {% else %}
           <span class="disable">
             上一页
@@ -46,7 +46,7 @@
             第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
           </span>
           {% if results_page.has_next %}
-          <a href="">下一页</a>
+          <a href="{% url service_area_add results_page.next_page_number %}">下一页</a>
           {% else %}
           <span class="disable">
             上一页

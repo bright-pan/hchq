@@ -1,8 +1,8 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
-def pagination_results(request, query_set, items_per_page):
+def pagination_results(page, query_set, items_per_page):
     try:
-        page = int(request.GET.get('page', 1))
+        page = int(page)
     except ValueError:
         page = 1
     paginator = Paginator(query_set, items_per_page)

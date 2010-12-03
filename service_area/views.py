@@ -14,16 +14,15 @@ from hchq.untils.my_paginator import pagination_results
 from hchq import settings
 
 
-
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
-def service_area_add(request, template_name='my.html', next='/'):
+def service_area_add(request, template_name='my.html', next='/', page='1'):
 
     page_title = u'添加服务区域'
     user = get_user(request)
     post_data = None
     query_set = ServiceArea.objects.filter(is_active = True)
-    results_page = pagination_results(request, query_set, settings.SERVICE_AREA_PER_PAGE)
+    results_page = pagination_results(page, query_set, settings.SERVICE_AREA_PER_PAGE)
 
     if request.method == 'POST':
         post_data = request.POST.copy()
