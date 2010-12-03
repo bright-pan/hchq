@@ -39,7 +39,7 @@ class LoginForm(forms.Form):
             username = self.data.get('username')
             if re.match(gl.username_re_pattern, username ) is None:
                 raise forms.ValidationError(gl.username_error_messages['format_error'])
-            User.objects.get(username=username)
+            User.objects.get(username=username, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.username_error_messages['do_not_exist'])
         return username
