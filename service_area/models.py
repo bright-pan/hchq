@@ -20,4 +20,4 @@ class ServiceArea(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('service_area_show', (), {'service_area_id': self.id})
+        return ('service_area_show', (), {'service_area_index': self.id})
