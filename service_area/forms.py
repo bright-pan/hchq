@@ -28,7 +28,7 @@ class ServiceAreaAddForm(forms.Form):
         try:
             service_area_name_copy = self.data.get('service_area_name')
 #            print service_area_name_copy
-            if re.match(gl.service_area_name_re_pattern, service_area_name_copy) is None:
+            if re.match(gl.service_area_name_add_re_pattern, service_area_name_copy) is None:
                 raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
             self.service_area_name_set = set(filter(gl.filter_null_string, service_area_name_copy.split(u'/')))
         except ObjectDoesNotExist:
@@ -49,4 +49,47 @@ class ServiceAreaAddForm(forms.Form):
                         service_area_name_obj.is_active = True
                         service_area_name_obj.save()
         return service_area_name_list
+
+class ServiceAreaModifyForm(forms.Form):
+    """
+    服务区域修改表单
+    """
+    service_area_name_copy = None
+    
+    service_area_name = forms.CharField(
+        max_length=128,
+        required=True,
+        label=_(u'服务区域名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：周田，周田乡...'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    
+    def clean_service_area_name(self):
+        try:
+            self.service_area_name_copy = self.data.get('service_area_name')
+#            print service_area_name_copy
+            if re.match(gl.service_area_name_modify_re_pattern, self.service_area_name_copy) is None:
+                raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(self.service_area_name_error_messages['form_error'])
+        return self.service_area_name_copy
+
+    def service_area_save(self, service_area_id=None):
+
+        if service_area_id is not None:
+            try:
+                service_area_id_clean = int(service_area_id)
+            except ValueError:
+                return False
+            try:
+                service_area_object = ServiceArea.objects.get(pk=service_area_id_clean, is_active=True)
+            except ObjectDoesNotExist:
+                return False
+            service_area_object.name = self.service_area_name_copy
+            service_area_object.save()
+            return True
+        else:
+            return False
 
