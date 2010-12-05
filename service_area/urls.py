@@ -17,10 +17,16 @@ urlpatterns = patterns('hchq.service_area.views',
        'service_area_modify',
        {'template_name' : 'service_area/service_area_modify.html', 'next': '/account/person_management', },
        'service_area_modify'),
-      (r'delete/(?P<service_area_page>\d{1,4})/$',
+
+       (r'delete/(?P<service_area_page>\d{1,4})/$',
        'service_area_delete',
        {'template_name' : 'service_area/service_area_delete.html', 'next': '/account/person_management', },
        'service_area_delete'),
+
+       (r'list/(?P<service_area_page>\d{1,4})/$',
+       'service_area_list',
+       {'template_name' : 'service_area/service_area_list.html', 'next': '/account/person_management', },
+       'service_area_list'),
 
 #      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
 #      (r'logout$', 'exit', {'template_name' : 'account/login.html', 'next': '/', }, 'account_logout'),

@@ -114,7 +114,38 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
         post_data = request.POST.copy()
         service_area_delete_form = ServiceAreaDeleteForm(post_data)
         if service_area_delete_form.is_valid():
-            service_area_id = post_data['service_area_id']
+            service_area_delete_form.service_area_delete()
+        query_set = ServiceArea.objects.filter(is_active = True)
+        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        return render_to_response(template_name,
+                                  {'form': service_area_delete_form,
+                                   'page_title': page_title,
+                                   'results_page': results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+    else:
+        service_area_delete_form = ServiceAreaDeleteForm()
+        query_set = ServiceArea.objects.filter(is_active = True)
+        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        return render_to_response(template_name,
+                                  {'form': service_area_delete_form,
+                                   'page_title': page_title,
+                                   'results_page': results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+
+@csrf_protect
+@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+def service_area_list(request, template_name='my.html', next='/', service_area_page='1',):
+    """
+    服务区查询视图
+    """
+    page_title = u'查询服务区域'
+
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        service_area_delete_form = ServiceAreaDeleteForm(post_data)
+        if service_area_delete_form.is_valid():
             service_area_delete_form.service_area_delete()
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
