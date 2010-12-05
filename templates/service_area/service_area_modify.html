@@ -8,6 +8,7 @@
   <li><a href="{% url service_area_add 1 %}">服务区域查询</a></li>
   <li><a href="{% url service_area_add 1 %}">服务区域添加</a></li>
   <li class="active"><strong>服务区域修改</strong></li>
+  <li><a href="{% url service_area_delete 1 %}">服务区域删除</a></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
 {% endblock %}
@@ -19,7 +20,6 @@
 {% empty %}
 {% endfor %}
 {% include 'service_area/service_area_table_modify.html' %}
-
 <div class="subcolumns">
   <div class="c66l">
     <div class="subc">

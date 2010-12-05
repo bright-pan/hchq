@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist
 
-from hchq.service_area.forms import ServiceAreaAddForm, ServiceAreaModifyForm
+from hchq.service_area.forms import ServiceAreaAddForm, ServiceAreaModifyForm, ServiceAreaDeleteForm
 from hchq.service_area.models import ServiceArea
 from hchq.untils.my_paginator import pagination_results
 from hchq import settings
@@ -29,7 +29,7 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
         post_data = request.POST.copy()
         service_area_add_form = ServiceAreaAddForm(post_data)
         if service_area_add_form.is_valid():
-            service_area_add_form.service_area_save(user)
+            service_area_add_form.service_area_add(user)
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
@@ -82,7 +82,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
         service_area_modify_form = ServiceAreaModifyForm(post_data)
         if service_area_modify_form.is_valid():
             service_area_id = post_data['service_area_id']
-            service_area_modify_form.service_area_save()
+            service_area_modify_form.service_area_modify()
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
@@ -97,6 +97,39 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
                                   {'form': service_area_modify_form,
+                                   'page_title': page_title,
+                                   'results_page': results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+
+@csrf_protect
+@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+def service_area_delete(request, template_name='my.html', next='/', service_area_page='1',):
+    """
+    服务区删除视图
+    """
+    page_title = u'删除服务区域'
+
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        service_area_delete_form = ServiceAreaDeleteForm(post_data)
+        if service_area_delete_form.is_valid():
+            service_area_id = post_data['service_area_id']
+            service_area_delete_form.service_area_delete()
+        query_set = ServiceArea.objects.filter(is_active = True)
+        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        return render_to_response(template_name,
+                                  {'form': service_area_delete_form,
+                                   'page_title': page_title,
+                                   'results_page': results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+    else:
+        service_area_delete_form = ServiceAreaDeleteForm()
+        query_set = ServiceArea.objects.filter(is_active = True)
+        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        return render_to_response(template_name,
+                                  {'form': service_area_delete_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },

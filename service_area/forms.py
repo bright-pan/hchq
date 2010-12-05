@@ -32,10 +32,10 @@ class ServiceAreaAddForm(forms.Form):
                 raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
             self.service_area_name_set = set(filter(gl.filter_null_string, service_area_name_copy.split(u'/')))
         except ObjectDoesNotExist:
-            raise forms.ValidationError(self.service_area_name_error_messages['form_error'])
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
         return self.service_area_name_set
 
-    def service_area_save(self, user=None):
+    def service_area_add(self, user=None):
         service_area_name_list = []
         service_area_name_obj = None
         created = None
@@ -75,10 +75,10 @@ class ServiceAreaModifyForm(forms.Form):
             try:
                 self.service_area_id_copy = int(self.data.get('service_area_id'))
             except ValueError:
-                raise forms.ValidationError(self.service_area_name_error_messages['form_error'])
+                raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
             self.service_area_id_object = ServiceArea.objects.get(pk=self.service_area_id_copy)
         except ObjectDoesNotExist:
-            raise forms.ValidationError(self.service_area_name_error_messages['form_error'])
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 #            print self.service_area_name_copy
 #            print type(self.service_area_id_copy)
         if re.match(gl.service_area_name_modify_re_pattern, self.service_area_name_copy) is None:
@@ -87,6 +87,7 @@ class ServiceAreaModifyForm(forms.Form):
             self.service_area_object = ServiceArea.objects.get(name=self.service_area_name_copy)
         except ObjectDoesNotExist:
             self.service_area_object = None
+            return self.service_area_name_copy
         if self.service_area_object.id == self.service_area_id_copy:
             raise forms.ValidationError(gl.service_area_name_error_messages['already_error'])
         else:
@@ -94,7 +95,7 @@ class ServiceAreaModifyForm(forms.Form):
                 raise forms.ValidationError(gl.service_area_name_error_messages['already_error'])
         return self.service_area_name_copy
 
-    def service_area_save(self):
+    def service_area_modify(self):
 
         if self.service_area_object is not None:
             if self.service_area_object.is_active is False:
@@ -110,3 +111,33 @@ class ServiceAreaModifyForm(forms.Form):
             self.service_area_id_object.save()
             return True
 
+class ServiceAreaDeleteForm(forms.Form):
+    """
+    服务区域修改表单
+    """
+    service_area_id_copy = None
+    service_area_id_object = None
+
+    service_area_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    
+    def clean_service_area_id(self):
+        try:
+            try:
+                self.service_area_id_copy = int(self.data.get('service_area_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+            self.service_area_id_object = ServiceArea.objects.get(pk=self.service_area_id_copy)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+        return self.service_area_id_copy
+
+    def service_area_delete(self):
+
+        if self.service_area_id_object is not None:
+            self.service_area_id_object.is_active = False
+            self.service_area_id_object.save()
+        else:
+            return False
