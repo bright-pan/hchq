@@ -81,7 +81,6 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
         post_data = request.POST.copy()
         service_area_modify_form = ServiceAreaModifyForm(post_data)
         if service_area_modify_form.is_valid():
-            service_area_id = post_data['service_area_id']
             service_area_modify_form.service_area_modify()
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)

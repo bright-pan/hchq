@@ -68,6 +68,10 @@ class ServiceAreaModifyForm(forms.Form):
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
         )
+    service_area_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.service_area_name_error_messages,
+        )
     
     def clean_service_area_name(self):
         try:
@@ -113,7 +117,7 @@ class ServiceAreaModifyForm(forms.Form):
 
 class ServiceAreaDeleteForm(forms.Form):
     """
-    服务区域修改表单
+    服务区域删除表单
     """
     service_area_id_copy = None
     service_area_id_object = None
