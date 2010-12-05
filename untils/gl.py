@@ -20,6 +20,7 @@ service_area_name_error_messages={'required': _(u'请输入服务区域名称！
                                   'max_length': _(u'输入的服务区域名称长度大于500个字符！'),
                                   'format_error': _(u'服务区名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
                                   'form_error': _(u'表单严重错误！'),
+                                  'already_error': _(u'服务区域同名，请输入正确的服务区域名称！'),
                                   }
 
 username_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'

@@ -13,7 +13,7 @@ urlpatterns = patterns('hchq.service_area.views',
        {'template_name' : 'service_area/service_area_show.html', 'next': '', },
        'service_area_show'),
 
-      (r'modify/(?P<service_area_page>\d{1,4})/(?P<service_area_index>\d{1,4})/$',
+      (r'modify/(?P<service_area_page>\d{1,4})/$',
        'service_area_modify',
        {'template_name' : 'service_area/service_area_modify.html', 'next': '/account/person_management', },
        'service_area_modify'),
