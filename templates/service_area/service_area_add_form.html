@@ -1,6 +1,7 @@
 <form method="post" action="" class="yform">{% csrf_token %}
   <fieldset>
     <legend>请输入服务区域名称</legend>
+    {% with add_form as form %}
     {% if form.service_area_name.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.service_area_name.errors }}</strong>
@@ -13,6 +14,7 @@
       {{ form.service_area_name }}
     </div>
     {% endif %}
+    {% endwith %}
     <div class="type-button">
       <input type="submit" value="添加服务区域" class="submit"/>      
     </div>

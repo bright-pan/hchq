@@ -33,7 +33,7 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_add_form,
+                                  {'add_form': service_area_add_form,
                                    'page_title': page_title,
                                    'results_page':results_page,
                                    },
@@ -43,7 +43,7 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_add_form,
+                                  {'add_form': service_area_add_form,
                                    'page_title': page_title,
                                    'results_page':results_page,
                                    },
@@ -85,7 +85,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_modify_form,
+                                  {'modify_form': service_area_modify_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
@@ -95,7 +95,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_modify_form,
+                                  {'modify_form': service_area_modify_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
@@ -117,7 +117,7 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_delete_form,
+                                  {'delete_form': service_area_delete_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
@@ -127,7 +127,7 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
         query_set = ServiceArea.objects.filter(is_active = True)
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_delete_form,
+                                  {'delete_form': service_area_delete_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
@@ -161,7 +161,7 @@ def service_area_list(request, template_name='my.html', next='/', service_area_p
             query_set = ServiceArea.objects.filter(Q(is_active = True))
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_search_form,
+                                  {'search_form': service_area_search_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
@@ -190,7 +190,7 @@ def service_area_list(request, template_name='my.html', next='/', service_area_p
             query_set = ServiceArea.objects.filter(Q(is_active = True))
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_search_form,
+                                  {'search_form': service_area_search_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
