@@ -145,3 +145,63 @@ class ServiceAreaDeleteForm(forms.Form):
             self.service_area_id_object.save()
         else:
             return False
+
+class ServiceAreaSearchForm(forms.Form):
+    """
+    服务区域搜索表单
+    """
+    service_area_name_copy = None
+    is_fuzzy_value = None
+    
+    service_area_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'服务区域名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：周田，周田乡...'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    is_fuzzy = forms.CharField(
+        required=True,
+        label =_(u'模糊查询'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'fuzzy_search',}, check_test=None),
+        )
+    
+    def clean_service_area_name(self):
+        try:
+            self.service_area_name_copy = self.data.get('service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+        if re.match(gl.service_area_name_search_re_pattern, self.service_area_name_copy) is None:
+            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+#        print self.service_area_name_copy
+        return self.service_area_name_copy
+    
+    def clean_is_fuzzy(self):
+        try:
+            self.is_fuzzy_value = self.data.get('is_fuzzy')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+#        print self.is_fuzzy_value
+        return self.is_fuzzy_value
+    
+    def fuzzy_search(self):
+        if self.is_fuzzy_value == u'fuzzy_search':
+            return True
+        else:
+            return False
+        
+    def is_null(self):
+        if self.service_area_name_copy == u'':
+            return True
+        else:
+            return False
+    def save_to_session(self, request):
+        request.session['service_area_name'] = self.service_area_name_copy
+        if self.fuzzy_search():
+            request.session['is_fuzzy'] = u'fuzzy_search'
+        else:
+            request.session['is_fuzzy'] = False
+        return True

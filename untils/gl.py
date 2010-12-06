@@ -27,7 +27,8 @@ username_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
 password_re_pattern = ur'^[\w]+$'
 service_area_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
 service_area_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
-
+#service_area_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$'
+service_area_name_search_re_pattern = ur'(^[\u4e00-\u9fa5]+$)|(^$)'
 def filter_null_string(n):
     return len(n) > 0
 

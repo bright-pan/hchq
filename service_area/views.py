@@ -7,9 +7,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
-from django.db.models import ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.service_area.forms import ServiceAreaAddForm, ServiceAreaModifyForm, ServiceAreaDeleteForm
+from hchq.service_area.forms import ServiceAreaAddForm, ServiceAreaModifyForm, ServiceAreaDeleteForm, ServiceAreaSearchForm
 from hchq.service_area.models import ServiceArea
 from hchq.untils.my_paginator import pagination_results
 from hchq import settings
@@ -143,23 +143,54 @@ def service_area_list(request, template_name='my.html', next='/', service_area_p
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        service_area_delete_form = ServiceAreaDeleteForm(post_data)
-        if service_area_delete_form.is_valid():
-            service_area_delete_form.service_area_delete()
-        query_set = ServiceArea.objects.filter(is_active = True)
+        service_area_search_form = ServiceAreaSearchForm(post_data)
+        if service_area_search_form.is_valid():
+            service_area_search_form.save_to_session(request)
+            if service_area_search_form.is_null() is False:
+                if service_area_search_form.fuzzy_search() is False:
+                    query_set = ServiceArea.objects.filter(Q(is_active = True) & 
+                                                           Q(name__startswith=service_area_search_form.cleaned_data['service_area_name']))
+                else:
+                    service_area_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
+                    query_set = ServiceArea.objects.filter(Q(is_active = True) &
+                                                       Q(name__icontains=service_area_search_form.cleaned_data['service_area_name']))
+            else:
+                query_set = ServiceArea.objects.filter(Q(is_active = True))
+
+        else:
+            query_set = ServiceArea.objects.filter(Q(is_active = True))
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_delete_form,
+                                  {'form': service_area_search_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
     else:
-        service_area_delete_form = ServiceAreaDeleteForm()
-        query_set = ServiceArea.objects.filter(is_active = True)
+        data = {'service_area_name':request.session.get('service_area_name', u''),
+                'is_fuzzy':request.session.get('is_fuzzy', False),
+                }
+#       print data['is_fuzzy']
+
+        service_area_search_form = ServiceAreaSearchForm(data)
+        if service_area_search_form.is_valid():
+            if service_area_search_form.is_null() is False:
+                if service_area_search_form.fuzzy_search() is False:
+                    query_set = ServiceArea.objects.filter(Q(is_active = True) & 
+                                                           Q(name__startswith=service_area_search_form.cleaned_data['service_area_name']))
+                else:
+#                    print '********'
+                    service_area_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
+                    query_set = ServiceArea.objects.filter(Q(is_active = True) &
+                                                       Q(name__icontains=service_area_search_form.cleaned_data['service_area_name']))
+            else:
+                query_set = ServiceArea.objects.filter(Q(is_active = True))
+
+        else:
+            query_set = ServiceArea.objects.filter(Q(is_active = True))
         results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         return render_to_response(template_name,
-                                  {'form': service_area_delete_form,
+                                  {'form': service_area_search_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
