@@ -103,6 +103,29 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'hchq.untils.context_processors.hchq',
 )
+############
+# SESSIONS #
+############
+
+SESSION_COOKIE_NAME = 'sessionid'                       # Cookie name. This can be whatever you want.
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2               # Age of cookie, in seconds (default: 2 weeks).
+SESSION_COOKIE_DOMAIN = None                            # A string like ".lawrence.com", or None for standard domain cookie.
+SESSION_COOKIE_SECURE = False                           # Whether the session cookie should be secure (https:// only).
+SESSION_COOKIE_PATH = '/'                               # The path of the session cookie.
+SESSION_SAVE_EVERY_REQUEST = False                      # Whether to save the session data on every request.
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False                 # Whether a user's session cookie expires when the Web browser is closed.
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # The module to store session data
+SESSION_FILE_PATH = None                                # Directory to store session files if using the file session module. If None, the backend will use a sensible default.
+
+#########
+# CACHE #
+#########
+
+# The cache backend to use.  See the docstring in django.core.cache for the
+# possible values.
+CACHE_BACKEND = 'locmem://'
+CACHE_MIDDLEWARE_KEY_PREFIX = ''
+CACHE_MIDDLEWARE_SECONDS = 600
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -129,7 +152,9 @@ INSTALLED_APPS = (
     'hchq.untils',
     'hchq.account',
     'hchq.service_area',
+    'hchq.department',
 
 )
 
 SERVICE_AREA_PER_PAGE = 12
+DEPARTMENT_PER_PAGE = 12

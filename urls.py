@@ -20,18 +20,18 @@ urlpatterns = patterns('hchq.account.views',
 urlpatterns += patterns('',
 
       (r'^account/', include('hchq.account.urls')),
-#      (r'^account/logout$', logout, {'template_name' : 'account/logout.html'}),
-#      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
-#      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
                         
 )
 
 urlpatterns += patterns('',
 
       (r'^service_area/', include('hchq.service_area.urls')),
-#      (r'^account/logout$', logout, {'template_name' : 'account/logout.html'}),
-#      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
-#      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
+                        
+)
+
+urlpatterns += patterns('',
+
+      (r'^department/', include('hchq.department.urls')),
                         
 )
 
