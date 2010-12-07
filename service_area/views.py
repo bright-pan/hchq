@@ -142,7 +142,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
     """
     服务区修改视图
     """
-    page_title = u'添加服务区域'
+    page_title = u'修改服务区域'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
