@@ -17,8 +17,8 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
       <td>{{ result.creater }}</td>
-      <td>{{ result.created_at|date:"Y-m-d H:m:s"}}</td>
-      <td>{{ result.updated_at|date:"Y-m-d H:m:s"}}</td>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     {% empty %}
     <p class="warning">没有服务区域可以查询！</p>

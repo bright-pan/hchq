@@ -49,7 +49,7 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
                 else:
                     query_set = ServiceArea.objects.filter(Q(is_active = True))
             else:
-                query_set = None
+                raise Http404('search form error!')
         else:
             service_area_add_form = ServiceAreaAddForm()
             if submit_value == u'查询':
@@ -68,10 +68,14 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
                         query_set = ServiceArea.objects.filter(Q(is_active = True))
 
                 else:
-                    query_set = ServiceArea.objects.filter(Q(is_active = True))
+#                    query_set = ServiceArea.objects.filter(Q(is_active = True))
+                    query_set = None
             else:
-                query_set = None
-        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+                raise Http404('search form error!')
+        if query_set is not None:
+            results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        else:
+            results_page = None
         return render_to_response(template_name,
                                   {'search_form': service_area_search_form,
                                    'add_form': service_area_add_form,
@@ -162,7 +166,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
                 else:
                     query_set = ServiceArea.objects.filter(Q(is_active = True))
             else:
-                query_set = None
+                raise Http404('search form error!')
         else:
             service_area_modify_form = ServiceAreaModifyForm()
             if submit_value == u'查询':
@@ -181,10 +185,13 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
                         query_set = ServiceArea.objects.filter(Q(is_active = True))
 
                 else:
-                    query_set = ServiceArea.objects.filter(Q(is_active = True))
+                    query_set = None
             else:
-                query_set = None
-        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+                raise Http404('search form error!')
+        if query_set is not None:
+            results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        else:
+            results_page = None
         return render_to_response(template_name,
                                   {'search_form': service_area_search_form,
                                    'modify_form': service_area_modify_form,
@@ -256,7 +263,7 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
                 else:
                     query_set = ServiceArea.objects.filter(Q(is_active = True))
             else:
-                query_set = None
+                raise Http404('search form error!')
         else:
             service_area_delete_form = ServiceAreaDeleteForm()
             if submit_value == u'查询':
@@ -275,10 +282,13 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
                         query_set = ServiceArea.objects.filter(Q(is_active = True))
 
                 else:
-                    query_set = ServiceArea.objects.filter(Q(is_active = True))
+                    query_set = None
             else:
-                query_set = None
-        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+                raise Http404('search form error!')
+        if query_set is not None:
+            results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        else:
+            results_page = None
         return render_to_response(template_name,
                                   {'search_form': service_area_search_form,
                                    'delete_form': service_area_delete_form,
@@ -343,8 +353,11 @@ def service_area_list(request, template_name='my.html', next='/', service_area_p
                 query_set = ServiceArea.objects.filter(Q(is_active = True))
 
         else:
-            query_set = ServiceArea.objects.filter(Q(is_active = True))
-        results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+            query_set = None
+        if query_set is not None:
+            results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
+        else:
+            results_page = None
         return render_to_response(template_name,
                                   {'search_form': service_area_search_form,
                                    'page_title': page_title,
