@@ -12,6 +12,7 @@ from django.db.models import ObjectDoesNotExist, Q
 from hchq.service_area.forms import ServiceAreaAddForm, ServiceAreaModifyForm, ServiceAreaDeleteForm, ServiceAreaSearchForm
 from hchq.service_area.models import ServiceArea
 from hchq.untils.my_paginator import pagination_results
+from hchq.untils import gl
 from hchq import settings
 
 
@@ -33,9 +34,11 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
                 service_area_add_form.service_area_add(user)
             else:
                 pass
-            data = {'service_area_name':request.session.get('service_area_name', u''),
-                    'is_fuzzy':request.session.get('is_fuzzy', False),
+            data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                    'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
                     }
+#            print data['service_area_name']
+#            print data['is_fuzzy']
             service_area_search_form = ServiceAreaSearchForm(data)
             if service_area_search_form.is_valid():
                 if service_area_search_form.is_null() is False:
@@ -85,8 +88,8 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
                                   context_instance=RequestContext(request))
     else:
         service_area_add_form = ServiceAreaAddForm()
-        data = {'service_area_name':request.session.get('service_area_name', u''),
-                'is_fuzzy':request.session.get('is_fuzzy', False),
+        data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
                 }
         service_area_search_form = ServiceAreaSearchForm(data)
         if service_area_search_form.is_valid():
@@ -150,8 +153,8 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
                 service_area_modify_form.service_area_modify()
             else:
                 pass
-            data = {'service_area_name':request.session.get('service_area_name', u''),
-                    'is_fuzzy':request.session.get('is_fuzzy', False),
+            data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                    'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
                     }
             service_area_search_form = ServiceAreaSearchForm(data)
             if service_area_search_form.is_valid():
@@ -201,10 +204,9 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
                                   context_instance=RequestContext(request))
     else:
         service_area_modify_form = ServiceAreaModifyForm()
-        data = {'service_area_name':request.session.get('service_area_name', u''),
-                'is_fuzzy':request.session.get('is_fuzzy', False),
-                }
-
+        data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
+                }        
         service_area_search_form = ServiceAreaSearchForm(data)
         if service_area_search_form.is_valid():
             if service_area_search_form.is_null() is False:
@@ -247,9 +249,9 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
                 service_area_delete_form.service_area_delete()
             else:
                 pass
-            data = {'service_area_name':request.session.get('service_area_name', u''),
-                    'is_fuzzy':request.session.get('is_fuzzy', False),
-                    }
+            data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                    'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
+                    }        
             service_area_search_form = ServiceAreaSearchForm(data)
             if service_area_search_form.is_valid():
                 if service_area_search_form.is_null() is False:
@@ -298,10 +300,9 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
                                   context_instance=RequestContext(request))
     else:
         service_area_delete_form = ServiceAreaDeleteForm()
-        data = {'service_area_name':request.session.get('service_area_name', u''),
-                'is_fuzzy':request.session.get('is_fuzzy', False),
-                }
-
+        data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
+                }        
         service_area_search_form = ServiceAreaSearchForm(data)
         if service_area_search_form.is_valid():
             if service_area_search_form.is_null() is False:
@@ -365,9 +366,9 @@ def service_area_list(request, template_name='my.html', next='/', service_area_p
                                    },
                                   context_instance=RequestContext(request))
     else:
-        data = {'service_area_name':request.session.get('service_area_name', u''),
-                'is_fuzzy':request.session.get('is_fuzzy', False),
-                }
+        data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
+                'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
+                }        
 #       print data['is_fuzzy']
 
         service_area_search_form = ServiceAreaSearchForm(data)

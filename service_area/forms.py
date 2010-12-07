@@ -199,9 +199,9 @@ class ServiceAreaSearchForm(forms.Form):
         else:
             return False
     def save_to_session(self, request):
-        request.session['service_area_name'] = self.service_area_name_copy
+        request.session[gl.session_service_area_name] = self.service_area_name_copy
         if self.fuzzy_search():
-            request.session['is_fuzzy'] = u'fuzzy_search'
+            request.session[gl.session_service_area_is_fuzzy] = u'fuzzy_search'
         else:
-            request.session['is_fuzzy'] = False
+            request.session[gl.session_service_area_is_fuzzy] = False
         return True
