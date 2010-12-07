@@ -16,7 +16,7 @@
 <h3>服务区域删除</h3>
 <hr>
 {% with search_form as form %}
-<form method="post" action="." class="yform">{% csrf_token %}
+<form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
     <legend>服务区域查询参数</legend>
     {% if form.service_area_name.errors %}

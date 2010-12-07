@@ -19,8 +19,11 @@ class ServiceAreaAddForm(forms.Form):
         required=True, 
         label=_(u'服务区域名称'), 
         widget=forms.Textarea(attrs={'class':'',
-                                      'size':'30',}), 
-        help_text=_(u'例如：周田，周田乡/西江镇/文武坝乡/...'),
+                                     'size':'30',
+                                     'rows':'3',
+                                     }
+                              ), 
+        help_text=_(u'例如：周田，周田乡/西江镇...'),
         error_messages = gl.service_area_name_error_messages,
         )
     

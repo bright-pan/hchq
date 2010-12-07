@@ -19,7 +19,10 @@ class DepartmentAddForm(forms.Form):
         required=True, 
         label=_(u'部门单位名称'), 
         widget=forms.Textarea(attrs={'class':'',
-                                      'size':'30',}), 
+                                     'size':'30',
+                                     'rows':'3',
+                                     }
+                              ), 
         help_text=_(u'例如：县委/政法委，公安局，...'),
         error_messages = gl.department_name_error_messages,
         )
@@ -64,7 +67,9 @@ class DepartmentModifyForm(forms.Form):
         required=True,
         label=_(u'新部门单位名称'), 
         widget=forms.TextInput(attrs={'class':'',
-                                      'size':'30',}), 
+                                      'size':'30',
+                                      }
+                               ), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.department_name_error_messages,
         )
@@ -158,7 +163,9 @@ class DepartmentSearchForm(forms.Form):
         required=False,
         label=_(u'部门单位名称'), 
         widget=forms.TextInput(attrs={'class':'',
-                                      'size':'30',}), 
+                                      'size':'30',
+                                      }
+                               ), 
         help_text=_(u'例如：县委，政法委...'),
         error_messages = gl.department_name_error_messages,
         )
@@ -166,7 +173,10 @@ class DepartmentSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         widget=forms.CheckboxInput(attrs={'class':'',
-                                          'value':'fuzzy_search',}, check_test=None),
+                                          'value':'fuzzy_search',
+                                          }, 
+                                   check_test=None,
+                                   ),
         )
     
     def clean_department_name(self):
