@@ -20,9 +20,9 @@ from hchq import settings
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def department_add(request, template_name='my.html', next='/', department_page='1'):
     """
-    部门单位添加视图，带添加预览功能！
+    单位部门添加视图，带添加预览功能！
     """
-    page_title = u'添加部门单位'
+    page_title = u'添加单位部门'
     user = get_user(request)
 
     if request.method == 'POST':
@@ -120,9 +120,9 @@ def department_add(request, template_name='my.html', next='/', department_page='
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def department_show(request, template_name='', next='', department_index='1'):
     """
-    部门单位详细信息显示。
+    单位部门详细信息显示。
     """
-    page_title=u'部门单位详情'
+    page_title=u'单位部门详情'
     try:
         department_id = int(department_index)
     except ValueError:
@@ -142,7 +142,7 @@ def department_modify(request, template_name='my.html', next='/', department_pag
     """
     服务区修改视图
     """
-    page_title = u'修改部门单位'
+    page_title = u'修改单位部门'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -236,9 +236,9 @@ def department_modify(request, template_name='my.html', next='/', department_pag
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def department_delete(request, template_name='my.html', next='/', department_page='1',):
     """
-    部门单位删除视图
+    单位部门删除视图
     """
-    page_title = u'删除部门单位'
+    page_title = u'删除单位部门'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -333,9 +333,9 @@ def department_delete(request, template_name='my.html', next='/', department_pag
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def department_list(request, template_name='my.html', next='/', department_page='1',):
     """
-    部门单位查询视图
+    单位部门查询视图
     """
-    page_title = u'查询部门单位'
+    page_title = u'查询单位部门'
 
     if request.method == 'POST':
         post_data = request.POST.copy()

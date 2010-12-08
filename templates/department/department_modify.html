@@ -1,24 +1,24 @@
-{% extends "department/department_layout.html" %}
+ {% extends "department/department_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 
 {% block col1_content %}
-<h6 class="vlist">部门单位管理</h6>
+<h6 class="vlist">单位部门管理</h6>
 <ul class="vlist">
-  <li><a href="{% url department_list 1 %}">部门单位查询</a></li>
-  <li><a href="{% url department_add 1 %}">部门单位添加</a></li>
-  <li class="active"><strong>部门单位修改</strong></li>
-  <li><a href="{% url department_delete 1 %}">部门单位删除</a></li>
+  <li><a href="{% url department_list 1 %}">单位部门查询</a></li>
+  <li><a href="{% url department_add 1 %}">单位部门添加</a></li>
+  <li class="active"><strong>单位部门修改</strong></li>
+  <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
 {% endblock %}
 {% block col3_content %}
-<h3>部门单位修改</h3>
+<h3>单位部门修改</h3>
 <hr>
 {% with search_form as form %}
 <form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
-    <legend>部门单位查询参数</legend>
+    <legend>单位部门查询参数</legend>
     {% if form.department_name.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.department_name.errors }}</strong>

@@ -11,13 +11,13 @@ import re
 
 class DepartmentAddForm(forms.Form):
     """
-    部门单位添加表单
+    单位部门添加表单
     """
     department_name_set = None
     department_name = forms.CharField(
         max_length=500,
         required=True, 
-        label=_(u'部门单位名称'), 
+        label=_(u'单位部门名称'), 
         widget=forms.Textarea(attrs={'class':'',
                                      'size':'30',
                                      'rows':'3',
@@ -55,7 +55,7 @@ class DepartmentAddForm(forms.Form):
 
 class DepartmentModifyForm(forms.Form):
     """
-    部门单位修改表单
+    单位部门修改表单
     """
     department_name_copy = None
     department_id_copy = None
@@ -65,7 +65,7 @@ class DepartmentModifyForm(forms.Form):
     department_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'新部门单位名称'), 
+        label=_(u'新单位部门名称'), 
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',
                                       }
@@ -122,7 +122,7 @@ class DepartmentModifyForm(forms.Form):
 
 class DepartmentDeleteForm(forms.Form):
     """
-    部门单位删除表单
+    单位部门删除表单
     """
     department_id_copy = None
     department_id_object = None
@@ -153,7 +153,7 @@ class DepartmentDeleteForm(forms.Form):
 
 class DepartmentSearchForm(forms.Form):
     """
-    部门单位搜索表单
+    单位部门搜索表单
     """
     department_name_copy = None
     is_fuzzy_value = None
@@ -161,7 +161,7 @@ class DepartmentSearchForm(forms.Form):
     department_name = forms.CharField(
         max_length=128,
         required=False,
-        label=_(u'部门单位名称'), 
+        label=_(u'单位部门名称'), 
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',
                                       }
