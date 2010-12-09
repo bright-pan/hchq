@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.service_area.models import ServiceArea
+from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
+from hchq.department.models import Department
 from hchq.untils import gl
 import re
 
@@ -146,6 +147,7 @@ class ServiceAreaDeleteForm(forms.Form):
         if self.service_area_id_object is not None:
             self.service_area_id_object.is_active = False
             self.service_area_id_object.save()
+            ServiceAreaDepartment.objects.filter(service_area=self.service_area_id_object).update(is_active=True)
         else:
             return False
 
@@ -208,3 +210,140 @@ class ServiceAreaSearchForm(forms.Form):
         else:
             request.session[gl.session_service_area_is_fuzzy] = False
         return True
+
+class ServiceAreaDepartmentAddForm(forms.Form):
+    """
+    单位部门添加表单
+    """
+    service_area_department_name_set = None
+    service_area_department_name = forms.MultipleChoiceField(
+        required=True,
+        label=_(u'单位部门名称'), 
+        widget=forms.SelectMultiple( attrs={'class':'',
+                                           'size':'30',},
+                                    ), 
+        help_text=_(u'帮助：按住键盘Ctrl键为多选！'),
+        error_messages = gl.department_name_error_messages,
+        )
+
+    def service_area_department_add(self, service_area=None):
+        service_area_department_name_copy = self.cleaned_data.get('service_area_department_name')
+#        print type(service_area_department_name_copy)
+        service_area_department_name_obj = None
+        created = None
+        if service_area is not None:
+            for item in service_area_department_name_copy:
+                try:
+                    department_id = int(item)
+                except ValueError:
+                    return False
+                try:
+                    department = Department.objects.get(pk=department_id, is_active=True)
+                except ObjectDoesNotExist:
+                    return False
+                service_area_department_name_obj, created = ServiceAreaDepartment.objects.get_or_create(service_area=service_area, department=department)
+                if created is True:
+                    pass
+                else:
+                    if service_area_department_name_obj.is_active == False:
+                        service_area_department_name_obj.is_active = True
+                        service_area_department_name_obj.save()
+        return True
+
+class ServiceAreaDepartmentSearchForm(forms.Form):
+    """
+    单位部门搜索表单
+    """
+    service_area_department_name_copy = None
+    is_fuzzy_value = None
+    
+    service_area_department_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'单位部门名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',
+                                      }
+                               ), 
+        help_text=_(u'例如：县委，政法委...'),
+        error_messages = gl.department_name_error_messages,
+        )
+    is_fuzzy = forms.CharField(
+        required=True,
+        label =_(u'模糊查询'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'fuzzy_search',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+    
+    def clean_service_area_department_name(self):
+        try:
+            self.service_area_department_name_copy = self.data.get('service_area_department_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        if re.match(gl.department_name_search_re_pattern, self.service_area_department_name_copy) is None:
+            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
+#        print self.service_area_department_name_copy
+        return self.service_area_department_name_copy
+    
+    def clean_is_fuzzy(self):
+        try:
+            self.is_fuzzy_value = self.data.get('is_fuzzy')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+#        print self.is_fuzzy_value
+        return self.is_fuzzy_value
+    
+    def fuzzy_search(self):
+        if self.is_fuzzy_value == u'fuzzy_search':
+            return True
+        else:
+            return False
+        
+    def is_null(self):
+        if self.service_area_department_name_copy == u'':
+            return True
+        else:
+            return False
+    def save_to_session(self, request):
+        request.session[gl.session_service_area_department_name] = self.service_area_department_name_copy
+        if self.fuzzy_search():
+            request.session[gl.session_service_area_department_is_fuzzy] = u'fuzzy_search'
+        else:
+            request.session[gl.session_service_area_department_is_fuzzy] = False
+        return True
+
+class ServiceAreaDepartmentDeleteForm(forms.Form):
+    """
+    单位部门删除表单
+    """
+    service_area_department_id_copy = None
+
+    service_area_department_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.department_name_error_messages,
+        )
+    
+    def clean_service_area_department_id(self):
+        try:
+            try:
+                self.service_area_department_id_copy = int(self.data.get('service_area_department_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.service_area_department_name_error_messages['form_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_department_name_error_messages['form_error'])
+        return self.service_area_department_id_copy
+
+    def service_area_department_delete(self, service_area=None):
+
+        if service_area is not None and self.service_area_department_id_copy is not None:
+            try:
+                service_area_department_id_object = ServiceAreaDepartment.objects.get(service_area=service_area, department__id = self.service_area_department_id_copy)
+            except ObjectDoesNotExist:
+                return False
+            service_area_department_id_object.is_active = False
+            service_area_department_id_object.save()
+            return True
+        return False

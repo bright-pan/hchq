@@ -50,3 +50,6 @@ department_name_search_re_pattern = ur'(^[\u4e00-\u9fa5]+$)|(^$)'
 
 session_department_name = u'session_department_name'
 session_department_is_fuzzy = u'session_department_is_fuzzy'
+
+session_service_area_department_name = u'session_service_area_department_name'
+session_service_area_department_is_fuzzy = u'session_service_area_department_is_fuzzy'

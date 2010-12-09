@@ -6,6 +6,7 @@ from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
 from hchq.department.models import Department
+from hchq.service_area.models import ServiceAreaDepartment
 from hchq.untils import gl
 import re
 
@@ -148,6 +149,7 @@ class DepartmentDeleteForm(forms.Form):
         if self.department_id_object is not None:
             self.department_id_object.is_active = False
             self.department_id_object.save()
+            ServiceAreaDepartment.objects.filter(department=self.department_id_object).update(is_active=True)
         else:
             return False
 

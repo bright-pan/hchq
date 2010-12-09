@@ -28,6 +28,21 @@ urlpatterns = patterns('hchq.service_area.views',
        {'template_name' : 'service_area/service_area_list.html', 'next': '/account/person_management', },
        'service_area_list'),
 
+       (r'department_add/(?P<service_area_index>\d{1,4})/(?P<service_area_department_page>\d{1,4})/$',
+       'service_area_department_add',
+       {'template_name' : 'service_area/service_area_department_add.html', 'next': '/account/person_management', },
+       'service_area_department_add'),
+                       
+       (r'department_delete/(?P<service_area_index>\d{1,4})/(?P<service_area_department_page>\d{1,4})/$',
+       'service_area_department_delete',
+       {'template_name' : 'service_area/service_area_department_delete.html', 'next': '/account/person_management', },
+       'service_area_department_delete'),
+
+       (r'department_list/(?P<service_area_index>\d{1,4})/(?P<service_area_department_page>\d{1,4})/$',
+       'service_area_department_list',
+       {'template_name' : 'service_area/service_area_department_list.html', 'next': '/account/person_management', },
+       'service_area_department_list'),
+
 #      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
 #      (r'logout$', 'exit', {'template_name' : 'account/login.html', 'next': '/', }, 'account_logout'),
 #      (r'person_management$', 'person_management', {'template_name' : 'account/person_management.html', 'next': '/', }, 'account_person_management'),

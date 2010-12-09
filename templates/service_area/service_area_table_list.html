@@ -1,7 +1,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>服务区域</caption>
   <thead>
-    <tr><th scope="col" colspan="5">服务区域查询(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="8">服务区域查询(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
@@ -11,6 +11,10 @@
       <th scope="col">创建者</th>
       <th scope="col">创建时间</th>
       <th scope="col">更新时间</th>
+      <th scope="col">查询关联单位</th>
+      <th scope="col">添加关联单位</th>
+      <th scope="col">删除关联单位</th>
+
     </tr>
     {% for result in results_page.object_list %}
     <tr>
@@ -19,6 +23,15 @@
       <td>{{ result.creater }}</td>
       <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
       <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <td>
+        <a href="{% url service_area_department_list result.id '1' %}">查询关联单位</a>
+      </td>
+      <td>
+        <a href="{% url service_area_department_add result.id '1' %}">添加关联单位</a>
+      </td>
+      <td>
+        <a href="{% url service_area_department_delete result.id '1' %}">删除关联单位</a>
+      </td>
     </tr>
     {% empty %}
     <p class="warning">没有服务区域可以查询！</p>
