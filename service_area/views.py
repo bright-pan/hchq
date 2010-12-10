@@ -433,7 +433,7 @@ def service_area_department_add(request, template_name='my.html', next='/', serv
                                                      department_to_service_area__is_active=True)
                 choices = ()
                 for query in query_set_choices:
-                    print str(query.pk), query.name
+#                    print str(query.pk), query.name
                     choices += (str(query.pk), query.name),
                 service_area_department_add_form.fields['service_area_department_name'].choices = choices
             else:
