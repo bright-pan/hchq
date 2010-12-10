@@ -108,11 +108,14 @@ class DepartmentModifyForm(forms.Form):
     def department_modify(self):
 
         if self.department_object is not None:
+            #如果修改对象存在
             if self.department_object.is_active is False:
+                #如果修改后的对象是已经删除的对象则激活该对象，并将修改前的对象冻结，然后将该对象的关联也冻结。
                 self.department_object.is_active = True
                 self.department_object.save()
                 self.department_id_object.is_active = False
                 self.department_id_object.save()
+                ServiceAreaDepartment.objects.filter(department=self.department_id_object).update(is_active=False)
                 return True
             else:
                 return False
@@ -149,7 +152,7 @@ class DepartmentDeleteForm(forms.Form):
         if self.department_id_object is not None:
             self.department_id_object.is_active = False
             self.department_id_object.save()
-            ServiceAreaDepartment.objects.filter(department=self.department_id_object).update(is_active=True)
+            ServiceAreaDepartment.objects.filter(department=self.department_id_object).update(is_active=False)
         else:
             return False
 

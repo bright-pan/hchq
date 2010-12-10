@@ -106,11 +106,14 @@ class ServiceAreaModifyForm(forms.Form):
     def service_area_modify(self):
 
         if self.service_area_object is not None:
+            #如果修改对象存在
             if self.service_area_object.is_active is False:
+                #如果修改后的对象是已经删除的对象则激活该对象，并将修改前的对象冻结，然后将该对象的关联也冻结。
                 self.service_area_object.is_active = True
                 self.service_area_object.save()
                 self.service_area_id_object.is_active = False
                 self.service_area_id_object.save()
+                ServiceAreaDepartment.objects.filter(service_area=self.service_area_id_object).update(is_active=False)
                 return True
             else:
                 return False
@@ -147,7 +150,7 @@ class ServiceAreaDeleteForm(forms.Form):
         if self.service_area_id_object is not None:
             self.service_area_id_object.is_active = False
             self.service_area_id_object.save()
-            ServiceAreaDepartment.objects.filter(service_area=self.service_area_id_object).update(is_active=True)
+            ServiceAreaDepartment.objects.filter(service_area=self.service_area_id_object).update(is_active=False)
         else:
             return False
 
