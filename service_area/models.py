@@ -1,6 +1,5 @@
 #coding=utf-8
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from hchq.department.models import Department
 
@@ -16,7 +15,7 @@ class ServiceArea(models.Model):
     class Meta:
         db_table = 'service_area'
         ordering = ['-updated_at']
-
+        
     def __unicode__(self):
         return self.name
 

@@ -1,6 +1,5 @@
 #coding=utf-8
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 # Create your models here.
 
@@ -14,6 +13,11 @@ class Department(models.Model):
     class Meta:
         db_table = 'department'
         ordering = ['-updated_at']
+        permissions = (
+            (u'account_management', u'帐户管理'),
+            (u'department_management', u'单位管理'),
+            (u'service_area_management', u'服务区域管理'),
+            )
 
     def __unicode__(self):
         return self.name

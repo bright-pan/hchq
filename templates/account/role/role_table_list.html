@@ -1,0 +1,57 @@
+<table border="0" cellpadding="0" cellspacing="0" class="full">
+  <caption>角色</caption>
+  <thead>
+    <tr><th scope="col" colspan="5">角色查询(共{{ results_page.paginator.count}}项)</th></tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <th scope="col">编号</th>
+      <th scope="col">名称</th>
+      <th scope="col">查询关联单位</th>
+      <th scope="col">添加关联单位</th>
+      <th scope="col">删除关联单位</th>
+
+    </tr>
+    {% for result in results_page.object_list %}
+    <tr>
+      <th scope="row" class="sub">{{ result.id }}</th>
+      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td>
+        <a href="{% url service_area_department_list result.id '1' %}">查询关联单位</a>
+      </td>
+      <td>
+        <a href="{% url service_area_department_add result.id '1' %}">添加关联单位</a>
+      </td>
+      <td>
+        <a href="{% url service_area_department_delete result.id '1' %}">删除关联单位</a>
+      </td>
+    </tr>
+    {% empty %}
+    <p class="warning">没有角色可以查询！</p>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="pagination">
+  {% if results_page.has_previous %}
+  <span>
+    <a href="{% url account_role_list results_page.previous_page_number %}">上一页</a>
+  </span>
+  {% else %}
+  <span class="disable">
+    上一页
+  </span>
+  {% endif %}
+  <span class="current">
+    第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
+  </span>
+  {% if results_page.has_next %}
+  <span>
+    <a href="{% url account_role_list results_page.next_page_number %}">下一页</a>
+  </span>
+  {% else %}
+  <span class="disable">
+    下一页
+  </span>          
+  {% endif %}
+</div>

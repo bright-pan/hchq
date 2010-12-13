@@ -153,9 +153,11 @@ INSTALLED_APPS = (
     'hchq.account',
     'hchq.service_area',
     'hchq.department',
-
 )
+
+AUTH_PROFILE_MODULE = 'account.UserProfile'
 
 SERVICE_AREA_PER_PAGE = 12
 DEPARTMENT_PER_PAGE = 12
 SERVICE_AREA_DEPARTMENT_PER_PAGE = 12
+ROLE_PER_PAGE = 12

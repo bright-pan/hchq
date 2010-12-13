@@ -53,3 +53,21 @@ session_department_is_fuzzy = u'session_department_is_fuzzy'
 
 session_service_area_department_name = u'session_service_area_department_name'
 session_service_area_department_is_fuzzy = u'session_service_area_department_is_fuzzy'
+
+role_name_error_messages={'required': _(u'请输入角色名称！'),
+                                  'max_length': _(u'输入的角色名称长度大于500个字符！'),
+                                  'format_error': _(u'角色名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
+                                  'form_error': _(u'表单严重错误！'),
+                                  'already_error': _(u'角色同名，请输入正确的角色名称！'),
+                                  }
+
+role_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
+role_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
+#role_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$'
+role_name_search_re_pattern = ur'(^[\u4e00-\u9fa5]+$)|(^$)'
+
+session_role_name = u'session_role_name'
+session_role_is_fuzzy = u'session_role_is_fuzzy'
+
+session_service_area_role_name = u'session_service_area_role_name'
+session_service_area_role_is_fuzzy = u'session_service_area_role_is_fuzzy'
