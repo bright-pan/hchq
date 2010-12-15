@@ -1,0 +1,67 @@
+{% extends "department/department_layout.html" %}
+{% block header_describe %}{% endblock %}
+{% block teaser %}{% endblock %}
+
+{% block col1_content %}
+<h6 class="vlist">单位部门管理</h6>
+<ul class="vlist">
+  <li><a href="{% url department_list 1 %}">单位部门查询</a></li>
+  <li><a href="{% url department_add 1 %}">单位部门添加</a></li>
+  <li><a href="{% url department_modify 1 %}">单位部门修改</a></li>
+  <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
+  <li class="active"><strong>单位部门详情</strong></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endblock %}
+{% block col3_content %}
+<!-- Insert your subtemplate content here -->
+<h3>单位部门详情</h3>
+<hr>
+{% if result %}
+<table border="0" cellpadding="0" cellspacing="0" class="full">
+  <caption>
+    单位部门
+  </caption>
+  <thead>
+    <tr><th scope="col" colspan="2">{{ result.name }}</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col">项目</th>
+      <th scope="col">内容</th>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">名称</th>
+      <td>{{ result.name }}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">创建者</th>
+      <td>{{ result.creater.username }}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">创建时间</th>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">更新时间</th>
+      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+    </tr>
+  </tbody>
+</table>
+{% else %}
+<p class="warning">对不起，该服务区不存在！</p>
+{% endif %}
+
+<div class="subcolumns">
+  <div class="c66l">
+    <div class="subc">
+    </div>
+  </div>
+  <div class="c33r">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,6 +1,8 @@
 #coding=utf-8
 from django.utils.translation import ugettext_lazy as _
-
+############################################################
+#用户表单
+############################################################
 username_error_messages={'required': _(u'用户名称不能为空！'),
                          'max_length': _(u'用户名称长度大于30个字符！'),
                          'do_not_exist': _(u'用户名称不存在！'),
@@ -24,23 +26,28 @@ service_area_name_error_messages={'required': _(u'请输入服务区域名称！
                                   'form_error': _(u'表单严重错误！'),
                                   'already_error': _(u'服务区域同名，请输入正确的服务区域名称！'),
                                   }
-
+################################################################################
+#服务区域表单
+################################################################################
 service_area_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
 service_area_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
 #service_area_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$'
 service_area_name_search_re_pattern = ur'(^[\u4e00-\u9fa5]+$)|(^$)'
 
+#过滤器
 def filter_null_string(n):
     return len(n) > 0
 
 session_service_area_name = u'session_service_area_name'
 session_service_area_is_fuzzy = u'session_service_area_is_fuzzy'
-
-department_name_error_messages={'required': _(u'请输入部门单位名称！'),
-                                  'max_length': _(u'输入的部门单位名称长度大于500个字符！'),
-                                  'format_error': _(u'部门单位名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
+################################################################################
+#单位部门表单
+################################################################################
+department_name_error_messages={'required': _(u'请输入单位部门名称！'),
+                                  'max_length': _(u'输入的单位部门名称长度大于500个字符！'),
+                                  'format_error': _(u'单位部门名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
                                   'form_error': _(u'表单严重错误！'),
-                                  'already_error': _(u'部门单位同名，请输入正确的部门单位名称！'),
+                                  'already_error': _(u'单位部门同名，请输入正确的单位部门名称！'),
                                   }
 
 department_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
@@ -53,7 +60,9 @@ session_department_is_fuzzy = u'session_department_is_fuzzy'
 
 session_service_area_department_name = u'session_service_area_department_name'
 session_service_area_department_is_fuzzy = u'session_service_area_department_is_fuzzy'
-
+################################################################################
+#角色表单
+################################################################################
 role_name_error_messages={'required': _(u'请输入角色名称！'),
                                   'max_length': _(u'输入的角色名称长度大于500个字符！'),
                                   'format_error': _(u'角色名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
@@ -81,3 +90,25 @@ session_role_is_fuzzy = u'session_role_is_fuzzy'
 
 session_role_permission_name = u'session_role_permission_name'
 session_role_permission_is_fuzzy = u'session_role_permission_is_fuzzy'
+
+################################################################################
+#检查项目表单
+################################################################################
+check_project_name_error_messages={'required': _(u'请输入检查项目名称！'),
+                                   'max_length': _(u'输入的检查项目名称长度大于500个字符！'),
+                                   'format_error': _(u'检查项目名称必须是汉字与数字组成！'),
+                                   'form_error': _(u'表单严重错误！'),
+                                   'already_error': _(u'检查项目同名，请输入正确的检查项目名称！'),
+                                   }
+check_project_time_error_messages={'required': _(u'请输入时间！'),
+                                   'invalid': _(u'输入的时间格式不正确！')
+                                    }
+
+check_project_name_add_re_pattern = ur'^[\u4e00-\u9fa5\d]+$'#汉字和数字著称
+check_project_name_modify_re_pattern = ur'^[\u4e00-\u9fa5\d]+$'
+check_project_name_search_re_pattern = ur'(^[\u4e00-\u9fa5\d]+$)|(^$)'
+
+session_check_project_name = u'session_check_project_name'
+session_check_project_start_time = u'session_check_project_start_time'
+session_check_project_end_time = u'session_check_project_end_time'
+session_check_project_is_fuzzy = u'session_check_project_is_fuzzy'

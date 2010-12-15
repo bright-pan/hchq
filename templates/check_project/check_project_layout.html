@@ -1,0 +1,21 @@
+{% extends "my_layout.html" %}
+
+{% block topnav %}
+你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
+{% endblock %}
+
+{% block header_describe %}{% endblock %}
+
+{% block nav %}
+<ul>
+  <li><a href="{% url account_person_management %}">个人管理</a></li>
+  <li><a href="{% url service_area_list 1 %}">服务区域管理</a></li>
+  <li class="active"><strong>单位部门管理</strong></li>
+  <li><a href="{% url account_role_list 1 %}">角色权限管理</a></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endblock %}
+
+{% block teaser %}{% endblock %}
+{% block col1_content %}{% endblock %}
+{% block col3_content %}{% endblock %}
