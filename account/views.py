@@ -7,6 +7,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
+from django.contrib.auth.models import *
 from hchq.account.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
@@ -361,14 +362,12 @@ def role_list(request, template_name='my.html', next='/', role_page='1',):
             role_search_form.save_to_session(request)
             if role_search_form.is_null() is False:
                 if role_search_form.fuzzy_search() is False:
-                    query_set = Role.objects.filter(Q(is_active = True) & 
-                                                           Q(name__startswith=role_search_form.cleaned_data['role_name']))
+                    query_set = Group.objects.filter(name__startswith=role_search_form.cleaned_data['role_name'])
                 else:
                     role_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                    query_set = Role.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=role_search_form.cleaned_data['role_name']))
+                    query_set = Group.objects.filter(name__icontains=role_search_form.cleaned_data['role_name'])
             else:
-                query_set = Role.objects.filter(Q(is_active = True))
+                query_set = Group.objects.all()
 
         else:
             query_set = None
@@ -421,13 +420,12 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
     user = get_user(request)
 
     try:
-        role = Role.objects.get(is_active=True, pk=int(role_index))
+        role = Group.objects.get(pk=int(role_index))
     except:
         raise Http404('search form error!')
 
-    department_query_set = Department.objects.filter(is_active=True)
-    query_set_choices = department_query_set.exclude(department_to_role__role__pk=role.pk,
-                                                     department_to_role__is_active=True)
+    permission_query_set = Permission.objects.all()
+    query_set_choices = permission_query_set.exclude(group__pk=role.pk)
     choices = ()
     for query in query_set_choices:
 #        print str(query.pk), query.name
@@ -442,8 +440,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
             role_permission_add_form.fields['role_permission_name'].choices = choices
             if role_permission_add_form.is_valid():
                 role_permission_add_form.role_permission_add(role)
-                query_set_choices = department_query_set.exclude(department_to_role__role__pk=role.pk,
-                                                     department_to_role__is_active=True)
+                query_set_choices = permission_query_set.exclude(group__pk=role.pk)
                 choices = ()
                 for query in query_set_choices:
 #                    print str(query.pk), query.name
@@ -458,8 +455,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
 
             role_permission_search_form = RolePermissionSearchForm(data)
             if role_permission_search_form.is_valid():
-                query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                             department_to_role__is_active=True)
+                query_set_temp = permission_query_set.filter(group__pk=role.pk)
                 if role_permission_search_form.is_null() is False:
                     if role_permission_search_form.fuzzy_search() is False:
                         query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -477,8 +473,8 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
                 role_permission_search_form = RolePermissionSearchForm(post_data)
                 if role_permission_search_form.is_valid():
                     role_permission_search_form.save_to_session(request)
-                    query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                                 department_to_role__is_active=True)
+                    query_set_temp = permission_query_set.filter(group__pk=role.pk)
+
                     if role_permission_search_form.is_null() is False:
                         if role_permission_search_form.fuzzy_search() is False:
                             query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -494,7 +490,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
             else:
                 raise Http404('search form error!')
         if query_set is not None:
-            results_page = pagination_results(role_permission_page, query_set, settings.role_permission_PER_PAGE)
+            results_page = pagination_results(role_permission_page, query_set, settings.ROLE_PERMISSION_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
@@ -514,8 +510,8 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
                 }
         role_permission_search_form = RolePermissionSearchForm(data)
         if role_permission_search_form.is_valid():
-            query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                         department_to_role__is_active=True)
+            query_set_temp = permission_query_set.filter(group__pk=role.pk)
+            
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -529,7 +525,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
             query_set = None
 
         if query_set is not None:
-            results_page = pagination_results(role_permission_page, query_set, settings.role_permission_PER_PAGE)
+            results_page = pagination_results(role_permission_page, query_set, settings.ROLE_PERMISSION_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
@@ -551,11 +547,11 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
     page_title = u'关联权限'
 
     try:
-        role = Role.objects.get(is_active=True, pk=int(role_index))
+        role = Group.objects.get(pk=int(role_index))
     except:
         raise Http404('search form error!')
 
-    department_query_set = Department.objects.filter(is_active=True)
+    permission_query_set = Permission.objects.all()
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -573,8 +569,8 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
 
             role_permission_search_form = RolePermissionSearchForm(data)
             if role_permission_search_form.is_valid():
-                query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                             department_to_role__is_active=True)
+                query_set_temp = permission_query_set.filter(group__pk=role.pk)
+
                 if role_permission_search_form.is_null() is False:
                     if role_permission_search_form.fuzzy_search() is False:
                         query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -591,8 +587,8 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
                 role_permission_search_form = RolePermissionSearchForm(post_data)
                 if role_permission_search_form.is_valid():
                     role_permission_search_form.save_to_session(request)
-                    query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                                 department_to_role__is_active=True)
+                    query_set_temp = permission_query_set.filter(group__pk=role.pk)
+                
                     if role_permission_search_form.is_null() is False:
                         if role_permission_search_form.fuzzy_search() is False:
                             query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -608,7 +604,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
             else:
                 raise Http404('search form error!')
         if query_set is not None:
-            results_page = pagination_results(role_permission_page, query_set, settings.role_permission_PER_PAGE)
+            results_page = pagination_results(role_permission_page, query_set, settings.ROLE_PERMISSION_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
@@ -627,8 +623,8 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
                 }
         role_permission_search_form = RolePermissionSearchForm(data)
         if role_permission_search_form.is_valid():
-            query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                         department_to_role__is_active=True)
+            query_set_temp = permission_query_set.filter(group__pk=role.pk)
+            
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -642,7 +638,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
             query_set = None
 
         if query_set is not None:
-            results_page = pagination_results(role_permission_page, query_set, settings.role_permission_PER_PAGE)
+            results_page = pagination_results(role_permission_page, query_set, settings.ROLE_PERMISSION_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
@@ -664,11 +660,11 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
     page_title = u'显示关联权限列表'
 
     try:
-        role = Role.objects.get(is_active=True, pk=int(role_index))
+        role = Group.objects.get(pk=int(role_index))
     except:
         raise Http404('search form error!')
 
-    department_query_set = Department.objects.filter(is_active=True)
+    permission_query_set = Permission.objects.all()
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -676,8 +672,8 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
         role_permission_search_form = RolePermissionSearchForm(post_data)
         if role_permission_search_form.is_valid():
             role_permission_search_form.save_to_session(request)
-            query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                         department_to_role__is_active=True)
+            query_set_temp = permission_query_set.filter(group__pk=role.pk)
+            
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -691,7 +687,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
 #                    query_set = role_permission.objects.filter(Q(is_active = True))
             query_set = None
         if query_set is not None:
-            results_page = pagination_results(role_permission_page, query_set, settings.role_permission_PER_PAGE)
+            results_page = pagination_results(role_permission_page, query_set, settings.ROLE_PERMISSION_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
@@ -706,10 +702,10 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
         data = {'role_permission_name':request.session.get(gl.session_role_permission_name, u''),
                 'is_fuzzy':request.session.get(gl.session_role_permission_is_fuzzy, False),
                 }
-        role_permission_search_form = RoleDepartmentSearchForm(data)
+        role_permission_search_form = RolePermissionSearchForm(data)
         if role_permission_search_form.is_valid():
-            query_set_temp = department_query_set.filter(department_to_role__role__pk=role.pk,
-                                                         department_to_role__is_active=True)
+            query_set_temp = permission_query_set.filter(group__pk=role.pk)
+            
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -723,7 +719,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
             query_set = None
 
         if query_set is not None:
-            results_page = pagination_results(role_department_page, query_set, settings.role_permission_PER_PAGE)
+            results_page = pagination_results(role_permission_page, query_set, settings.ROLE_PERMISSION_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,

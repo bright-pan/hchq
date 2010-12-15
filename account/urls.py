@@ -40,20 +40,20 @@ urlpatterns += patterns('hchq.account.views',
        {'template_name' : 'account/role/role_list.html', 'next': '/account/person_management', },
        'account_role_list'),
 
-#       (r'role_limit_add/(?P<role_index>\d{1,4})/(?P<role_limit_page>\d{1,4})/$',
-#       'role_limit_add',
-#       {'template_name' : 'account/role/role_limit_add.html', 'next': '/account/person_management', },
-#       'account_role_limit_add'),
+       (r'role_permission_add/(?P<role_index>\d{1,4})/(?P<role_permission_page>\d{1,4})/$',
+       'role_permission_add',
+       {'template_name' : 'account/role/role_permission_add.html', 'next': '/account/person_management', },
+        'account_role_permission_add'),
                        
-#       (r'role_limit_delete/(?P<role_index>\d{1,4})/(?P<role_limit_page>\d{1,4})/$',
-#       'role_limit_delete',
-#       {'template_name' : 'account/role/role_limit_delete.html', 'next': '/account/person_management', },
-#       'account_role_limit_delete'),
+       (r'role_permission_delete/(?P<role_index>\d{1,4})/(?P<role_permission_page>\d{1,4})/$',
+       'role_permission_delete',
+       {'template_name' : 'account/role/role_permission_delete.html', 'next': '/account/person_management', },
+       'account_role_permission_delete'),
 
-#       (r'role_limit_list/(?P<role_index>\d{1,4})/(?P<role_limit_page>\d{1,4})/$',
-#       'role_limit_list',
-#       {'template_name' : 'account/role/role_limit_list.html', 'next': '/account/person_management', },
-#       'account_role_limit_list'),
+       (r'role_permission_list/(?P<role_index>\d{1,4})/(?P<role_permission_page>\d{1,4})/$',
+       'role_permission_list',
+       {'template_name' : 'account/role/role_permission_list.html', 'next': '/account/person_management', },
+       'account_role_permission_list'),
 
 )
 

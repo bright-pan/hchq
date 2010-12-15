@@ -1,7 +1,7 @@
 #coding=utf-8
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
 
 from hchq.untils import gl
@@ -314,3 +314,139 @@ class RoleModifyForm(forms.Form):
             self.role_id_object.name = self.role_name_copy
             self.role_id_object.save()
             return True
+
+class RolePermissionAddForm(forms.Form):
+    """
+    权限添加表单
+    """
+    role_permission_name_set = None
+    role_permission_name = forms.MultipleChoiceField(
+        required=True,
+        label=_(u'权限名称'), 
+        widget=forms.SelectMultiple( attrs={'class':'',
+                                           'size':'30',},
+                                    ), 
+        help_text=_(u'帮助：按住键盘Ctrl键为多选！'),
+        error_messages = gl.permission_name_error_messages,
+        )
+
+    def role_permission_add(self, role=None):
+        role_permission_name_copy = self.cleaned_data.get('role_permission_name')
+#        print type(role_permission_name_copy)
+        role_permission_name_obj = None
+        created = None
+        if role is not None:
+            for item in role_permission_name_copy:
+                try:
+                    permission_id = int(item)
+                except ValueError:
+                    return False
+                try:
+                    permission = Permission.objects.get(pk=permission_id)
+                except ObjectDoesNotExist:
+                    return False
+                try:
+                    role.permissions.get(pk=permission.id)
+                except ObjectDoesNotExist:
+                    role.permissions.add(permission)
+            role.save()
+        return True
+
+    
+class RolePermissionSearchForm(forms.Form):
+    """
+    权限搜索表单
+    """
+    role_permission_name_copy = None
+    is_fuzzy_value = None
+    
+    role_permission_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'权限名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',
+                                      }
+                               ), 
+        help_text=_(u'例如：添加用户，添加检查人员...'),
+        error_messages = gl.permission_name_error_messages,
+        )
+    is_fuzzy = forms.CharField(
+        required=True,
+        label =_(u'模糊查询'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'fuzzy_search',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+    
+    def clean_role_permission_name(self):
+        try:
+            self.role_permission_name_copy = self.data.get('role_permission_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.permission_name_error_messages['form_error'])
+        if re.match(gl.permission_name_search_re_pattern, self.role_permission_name_copy) is None:
+            raise forms.ValidationError(gl.permission_name_error_messages['format_error'])
+#        print self.role_permission_name_copy
+        return self.role_permission_name_copy
+    
+    def clean_is_fuzzy(self):
+        try:
+            self.is_fuzzy_value = self.data.get('is_fuzzy')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.permission_name_error_messages['form_error'])
+#        print self.is_fuzzy_value
+        return self.is_fuzzy_value
+    
+    def fuzzy_search(self):
+        if self.is_fuzzy_value == u'fuzzy_search':
+            return True
+        else:
+            return False
+        
+    def is_null(self):
+        if self.role_permission_name_copy == u'':
+            return True
+        else:
+            return False
+    def save_to_session(self, request):
+        request.session[gl.session_role_permission_name] = self.role_permission_name_copy
+        if self.fuzzy_search():
+            request.session[gl.session_role_permission_is_fuzzy] = u'fuzzy_search'
+        else:
+            request.session[gl.session_role_permission_is_fuzzy] = False
+        return True
+
+class RolePermissionDeleteForm(forms.Form):
+    """
+    权限删除表单
+    """
+    role_permission_id_copy = None
+
+    role_permission_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.permission_name_error_messages,
+        )
+    
+    def clean_role_permission_id(self):
+        try:
+            try:
+                self.role_permission_id_copy = int(self.data.get('role_permission_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.permission_name_error_messages['form_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.permission_name_error_messages['form_error'])
+        return self.role_permission_id_copy
+
+    def role_permission_delete(self, role=None):
+
+        if role is not None and self.role_permission_id_copy is not None:
+            try:
+                role_permission_id_object = role.permissions.get(pk = self.role_permission_id_copy)
+            except ObjectDoesNotExist:
+                return False
+            role.permissions.remove(pole_permission_id_object)
+            role.save()
+            return True
+        return False

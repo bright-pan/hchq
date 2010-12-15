@@ -1,7 +1,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>单位部门</caption>
   <thead>
-    <tr><th scope="col" colspan="3">【{{ service_area_name }}】关联的单位部门预览(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="3">【{{ role_name }}】关联的权限预览(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
@@ -16,20 +16,20 @@
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
       <td>
         <form method="post" action=".">{% csrf_token %}
-          <input type="hidden" name="service_area_department_id" value="{{ result.id }}" />
+          <input type="hidden" name="role_permission_id" value="{{ result.id }}" />
           <input type="submit" name="submit" value="删除关联" class="submit"/>      
         </form>
       </td>
     </tr>
     {% empty %}
-    <p class="warning">【{{ service_area_name }}】没有关联的单位部门！</p>
+    <p class="warning">【{{ role_name }}】没有关联的单位部门！</p>
     {% endfor %}
   </tbody>
 </table>
 <div class="pagination">
   {% if results_page.has_previous %}
   <span>
-    <a href="{% url service_area_department_delete service_area_index results_page.previous_page_number %}">上一页</a>
+    <a href="{% url account_role_permission_delete role_index results_page.previous_page_number %}">上一页</a>
   </span>
   {% else %}
   <span class="disable">
@@ -41,7 +41,7 @@
   </span>
   {% if results_page.has_next %}
   <span>
-    <a href="{% url service_area_department_delete service_area_index results_page.next_page_number %}">下一页</a>
+    <a href="{% url account_role_permission_delete role_index results_page.next_page_number %}">下一页</a>
   </span>
   {% else %}
   <span class="disable">

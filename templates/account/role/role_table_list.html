@@ -18,13 +18,13 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
       <td>
-        <a href="{% url service_area_department_list result.id '1' %}">查询关联单位</a>
+        <a href="{% url account_role_permission_list result.id '1' %}">查询关联单位</a>
       </td>
       <td>
-        <a href="{% url service_area_department_add result.id '1' %}">添加关联单位</a>
+        <a href="{% url account_role_permission_add result.id '1' %}">添加关联单位</a>
       </td>
       <td>
-        <a href="{% url service_area_department_delete result.id '1' %}">删除关联单位</a>
+        <a href="{% url account_role_permission_delete result.id '1' %}">删除关联单位</a>
       </td>
     </tr>
     {% empty %}
