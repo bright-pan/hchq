@@ -1,34 +1,34 @@
-{% extends "department/department_layout.html" %}
+{% extends "check_project/check_project_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 
 {% block col1_content %}
-<h6 class="vlist">单位部门管理</h6>
+<h6 class="vlist">检查项目管理</h6>
 <ul class="vlist">
-  <li class="active"><strong>单位部门查询</strong></li>
-  <li><a href="{% url department_add 1 %}">单位部门添加</a></li>
-  <li><a href="{% url department_modify 1 %}">单位部门修改</a></li>
-  <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
+  <li class="active"><strong>检查项目查询</strong></li>
+  <li><a href="{% url check_project_add 1 %}">检查项目添加</a></li>
+  <li><a href="{% url check_project_modify 1 %}">检查项目修改</a></li>
+  <li><a href="{% url check_project_delete 1 %}">检查项目删除</a></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
 {% endblock %}
 {% block col3_content %}
-<h3>单位部门查询</h3>
+<h3>检查项目查询</h3>
 <hr>
 {% with search_form as form %}
 <form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
-    <legend>单位部门查询参数</legend>
-    {% if form.department_name.errors %}
+    <legend>检查项目查询参数</legend>
+    {% if form.check_project_name.errors %}
     <div class="type-text error">
-      <strong class="message">{{ form.department_name.errors }}</strong>
-      {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
-      {{ form.department_name }}
+      <strong class="message">{{ form.check_project_name.errors }}</strong>
+      {{ form.check_project_name.label_tag }}<sup>{{ form.check_project_name.help_text}}</sup>
+      {{ form.check_project_name }}
     </div>
     {% else %}
     <div class="type-text">
-      {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
-      {{ form.department_name }}
+      {{ form.check_project_name.label_tag }}<sup>{{ form.check_project_name.help_text}}</sup>
+      {{ form.check_project_name }}
     </div>
     {% endif %}
     {% if form.is_fuzzy.errors %}
@@ -50,7 +50,7 @@
 </form>
 {% endwith %}
 <hr>
-{% include 'department/department_table_list.html' %}
+{% include 'check_project/check_project_table_list.html' %}
 <div class="subcolumns">
   <div class="c66l">
     <div class="subc">

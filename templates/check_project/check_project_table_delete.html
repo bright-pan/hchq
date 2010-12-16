@@ -1,35 +1,45 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>单位部门</caption>
+  <caption>检查项目</caption>
   <thead>
-    <tr><th scope="col" colspan="3">单位部门删除(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="6">检查项目删除(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
     <tr>
       <th scope="col">编号</th>
       <th scope="col">名称</th>
+      <th scope="col">开始时间</th>
+      <th scope="col">结束时间</th>
+      <th scope="col">是否启用</th>
       <th scope="col">删除命令</th>
     </tr>
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td>{{ result.start_time|date:"Y-m-d"}}</td>
+      <td>{{ result.end_time|date:"Y-m-d"}}</td>
+      {% if result.is_setup %} 
+      <td>启用</td>
+      {% else %}
+      <td>未启用</td>
+      {% endif %}
       <td>
         <form method="post" action=".">{% csrf_token %}
-          <input type="hidden" name="department_id" value="{{ result.id }}" />
+          <input type="hidden" name="check_project_id" value="{{ result.id }}" />
           <input type="submit" name="submit" value="删除" class="submit"/>      
         </form>
       </td>
     </tr>
     {% empty %}
-    <p class="warning">没有单位部门可以删除！</p>
+    <p class="warning">没有检查项目可以删除！</p>
     {% endfor %}
   </tbody>
 </table>
 <div class="pagination">
   {% if results_page.has_previous %}
   <span>
-    <a href="{% url department_delete results_page.previous_page_number %}">上一页</a>
+    <a href="{% url check_project_delete results_page.previous_page_number %}">上一页</a>
   </span>
   {% else %}
   <span class="disable">
@@ -41,7 +51,7 @@
   </span>
   {% if results_page.has_next %}
   <span>
-    <a href="{% url department_delete results_page.next_page_number %}">下一页</a>
+    <a href="{% url check_project_delete results_page.next_page_number %}">下一页</a>
   </span>
   {% else %}
   <span class="disable">

@@ -1,28 +1,35 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>单位部门</caption>
+  <caption>检查项目</caption>
   <thead>
-    <tr><th scope="col" colspan="2">单位部门名称预览(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="3">检查项目名称预览(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
     <tr>
       <th scope="col">编号</th>
       <th scope="col">名称</th>
+      <th scope="col">是否启用</th>
+      
     </tr>
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      {% if result.is_setup %} 
+      <td>启用</td>
+      {% else %}
+      <td>未启用</td>
+      {% endif %}
     </tr>
     {% empty %}
-    <p class="warning">没有单位部门可以预览！</p>
+    <p class="warning">没有检查项目可以预览！</p>
     {% endfor %}
   </tbody>
 </table>
 <div class="pagination">
   {% if results_page.has_previous %}
   <span>
-    <a href="{% url department_add results_page.previous_page_number %}">上一页</a>
+    <a href="{% url check_project_add results_page.previous_page_number %}">上一页</a>
   </span>
   {% else %}
   <span class="disable">
@@ -34,7 +41,7 @@
   </span>
   {% if results_page.has_next %}
   <span>
-    <a href="{% url department_add results_page.next_page_number %}">下一页</a>
+    <a href="{% url check_project_add results_page.next_page_number %}">下一页</a>
   </span>
   {% else %}
   <span class="disable">

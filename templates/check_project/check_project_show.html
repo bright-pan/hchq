@@ -1,26 +1,26 @@
-{% extends "department/department_layout.html" %}
+{% extends "check_project/check_project_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 
 {% block col1_content %}
-<h6 class="vlist">单位部门管理</h6>
+<h6 class="vlist">检查项目管理</h6>
 <ul class="vlist">
-  <li><a href="{% url department_list 1 %}">单位部门查询</a></li>
-  <li><a href="{% url department_add 1 %}">单位部门添加</a></li>
-  <li><a href="{% url department_modify 1 %}">单位部门修改</a></li>
-  <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
-  <li class="active"><strong>单位部门详情</strong></li>
+  <li><a href="{% url check_project_list 1 %}">检查项目查询</a></li>
+  <li><a href="{% url check_project_add 1 %}">检查项目添加</a></li>
+  <li><a href="{% url check_project_modify 1 %}">检查项目修改</a></li>
+  <li><a href="{% url check_project_delete 1 %}">检查项目删除</a></li>
+  <li class="active"><strong>检查项目详情</strong></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
 {% endblock %}
 {% block col3_content %}
 <!-- Insert your subtemplate content here -->
-<h3>单位部门详情</h3>
+<h3>检查项目详情</h3>
 <hr>
 {% if result %}
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>
-    单位部门
+    检查项目
   </caption>
   <thead>
     <tr><th scope="col" colspan="2">{{ result.name }}</th></tr>
@@ -33,6 +33,22 @@
     <tr>
       <th scope="row" class="sub">名称</th>
       <td>{{ result.name }}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">开始时间</th>
+      <td>{{ result.start_time|date:"Y-m-d"}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">结束时间</th>
+      <td>{{ result.end_time|date:"Y-m-d"}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">是否启用</th>
+      {% if result.is_setup %} 
+      <td>启用</td>
+      {% else %}
+      <td>未启用</td>
+      {% endif %}
     </tr>
     <tr>
       <th scope="row" class="sub">创建者</th>

@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 class CheckProject(models.Model):
     name = models.CharField(max_length=64, unique=True)
     creater = models.ForeignKey(User)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_setup = models.BooleanField(default=False)
     start_time = models.DateField()
     end_time = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)

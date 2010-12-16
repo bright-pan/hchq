@@ -95,18 +95,20 @@ session_role_permission_is_fuzzy = u'session_role_permission_is_fuzzy'
 #检查项目表单
 ################################################################################
 check_project_name_error_messages={'required': _(u'请输入检查项目名称！'),
-                                   'max_length': _(u'输入的检查项目名称长度大于500个字符！'),
-                                   'format_error': _(u'检查项目名称必须是汉字与数字组成！'),
+                                   'max_length': _(u'输入的检查项目名称长度大于64个字符！'),
+                                   'format_error': _(u'检查项目名称必须是汉字、数字以及-组成！'),
                                    'form_error': _(u'表单严重错误！'),
                                    'already_error': _(u'检查项目同名，请输入正确的检查项目名称！'),
                                    }
 check_project_time_error_messages={'required': _(u'请输入时间！'),
-                                   'invalid': _(u'输入的时间格式不正确！')
-                                    }
+                                   'invalid': _(u'输入的时间格式不正确！'),
+                                   'logic_error': _(u'输入的开始时间在结束时间之前！'),
+                                   'form_error': _(u'表单严重错误'),
+                                   }
 
-check_project_name_add_re_pattern = ur'^[\u4e00-\u9fa5\d]+$'#汉字和数字著称
-check_project_name_modify_re_pattern = ur'^[\u4e00-\u9fa5\d]+$'
-check_project_name_search_re_pattern = ur'(^[\u4e00-\u9fa5\d]+$)|(^$)'
+check_project_name_add_re_pattern = ur'^[\u4e00-\u9fa5\d-]+$'#汉字和数字著称
+check_project_name_modify_re_pattern = ur'^[\u4e00-\u9fa5\d-]+$'
+check_project_name_search_re_pattern = ur'(^[\u4e00-\u9fa5\d-]+$)|(^$)'
 
 session_check_project_name = u'session_check_project_name'
 session_check_project_start_time = u'session_check_project_start_time'
