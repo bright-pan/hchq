@@ -1,0 +1,87 @@
+{% extends "account_management/account_management_layout.html" %}
+{% block header_describe %}{% endblock %}
+{% block teaser %}{% endblock %}
+
+{% block col1_content %}
+<h6 class="vlist">系统用户管理</h6>
+<ul class="vlist">
+  <li><a href="{% url account_management_list 1 %}">系统用户查询</a></li>
+  <li><a href="{% url account_management_add 1 %}">系统用户添加</a></li>
+  <li><a href="{% url account_management_modify 1 %}">系统用户修改</a></li>
+  <li><a href="{% url account_management_delete 1 %}">系统用户删除</a></li>
+  <li class="active"><strong>系统用户详情</strong></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endblock %}
+{% block col3_content %}
+<!-- Insert your subtemplate content here -->
+<h3>系统用户详情</h3>
+<hr>
+{% if result %}
+<table border="0" cellpadding="0" cellspacing="0" class="full">
+  <caption>
+    系统用户
+  </caption>
+  <thead>
+    <tr><th scope="col" colspan="2">{{ result.name }}</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col">项目</th>
+      <th scope="col">内容</th>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">名称</th>
+      <td>{{ result.name }}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">开始时间</th>
+      <td>{{ result.start_time|date:"Y-m-d"}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">结束时间</th>
+      <td>{{ result.end_time|date:"Y-m-d"}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">是否启用</th>
+      {% if result.is_setup %} 
+      <td>启用</td>
+      {% else %}
+      <td>
+        <form method="post" action=".">{% csrf_token %}
+          未启用<input type="submit" name="submit" value="启用"/>      
+        </form>
+      </td>
+      {% endif %}
+    </tr>
+    <tr>
+      <th scope="row" class="sub">创建者</th>
+      <td>{{ result.creater.username }}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">创建时间</th>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="sub">更新时间</th>
+      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+    </tr>
+  </tbody>
+</table>
+{% else %}
+<p class="warning">对不起，该服务区不存在！</p>
+{% endif %}
+
+<div class="subcolumns">
+  <div class="c66l">
+    <div class="subc">
+    </div>
+  </div>
+  <div class="c33r">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+

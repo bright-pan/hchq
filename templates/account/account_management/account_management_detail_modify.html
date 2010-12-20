@@ -1,0 +1,68 @@
+{% extends "account_management/account_management_layout.html" %}
+{% block header_describe %}{% endblock %}
+{% block teaser %}{% endblock %}
+
+{% block col1_content %}
+<h6 class="vlist">系统用户管理</h6>
+<ul class="vlist">
+  <li><a href="{% url account_management_list 1 %}">系统用户查询</a></li>
+  <li><a href="{% url account_management_add 1 %}">系统用户添加</a></li>
+  <li><a href="{% url account_management_add 1 %}">系统用户修改</a></li>
+  <li><a href="{% url account_management_delete 1 %}">系统用户删除</a></li>
+  <li class="active"><strong>系统用户编辑</strong></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endblock %}
+{% block col3_content %}
+<h3>系统用户编辑</h3>
+<hr>
+<div class="subcolumns">
+  <div class="c66l">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+      <form method="post" action="{% url account_management_detail_modify %}" class="yform full">{% csrf_token %}
+        <fieldset>
+          <legend>系统用户【{{ account_management_name }}】编辑</legend>
+          {% with detail_modify_form as form %}
+          {% if form.account_management_start_time.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.account_management_start_time.errors }}</strong>
+            {{ form.account_management_start_time.label_tag }}<sup>{{ form.account_management_start_time.help_text}}</sup>
+            {{ form.account_management_start_time }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.account_management_start_time.label_tag }}<sup>{{ form.account_management_start_time.help_text}}</sup>
+            {{ form.account_management_start_time }}
+          </div>
+          {% endif %}
+          {% if form.account_management_end_time.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.account_management_end_time.errors }}</strong>
+            {{ form.account_management_end_time.label_tag }}<sup>{{ form.account_management_end_time.help_text}}</sup>
+            {{ form.account_management_end_time }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.account_management_end_time.label_tag }}<sup>{{ form.account_management_end_time.help_text}}</sup>
+            {{ form.account_management_end_time }}
+          </div>
+          {% endif %}
+          {{ form.account_management_id }}
+          {% endwith %}
+
+          <div class="type-button">
+            <input type="submit" name="submit" value="修改" class="submit"/>      
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+  <div class="c33r">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+

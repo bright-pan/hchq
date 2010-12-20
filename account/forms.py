@@ -37,11 +37,11 @@ class LoginForm(forms.Form):
     def clean_username(self):
         try:
             username = self.data.get('username')
-            if re.match(gl.username_re_pattern, username ) is None:
-                raise forms.ValidationError(gl.username_error_messages['format_error'])
+            if re.match(gl.account_management_name_re_pattern, username) is None:
+                raise forms.ValidationError(gl.account_management_name_error_messages['format_error'])
             User.objects.get(username=username, is_active=True)
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.username_error_messages['do_not_exist'])
+            raise forms.ValidationError(gl.account_management_name_error_messages['do_not_exist'])
         return username
 
     def clean_password(self):
@@ -49,14 +49,14 @@ class LoginForm(forms.Form):
         try:
             username = self.data.get('username')
             password = self.data.get('password')
-            if re.match(gl.password_re_pattern, password ) is None:
-                raise forms.ValidationError(gl.password_error_messages['format_error'])
+            if re.match(gl.account_management_password_re_pattern, password ) is None:
+                raise forms.ValidationError(gl.account_management_password_error_messages['format_error'])
             from django.contrib.auth import authenticate
             self.user = authenticate(username = username, password = password)
             if self.user is None:
-                raise forms.ValidationError(gl.password_error_messages['password_error'])
+                raise forms.ValidationError(gl.account_management_password_error_messages['password_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.username_error_messages['do_not_exist'])
+            raise forms.ValidationError(gl.account_management_name_error_messages['do_not_exist'])
         return password
     
     def get_user(self):
@@ -94,25 +94,25 @@ class ModifyPasswordForm(forms.Form):
     def clean_password_new(self):
         try:
             password_new_copy = self.data.get('password_new')
-            if re.match(gl.password_re_pattern, password_new_copy ) is None:
-                raise forms.ValidationError(gl.password_error_messages['format_error'])
+            if re.match(gl.account_management_password_re_pattern, password_new_copy ) is None:
+                raise forms.ValidationError(gl.account_management_password_error_messages['format_error'])
             password_confirm_copy = self.data.get('password_confirm')        
             if password_new_copy != password_confirm_copy:
-                raise forms.ValidationError(self.password_error_messages['password_confirm_error'])
+                raise forms.ValidationError(self.account_management_password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(self.password_error_messages['password_form_error'])
+            raise forms.ValidationError(self.account_management_password_error_messages['password_form_error'])
         return password_new_copy
 
     def clean_password_confirm(self):
         try:
             password_new_copy = self.data.get('password_new')
             password_confirm_copy = self.data.get('password_confirm')        
-            if re.match(gl.password_re_pattern, password_confirm_copy ) is None:
-                raise forms.ValidationError(gl.password_error_messages['format_error'])
+            if re.match(gl.account_management_password_re_pattern, password_confirm_copy ) is None:
+                raise forms.ValidationError(gl.account_management_password_error_messages['format_error'])
             if password_new_copy != password_confirm_copy:
-                raise forms.ValidationError(gl.password_error_messages['password_confirm_error'])
+                raise forms.ValidationError(gl.account_management_password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.password_error_messages['form_error'])
+            raise forms.ValidationError(gl.account_management_password_error_messages['form_error'])
         return password_confirm_copy
 
     def password_save(self, user=None):
@@ -450,3 +450,359 @@ class RolePermissionDeleteForm(forms.Form):
             role.save()
             return True
         return False
+
+
+class AccountManagementAddForm(forms.Form):
+    """
+    系统用户添加表单
+    """
+    account_management_name_copy = None
+    account_management_role_object = None
+    account_management_service_area_department_object = None
+    
+    account_management_name = forms.CharField(
+        max_length=64,
+        required=True, 
+        label=_(u'系统用户名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：张三，李四'),
+
+        )
+    account_management_role_name = forms.CharField(
+        max_length=128,
+        required=True,
+        label=_(u'角色名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：技术人员，区域主管...'),
+        error_messages = gl.role_name_error_messages,
+        )
+    account_management_service_area_name = forms.CharField(
+        max_length=128,
+        required=True,
+        label=_(u'服务区域名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：周田，周田乡...'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    account_management_department_name = forms.CharField(
+        max_length=128,
+        required=True, 
+        label=_(u'单位部门名称'), 
+        widget=forms.Textarea(attrs={'class':'',
+                                     'size':'30',
+                                     'rows':'3',
+                                     }
+                              ), 
+        help_text=_(u'例如：县委/政法委，公安局，...'),
+        error_messages = gl.department_name_error_messages,
+        )
+
+    account_management_is_checker = forms.CharField(
+        required=True,
+        label =_(u'模糊查询'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'is_checker',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+
+    def clean_account_management_name(self):
+        try:
+            self.account_management_name_copy = self.data.get('account_management_name')
+            if re.match(gl.account_management_name_add_re_pattern, self.account_management_name_copy) is None:
+                raise forms.ValidationError(gl.account_management_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+        try:
+            User.objects.get(is_active=True, name=self.account_management_name_copy)
+        except ObjectDoesNotExist:
+            return self.account_management_name_copy
+        raise forms.ValidationError(gl.account_management_name_error_messages['already_error'])
+    
+    def clean_account_management_role_name(self):
+        try:
+            account_management_role_name_copy = self.data.get('account_management_role_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.role_name_error_messages['form_error'])
+        if re.match(gl.role_name_search_re_pattern, self.role_name_copy) is None:
+            raise forms.ValidationError(gl.role_name_error_messages['format_error'])
+        try:
+            self.account_management_role_object = Group.objects.get(name=account_management_role_name_copy)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.role_name_error_messages['not_exist_error'])
+#        print self.role_name_copy
+        return account_management_role_name_copy
+    def clean_account_management_service_area_name(self):
+        try:
+           account_management_service_area_name_copy = self.data.get('account_management_service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+
+        if re.match(gl.service_area_name_search_re_pattern, account_management_service_area_name_copy) is None:
+            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+
+        try:
+            ServiceArea.objects.get(name=account_management_service_area_name_copy)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
+
+        return self.account_management_service_area_name_copy
+
+    def clean_account_management_department_name(self):
+        try:
+            account_management_department_name_copy = self.data.get('account_management_department_name')
+            account_management_service_area_name_copy = self.data.get('account_management_service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        if re.match(gl.department_name_search_re_pattern, account_management_department_name_copy) is None:
+            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
+        try:
+            account_management_department_object = Department.objects.get(name=account_management_department_name_copy)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['not_exist_error'])
+        try:
+            account_management_service_area_object = ServiceArea.objects.get(name=account_management_service_area_name_copy)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
+        try:
+            self.account_management_service_area_department_object = ServiceArea.objects.get(service_area=account_management_service_area_object, department=account_management_department_object)
+        except ObjectDoseNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
+        return account_management_department_name_copy
+
+    
+    def account_management_add(self):
+        user_obj = None
+        if user is not None and user.is_authenticated() and self.account_management_name_copy is not None and self.account_management_service_area_department_obj is not None:
+            try:
+                user_obj = User.objects.get(is_active=False, name=self.account_management_name_copy)
+            except ObjectDoesNotExist:
+                user_obj = User.objects.user_create(username=self.account_management_name_copy,
+                                                    email=settings.ACCOUNT_DEFAULT_EMAIL,
+                                                    password=settings.ACCOUNT_DEFAULT_PASSWORD
+                                                    )
+                UserProfile.objects.create(user=user_obj,
+                                           is_checker=self.cleaned_data['account_management_is_checker'],
+                                           service_area_department=self.account_management_service_area_department_obj,
+                                           )
+                return user_obj
+            user.is_active = True
+            user_profile = user_obj.get_profile()
+            user_profile.is_checker = self.cleaned_data['account_management_is_checker']
+            user_profile.service_area_department=self.account_management_service_area_department_obj
+            user_profile.save()
+            user.save()
+            return user_obj
+        return user_obj
+            
+
+class AccountManagementModifyForm(forms.Form):
+    """
+    系统用户修改表单
+    """
+
+    account_management_id_copy = None
+    account_management_id_object = None
+
+
+    account_management_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.account_management_name_error_messages,
+        )
+    
+    def clean_account_management_id(self):
+        try:
+            try:
+                self.account_management_id_copy = int(self.data.get('account_management_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+            self.account_management_id_object = AccountManagement.objects.get(is_active=True, pk=self.account_management_id_copy)
+#            print '************************'
+#            print self.account_management_id_object.name
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+        return self.account_management_id_copy
+
+    def account_management_object(self):
+        return self.account_management_id_object
+
+
+class AccountManagementDetailModifyForm(forms.Form):
+    """
+    系统用户详细修改表单
+    """
+    account_management_start_time_copy = None
+    account_management_end_time_copy = None
+    
+    account_management_id_copy = None
+    account_management_id_object = None
+
+    account_management_start_time = forms.DateField(
+        required=True,
+        label=_(u'开始时间'),
+        help_text=_(u'例如：2010-10-25'),
+        error_messages = gl.account_management_time_error_messages,
+        input_formats = ('%Y-%m-%d',)
+        )
+    account_management_end_time = forms.DateField(
+        required=True,
+        label=_(u'结束时间'),
+        help_text=_(u'例如：2010-10-25'),
+        error_messages = gl.account_management_time_error_messages,
+        input_formats = ('%Y-%m-%d',)
+        )
+    account_management_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.account_management_name_error_messages,
+        )
+
+
+    def clean_account_management_start_time(self):
+        try:
+            self.account_management_start_time_copy = self.cleaned_data.get('account_management_start_time')
+            self.account_management_end_time_copy = self.cleaned_data.get('account_management_end_time')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_time_error_messages['form_error'])
+        if self.account_management_start_time_copy is not None  and self.account_management_end_time_copy is not None:
+            if self.account_management_start_time_copy > self.account_management_end_time_copy:
+                raise forms.ValidationError(gl.account_management_time_error_messages['logic_error'])
+        return self.account_management_start_time_copy
+
+    def clean_account_management_end_time(self):
+        try:
+            self.account_management_start_time_copy = self.cleaned_data.get('account_management_start_time')
+            self.account_management_end_time_copy = self.cleaned_data.get('account_management_end_time')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_time_error_messages['form_error'])
+        if self.account_management_start_time_copy is not None  and self.account_management_end_time_copy is not None:
+            if self.account_management_start_time_copy > self.account_management_end_time_copy:
+                raise forms.ValidationError(gl.account_management_time_error_messages['logic_error'])
+        return self.account_management_end_time_copy
+    def clean_account_management_id(self):
+        try:
+            try:
+                self.account_management_id_copy = int(self.data.get('account_management_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+            self.account_management_id_object = AccountManagement.objects.get(is_active=True, pk=self.account_management_id_copy)
+#            print '************************'
+#            print self.account_management_id_object.name
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+        return self.account_management_id_copy
+
+
+    def set_value(self, modify_object=None):
+        self.fields['account_management_start_time'].widget.attrs['value'] = modify_object.start_time.isoformat()
+        self.fields['account_management_end_time'].widget.attrs['value'] = modify_object.end_time.isoformat()
+        self.fields['account_management_id'].widget.attrs['value'] = modify_object.id
+        return modify_object
+    
+    def account_management_detail_modify(self):
+        
+        self.account_management_id_object.start_time = self.account_management_start_time_copy
+        self.account_management_id_object.end_time = self.account_management_end_time_copy
+        self.account_management_id_object.save()
+        return self.account_management_id_object
+
+class AccountManagementDeleteForm(forms.Form):
+    """
+    系统用户删除表单
+    """
+    account_management_id_copy = None
+    account_management_id_object = None
+
+    account_management_id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.account_management_name_error_messages,
+        )
+    
+    def clean_account_management_id(self):
+        try:
+            try:
+                self.account_management_id_copy = int(self.data.get('account_management_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+            self.account_management_id_object = AccountManagement.objects.get(pk=self.account_management_id_copy)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+        return self.account_management_id_copy
+
+    def account_management_delete(self):
+
+        if self.account_management_id_object is not None:
+            self.account_management_id_object.is_active = False
+            self.account_management_id_object.save()
+        else:
+            return False
+
+class AccountManagementSearchForm(forms.Form):
+    """
+    系统用户搜索表单
+    """
+    account_management_name_copy = None
+    is_fuzzy_value = None
+    
+    account_management_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'系统用户名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',
+                                      }
+                               ), 
+        help_text=_(u'例如：2010年10-12月下半年环孕检'),
+        error_messages = gl.account_management_name_error_messages,
+        )
+    is_fuzzy = forms.CharField(
+        required=True,
+        label =_(u'模糊查询'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'fuzzy_search',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+    
+    def clean_account_management_name(self):
+        try:
+            self.account_management_name_copy = self.data.get('account_management_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+        if re.match(gl.account_management_name_search_re_pattern, self.account_management_name_copy) is None:
+            raise forms.ValidationError(gl.account_management_name_error_messages['format_error'])
+#        print self.account_management_name_copy
+        return self.account_management_name_copy
+    
+    def clean_is_fuzzy(self):
+        try:
+            self.is_fuzzy_value = self.data.get('is_fuzzy')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+#        print self.is_fuzzy_value
+        return self.is_fuzzy_value
+    
+    def fuzzy_search(self):
+        if self.is_fuzzy_value == u'fuzzy_search':
+            return True
+        else:
+            return False
+        
+    def is_null(self):
+        if self.account_management_name_copy == u'':
+            return True
+        else:
+            return False
+    def save_to_session(self, request):
+        request.session[gl.session_account_management_name] = self.account_management_name_copy
+        if self.fuzzy_search():
+            request.session[gl.session_account_management_is_fuzzy] = u'fuzzy_search'
+        else:
+            request.session[gl.session_account_management_is_fuzzy] = False
+        return True

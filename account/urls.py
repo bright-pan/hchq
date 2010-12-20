@@ -57,3 +57,41 @@ urlpatterns += patterns('hchq.account.views',
 
 )
 
+urlpatterns += patterns('hchq.account.views',
+
+       (r'add/(?P<account_management_page>\d{1,4})/$',
+       'account_management_add',
+       {'template_name' : 'account_management/account_management_add.html', 'next': '/account/person_management', },
+       'account_management_add'),
+                       
+       (r'show/(?P<account_management_index>\d{1,4})/$',
+       'account_management_show',
+       {'template_name' : 'account_management/account_management_show.html', 'next': '', },
+       'account_management_show'),
+
+       (r'modify/(?P<account_management_page>\d{1,4})/$',
+       'account_management_modify',
+       {'template_name' : 'account_management/account_management_modify.html', 'next_template_name': 'account_management/account_management_detail_modify.html', },
+       'account_management_modify'),
+
+       (r'delete/(?P<account_management_page>\d{1,4})/$',
+       'account_management_delete',
+       {'template_name' : 'account_management/account_management_delete.html', 'next': '/account/person_management', },
+       'account_management_delete'),
+
+       (r'list/(?P<account_management_page>\d{1,4})/$',
+       'account_management_list',
+       {'template_name' : 'account_management/account_management_list.html', 'next': '/account/person_management', },
+       'account_management_list'),
+
+       (r'detail_modify/$',
+       'account_management_detail_modify',
+       {'template_name' : 'account_management/account_management_detail_modify.html', 'next': 'account_management/list/1', },
+       'account_management_detail_modify'),
+
+#      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
+#      (r'logout$', 'exit', {'template_name' : 'account/login.html', 'next': '/', }, 'account_logout'),
+#      (r'person_management$', 'person_management', {'template_name' : 'account/person_management.html', 'next': '/', }, 'account_person_management'),
+#      (r'person_password_modify$', 'person_password_modify', {'template_name' : 'account/person_password_modify.html', 'next': '/', }, 'account_person_password_modify'),
+                        
+)

@@ -1,24 +1,28 @@
 #coding=utf-8
 from django.utils.translation import ugettext_lazy as _
 ############################################################
-#用户表单
+#系统用户表单
 ############################################################
-username_error_messages={'required': _(u'用户名称不能为空！'),
+account_management_name_error_messages={'required': _(u'用户名称不能为空！'),
                          'max_length': _(u'用户名称长度大于30个字符！'),
                          'do_not_exist': _(u'用户名称不存在！'),
                          'format_error': _(u'用户名称必须由汉字，大小写字母，数字单独或者混合组成！'),
                          'form_error': _(u'表单严重错误！'),
+                         'already_error':_(u'用户名已存在！'),
                          }
 
-password_error_messages={'required': _(u'此处密码不能为空！'),
+account_management_password_error_messages={'required': _(u'此处密码不能为空！'),
                          'max_length': _(u'密码长度大于30个字符！'),
                          'password_error': _(u'密码不正确！'),
                          'format_error':_(u'密码必须由大小写字母，数字单独或者混合组成！'),
                          'password_confirm_error': _(u'输入的新密码不一致，请重新输入！'),
                          'form_error': _(u'修改密码表单严重错误！'),
                          }
-username_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
-password_re_pattern = ur'^[\w]+$'
+account_management_username_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+account_management_password_re_pattern = ur'^[\w]+$'
+################################################################################
+#服务区域表单
+################################################################################
 
 service_area_name_error_messages={'required': _(u'请输入服务区域名称！'),
                                   'max_length': _(u'输入的服务区域名称长度大于500个字符！'),
@@ -26,9 +30,6 @@ service_area_name_error_messages={'required': _(u'请输入服务区域名称！
                                   'form_error': _(u'表单严重错误！'),
                                   'already_error': _(u'服务区域同名，请输入正确的服务区域名称！'),
                                   }
-################################################################################
-#服务区域表单
-################################################################################
 service_area_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
 service_area_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
 #service_area_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$'
