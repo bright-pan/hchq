@@ -47,7 +47,11 @@
       {% if result.is_setup %} 
       <td>启用</td>
       {% else %}
-      <td>未启用</td>
+      <td>
+        <form method="post" action=".">{% csrf_token %}
+          未启用<input type="submit" name="submit" value="启用"/>      
+        </form>
+      </td>
       {% endif %}
     </tr>
     <tr>

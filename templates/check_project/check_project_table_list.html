@@ -27,8 +27,8 @@
       <td>未启用</td>
       {% endif %}
       <td>{{ result.creater.username }}</td>
-      <td>{{ result.created_at|date:"Y-m-d"}}</td>
-      <td>{{ result.updated_at|date:"Y-m-d"}}</td>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     {% empty %}
     <p class="warning">没有检查项目可以查询！</p>

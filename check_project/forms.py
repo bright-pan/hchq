@@ -113,13 +113,15 @@ class CheckProjectModifyForm(forms.Form):
         error_messages = gl.check_project_name_error_messages,
         )
     
-    def clean_check_project_name(self):
+    def clean_check_project_id(self):
         try:
             try:
                 self.check_project_id_copy = int(self.data.get('check_project_id'))
             except ValueError:
                 raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
             self.check_project_id_object = CheckProject.objects.get(is_active=True, pk=self.check_project_id_copy)
+#            print '************************'
+#            print self.check_project_id_object.name
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         return self.check_project_id_copy
@@ -132,24 +134,12 @@ class CheckProjectDetailModifyForm(forms.Form):
     """
     检查项目详细修改表单
     """
-    check_project_name_copy = None
     check_project_start_time_copy = None
     check_project_end_time_copy = None
     
     check_project_id_copy = None
     check_project_id_object = None
 
-    check_project_name = forms.CharField(
-        max_length=64,
-        required=True, 
-        label=_(u'检查项目名称'), 
-        widget=forms.TextInput(attrs={'class':'',
-                                     'size':'30',
-                                     }
-                              ), 
-        help_text=_(u'例如：2010年10-12月下半年环孕检'),
-
-        )
     check_project_start_time = forms.DateField(
         required=True,
         label=_(u'开始时间'),
@@ -169,23 +159,6 @@ class CheckProjectDetailModifyForm(forms.Form):
         error_messages = gl.check_project_name_error_messages,
         )
 
-    def clean_check_project_name(self):
-        try:
-            self.check_project_name_copy = self.data.get('check_project_name')
-            try:
-                self.check_project_id_copy = int(self.data.get('check_project_id'))
-            except ValueError:
-                raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
-            #            print check_project_name_copy
-            if re.match(gl.check_project_name_add_re_pattern, self.check_project_name_copy) is None:
-                raise forms.ValidationError(gl.check_project_name_error_messages['format_error'])
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
-        try:
-            CheckProject.objects.get(is_active=True, name=self.check_project_name_copy)
-        except ObjectDoesNotExist:
-            return self.check_project_name_copy
-        raise forms.ValidationError(gl.check_project_name_error_messages['already_error'])
 
     def clean_check_project_start_time(self):
         try:
@@ -208,9 +181,31 @@ class CheckProjectDetailModifyForm(forms.Form):
             if self.check_project_start_time_copy > self.check_project_end_time_copy:
                 raise forms.ValidationError(gl.check_project_time_error_messages['logic_error'])
         return self.check_project_end_time_copy
+    def clean_check_project_id(self):
+        try:
+            try:
+                self.check_project_id_copy = int(self.data.get('check_project_id'))
+            except ValueError:
+                raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
+            self.check_project_id_object = CheckProject.objects.get(is_active=True, pk=self.check_project_id_copy)
+#            print '************************'
+#            print self.check_project_id_object.name
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
+        return self.check_project_id_copy
 
 
-    def check_project_modify(self):
+    def set_value(self, modify_object=None):
+        self.fields['check_project_start_time'].widget.attrs['value'] = modify_object.start_time.isoformat()
+        self.fields['check_project_end_time'].widget.attrs['value'] = modify_object.end_time.isoformat()
+        self.fields['check_project_id'].widget.attrs['value'] = modify_object.id
+        return modify_object
+    
+    def check_project_detail_modify(self):
+        
+        self.check_project_id_object.start_time = self.check_project_start_time_copy
+        self.check_project_id_object.end_time = self.check_project_end_time_copy
+        self.check_project_id_object.save()
         return self.check_project_id_object
 
 class CheckProjectDeleteForm(forms.Form):

@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.check_project.forms import CheckProjectAddForm, CheckProjectModifyForm, CheckProjectDeleteForm, CheckProjectSearchForm
+from hchq.check_project.forms import *
 from hchq.check_project.models import CheckProject
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
@@ -123,14 +123,33 @@ def check_project_show(request, template_name='', next='', check_project_index='
     检查项目详细信息显示。
     """
     page_title=u'检查项目详情'
-    try:
-        check_project_id = int(check_project_index)
-    except ValueError:
-        check_project_id = 1
-    try:
-        result = CheckProject.objects.get(pk=check_project_id)
-    except ObjectDoesNotExist:
-        result = None
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'启用':
+            try:
+                check_project_id = int(check_project_index)
+            except ValueError:
+                check_project_id = 1
+            try:
+                result = CheckProject.objects.get(pk=check_project_id)
+            except ObjectDoesNotExist:
+                raise Http404('Invalid Request!')
+            
+            CheckProject.objects.filter(is_setup=True).update(is_setup=False)
+            result.is_setup = True
+            result.save()
+            
+    else:
+        try:
+            check_project_id = int(check_project_index)
+        except ValueError:
+            check_project_id = 1
+        try:
+            result = CheckProject.objects.get(pk=check_project_id)
+        except ObjectDoesNotExist:
+            raise Http404('Invalid Request!')
+
     return render_to_response(template_name,
                               {'result': result
                                },
@@ -138,7 +157,7 @@ def check_project_show(request, template_name='', next='', check_project_index='
 
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
-def check_project_modify(request, template_name='my.html', next='/', check_project_page='1',):
+def check_project_modify(request, template_name='my.html', next_template_name='my.html', check_project_page='1',):
     """
     服务区修改视图
     """
@@ -147,14 +166,17 @@ def check_project_modify(request, template_name='my.html', next='/', check_proje
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
-        if submit_value == u'修改':
+        if submit_value == u'编辑':
             check_project_modify_form = CheckProjectModifyForm(post_data)
             if check_project_modify_form.is_valid():
                 check_project_modify_object = check_project_modify_form.check_project_object()
-                check_project_detail_modify_form = CheckProjectModifyForm()
-                return render_to_response(next,
-                                          {'modify_form': check_project_detail_modify_form,
-                                           'object': check_project_modify_object,
+#                print check_project_modify_object
+                check_project_detail_modify_form = CheckProjectDetailModifyForm()
+                check_project_detail_modify_form.set_value(check_project_modify_object)
+                page_title = u'编辑检查项目'
+                return render_to_response(next_template_name,
+                                          {'detail_modify_form': check_project_detail_modify_form,
+                                           'check_project_name': check_project_modify_object.name,
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
@@ -238,6 +260,38 @@ def check_project_modify(request, template_name='my.html', next='/', check_proje
                                    'results_page':results_page,
                                    },
                                   context_instance=RequestContext(request))
+@csrf_protect
+@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+def check_project_detail_modify(request, template_name='my.html', next='/', check_project_page='1',):
+    """
+    服务区修改视图
+    """
+
+    page_title = u'编辑检查项目'
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'修改':
+            check_project_detail_modify_form = CheckProjectDetailModifyForm(post_data)
+            if check_project_detail_modify_form.is_valid():
+
+#                check_project_detail_modify_form.set_value(check_project_modify_object)
+                check_project_detail_modify_form.check_project_detail_modify()
+                return HttpResponseRedirect(next)
+            else:
+                check_project_id = int(check_project_detail_modify_form.data.get('check_project_id'))
+                check_project_object = CheckProject.objects.get(pk=check_project_id)
+                return render_to_response(template_name,
+                                          {'detail_modify_form': check_project_detail_modify_form,
+                                           'check_project_name': check_project_object.name,
+                                           'page_title': page_title,
+                                           },
+                                          context_instance=RequestContext(request))
+
+        else:
+            raise Http404('Invalid Request!')
+    else:
+        raise Http404('Invalid Request!')
 
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')

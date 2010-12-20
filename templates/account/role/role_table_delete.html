@@ -13,7 +13,7 @@
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
-      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td><a href="{% url account_role_permission_list result.id '1' %}">{{ result.name }}<a></td>
       <td>
         <form method="post" action=".">{% csrf_token %}
           <input type="hidden" name="role_id" value="{{ result.id }}" />
