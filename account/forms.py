@@ -5,7 +5,10 @@ from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
 
 from hchq.untils import gl
-
+from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
+from hchq.department.models import Department
+from hchq.account.models import UserProfile
+from hchq import settings
 import re
 
 
@@ -22,7 +25,7 @@ class LoginForm(forms.Form):
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：张三, 张三A, 张三1'),
-        error_messages = gl.username_error_messages,
+        error_messages = gl.account_name_error_messages,
         )
     password = forms.CharField(
         max_length=30,
@@ -31,17 +34,17 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class':'',
                                           'size':'30',}), 
         help_text=_(u'例如：123456, pa123456'),
-        error_messages = gl.password_error_messages,
+        error_messages = gl.account_password_error_messages,
         )
     
     def clean_username(self):
         try:
             username = self.data.get('username')
-            if re.match(gl.account_management_name_re_pattern, username) is None:
-                raise forms.ValidationError(gl.account_management_name_error_messages['format_error'])
+            if re.match(gl.account_name_re_pattern, username) is None:
+                raise forms.ValidationError(gl.account_name_error_messages['format_error'])
             User.objects.get(username=username, is_active=True)
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['do_not_exist'])
+            raise forms.ValidationError(gl.account_name_error_messages['do_not_exist'])
         return username
 
     def clean_password(self):
@@ -49,14 +52,14 @@ class LoginForm(forms.Form):
         try:
             username = self.data.get('username')
             password = self.data.get('password')
-            if re.match(gl.account_management_password_re_pattern, password ) is None:
-                raise forms.ValidationError(gl.account_management_password_error_messages['format_error'])
+            if re.match(gl.account_password_re_pattern, password ) is None:
+                raise forms.ValidationError(gl.account_password_error_messages['format_error'])
             from django.contrib.auth import authenticate
             self.user = authenticate(username = username, password = password)
             if self.user is None:
-                raise forms.ValidationError(gl.account_management_password_error_messages['password_error'])
+                raise forms.ValidationError(gl.account_password_error_messages['password_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['do_not_exist'])
+            raise forms.ValidationError(gl.account_name_error_messages['do_not_exist'])
         return password
     
     def get_user(self):
@@ -79,7 +82,7 @@ class ModifyPasswordForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class':'',
                                           'size':'30',}), 
         help_text=_(u'例如：123456, pa123456'),
-        error_messages = gl.password_error_messages,
+        error_messages = gl.account_password_error_messages,
         )
     password_confirm = forms.CharField(
         max_length=30,
@@ -88,31 +91,31 @@ class ModifyPasswordForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class':'',
                                           'size':'30',}), 
         help_text=_(u'请重新输入密码，例如：123456, pa123456'),
-        error_messages = gl.password_error_messages,
+        error_messages = gl.account_password_error_messages,
         )
     
     def clean_password_new(self):
         try:
             password_new_copy = self.data.get('password_new')
-            if re.match(gl.account_management_password_re_pattern, password_new_copy ) is None:
-                raise forms.ValidationError(gl.account_management_password_error_messages['format_error'])
             password_confirm_copy = self.data.get('password_confirm')        
+            if re.match(gl.account_password_re_pattern, password_new_copy ) is None:
+                raise forms.ValidationError(gl.account_password_error_messages['format_error'])
             if password_new_copy != password_confirm_copy:
-                raise forms.ValidationError(self.account_management_password_error_messages['password_confirm_error'])
+                raise forms.ValidationError(gl.account_password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(self.account_management_password_error_messages['password_form_error'])
+            raise forms.ValidationError(gl.account_password_error_messages['password_form_error'])
         return password_new_copy
 
     def clean_password_confirm(self):
         try:
             password_new_copy = self.data.get('password_new')
             password_confirm_copy = self.data.get('password_confirm')        
-            if re.match(gl.account_management_password_re_pattern, password_confirm_copy ) is None:
-                raise forms.ValidationError(gl.account_management_password_error_messages['format_error'])
+            if re.match(gl.account_password_re_pattern, password_confirm_copy ) is None:
+                raise forms.ValidationError(gl.account_password_error_messages['format_error'])
             if password_new_copy != password_confirm_copy:
-                raise forms.ValidationError(gl.account_management_password_error_messages['password_confirm_error'])
+                raise forms.ValidationError(gl.account_password_error_messages['password_confirm_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_password_error_messages['form_error'])
+            raise forms.ValidationError(gl.account_password_error_messages['form_error'])
         return password_confirm_copy
 
     def password_save(self, user=None):
@@ -452,15 +455,14 @@ class RolePermissionDeleteForm(forms.Form):
         return False
 
 
-class AccountManagementAddForm(forms.Form):
+class AccountAddForm(forms.Form):
     """
     系统用户添加表单
     """
-    account_management_name_copy = None
-    account_management_role_object = None
-    account_management_service_area_department_object = None
+    role_object = None
+    service_area_department_object = None
     
-    account_management_name = forms.CharField(
+    name = forms.CharField(
         max_length=64,
         required=True, 
         label=_(u'系统用户名称'), 
@@ -469,9 +471,9 @@ class AccountManagementAddForm(forms.Form):
                                      }
                               ), 
         help_text=_(u'例如：张三，李四'),
-
+        error_messages = gl.account_name_error_messages,
         )
-    account_management_role_name = forms.CharField(
+    role_name = forms.CharField(
         max_length=128,
         required=True,
         label=_(u'角色名称'), 
@@ -480,7 +482,7 @@ class AccountManagementAddForm(forms.Form):
         help_text=_(u'例如：技术人员，区域主管...'),
         error_messages = gl.role_name_error_messages,
         )
-    account_management_service_area_name = forms.CharField(
+    service_area_name = forms.CharField(
         max_length=128,
         required=True,
         label=_(u'服务区域名称'), 
@@ -489,22 +491,20 @@ class AccountManagementAddForm(forms.Form):
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
         )
-    account_management_department_name = forms.CharField(
+    department_name = forms.CharField(
         max_length=128,
         required=True, 
         label=_(u'单位部门名称'), 
-        widget=forms.Textarea(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
-                                     'rows':'3',
                                      }
                               ), 
         help_text=_(u'例如：县委/政法委，公安局，...'),
         error_messages = gl.department_name_error_messages,
         )
-
-    account_management_is_checker = forms.CharField(
+    is_checker = forms.CharField(
         required=True,
-        label =_(u'模糊查询'),
+        label =_(u'检查人员'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_checker',
                                           }, 
@@ -512,297 +512,709 @@ class AccountManagementAddForm(forms.Form):
                                    ),
         )
 
-    def clean_account_management_name(self):
+    def clean_name(self):
         try:
-            self.account_management_name_copy = self.data.get('account_management_name')
-            if re.match(gl.account_management_name_add_re_pattern, self.account_management_name_copy) is None:
-                raise forms.ValidationError(gl.account_management_name_error_messages['format_error'])
+            name_copy = self.data.get('name')
+            if re.match(gl.account_name_add_re_pattern, name_copy) is None:
+                raise forms.ValidationError(gl.account_name_error_messages['format_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
         try:
-            User.objects.get(is_active=True, name=self.account_management_name_copy)
+            User.objects.get(is_active=True, username=name_copy)
         except ObjectDoesNotExist:
-            return self.account_management_name_copy
-        raise forms.ValidationError(gl.account_management_name_error_messages['already_error'])
+            return name_copy
+        raise forms.ValidationError(gl.account_name_error_messages['already_error'])
     
-    def clean_account_management_role_name(self):
+    def clean_role_name(self):
         try:
-            account_management_role_name_copy = self.data.get('account_management_role_name')
+            role_name_copy = self.data.get('role_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.role_name_error_messages['form_error'])
-        if re.match(gl.role_name_search_re_pattern, self.role_name_copy) is None:
+        if re.match(gl.role_name_add_re_pattern, role_name_copy) is None:
             raise forms.ValidationError(gl.role_name_error_messages['format_error'])
         try:
-            self.account_management_role_object = Group.objects.get(name=account_management_role_name_copy)
+            self.role_object = Group.objects.get(name=role_name_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.role_name_error_messages['not_exist_error'])
 #        print self.role_name_copy
-        return account_management_role_name_copy
-    def clean_account_management_service_area_name(self):
+        return role_name_copy
+    def clean_service_area_name(self):
         try:
-           account_management_service_area_name_copy = self.data.get('account_management_service_area_name')
+           service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
-        if re.match(gl.service_area_name_search_re_pattern, account_management_service_area_name_copy) is None:
+        if re.match(gl.service_area_name_add_re_pattern, service_area_name_copy) is None:
             raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
 
         try:
-            ServiceArea.objects.get(name=account_management_service_area_name_copy)
+            ServiceArea.objects.get(name=service_area_name_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
 
-        return self.account_management_service_area_name_copy
+        return service_area_name_copy
 
-    def clean_account_management_department_name(self):
+    def clean_department_name(self):
         try:
-            account_management_department_name_copy = self.data.get('account_management_department_name')
-            account_management_service_area_name_copy = self.data.get('account_management_service_area_name')
+            department_name_copy = self.data.get('department_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['form_error'])
-        if re.match(gl.department_name_search_re_pattern, account_management_department_name_copy) is None:
+        if re.match(gl.department_name_add_re_pattern, department_name_copy) is None:
             raise forms.ValidationError(gl.department_name_error_messages['format_error'])
         try:
-            account_management_department_object = Department.objects.get(name=account_management_department_name_copy)
+            department_object = Department.objects.get(name=department_name_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_exist_error'])
         try:
-            account_management_service_area_object = ServiceArea.objects.get(name=account_management_service_area_name_copy)
+            service_area_object = ServiceArea.objects.get(name=service_area_name_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
         try:
-            self.account_management_service_area_department_object = ServiceArea.objects.get(service_area=account_management_service_area_object, department=account_management_department_object)
-        except ObjectDoseNotExist:
+            self.service_area_department_object = ServiceAreaDepartment.objects.get(service_area=service_area_object, department=department_object)
+        except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
-        return account_management_department_name_copy
+        return department_name_copy
 
     
-    def account_management_add(self):
-        user_obj = None
-        if user is not None and user.is_authenticated() and self.account_management_name_copy is not None and self.account_management_service_area_department_obj is not None:
+    def add(self):
+        user_object = None
+        if self.service_area_department_object is not None:
+            if self.cleaned_data['is_checker'] == u'is_checker':
+                is_checker_bool_value = True
+            else:
+                is_checker_bool_value = False
             try:
-                user_obj = User.objects.get(is_active=False, name=self.account_management_name_copy)
+                user_object = User.objects.get(is_active=False, username=self.cleaned_data['name'])
             except ObjectDoesNotExist:
-                user_obj = User.objects.user_create(username=self.account_management_name_copy,
+                user_object = User.objects.create_user(username=self.cleaned_data['name'],
                                                     email=settings.ACCOUNT_DEFAULT_EMAIL,
                                                     password=settings.ACCOUNT_DEFAULT_PASSWORD
                                                     )
-                UserProfile.objects.create(user=user_obj,
-                                           is_checker=self.cleaned_data['account_management_is_checker'],
-                                           service_area_department=self.account_management_service_area_department_obj,
+                UserProfile.objects.create(user=user_object,
+                                           is_checker=is_checker_bool_value,
+                                           service_area_department=self.service_area_department_object,
                                            )
-                return user_obj
-            user.is_active = True
-            user_profile = user_obj.get_profile()
-            user_profile.is_checker = self.cleaned_data['account_management_is_checker']
-            user_profile.service_area_department=self.account_management_service_area_department_obj
-            user_profile.save()
-            user.save()
-            return user_obj
-        return user_obj
+                return user_object
+            user_object.is_active = True
+            user_object_profile = user_object.get_profile()
+            user_object_profile.is_checker = is_checker_bool_value
+            user_object_profile.service_area_department=self.service_area_department_object
+            user_object_profile.save()
+            user_object.save()
+            return user_object
+        return user_object
             
 
-class AccountManagementModifyForm(forms.Form):
+class AccountModifyForm(forms.Form):
     """
     系统用户修改表单
     """
 
-    account_management_id_copy = None
-    account_management_id_object = None
+    id_copy = None
+    id_object = None
 
 
-    account_management_id = forms.CharField(
+    id = forms.CharField(
         widget=forms.HiddenInput(),
-        error_messages = gl.account_management_name_error_messages,
+        error_messages = gl.account_name_error_messages,
         )
     
-    def clean_account_management_id(self):
+    def clean_id(self):
         try:
             try:
-                self.account_management_id_copy = int(self.data.get('account_management_id'))
+                self.id_copy = int(self.data.get('id'))
             except ValueError:
-                raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-            self.account_management_id_object = AccountManagement.objects.get(is_active=True, pk=self.account_management_id_copy)
+                raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+            self.id_object = Account.objects.get(is_active=True, pk=self.id_copy)
 #            print '************************'
-#            print self.account_management_id_object.name
+#            print self.id_object.name
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-        return self.account_management_id_copy
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+        return self.id_copy
 
-    def account_management_object(self):
-        return self.account_management_id_object
+    def object(self):
+        return self.id_object
 
 
-class AccountManagementDetailModifyForm(forms.Form):
+class AccountDetailModifyForm(forms.Form):
     """
     系统用户详细修改表单
     """
-    account_management_start_time_copy = None
-    account_management_end_time_copy = None
+    start_time_copy = None
+    end_time_copy = None
     
-    account_management_id_copy = None
-    account_management_id_object = None
+    id_copy = None
+    id_object = None
 
-    account_management_start_time = forms.DateField(
+    start_time = forms.DateField(
         required=True,
         label=_(u'开始时间'),
         help_text=_(u'例如：2010-10-25'),
-        error_messages = gl.account_management_time_error_messages,
+        error_messages = gl.account_name_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
-    account_management_end_time = forms.DateField(
+    end_time = forms.DateField(
         required=True,
         label=_(u'结束时间'),
         help_text=_(u'例如：2010-10-25'),
-        error_messages = gl.account_management_time_error_messages,
+        error_messages = gl.account_name_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
-    account_management_id = forms.CharField(
+    id = forms.CharField(
         widget=forms.HiddenInput(),
-        error_messages = gl.account_management_name_error_messages,
+        error_messages = gl.account_name_error_messages,
         )
 
 
-    def clean_account_management_start_time(self):
+    def clean_start_time(self):
         try:
-            self.account_management_start_time_copy = self.cleaned_data.get('account_management_start_time')
-            self.account_management_end_time_copy = self.cleaned_data.get('account_management_end_time')
+            self.start_time_copy = self.cleaned_data.get('start_time')
+            self.end_time_copy = self.cleaned_data.get('end_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_time_error_messages['form_error'])
-        if self.account_management_start_time_copy is not None  and self.account_management_end_time_copy is not None:
-            if self.account_management_start_time_copy > self.account_management_end_time_copy:
-                raise forms.ValidationError(gl.account_management_time_error_messages['logic_error'])
-        return self.account_management_start_time_copy
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+        if self.start_time_copy is not None  and self.end_time_copy is not None:
+            if self.start_time_copy > self.end_time_copy:
+                raise forms.ValidationError(gl.account_name_error_messages['logic_error'])
+        return self.start_time_copy
 
-    def clean_account_management_end_time(self):
+    def clean_end_time(self):
         try:
-            self.account_management_start_time_copy = self.cleaned_data.get('account_management_start_time')
-            self.account_management_end_time_copy = self.cleaned_data.get('account_management_end_time')
+            self.start_time_copy = self.cleaned_data.get('start_time')
+            self.end_time_copy = self.cleaned_data.get('end_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_time_error_messages['form_error'])
-        if self.account_management_start_time_copy is not None  and self.account_management_end_time_copy is not None:
-            if self.account_management_start_time_copy > self.account_management_end_time_copy:
-                raise forms.ValidationError(gl.account_management_time_error_messages['logic_error'])
-        return self.account_management_end_time_copy
-    def clean_account_management_id(self):
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+        if self.start_time_copy is not None  and self.end_time_copy is not None:
+            if self.start_time_copy > self.end_time_copy:
+                raise forms.ValidationError(gl.account_name_error_messages['logic_error'])
+        return self.end_time_copy
+    def clean_id(self):
         try:
             try:
-                self.account_management_id_copy = int(self.data.get('account_management_id'))
+                self.id_copy = int(self.data.get('id'))
             except ValueError:
-                raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-            self.account_management_id_object = AccountManagement.objects.get(is_active=True, pk=self.account_management_id_copy)
+                raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+            self.id_object = Account.objects.get(is_active=True, pk=self.id_copy)
 #            print '************************'
-#            print self.account_management_id_object.name
+#            print self.id_object.name
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-        return self.account_management_id_copy
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+        return self.id_copy
 
 
     def set_value(self, modify_object=None):
-        self.fields['account_management_start_time'].widget.attrs['value'] = modify_object.start_time.isoformat()
-        self.fields['account_management_end_time'].widget.attrs['value'] = modify_object.end_time.isoformat()
-        self.fields['account_management_id'].widget.attrs['value'] = modify_object.id
+        self.fields['start_time'].widget.attrs['value'] = modify_object.start_time.isoformat()
+        self.fields['end_time'].widget.attrs['value'] = modify_object.end_time.isoformat()
+        self.fields['id'].widget.attrs['value'] = modify_object.id
         return modify_object
     
-    def account_management_detail_modify(self):
+    def detail_modify(self):
         
-        self.account_management_id_object.start_time = self.account_management_start_time_copy
-        self.account_management_id_object.end_time = self.account_management_end_time_copy
-        self.account_management_id_object.save()
-        return self.account_management_id_object
+        self.id_object.start_time = self.start_time_copy
+        self.id_object.end_time = self.end_time_copy
+        self.id_object.save()
+        return self.id_object
 
-class AccountManagementDeleteForm(forms.Form):
+class AccountDeleteForm(forms.Form):
     """
     系统用户删除表单
     """
-    account_management_id_copy = None
-    account_management_id_object = None
+    id_copy = None
+    id_object = None
 
-    account_management_id = forms.CharField(
+    id = forms.CharField(
         widget=forms.HiddenInput(),
-        error_messages = gl.account_management_name_error_messages,
+        error_messages = gl.account_name_error_messages,
         )
     
-    def clean_account_management_id(self):
+    def clean_id(self):
         try:
             try:
-                self.account_management_id_copy = int(self.data.get('account_management_id'))
+                self.id_copy = int(self.data.get('id'))
             except ValueError:
-                raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-            self.account_management_id_object = AccountManagement.objects.get(pk=self.account_management_id_copy)
+                raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+            self.id_object = Account.objects.get(pk=self.id_copy)
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-        return self.account_management_id_copy
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+        return self.id_copy
 
-    def account_management_delete(self):
+    def delete(self):
 
-        if self.account_management_id_object is not None:
-            self.account_management_id_object.is_active = False
-            self.account_management_id_object.save()
+        if self.id_object is not None:
+            self.id_object.is_active = False
+            self.id_object.save()
         else:
             return False
 
-class AccountManagementSearchForm(forms.Form):
+class AccountSearchForm(forms.Form):
     """
     系统用户搜索表单
     """
-    account_management_name_copy = None
-    is_fuzzy_value = None
     
-    account_management_name = forms.CharField(
-        max_length=128,
-        required=False,
+    name = forms.CharField(
+        max_length=64,
+        required=False, 
         label=_(u'系统用户名称'), 
         widget=forms.TextInput(attrs={'class':'',
-                                      'size':'30',
-                                      }
-                               ), 
-        help_text=_(u'例如：2010年10-12月下半年环孕检'),
-        error_messages = gl.account_management_name_error_messages,
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：张三，李四'),
+        error_messages = gl.account_name_error_messages,
+        )
+    role_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'角色名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：技术人员，区域主管...'),
+        error_messages = gl.role_name_error_messages,
+        )
+    service_area_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'服务区域名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：周田，周田乡...'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    department_name = forms.CharField(
+        max_length=128,
+        required=False, 
+        label=_(u'单位部门名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：县委/政法委，公安局，...'),
+        error_messages = gl.department_name_error_messages,
+        )
+    is_checker = forms.ChoiceField(
+        required=True,
+        label =_(u'检查人员'),
+        choices=((u'none', u'未知'),
+                 (u'true', u'是'),
+                 (u'false', u'否'),
+                 )
         )
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
         widget=forms.CheckboxInput(attrs={'class':'',
-                                          'value':'fuzzy_search',
+                                          'value':'is_fuzzy',
                                           }, 
                                    check_test=None,
                                    ),
         )
     
-    def clean_account_management_name(self):
+    def clean_name(self):
         try:
-            self.account_management_name_copy = self.data.get('account_management_name')
+            name_copy = self.data.get('name')
+            if re.match(gl._name_add_re_pattern, name_copy) is None:
+                raise forms.ValidationError(gl.account_name_error_messages['format_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-        if re.match(gl.account_management_name_search_re_pattern, self.account_management_name_copy) is None:
-            raise forms.ValidationError(gl.account_management_name_error_messages['format_error'])
-#        print self.account_management_name_copy
-        return self.account_management_name_copy
+            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+        return name_copy
     
-    def clean_is_fuzzy(self):
+    def clean_role_name(self):
         try:
-            self.is_fuzzy_value = self.data.get('is_fuzzy')
+            role_name_copy = self.data.get('role_name')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_management_name_error_messages['form_error'])
-#        print self.is_fuzzy_value
-        return self.is_fuzzy_value
-    
-    def fuzzy_search(self):
-        if self.is_fuzzy_value == u'fuzzy_search':
-            return True
-        else:
-            return False
-        
-    def is_null(self):
-        if self.account_management_name_copy == u'':
-            return True
-        else:
-            return False
+            raise forms.ValidationError(gl.role_name_error_messages['form_error'])
+        if re.match(gl.role_name_search_re_pattern, role_name_copy) is None:
+            raise forms.ValidationError(gl.role_name_error_messages['format_error'])
+        return role_name_copy
+
+    def clean_service_area_name(self):
+        try:
+           service_area_name_copy = self.data.get('service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+        if re.match(gl.service_area_name_search_re_pattern, service_area_name_copy) is None:
+            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+        return service_area_name_copy
+
+    def clean_department_name(self):
+        try:
+            department_name_copy = self.data.get('department_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        if re.match(gl.department_name_search_re_pattern, department_name_copy) is None:
+            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
+        return department_name_copy
+
     def save_to_session(self, request):
-        request.session[gl.session_account_management_name] = self.account_management_name_copy
-        if self.fuzzy_search():
-            request.session[gl.session_account_management_is_fuzzy] = u'fuzzy_search'
-        else:
-            request.session[gl.session_account_management_is_fuzzy] = False
+        request.session[gl.session_account_name] = self.cleaned_data['name']
+        request.session[gl.session_account_role_name] = self.cleaned_data['role_name']
+        request.session[gl.session_account_service_area_name] = self.cleaned_data['service_area_name']
+        request.session[gl.session_account_department_name] = self.cleaned_data['department_name']
+        request.session[gl.session_account_is_checker] = self.cleaned_data['is_checker']
+        request.session[gl.session_account_is_fuzzy] = self.cleaned_data['is_fuzzy']
         return True
+
+    def read_from_session(self, request):
+        self.fields['name'].widget.attrs['value'] = request.session[gl.session_account_name]
+        self.fields['role_name'].widget.attrs['value'] = request.session[gl.session_account_role_name]
+        self.fields['service_area_name'].widget.attrs['value'] = request.session[gl.session_account_service_area_name]
+        self.fields['department_name'].widget.attrs['value'] = request.session[gl.session_account_department_name]
+        self.fields['is_checker'].widget.attrs['value'] = request.session[gl.session_account_is_checker]
+        self.fields['is_fuzzy'].widget.attrs['value'] = request.session[gl.session_account_is_fuzzy]
+        return True
+    def search(self):
+        query_set = None
+        name = self.cleaned_data['name']
+        service_area_name = self.cleaned_data['service_area_name']
+        department_name = self.cleaned_data['department_name']
+        role_name = self.cleaned_data['role_name']
+        is_checker = self.cleaned_data['is_checker']
+        if self.cleaned_data['is_fuzzy'] == u'is_fuzzy':
+            is_fuzzy = True
+        else:
+            is_fuzzy = False
+        
+        if is_fuzzy is False:
+            if is_checker == u'true':
+                query_set = UserProfile.objects.filter(is_checker=True)
+                if role_name == u'':
+                    if service_area_name == u'':
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+
+                    else:
+                        query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+                else:
+                    query_set = query_set.filter(user__groups__name__startswith=role_name)
+                    if service_area_name == u'':
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+                    else:
+                        query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__startswith=name)
+            else:
+                if is_checker == u'false':
+                    query_set = UserProfile.objects.filter(is_checker=False)
+                    if role_name == u'':
+                        if service_area_name == u'':
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                    else:
+                        query_set = query_set.filter(user__groups__name__startswith=role_name)
+                        if service_area_name == u'':
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__startswith=name)
+                else:
+                    if is_checker == u'none':
+                        query_set = UserProfile.objects.all()
+                        if role_name == u'':
+                            if service_area_name == u'':
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                        else:
+                            query_set = query_set.filter(user__groups__name__startswith=role_name)
+                            if service_area_name == u'':
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__startswith=name)
+                    else:
+                        pass
+        else:
+            if is_checker == u'true':
+                query_set = UserProfile.objects.filter(is_checker=True)
+                if role_name == u'':
+                    if service_area_name == u'':
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+
+                    else:
+                        query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+                else:
+                    query_set = query_set.filter(user__groups__name__icontains=role_name)
+                    if service_area_name == u'':
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+                    else:
+                        query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+                        if department_name == u'':
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                            if name == u'':
+                                pass
+                            else:
+                                query_set = query_set.filter(user__name__icontains=name)
+            else:
+                if is_checker == u'false':
+                    query_set = UserProfile.objects.filter(is_checker=False)
+                    if role_name == u'':
+                        if service_area_name == u'':
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                    else:
+                        query_set = query_set.filter(user__groups__name__icontains=role_name)
+                        if service_area_name == u'':
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+                            if department_name == u'':
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                if name == u'':
+                                    pass
+                                else:
+                                    query_set = query_set.filter(user__name__icontains=name)
+                else:
+                    if is_checker == u'none':
+                        query_set = UserProfile.objects.all()
+                        if role_name == u'':
+                            if service_area_name == u'':
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                        else:
+                            query_set = query_set.filter(user__groups__name__icontains=role_name)
+                            if service_area_name == u'':
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                            else:
+                                query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+                                if department_name == u'':
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                                else:
+                                    query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
+                                    if name == u'':
+                                        pass
+                                    else:
+                                        query_set = query_set.filter(user__name__icontains=name)
+                    else:
+                        pass
+        return query_set
+

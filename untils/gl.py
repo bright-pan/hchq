@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 ############################################################
 #系统用户表单
 ############################################################
-account_management_name_error_messages={'required': _(u'用户名称不能为空！'),
+account_name_error_messages={'required': _(u'用户名称不能为空！'),
                          'max_length': _(u'用户名称长度大于30个字符！'),
                          'do_not_exist': _(u'用户名称不存在！'),
                          'format_error': _(u'用户名称必须由汉字，大小写字母，数字单独或者混合组成！'),
@@ -11,15 +11,17 @@ account_management_name_error_messages={'required': _(u'用户名称不能为空
                          'already_error':_(u'用户名已存在！'),
                          }
 
-account_management_password_error_messages={'required': _(u'此处密码不能为空！'),
+account_password_error_messages={'required': _(u'此处密码不能为空！'),
                          'max_length': _(u'密码长度大于30个字符！'),
                          'password_error': _(u'密码不正确！'),
                          'format_error':_(u'密码必须由大小写字母，数字单独或者混合组成！'),
                          'password_confirm_error': _(u'输入的新密码不一致，请重新输入！'),
                          'form_error': _(u'修改密码表单严重错误！'),
                          }
-account_management_username_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
-account_management_password_re_pattern = ur'^[\w]+$'
+account_name_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+account_name_search_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+account_name_add_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+account_password_re_pattern = ur'^[\w]+$'
 ################################################################################
 #服务区域表单
 ################################################################################
@@ -29,6 +31,7 @@ service_area_name_error_messages={'required': _(u'请输入服务区域名称！
                                   'format_error': _(u'服务区域名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
                                   'form_error': _(u'表单严重错误！'),
                                   'already_error': _(u'服务区域同名，请输入正确的服务区域名称！'),
+                                  'not_exist_error': _(u'服务区域不存在'),
                                   }
 service_area_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
 service_area_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
@@ -45,10 +48,12 @@ session_service_area_is_fuzzy = u'session_service_area_is_fuzzy'
 #单位部门表单
 ################################################################################
 department_name_error_messages={'required': _(u'请输入单位部门名称！'),
-                                  'max_length': _(u'输入的单位部门名称长度大于500个字符！'),
-                                  'format_error': _(u'单位部门名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
-                                  'form_error': _(u'表单严重错误！'),
-                                  'already_error': _(u'单位部门同名，请输入正确的单位部门名称！'),
+                                'max_length': _(u'输入的单位部门名称长度大于500个字符！'),
+                                'format_error': _(u'单位部门名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
+                                'form_error': _(u'表单严重错误！'),
+                                'already_error': _(u'单位部门同名，请输入正确的单位部门名称！'),
+                                'not_exist_error': _(u'服务区域不存在'),
+                                'not_match_error': _(u'服务区域与单位部门未关联！'),
                                   }
 
 department_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
@@ -115,3 +120,13 @@ session_check_project_name = u'session_check_project_name'
 session_check_project_start_time = u'session_check_project_start_time'
 session_check_project_end_time = u'session_check_project_end_time'
 session_check_project_is_fuzzy = u'session_check_project_is_fuzzy'
+
+################################################################################
+#用户表单
+################################################################################
+session_account_name = u'session_account_name'
+session_account_service_area_name = u'session_account_service_area_name'
+session_account_department_name = u'session_account_department_name'
+session_account_role_name = u'session_account_role_name'
+session_account_is_checker = u'session_account_is_checker'
+session_account_is_fuzzy = u'session_account_is_fuzzy'

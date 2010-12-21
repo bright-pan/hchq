@@ -1,14 +1,14 @@
-{% extends "account_management/account_management_layout.html" %}
+{% extends "account/management/account_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 
 {% block col1_content %}
 <h6 class="vlist">系统用户管理</h6>
 <ul class="vlist">
-  <li><a href="{% url account_management_list 1 %}">系统用户查询</a></li>
-  <li><a href="{% url account_management_add 1 %}">系统用户添加</a></li>
-  <li><a href="{% url account_management_modify 1 %}">系统用户修改</a></li>
-  <li><a href="{% url account_management_delete 1 %}">系统用户删除</a></li>
+  <li><a href="{% url account_list 1 %}">系统用户查询</a></li>
+  <li><a href="{% url account_add 1 %}">系统用户添加</a></li>
+  <li><a href="{% url account_modify 1 %}">系统用户修改</a></li>
+  <li><a href="{% url account_delete 1 %}">系统用户删除</a></li>
   <li class="active"><strong>系统用户详情</strong></li>
   <li><a href="{% url hchq_index %}">进入系统</a></li>
 </ul>
