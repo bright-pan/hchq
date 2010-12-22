@@ -86,7 +86,7 @@ urlpatterns += patterns('hchq.account.views',
 
        (r'detail_modify/$',
        'account_detail_modify',
-       {'template_name' : 'account/management/account_detail_modify.html', 'next': 'account/list/1', },
+       {'template_name' : 'account/management/account_detail_modify.html', 'next': 'account/modify/1', },
        'account_detail_modify'),
                         
 ) 

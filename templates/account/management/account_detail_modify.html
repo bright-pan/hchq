@@ -24,33 +24,56 @@
         <fieldset>
           <legend>系统用户【{{ account_name }}】编辑</legend>
           {% with detail_modify_form as form %}
-          {% if form.account_start_time.errors %}
+          {% if form.service_area_name.errors %}
           <div class="type-text error">
-            <strong class="message">{{ form.account_start_time.errors }}</strong>
-            {{ form.account_start_time.label_tag }}<sup>{{ form.account_start_time.help_text}}</sup>
-            {{ form.account_start_time }}
+            <strong class="message">{{ form.service_area_name.errors }}</strong>
+            {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+            {{ form.service_area_name }}
           </div>
           {% else %}
           <div class="type-text">
-            {{ form.account_start_time.label_tag }}<sup>{{ form.account_start_time.help_text}}</sup>
-            {{ form.account_start_time }}
+            {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+            {{ form.service_area_name }}
           </div>
           {% endif %}
-          {% if form.account_end_time.errors %}
+          {% if form.department_name.errors %}
           <div class="type-text error">
-            <strong class="message">{{ form.account_end_time.errors }}</strong>
-            {{ form.account_end_time.label_tag }}<sup>{{ form.account_end_time.help_text}}</sup>
-            {{ form.account_end_time }}
+            <strong class="message">{{ form.department_name.errors }}</strong>
+            {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+            {{ form.department_name }}
           </div>
           {% else %}
           <div class="type-text">
-            {{ form.account_end_time.label_tag }}<sup>{{ form.account_end_time.help_text}}</sup>
-            {{ form.account_end_time }}
+            {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+            {{ form.department_name }}
           </div>
           {% endif %}
-          {{ form.account_id }}
+          {% if form.role_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.role_name.errors }}</strong>
+            {{ form.role_name.label_tag }}<sup>{{ form.role_name.help_text}}</sup>
+            {{ form.role_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.role_name.label_tag }}<sup>{{ form.role_name.help_text}}</sup>
+            {{ form.role_name }}
+          </div>
+          {% endif %}
+          {% if form.is_checker.errors %}
+          <div class="type-check error">
+            <strong class="message">{{ form.is_checker.errors }}</strong>
+            {{ form.is_checker.label_tag }}<sup>{{ form.is_checker.help_text}}</sup>
+            {{ form.is_checker }}
+          </div>
+          {% else %}
+          <div class="type-check">
+            {{ form.is_checker.label_tag }}<sup>{{ form.is_checker.help_text}}</sup>
+            {{ form.is_checker }}
+          </div>
+          {% endif %}
+          {{ form.id }}
           {% endwith %}
-
           <div class="type-button">
             <input type="submit" name="submit" value="修改" class="submit"/>      
           </div>

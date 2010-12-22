@@ -548,7 +548,7 @@ class AccountAddForm(forms.Form):
             raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
 
         try:
-            ServiceArea.objects.get(name=service_area_name_copy)
+            ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
 
@@ -563,11 +563,11 @@ class AccountAddForm(forms.Form):
         if re.match(gl.department_name_add_re_pattern, department_name_copy) is None:
             raise forms.ValidationError(gl.department_name_error_messages['format_error'])
         try:
-            department_object = Department.objects.get(name=department_name_copy)
+            department_object = Department.objects.get(name=department_name_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_exist_error'])
         try:
-            service_area_object = ServiceArea.objects.get(name=service_area_name_copy)
+            service_area_object = ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
         try:
@@ -614,9 +614,7 @@ class AccountModifyForm(forms.Form):
     系统用户修改表单
     """
 
-    id_copy = None
     id_object = None
-
 
     id = forms.CharField(
         widget=forms.HiddenInput(),
@@ -626,95 +624,163 @@ class AccountModifyForm(forms.Form):
     def clean_id(self):
         try:
             try:
-                self.id_copy = int(self.data.get('id'))
+                id_copy = int(self.data.get('id'))
             except ValueError:
                 raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-            self.id_object = Account.objects.get(is_active=True, pk=self.id_copy)
+            self.id_object = User.objects.get(pk=id_copy, is_active=True, is_superuser=False, is_staff=False)
 #            print '************************'
 #            print self.id_object.name
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-        return self.id_copy
+        return id_copy
 
     def object(self):
         return self.id_object
-
 
 class AccountDetailModifyForm(forms.Form):
     """
     系统用户详细修改表单
     """
-    start_time_copy = None
-    end_time_copy = None
-    
-    id_copy = None
-    id_object = None
 
-    start_time = forms.DateField(
+    id_object = None
+    role_object = None
+    service_area_department_object = None
+
+    role_name = forms.CharField(
+        max_length=128,
         required=True,
-        label=_(u'开始时间'),
-        help_text=_(u'例如：2010-10-25'),
-        error_messages = gl.account_name_error_messages,
-        input_formats = ('%Y-%m-%d',)
+        label=_(u'角色名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：技术人员，区域主管...'),
+        error_messages = gl.role_name_error_messages,
         )
-    end_time = forms.DateField(
+    service_area_name = forms.CharField(
+        max_length=128,
         required=True,
-        label=_(u'结束时间'),
-        help_text=_(u'例如：2010-10-25'),
-        error_messages = gl.account_name_error_messages,
-        input_formats = ('%Y-%m-%d',)
+        label=_(u'服务区域名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：周田，周田乡...'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    department_name = forms.CharField(
+        max_length=128,
+        required=True, 
+        label=_(u'单位部门名称'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：县委/政法委，公安局，...'),
+        error_messages = gl.department_name_error_messages,
+        )
+    is_checker = forms.CharField(
+        required=True,
+        label =_(u'检查人员'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'is_checker',
+                                          }, 
+                                   check_test=None,
+                                   ),
         )
     id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.account_name_error_messages,
         )
 
-
-    def clean_start_time(self):
+    def clean_role_name(self):
         try:
-            self.start_time_copy = self.cleaned_data.get('start_time')
-            self.end_time_copy = self.cleaned_data.get('end_time')
+            role_name_copy = self.data.get('role_name')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-        if self.start_time_copy is not None  and self.end_time_copy is not None:
-            if self.start_time_copy > self.end_time_copy:
-                raise forms.ValidationError(gl.account_name_error_messages['logic_error'])
-        return self.start_time_copy
-
-    def clean_end_time(self):
+            raise forms.ValidationError(gl.role_name_error_messages['form_error'])
+        if re.match(gl.role_name_add_re_pattern, role_name_copy) is None:
+            raise forms.ValidationError(gl.role_name_error_messages['format_error'])
         try:
-            self.start_time_copy = self.cleaned_data.get('start_time')
-            self.end_time_copy = self.cleaned_data.get('end_time')
+            self.role_object = Group.objects.get(name=role_name_copy)
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-        if self.start_time_copy is not None  and self.end_time_copy is not None:
-            if self.start_time_copy > self.end_time_copy:
-                raise forms.ValidationError(gl.account_name_error_messages['logic_error'])
-        return self.end_time_copy
+            raise forms.ValidationError(gl.role_name_error_messages['not_exist_error'])
+#        print self.role_name_copy
+        return role_name_copy
+    def clean_service_area_name(self):
+        try:
+           service_area_name_copy = self.data.get('service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+
+        if re.match(gl.service_area_name_add_re_pattern, service_area_name_copy) is None:
+            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+
+        try:
+            ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
+
+        return service_area_name_copy
+
+    def clean_department_name(self):
+        try:
+            department_name_copy = self.data.get('department_name')
+            service_area_name_copy = self.data.get('service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        if re.match(gl.department_name_add_re_pattern, department_name_copy) is None:
+            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
+        try:
+            department_object = Department.objects.get(name=department_name_copy, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['not_exist_error'])
+        try:
+            service_area_object = ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
+        try:
+            self.service_area_department_object = ServiceAreaDepartment.objects.get(service_area=service_area_object, department=department_object, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
+        return department_name_copy
+
     def clean_id(self):
         try:
             try:
-                self.id_copy = int(self.data.get('id'))
+                id_copy = int(self.data.get('id'))
             except ValueError:
                 raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-            self.id_object = Account.objects.get(is_active=True, pk=self.id_copy)
+            self.id_object = User.objects.get(pk=id_copy, is_active=True, is_superuser=False, is_staff=False)
 #            print '************************'
 #            print self.id_object.name
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-        return self.id_copy
+        return id_copy
 
 
     def set_value(self, modify_object=None):
-        self.fields['start_time'].widget.attrs['value'] = modify_object.start_time.isoformat()
-        self.fields['end_time'].widget.attrs['value'] = modify_object.end_time.isoformat()
-        self.fields['id'].widget.attrs['value'] = modify_object.id
-        return modify_object
+        if modify_object is not None:
+            self.fields['role_name'].widget.attrs['value'] = modify_object.groups.get().name
+            self.fields['service_area_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.service_area.name
+            self.fields['department_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.department.name
+            self.fields['id'].widget.attrs['value'] = modify_object.id
+            is_checker = modify_object.get_profile().is_checker
+            if is_checker is True:
+                self.fields['is_checker'].widget.attrs['checked'] = u'true'
+            else:
+                pass
+            return True
+        else:
+            return False
+
     
     def detail_modify(self):
-        
-        self.id_object.start_time = self.start_time_copy
-        self.id_object.end_time = self.end_time_copy
+        if self.cleaned_data['is_checker'] == u'is_checker':
+            is_checker = True
+        else:
+            is_checker = False
+        self.id_object.groups.clear()
+        self.id_object.groups.add(self.role_object)
+        id_object_profile = self.id_object.get_profile()
+        id_object_profile.service_area_department = self.service_area_department_object
+        id_object_profile.is_checker = is_checker
+        id_object_profile.save()
         self.id_object.save()
         return self.id_object
 
@@ -722,7 +788,6 @@ class AccountDeleteForm(forms.Form):
     """
     系统用户删除表单
     """
-    id_copy = None
     id_object = None
 
     id = forms.CharField(
@@ -733,19 +798,19 @@ class AccountDeleteForm(forms.Form):
     def clean_id(self):
         try:
             try:
-                self.id_copy = int(self.data.get('id'))
+                id_copy = int(self.data.get('id'))
             except ValueError:
                 raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-            self.id_object = Account.objects.get(pk=self.id_copy)
+            self.id_object = User.objects.get(pk=id_copy, is_active=True, is_superuser=False, is_staff=False)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-        return self.id_copy
+        return id_copy
 
     def delete(self):
-
         if self.id_object is not None:
             self.id_object.is_active = False
             self.id_object.save()
+            return True
         else:
             return False
 
@@ -800,7 +865,8 @@ class AccountSearchForm(forms.Form):
         choices=((u'none', u'未知'),
                  (u'true', u'是'),
                  (u'false', u'否'),
-                 )
+                 ),
+        help_text=_(u'例如：未知代表所有人员'),
         )
     is_fuzzy = forms.CharField(
         required=True,
@@ -810,6 +876,7 @@ class AccountSearchForm(forms.Form):
                                           }, 
                                    check_test=None,
                                    ),
+        help_text=_(u'例如：打勾代表进行模糊搜索！'),
         )
     
     def clean_name(self):
@@ -855,9 +922,12 @@ class AccountSearchForm(forms.Form):
         request.session[gl.session_account_department_name] = self.cleaned_data['department_name']
         request.session[gl.session_account_is_checker] = self.cleaned_data['is_checker']
         is_fuzzy = self.cleaned_data['is_fuzzy']
+#        print is_fuzzy
         if is_fuzzy == u'is_fuzzy':
+#            print u'true'
             request.session[gl.session_account_is_fuzzy] = is_fuzzy
         else:
+#            print u'false'
             request.session[gl.session_account_is_fuzzy] = False
         return True
     
@@ -868,7 +938,8 @@ class AccountSearchForm(forms.Form):
         data['service_area_name'] = request.session.get(gl.session_account_service_area_name, u'')
         data['department_name'] = request.session.get(gl.session_account_department_name, u'')
         data['is_checker'] = request.session.get(gl.session_account_is_checker, u'none')
-        data['is_fuzzy'] = request.session.get(gl.session_account_is_checker, False)
+        data['is_fuzzy'] = request.session.get(gl.session_account_is_fuzzy, False)
+#        print data['is_fuzzy']
         return data
     
     def init_from_session(self, request):
@@ -898,7 +969,7 @@ class AccountSearchForm(forms.Form):
         
         if is_fuzzy is False:
             if is_checker == u'true':
-                query_set = UserProfile.objects.filter(is_checker=True, user__is_active=True)
+                query_set = UserProfile.objects.filter(is_checker=True, user__is_active=True, user__is_superuser=False, user__is_staff=False)
                 if role_name == u'':
                     if service_area_name == u'':
                         if department_name == u'':
@@ -955,7 +1026,7 @@ class AccountSearchForm(forms.Form):
                                 query_set = query_set.filter(user__username__startswith=name)
             else:
                 if is_checker == u'false':
-                    query_set = UserProfile.objects.filter(is_checker=False, user__is_active=True)
+                    query_set = UserProfile.objects.filter(is_checker=False, user__is_active=True, user__is_superuser=False, user__is_staff=False)
                     if role_name == u'':
                         if service_area_name == u'':
                             if department_name == u'':
@@ -1011,7 +1082,7 @@ class AccountSearchForm(forms.Form):
                                     query_set = query_set.filter(user__username__startswith=name)
                 else:
                     if is_checker == u'none':
-                        query_set = UserProfile.objects.filter(user__is_active=True)
+                        query_set = UserProfile.objects.filter(user__is_active=True, user__is_superuser=False, user__is_staff=False)
                         if role_name == u'':
                             if service_area_name == u'':
                                 if department_name == u'':
@@ -1069,7 +1140,7 @@ class AccountSearchForm(forms.Form):
                         pass
         else:
             if is_checker == u'true':
-                query_set = UserProfile.objects.filter(is_checker=True)
+                query_set = UserProfile.objects.filter(is_checker=True, user__is_active=True, user__is_superuser=False, user__is_staff=False)
                 if role_name == u'':
                     if service_area_name == u'':
                         if department_name == u'':
@@ -1126,7 +1197,7 @@ class AccountSearchForm(forms.Form):
                                 query_set = query_set.filter(user__username__icontains=name)
             else:
                 if is_checker == u'false':
-                    query_set = UserProfile.objects.filter(is_checker=False)
+                    query_set = UserProfile.objects.filter(is_checker=False, user__is_active=True, user__is_superuser=False, user__is_staff=False)
                     if role_name == u'':
                         if service_area_name == u'':
                             if department_name == u'':
@@ -1182,7 +1253,7 @@ class AccountSearchForm(forms.Form):
                                     query_set = query_set.filter(user__username__icontains=name)
                 else:
                     if is_checker == u'none':
-                        query_set = UserProfile.objects.all()
+                        query_set = UserProfile.objects.filter(user__is_active=True, user__is_superuser=False, user__is_staff=False)
                         if role_name == u'':
                             if service_area_name == u'':
                                 if department_name == u'':

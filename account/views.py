@@ -808,66 +808,59 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
     """
     系统用户修改视图
     """
-    page_title = u'修改系统用户'
-
+    page_title = u'编辑系统用户'
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'编辑':
-            account_modify_form = CheckProjectModifyForm(post_data)
+            account_modify_form = AccountModifyForm(post_data)
             if account_modify_form.is_valid():
-                account_modify_object = account_modify_form.account_object()
+                account_modify_object = account_modify_form.object()
 #                print account_modify_object
-                account_detail_modify_form = CheckProjectDetailModifyForm()
+                account_detail_modify_form = AccountDetailModifyForm()
                 account_detail_modify_form.set_value(account_modify_object)
-                page_title = u'编辑系统用户'
+                page_title = u'修改系统用户'
                 return render_to_response(next_template_name,
                                           {'detail_modify_form': account_detail_modify_form,
-                                           'account_name': account_modify_object.name,
+                                           'account_name': account_modify_object.username,
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
             else:
                 pass
-            data = {'account_name':request.session.get(gl.session_account_name, u''),
-                    'is_fuzzy':request.session.get(gl.session_account_is_fuzzy, False),
-                    }
-            account_search_form = CheckProjectSearchForm(data)
+            account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
+            account_search_form.init_from_session(request)
             if account_search_form.is_valid():
-                if account_search_form.is_null() is False:
-                    if account_search_form.fuzzy_search() is False:
-                        query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                               Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                    else:
-                        account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                        query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                               Q(name__icontains=account_search_form.cleaned_data['account_name']))
-                else:
-                    query_set = CheckProject.objects.filter(Q(is_active = True))
+                query_set = account_search_form.search()
+                results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
             else:
-                raise Http404('search form error!')
+                results_page = None
         else:
-            account_modify_form = CheckProjectModifyForm()
             if submit_value == u'查询':
-                account_search_form = CheckProjectSearchForm(post_data)
+                account_search_form = AccountSearchForm(post_data)
+                account_modify_form = AccountModifyForm()
                 if account_search_form.is_valid():
-                    account_search_form.save_to_session(request)
-                    if account_search_form.is_null() is False:
-                        if account_search_form.fuzzy_search() is False:
-                            query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                                   Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                        else:
-                            account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                            query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=account_search_form.cleaned_data['account_name']))
-                    else:
-                        query_set = CheckProject.objects.filter(Q(is_active = True))
-
+                    account_search_form.data_to_session(request)
+                    account_search_form.init_from_session(request)
+                    query_set = account_search_form.search()
+                    results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
                 else:
-                    query_set = None
+                    results_page = None
             else:
-                raise Http404('search form error!')
-        if query_set is not None:
+                raise Http404('Invalid Request!')                
+        return render_to_response(template_name,
+                                  {'search_form': account_search_form,
+                                   'modify_form': account_modify_form,
+                                   'page_title': page_title,
+                                   'results_page':results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+    else:
+        account_modify_form = AccountModifyForm()
+        account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
+        account_search_form.init_from_session(request)
+        if account_search_form.is_valid():
+            query_set = account_search_form.search()
             results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
             results_page = None
@@ -878,35 +871,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                                    'results_page':results_page,
                                    },
                                   context_instance=RequestContext(request))
-    else:
-        account_modify_form = CheckProjectModifyForm()
-        data = {'account_name':request.session.get(gl.session_account_name, u''),
-                'is_fuzzy':request.session.get(gl.session_account_is_fuzzy, False),
-                }        
-        account_search_form = CheckProjectSearchForm(data)
-        if account_search_form.is_valid():
-            if account_search_form.is_null() is False:
-                if account_search_form.fuzzy_search() is False:
-                    query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                           Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                else:
-                    account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                    query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=account_search_form.cleaned_data['account_name']))
-            else:
-                query_set = CheckProject.objects.filter(Q(is_active = True))
 
-        else:
-            query_set = CheckProject.objects.filter(Q(is_active = True))
-        results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
-
-        return render_to_response(template_name,
-                                  {'search_form': account_search_form,
-                                   'modify_form': account_modify_form,
-                                   'page_title': page_title,
-                                   'results_page':results_page,
-                                   },
-                                  context_instance=RequestContext(request))
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def account_detail_modify(request, template_name='my.html', next='/', account_page='1',):
@@ -919,18 +884,16 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'修改':
-            account_detail_modify_form = CheckProjectDetailModifyForm(post_data)
+            account_detail_modify_form = AccountDetailModifyForm(post_data)
             if account_detail_modify_form.is_valid():
-
-#                account_detail_modify_form.set_value(account_modify_object)
-                account_detail_modify_form.account_detail_modify()
+                account_detail_modify_form.detail_modify()
                 return HttpResponseRedirect(next)
             else:
-                account_id = int(account_detail_modify_form.data.get('account_id'))
+                account_id = int(account_detail_modify_form.data.get('id'))
                 account_object = CheckProject.objects.get(pk=account_id)
                 return render_to_response(template_name,
                                           {'detail_modify_form': account_detail_modify_form,
-                                           'account_name': account_object.name,
+                                           'account_name': account_object.username,
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
@@ -952,53 +915,31 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'删除':
-            account_delete_form = CheckProjectDeleteForm(post_data)
+            account_delete_form = AccountDeleteForm(post_data)
             if account_delete_form.is_valid():
-                account_delete_form.account_delete()
+                account_delete_form.delete()
             else:
                 pass
-            data = {'account_name':request.session.get(gl.session_account_name, u''),
-                    'is_fuzzy':request.session.get(gl.session_account_is_fuzzy, False),
-                    }        
-            account_search_form = CheckProjectSearchForm(data)
+            account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
+            account_search_form.init_from_session(request)
             if account_search_form.is_valid():
-                if account_search_form.is_null() is False:
-                    if account_search_form.fuzzy_search() is False:
-                        query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                               Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                    else:
-                        account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                        query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                               Q(name__icontains=account_search_form.cleaned_data['account_name']))
-                else:
-                    query_set = CheckProject.objects.filter(Q(is_active = True))
+                query_set = account_search_form.search()
+                results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
             else:
-                raise Http404('search form error!')
+                results_page = None
         else:
-            account_delete_form = CheckProjectDeleteForm()
             if submit_value == u'查询':
-                account_search_form = CheckProjectSearchForm(post_data)
+                account_search_form = AccountSearchForm(post_data)
+                account_delete_form = AccountDeleteForm()
                 if account_search_form.is_valid():
-                    account_search_form.save_to_session(request)
-                    if account_search_form.is_null() is False:
-                        if account_search_form.fuzzy_search() is False:
-                            query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                                   Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                        else:
-                            account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                            query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=account_search_form.cleaned_data['account_name']))
-                    else:
-                        query_set = CheckProject.objects.filter(Q(is_active = True))
-
+                    account_search_form.data_to_session(request)
+                    account_search_form.init_from_session(request)
+                    query_set = account_search_form.search()
+                    results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
                 else:
-                    query_set = None
+                    results_page = None
             else:
-                raise Http404('search form error!')
-        if query_set is not None:
-            results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
-        else:
-            results_page = None
+                raise Http404('Invalid Request!')                
         return render_to_response(template_name,
                                   {'search_form': account_search_form,
                                    'delete_form': account_delete_form,
@@ -1007,27 +948,14 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
                                    },
                                   context_instance=RequestContext(request))
     else:
-        account_delete_form = CheckProjectDeleteForm()
-        data = {'account_name':request.session.get(gl.session_account_name, u''),
-                'is_fuzzy':request.session.get(gl.session_account_is_fuzzy, False),
-                }        
-        account_search_form = CheckProjectSearchForm(data)
+        account_delete_form = AccountDeleteForm()
+        account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
+        account_search_form.init_from_session(request)
         if account_search_form.is_valid():
-            if account_search_form.is_null() is False:
-                if account_search_form.fuzzy_search() is False:
-                    query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                           Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                else:
-                    account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                    query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=account_search_form.cleaned_data['account_name']))
-            else:
-                query_set = CheckProject.objects.filter(Q(is_active = True))
-
+            query_set = account_search_form.search()
+            results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
-            query_set = CheckProject.objects.filter(Q(is_active = True))
-        results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
-
+            results_page = None
         return render_to_response(template_name,
                                   {'search_form': account_search_form,
                                    'delete_form': account_delete_form,

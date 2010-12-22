@@ -101,7 +101,7 @@
           </div>
           {% else %}
           <div class="type-check">
-            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy.label_tag }}<br><sup>{{ form.is_fuzzy.help_text}}</sup><br>
             {{ form.is_fuzzy }}
           </div>
           {% endif %}
@@ -109,7 +109,7 @@
       </div>
     </div>
     <div class="type-button">
-      <input type="submit" value="查询" class="submit"/>      
+      <input type="submit" value="查询" class="submit" name="submit"/>      
     </div>
   </fieldset>
 </form>

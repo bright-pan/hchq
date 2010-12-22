@@ -30,7 +30,7 @@ urlpatterns = patterns('hchq.check_project.views',
 
        (r'detail_modify/$',
        'check_project_detail_modify',
-       {'template_name' : 'check_project/check_project_detail_modify.html', 'next': 'check_project/list/1', },
+       {'template_name' : 'check_project/check_project_detail_modify.html', 'next': 'check_project/modify/1', },
        'check_project_detail_modify'),
 
 #      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
