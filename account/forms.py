@@ -591,12 +591,15 @@ class AccountAddForm(forms.Form):
                                                     email=settings.ACCOUNT_DEFAULT_EMAIL,
                                                     password=settings.ACCOUNT_DEFAULT_PASSWORD
                                                     )
+                user_object.groups.add(self.role_object)
                 UserProfile.objects.create(user=user_object,
                                            is_checker=is_checker_bool_value,
                                            service_area_department=self.service_area_department_object,
                                            )
                 return user_object
             user_object.is_active = True
+            user_object.groups.clear()
+            user_object.groups.add(self.role_object)
             user_object_profile = user_object.get_profile()
             user_object_profile.is_checker = is_checker_bool_value
             user_object_profile.service_area_department=self.service_area_department_object
@@ -812,7 +815,7 @@ class AccountSearchForm(forms.Form):
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
-            if re.match(gl._name_add_re_pattern, name_copy) is None:
+            if re.match(gl.account_name_search_re_pattern, name_copy) is None:
                 raise forms.ValidationError(gl.account_name_error_messages['format_error'])
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
@@ -845,23 +848,42 @@ class AccountSearchForm(forms.Form):
             raise forms.ValidationError(gl.department_name_error_messages['format_error'])
         return department_name_copy
 
-    def save_to_session(self, request):
+    def data_to_session(self, request):
         request.session[gl.session_account_name] = self.cleaned_data['name']
         request.session[gl.session_account_role_name] = self.cleaned_data['role_name']
         request.session[gl.session_account_service_area_name] = self.cleaned_data['service_area_name']
         request.session[gl.session_account_department_name] = self.cleaned_data['department_name']
         request.session[gl.session_account_is_checker] = self.cleaned_data['is_checker']
-        request.session[gl.session_account_is_fuzzy] = self.cleaned_data['is_fuzzy']
+        is_fuzzy = self.cleaned_data['is_fuzzy']
+        if is_fuzzy == u'is_fuzzy':
+            request.session[gl.session_account_is_fuzzy] = is_fuzzy
+        else:
+            request.session[gl.session_account_is_fuzzy] = False
         return True
-
-    def read_from_session(self, request):
-        self.fields['name'].widget.attrs['value'] = request.session[gl.session_account_name]
-        self.fields['role_name'].widget.attrs['value'] = request.session[gl.session_account_role_name]
-        self.fields['service_area_name'].widget.attrs['value'] = request.session[gl.session_account_service_area_name]
-        self.fields['department_name'].widget.attrs['value'] = request.session[gl.session_account_department_name]
-        self.fields['is_checker'].widget.attrs['value'] = request.session[gl.session_account_is_checker]
-        self.fields['is_fuzzy'].widget.attrs['value'] = request.session[gl.session_account_is_fuzzy]
+    
+    def data_from_session(self, request):
+        data = {}
+        data['name'] = request.session.get(gl.session_account_name, u'')
+        data['role_name'] = request.session.get(gl.session_account_role_name, u'')
+        data['service_area_name'] = request.session.get(gl.session_account_service_area_name, u'')
+        data['department_name'] = request.session.get(gl.session_account_department_name, u'')
+        data['is_checker'] = request.session.get(gl.session_account_is_checker, u'none')
+        data['is_fuzzy'] = request.session.get(gl.session_account_is_checker, False)
+        return data
+    
+    def init_from_session(self, request):
+        self.fields['name'].widget.attrs['value'] = request.session.get(gl.session_account_name, u'')
+        self.fields['role_name'].widget.attrs['value'] = request.session.get(gl.session_account_role_name, u'')
+        self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_account_service_area_name, u'')
+        self.fields['department_name'].widget.attrs['value'] = request.session.get(gl.session_account_department_name, u'')
+        self.fields['is_checker'].widget.attrs['value'] = request.session.get(gl.session_account_is_checker, u'none')
+        is_fuzzy = request.session.get(gl.session_account_is_fuzzy, False)
+        if is_fuzzy == u'is_fuzzy':
+            self.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
+        else:
+            pass
         return True
+    
     def search(self):
         query_set = None
         name = self.cleaned_data['name']
@@ -876,20 +898,20 @@ class AccountSearchForm(forms.Form):
         
         if is_fuzzy is False:
             if is_checker == u'true':
-                query_set = UserProfile.objects.filter(is_checker=True)
+                query_set = UserProfile.objects.filter(is_checker=True, user__is_active=True)
                 if role_name == u'':
                     if service_area_name == u'':
                         if department_name == u'':
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
 
                     else:
                         query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
@@ -897,13 +919,13 @@ class AccountSearchForm(forms.Form):
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
                 else:
                     query_set = query_set.filter(user__groups__name__startswith=role_name)
                     if service_area_name == u'':
@@ -911,7 +933,7 @@ class AccountSearchForm(forms.Form):
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                             if name == u'':
@@ -924,42 +946,42 @@ class AccountSearchForm(forms.Form):
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__startswith=name)
+                                query_set = query_set.filter(user__username__startswith=name)
             else:
                 if is_checker == u'false':
-                    query_set = UserProfile.objects.filter(is_checker=False)
+                    query_set = UserProfile.objects.filter(is_checker=False, user__is_active=True)
                     if role_name == u'':
                         if service_area_name == u'':
                             if department_name == u'':
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
                             if department_name == u'':
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                     else:
                         query_set = query_set.filter(user__groups__name__startswith=role_name)
                         if service_area_name == u'':
@@ -967,55 +989,55 @@ class AccountSearchForm(forms.Form):
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
                             if department_name == u'':
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__startswith=name)
+                                    query_set = query_set.filter(user__username__startswith=name)
                 else:
                     if is_checker == u'none':
-                        query_set = UserProfile.objects.all()
+                        query_set = UserProfile.objects.filter(user__is_active=True)
                         if role_name == u'':
                             if service_area_name == u'':
                                 if department_name == u'':
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                             else:
                                 query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
                                 if department_name == u'':
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                         else:
                             query_set = query_set.filter(user__groups__name__startswith=role_name)
                             if service_area_name == u'':
@@ -1023,26 +1045,26 @@ class AccountSearchForm(forms.Form):
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                             else:
                                 query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
                                 if department_name == u'':
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__startswith=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__startswith=name)
+                                        query_set = query_set.filter(user__username__startswith=name)
                     else:
                         pass
         else:
@@ -1054,13 +1076,13 @@ class AccountSearchForm(forms.Form):
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
 
                     else:
                         query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
@@ -1068,13 +1090,13 @@ class AccountSearchForm(forms.Form):
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
                 else:
                     query_set = query_set.filter(user__groups__name__icontains=role_name)
                     if service_area_name == u'':
@@ -1082,26 +1104,26 @@ class AccountSearchForm(forms.Form):
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
                     else:
                         query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
                         if department_name == u'':
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                             if name == u'':
                                 pass
                             else:
-                                query_set = query_set.filter(user__name__icontains=name)
+                                query_set = query_set.filter(user__username__icontains=name)
             else:
                 if is_checker == u'false':
                     query_set = UserProfile.objects.filter(is_checker=False)
@@ -1111,26 +1133,26 @@ class AccountSearchForm(forms.Form):
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
                             if department_name == u'':
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                     else:
                         query_set = query_set.filter(user__groups__name__icontains=role_name)
                         if service_area_name == u'':
@@ -1138,26 +1160,26 @@ class AccountSearchForm(forms.Form):
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
                             if department_name == u'':
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                             else:
                                 query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                 if name == u'':
                                     pass
                                 else:
-                                    query_set = query_set.filter(user__name__icontains=name)
+                                    query_set = query_set.filter(user__username__icontains=name)
                 else:
                     if is_checker == u'none':
                         query_set = UserProfile.objects.all()
@@ -1167,26 +1189,26 @@ class AccountSearchForm(forms.Form):
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                             else:
                                 query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
                                 if department_name == u'':
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                         else:
                             query_set = query_set.filter(user__groups__name__icontains=role_name)
                             if service_area_name == u'':
@@ -1194,26 +1216,26 @@ class AccountSearchForm(forms.Form):
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                             else:
                                 query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
                                 if department_name == u'':
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                                 else:
                                     query_set = query_set.filter(service_area_department__department_name__icontains=department_name)
                                     if name == u'':
                                         pass
                                     else:
-                                        query_set = query_set.filter(user__name__icontains=name)
+                                        query_set = query_set.filter(user__username__icontains=name)
                     else:
                         pass
         return query_set

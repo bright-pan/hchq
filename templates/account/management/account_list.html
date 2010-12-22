@@ -19,30 +19,95 @@
 <form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
     <legend>系统用户查询参数</legend>
-    {% if form.account_name.errors %}
-    <div class="type-text error">
-      <strong class="message">{{ form.account_name.errors }}</strong>
-      {{ form.account_name.label_tag }}<sup>{{ form.account_name.help_text}}</sup>
-      {{ form.account_name }}
+    <div class="subcolumns">
+      <div class="c33l">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.name.errors }}</strong>
+            {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
+            {{ form.name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
+            {{ form.name }}
+          </div>
+          {% endif %}
+          {% if form.service_area_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.service_area_name.errors }}</strong>
+            {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+            {{ form.service_area_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+            {{ form.service_area_name }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="c33l">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.role_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.role_name.errors }}</strong>
+            {{ form.role_name.label_tag }}<sup>{{ form.role_name.help_text}}</sup>
+            {{ form.role_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.role_name.label_tag }}<sup>{{ form.role_name.help_text}}</sup>
+            {{ form.role_name }}
+          </div>
+          {% endif %}
+          {% if form.department_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.department_name.errors }}</strong>
+            {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+            {{ form.department_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+            {{ form.department_name }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="c33r">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.is_checker.errors %}
+          <div class="type-select error">
+            <strong class="message">{{ form.is_checker.errors }}</strong>
+            {{ form.is_checker.label_tag }}<sup>{{ form.is_checker.help_text}}</sup>
+            {{ form.is_checker }}
+          </div>
+          {% else %}
+          <div class="type-select">
+            {{ form.is_checker.label_tag }}<sup>{{ form.is_checker.help_text}}</sup>
+            {{ form.is_checker }}
+          </div>
+          {% endif %}
+          {% if form.is_fuzzy.errors %}
+          <div class="type-check error">
+            <strong class="message">{{ form.is_fuzzy.errors }}</strong>
+            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy }}
+          </div>
+          {% else %}
+          <div class="type-check">
+            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    {% else %}
-    <div class="type-text">
-      {{ form.account_name.label_tag }}<sup>{{ form.account_name.help_text}}</sup>
-      {{ form.account_name }}
-    </div>
-    {% endif %}
-    {% if form.is_fuzzy.errors %}
-    <div class="type-text error">
-      <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-      {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
-      {{ form.is_fuzzy }}
-    </div>
-    {% else %}
-    <div class="type-check">
-      {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
-      {{ form.is_fuzzy }}
-    </div>
-    {% endif %}
     <div class="type-button">
       <input type="submit" value="查询" class="submit"/>      
     </div>
@@ -51,17 +116,5 @@
 {% endwith %}
 <hr>
 {% include 'account/management/account_table_list.html' %}
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-</div>
 {% endblock %}
 

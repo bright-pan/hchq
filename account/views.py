@@ -385,8 +385,6 @@ def role_list(request, template_name='my.html', next='/', role_page='1',):
         data = {'role_name':request.session.get(gl.session_role_name, u''),
                 'is_fuzzy':request.session.get(gl.session_role_is_fuzzy, False),
                 }        
-#       print data['is_fuzzy']
-
         role_search_form = RoleSearchForm(data)
         if role_search_form.is_valid():
             if role_search_form.is_null() is False:
@@ -1038,7 +1036,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
                                    },
                                   context_instance=RequestContext(request))
 
-    
+
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
 def account_list(request, template_name='my.html', next='/', account_page='1',):
@@ -1049,23 +1047,11 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        account_search_form = CheckProjectSearchForm(post_data)
+        account_search_form = AccountSearchForm(post_data)
         if account_search_form.is_valid():
-            account_search_form.save_to_session(request)
-            if account_search_form.is_null() is False:
-                if account_search_form.fuzzy_search() is False:
-                    query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                           Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                else:
-                    account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                    query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=account_search_form.cleaned_data['account_name']))
-            else:
-                query_set = CheckProject.objects.filter(Q(is_active = True))
-
-        else:
-            query_set = None
-        if query_set is not None:
+            account_search_form.data_to_session(request)
+            account_search_form.init_from_session(request)
+            query_set = account_search_form.search()
             results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
             results_page = None
@@ -1076,28 +1062,13 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
                                    },
                                   context_instance=RequestContext(request))
     else:
-        data = {'account_name':request.session.get(gl.session_account_name, u''),
-                'is_fuzzy':request.session.get(gl.session_account_is_fuzzy, False),
-                }        
-#       print data['is_fuzzy']
-
-        account_search_form = CheckProjectSearchForm(data)
+        account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
+        account_search_form.init_from_session(request)
         if account_search_form.is_valid():
-            if account_search_form.is_null() is False:
-                if account_search_form.fuzzy_search() is False:
-                    query_set = CheckProject.objects.filter(Q(is_active = True) & 
-                                                           Q(name__startswith=account_search_form.cleaned_data['account_name']))
-                else:
-#                    print '********'
-                    account_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                    query_set = CheckProject.objects.filter(Q(is_active = True) &
-                                                       Q(name__icontains=account_search_form.cleaned_data['account_name']))
-            else:
-                query_set = CheckProject.objects.filter(Q(is_active = True))
-
+            query_set = account_search_form.search()
+            results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
-            query_set = CheckProject.objects.filter(Q(is_active = True))
-        results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
+            results_page = None
         return render_to_response(template_name,
                                   {'search_form': account_search_form,
                                    'page_title': page_title,

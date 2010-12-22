@@ -19,8 +19,9 @@ account_password_error_messages={'required': _(u'此处密码不能为空！'),
                          'form_error': _(u'修改密码表单严重错误！'),
                          }
 account_name_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
-account_name_search_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+account_name_search_re_pattern = ur'^[\u4e00-\u9fa5\w]+$|(^$)'
 account_name_add_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+
 account_password_re_pattern = ur'^[\w]+$'
 ################################################################################
 #服务区域表单
