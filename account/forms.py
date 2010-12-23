@@ -598,6 +598,7 @@ class AccountAddForm(forms.Form):
                                            )
                 return user_object
             user_object.is_active = True
+            user_object.set_password(settings.ACCOUNT_DEFAULT_PASSWORD)
             user_object.groups.clear()
             user_object.groups.add(self.role_object)
             user_object_profile = user_object.get_profile()

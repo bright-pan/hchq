@@ -17,54 +17,54 @@
 <!-- Insert your subtemplate content here -->
 <h3>系统用户详情</h3>
 <hr>
+{% if success %}
+<p class="important">系统用户【{{ result.user.username }}】密码已成功重置！</p>
+{% else %}
+{% endif %}
 {% if result %}
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>
     系统用户
   </caption>
   <thead>
-    <tr><th scope="col" colspan="2">{{ result.name }}</th></tr>
+    <tr><th scope="col" colspan="2">{{ result.user.username }}</th></tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="col">项目</th>
-      <th scope="col">内容</th>
+      <th scope="row" class="sub">用户名称</th>
+      <td>{{ result.user.username }}</td>
     </tr>
     <tr>
-      <th scope="row" class="sub">名称</th>
-      <td>{{ result.name }}</td>
+      <th scope="row" class="sub">服务区域</th>
+      <td>{{ result.service_area_department.service_area.name }}</td>
     </tr>
     <tr>
-      <th scope="row" class="sub">开始时间</th>
-      <td>{{ result.start_time|date:"Y-m-d"}}</td>
+      <th scope="row" class="sub">单位部门</th>
+      <td>{{ result.service_area_department.department.name }}</td>
     </tr>
     <tr>
-      <th scope="row" class="sub">结束时间</th>
-      <td>{{ result.end_time|date:"Y-m-d"}}</td>
+      <th scope="row" class="sub">角色权限</th>
+      <td>{{ result.user.groups.get.name }}</td>
     </tr>
     <tr>
-      <th scope="row" class="sub">是否启用</th>
-      {% if result.is_setup %} 
-      <td>启用</td>
+      <th scope="row" class="sub">检查人员</th>
+      {% if result.is_checker %} 
+      <td>是</td>
       {% else %}
-      <td>
-        <form method="post" action=".">{% csrf_token %}
-          未启用<input type="submit" name="submit" value="启用"/>      
-        </form>
-      </td>
+      <td>否</td>
       {% endif %}
     </tr>
     <tr>
-      <th scope="row" class="sub">创建者</th>
-      <td>{{ result.creater.username }}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="sub">创建时间</th>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="sub">更新时间</th>
-      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <th scope="row" class="sub">密码重置</th>
+      {% if success %} 
+      <td>已经重置</td>
+      {% else %}
+      <td>
+        <form method="post" action=".">{% csrf_token %}
+          <input type="submit" name="submit" value="密码重置"/>      
+        </form>
+      </td>
+      {% endif %}
     </tr>
   </tbody>
 </table>

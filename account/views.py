@@ -770,35 +770,38 @@ def account_show(request, template_name='', next='', account_index='1'):
     系统用户详细信息显示。
     """
     page_title=u'系统用户详情'
+    success = False
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
-        if submit_value == u'启用':
+        if submit_value == u'密码重置':
             try:
                 account_id = int(account_index)
             except ValueError:
-                account_id = 1
+                raise Http404('Invalid Request!')
             try:
-                result = CheckProject.objects.get(pk=account_id)
+                result = UserProfile.objects.get(pk=account_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
             except ObjectDoesNotExist:
                 raise Http404('Invalid Request!')
-            
-            CheckProject.objects.filter(is_setup=True).update(is_setup=False)
-            result.is_setup = True
-            result.save()
+            result.user.set_password(settings.ACCOUNT_DEFAULT_PASSWORD)
+            result.user.save()
+            success = True
+        else:
+            raise Http404('Invalid Request!')
             
     else:
         try:
             account_id = int(account_index)
         except ValueError:
-            account_id = 1
+            raise Http404('Invalid Request!')
         try:
-            result = CheckProject.objects.get(pk=account_id)
+            result = UserProfile.objects.get(pk=account_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
-
+        
     return render_to_response(template_name,
-                              {'result': result
+                              {'result': result,
+                               'success': success,
                                },
                               context_instance=RequestContext(request))
 

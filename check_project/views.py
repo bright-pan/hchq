@@ -123,6 +123,7 @@ def check_project_show(request, template_name='', next='', check_project_index='
     检查项目详细信息显示。
     """
     page_title=u'检查项目详情'
+    success = False
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
@@ -130,28 +131,31 @@ def check_project_show(request, template_name='', next='', check_project_index='
             try:
                 check_project_id = int(check_project_index)
             except ValueError:
-                check_project_id = 1
+                raise Http404('Invalid Request!')
             try:
-                result = CheckProject.objects.get(pk=check_project_id)
+                result = CheckProject.objects.get(pk=check_project_id, is_active=True)
             except ObjectDoesNotExist:
                 raise Http404('Invalid Request!')
             
             CheckProject.objects.filter(is_setup=True).update(is_setup=False)
             result.is_setup = True
             result.save()
-            
+            success = True
+        else:
+            raise Http404('Invalid Request!')
     else:
         try:
             check_project_id = int(check_project_index)
         except ValueError:
-            check_project_id = 1
+            raise Http404('Invalid Request!')
         try:
-            result = CheckProject.objects.get(pk=check_project_id)
+            result = CheckProject.objects.get(pk=check_project_id, is_active=True)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
 
     return render_to_response(template_name,
-                              {'result': result
+                              {'result': result,
+                               'success': success,
                                },
                               context_instance=RequestContext(request))
 
