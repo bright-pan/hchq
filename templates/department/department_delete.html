@@ -15,6 +15,7 @@
 {% block col3_content %}
 <h3>单位部门删除</h3>
 <hr>
+<div class="important">
 {% with search_form as form %}
 <form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
@@ -49,13 +50,16 @@
   </fieldset>
 </form>
 {% endwith %}
+</div>
 <hr>
 {% with delete_form as form %}
 {% for error in form.department_id.errors %}
 <p class="warning">{{ error }}</p>
 {% empty %}
 {% endfor %}
+<div class="note">
 {% include 'department/department_table_delete.html' %}
+</div>
 {% endwith %}
 <div class="subcolumns">
   <div class="c66l">

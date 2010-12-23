@@ -15,6 +15,7 @@
 {% block col3_content %}
 <h3>系统用户查询</h3>
 <hr>
+<div class="important">
 {% with search_form as form %}
 <form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
@@ -114,7 +115,10 @@
   </fieldset>
 </form>
 {% endwith %}
+</div>
 <hr>
+<div class="note">
 {% include 'account/management/account_table_list.html' %}
+</div>
 {% endblock %}
 

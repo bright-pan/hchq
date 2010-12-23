@@ -13,6 +13,77 @@
 {% endblock %}
 
 {% block col3_content %}
-<h1>你好,{{ user.username }}</h1>
+{% if user %}
+<h3>你好,{{ user.username }},欢迎使用本系统！</h3>
+<hr>
+<div class="subcolumns">
+  <div class="c66l">
+    <div class="subc note">
+      {% if user.is_superuser %}
+      <p class="important">你是超级管理员，没有基本的用户资料！</p>
+      {% else %}
+      <table border="0" cellpadding="0" cellspacing="0" class="full">
+        <caption>
+          个人资料
+        </caption>
+        <thead>
+          <tr><th scope="col" colspan="2">{{ user.username }}</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="sub">个人名称</th>
+            <td>{{ user.username }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="sub">服务区域</th>
+            <td>{{ user.get_profile.service_area_department.service_area.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="sub">单位部门</th>
+            <td>{{ user.get_profile.service_area_department.department.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="sub">角色权限</th>
+            <td>{{ user.groups.get.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="sub">检查人员</th>
+            {% if result.is_checker %} 
+            <td>是</td>
+            {% else %}
+            <td>否</td>
+            {% endif %}
+          </tr>
+          <tr>
+            <th scope="row" class="sub">登入时间</th>
+            <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="sub">创建时间</th>
+            <td>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="c33r">
+    <div class="subc important">
+      <!-- Insert your subtemplate content here -->
+      <h3>角色权限列表</h3>
+      <hr>
+      <hl>
+      {% for perm in user.groups.get.permissions.all %}
+      <li>{{ perm.name }}</li>
+      {% empty %}
+      <p class="warning">该用户没有任何权限！</p>
+      {% endfor %}
+      <hl>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% else %}
+<p class="warning">对不起，该用户不存在！</p>
+{% endif %}
 {% endblock %}
 

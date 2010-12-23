@@ -15,6 +15,7 @@
 {% block col3_content %}
 <h3>角色查询</h3>
 <hr>
+<div class="important">
 {% with search_form as form %}
 <form method="post" action="." class="yform full">{% csrf_token %}
   <fieldset>
@@ -48,9 +49,12 @@
     </div>
   </fieldset>
 </form>
-{% endwith %}
+{% endwith %}>
+</div>
 <hr>
+<div class="note">
 {% include 'account/role/role_table_list.html' %}
+</div>
 <div class="subcolumns">
   <div class="c66l">
     <div class="subc">

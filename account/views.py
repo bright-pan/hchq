@@ -49,17 +49,33 @@ def person_password_modify(request, template_name = '', next = '/'):
     user = get_user(request)
     post_data = None
     modify_password_form = None
+    fault = False
     if request.method == 'POST':
         post_data = request.POST.copy()
         modify_password_form = ModifyPasswordForm(post_data)
         if modify_password_form.is_valid():
-            modify_password_form.password_save(user)
-            return HttpResponseRedirect(next)
+            if modify_password_form.password_save(user) is True:
+                return HttpResponseRedirect(next)
+            else:
+                fault = True
+                return render_to_response(template_name,
+                                          {'form': modify_password_form,
+                                           'fault': fault,
+                                           'page_title': page_title},
+                                          context_instance=RequestContext(request))
         else:
-            return render_to_response(template_name, {'form': modify_password_form, 'page_title': page_title}, context_instance=RequestContext(request))
+            return render_to_response(template_name,
+                                      {'form': modify_password_form,
+                                       'fault': fault,
+                                       'page_title': page_title},
+                                      context_instance=RequestContext(request))
     else:
         modify_password_form = ModifyPasswordForm()
-        return render_to_response(template_name, {'form': modify_password_form, 'page_title': page_title}, context_instance=RequestContext(request))        
+        return render_to_response(template_name,
+                                  {'form': modify_password_form,
+                                   'fault': fault,
+                                   'page_title': page_title},
+                                  context_instance=RequestContext(request))        
 
 
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')

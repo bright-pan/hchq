@@ -8,7 +8,19 @@
 {% block teaser %}{% endblock %}
 {% block col1_content %}{% endblock %}
 {% block col3_content %}
-<h3>系统用户登入</h3>
-{% include 'account/login_form.html' %}
+<div class="subcolumns">
+  <div class="c66l">
+    <div class="subc note">
+      <!-- Insert your subtemplate content here -->
+      <h3>系统用户登入</h3>
+      {% include 'account/login_form.html' %}
+    </div>
+  </div>
+  <div class="c33r">
+    <div class="subc">
+      <!-- Insert your subtemplate content here -->
+    </div>
+  </div>
+</div>
 {% endblock %}
 

@@ -8,9 +8,9 @@
     <tr>
       <th scope="col">编号</th>
       <th scope="col">名称</th>
-      <th scope="col">查询关联单位！</th>
-      <th scope="col">添加关联单位</th>
-      <th scope="col">删除关联单位</th>
+      <th scope="col">查询关联权限</th>
+      <th scope="col">添加关联权限</th>
+      <th scope="col">删除关联权限</th>
 
     </tr>
     {% for result in results_page.object_list %}
@@ -18,13 +18,13 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{% url account_role_permission_list result.id '1' %}">{{ result.name }}<a></td>
       <td>
-        <a href="{% url account_role_permission_list result.id '1' %}">查询关联单位</a>
+        <a href="{% url account_role_permission_list result.id '1' %}">查询关联权限</a>
       </td>
       <td>
-        <a href="{% url account_role_permission_add result.id '1' %}">添加关联单位</a>
+        <a href="{% url account_role_permission_add result.id '1' %}">添加关联权限</a>
       </td>
       <td>
-        <a href="{% url account_role_permission_delete result.id '1' %}">删除关联单位</a>
+        <a href="{% url account_role_permission_delete result.id '1' %}">删除关联权限</a>
       </td>
     </tr>
     {% empty %}

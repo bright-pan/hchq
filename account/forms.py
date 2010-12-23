@@ -75,6 +75,15 @@ class ModifyPasswordForm(forms.Form):
     """
     修改密码表单
     """
+    password_old = forms.CharField(
+        max_length=30,
+        required=True, 
+        label=_(u'旧密码'), 
+        widget=forms.PasswordInput(attrs={'class':'',
+                                          'size':'30',}), 
+        help_text=_(u'例如：123456, pa123456'),
+        error_messages = gl.account_password_error_messages,
+        )
     password_new = forms.CharField(
         max_length=30,
         required=True, 
@@ -93,6 +102,14 @@ class ModifyPasswordForm(forms.Form):
         help_text=_(u'请重新输入密码，例如：123456, pa123456'),
         error_messages = gl.account_password_error_messages,
         )
+    def clean_password_new(self):
+        try:
+            password_old_copy = self.data.get('password_old')
+            if re.match(gl.account_password_re_pattern, password_old_copy ) is None:
+                raise forms.ValidationError(gl.account_password_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.account_password_error_messages['password_form_error'])
+        return password_new_copy
     
     def clean_password_new(self):
         try:
@@ -123,9 +140,12 @@ class ModifyPasswordForm(forms.Form):
         修改用户密码并保存。
         """
         if user is not None and user.is_authenticated():
-            user.set_password(self.cleaned_data.get('password_confirm'))
-            user.save()
-            return True
+            if user.check_password(self.cleaned_data.get('password_old')) is True:
+                user.set_password(self.cleaned_data.get('password_confirm'))
+                user.save()
+                return True
+            else:
+                False
         return False
 
 class RoleSearchForm(forms.Form):
