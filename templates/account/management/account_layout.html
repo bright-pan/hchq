@@ -1,4 +1,9 @@
 {% extends "my_layout.html" %}
+{% block media %}
+<link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/account.js"></script>
+{% endblock %}
 
 {% block topnav %}
 你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>

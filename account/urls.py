@@ -55,6 +55,11 @@ urlpatterns += patterns('hchq.account.views',
        {'template_name' : 'account/role/role_permission_list.html', 'next': '/account/person_management', },
        'account_role_permission_list'),
 
+       (r'role_name_ajax/',
+       'ajax_role_name',
+        {'template_name' : 'account/role/role_permission_list.html', 'next': '/account/person_management', },
+       'account_role_name_ajax'),
+
 )
 
 urlpatterns += patterns('hchq.account.views',

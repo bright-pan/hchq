@@ -22,4 +22,7 @@
 @import url(../yaml/print/print_draft.css);
 
 /* import jquery UI css */
-@import url(redmond/jquery-ui-1.8.6.custom.css)
+/* @import url(redmond/jquery-ui-1.8.6.custom.css) */
+
+/* jquery auto-complete plugin css */
+/* @import url(jquery.autocomplete.css) */
