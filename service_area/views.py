@@ -1,10 +1,11 @@
 #coding=utf-8
 # Create your views here.
 from django.template import RequestContext
+from django.utils import simplejson
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cache, cache_page
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
@@ -721,3 +722,21 @@ def service_area_department_list(request, template_name='my.html', next='/', ser
                                    'service_area_name':service_area.name,
                                    },
                                   context_instance=RequestContext(request))
+
+@cache_page(60 * 15)
+def service_area_name_ajax(request, template_name='my.html', next='/'):
+    if request.is_ajax():
+        result = []
+        if request.method == 'GET':
+#            print '******************8'
+            query_set = ServiceArea.objects.filter(is_active=True)
+            result = [ x.name for x in query_set]
+#            print result
+        else:
+            pass
+        json = simplejson.dumps(result)
+        print json
+        return HttpResponse(json, mimetype='application/json')
+    else:
+        raise Http404('Invalid Request!')
+ 

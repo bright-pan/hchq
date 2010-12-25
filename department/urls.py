@@ -28,6 +28,11 @@ urlpatterns = patterns('hchq.department.views',
        {'template_name' : 'department/department_list.html', 'next': '/account/person_management', },
        'department_list'),
 
+       (r'department_name_ajax/$',
+       'department_name_ajax',
+       {'template_name' : 'department/department_department_list.html', 'next': '/account/person_management', },
+       'department_name_ajax'),
+
 #      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
 #      (r'logout$', 'exit', {'template_name' : 'account/login.html', 'next': '/', }, 'account_logout'),
 #      (r'person_management$', 'person_management', {'template_name' : 'account/person_management.html', 'next': '/', }, 'account_person_management'),

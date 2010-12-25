@@ -4,11 +4,12 @@ from django.utils import simplejson
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cache, cache_page
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
+
 from hchq.account.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
@@ -1023,19 +1024,20 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
-
-def ajax_role_name(request, template_name='my.html', next='/'):
+    
+@cache_page(60 * 15)
+def role_name_ajax(request, template_name='my.html', next='/'):
 
     if request.is_ajax():
         result = []
         if request.method == 'GET':
             query_set = Group.objects.all()
             result = [ x.name for x in query_set]
-            print result
+#            print result
         else:
             pass
         json = simplejson.dumps(result)
-        print json
+#        print json
         return HttpResponse(json, mimetype='application/json')
     else:
 
