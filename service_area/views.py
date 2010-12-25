@@ -735,7 +735,7 @@ def service_area_name_ajax(request, template_name='my.html', next='/'):
         else:
             pass
         json = simplejson.dumps(result)
-        print json
+#        print json
         return HttpResponse(json, mimetype='application/json')
     else:
         raise Http404('Invalid Request!')

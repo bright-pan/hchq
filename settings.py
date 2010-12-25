@@ -114,7 +114,7 @@ SESSION_COOKIE_SECURE = False                           # Whether the session co
 SESSION_COOKIE_PATH = '/'                               # The path of the session cookie.
 SESSION_SAVE_EVERY_REQUEST = False                      # Whether to save the session data on every request.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False                 # Whether a user's session cookie expires when the Web browser is closed.
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # The module to store session data
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'  # The module to store session data
 SESSION_FILE_PATH = None                                # Directory to store session files if using the file session module. If None, the backend will use a sensible default.
 
 #########
@@ -124,9 +124,11 @@ SESSION_FILE_PATH = None                                # Directory to store ses
 # The cache backend to use.  See the docstring in django.core.cache for the
 # possible values.
 #CACHE_BACKEND = 'locmem://'
-CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
+#CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
+CACHE_BACKEND = 'caching.backends.memcached://localhost:11211'
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 CACHE_MIDDLEWARE_SECONDS = 600
+CACHE_COUNT_TIMEOUT = 60  # seconds, not too long.
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -141,13 +143,13 @@ INSTALLED_APPS = (
     # 'djangodblog',
 
     # django-sentry app
-    'sentry',
-    'sentry.client',
-    'paging',
-    'indexer',
-    'sentry.plugins.sentry_servers',
-    'sentry.plugins.sentry_sites',
-    'sentry.plugins.sentry_urls',
+#    'sentry',
+#    'sentry.client',
+#    'paging',
+#    'indexer',
+#    'sentry.plugins.sentry_servers',
+#    'sentry.plugins.sentry_sites',
+#    'sentry.plugins.sentry_urls',
 
     # local app
     'hchq.untils',

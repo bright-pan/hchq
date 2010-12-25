@@ -3,3 +3,4 @@
 3. use jquery javascript framework for this site.
 4. use PIL for image process.
 5. use django-sentry trace exception.
+6. use django-cache-machine.

@@ -46,8 +46,8 @@ urlpatterns += patterns('',
                         
 )
 
-urlpatterns += patterns('',
+#urlpatterns += patterns('',
                         
-      (r'^sentry/', include('sentry.urls')),
+#      (r'^sentry/', include('sentry.urls')),
                         
-)
+#)
