@@ -1,0 +1,88 @@
+{% extends "check_object/check_object_layout.html" %}
+{% block header_describe %}{% endblock %}
+{% block teaser %}{% endblock %}
+
+{% block col1_content %}
+<h6 class="vlist">检查对象管理</h6>
+<ul class="vlist">
+  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
+  <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
+  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
+  <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
+  <li class="active"><strong>检查对象详情</strong></li>
+  <li><a href="{% url hchq_index %}">进入系统</a></li>
+</ul>
+{% endblock %}
+{% block col3_content %}
+<!-- Insert your subtemplate content here -->
+<h3>检查对象详情</h3>
+<hr>
+{% if success %}
+<p class="important">检查对象【{{ result.user.username }}】密码已成功重置！</p>
+{% else %}
+{% endif %}
+
+
+{% if result %}
+<div class="note">
+  <table border="0" cellpadding="0" cellspacing="0" class="full">
+    <caption>
+      检查对象
+    </caption>
+    <thead>
+      <tr><th scope="col" colspan="2">{{ result.user.username }}</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row" class="sub">用户名称</th>
+        <td>{{ result.user.username }}</td>
+      </tr>
+      <tr>
+        <th scope="row" class="sub">服务区域</th>
+        <td>{{ result.service_area_department.service_area.name }}</td>
+      </tr>
+      <tr>
+        <th scope="row" class="sub">单位部门</th>
+        <td>{{ result.service_area_department.department.name }}</td>
+      </tr>
+      <tr>
+        <th scope="row" class="sub">角色权限</th>
+        <td>{{ result.user.groups.get.name }}</td>
+      </tr>
+      <tr>
+        <th scope="row" class="sub">检查人员</th>
+        {% if result.is_checker %} 
+        <td>是</td>
+        {% else %}
+        <td>否</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th scope="row" class="sub">登入时间</th>
+        <td>{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
+      </tr>
+      <tr>
+        <th scope="row" class="sub">创建时间</th>
+        <td>{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
+      </tr>
+
+      <tr>
+        <th scope="row" class="sub">密码重置</th>
+        {% if success %} 
+        <td>已经重置</td>
+        {% else %}
+        <td>
+          <form method="post" action=".">{% csrf_token %}
+            <input type="submit" name="submit" value="密码重置"/>      
+          </form>
+        </td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="warning">对不起，该服务区不存在！</p>
+{% endif %}
+{% endblock %}
+
