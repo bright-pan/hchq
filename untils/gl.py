@@ -147,21 +147,21 @@ check_object_name_error_messages={'required': _(u'请输入检查对象名称！
                                    'form_error': _(u'表单严重错误！'),
                                    'already_error': _(u'检查对象同名，请输入正确的检查对象名称！'),
                                    }
-check_object_id_number_error_messages={'required': _(u'请输入检查对象名称！'),
-                                   'max_length': _(u'输入的检查对象名称长度大于64个字符！'),
-                                   'format_error': _(u'检查对象名称必须是汉字、数字以及-组成！'),
-                                   'form_error': _(u'表单严重错误！'),
-                                   'already_error': _(u'检查对象同名，请输入正确的检查对象名称！'),
+check_object_id_number_error_messages={'required': _(u'请输入身份证号码名称！'),
+                                       'max_length': _(u'输入的身份证号码名称长度大于18个字符！'),
+                                       'format_error': _(u'身份证号码名称必须是数字、x、X组成！'),
+                                       'form_error': _(u'表单严重错误！'),
+                                       'already_error': _(u'身份证号码同名，请输入正确的身份证号码！'),
                                    }
 
 check_object_ctp_method_time_error_messages={'required': _(u'请输入时间！'),
-                                   'invalid': _(u'输入的时间格式不正确！'),
-                                   'logic_error': _(u'输入的开始时间在结束时间之前！'),
-                                   'form_error': _(u'表单严重错误'),
-                                   }
+                                             'invalid': _(u'输入的时间格式不正确！'),
+                                             'logic_error': _(u'输入的时间必须在今天之前！'),
+                                             'form_error': _(u'表单严重错误'),
+                                             }
 
 check_object_wedding_time_error_messages={'required': _(u'请输入时间！'),
-                                   'invalid': _(u'输入的时间格式不正确！'),
-                                   'logic_error': _(u'输入的开始时间在结束时间之前！'),
-                                   'form_error': _(u'表单严重错误'),
-                                   }
+                                          'invalid': _(u'输入的时间格式不正确！'),
+                                          'logic_error': _(u'输入的时间必须在今天之前！'),
+                                          'form_error': _(u'表单严重错误'),
+                                          }

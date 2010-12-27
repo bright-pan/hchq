@@ -10,15 +10,17 @@ from hchq.department.models import Department
 from hchq.check_object.models import *
 from hchq import settings
 import re
-
+import datetime
 
 class CheckObjectAddForm(forms.Form):
     """
     系统用户添加表单
     """
-    role_object = None
+
     service_area_department_object = None
     mate_service_area_department_object = None
+    ctp_method_time_copy = None
+    wedding_time_copy = None
     
     name = forms.CharField(
         max_length=64,
