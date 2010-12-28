@@ -152,7 +152,7 @@ class CheckObjectAddForm(forms.Form):
             id_number_copy = self.data.get('id_number')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
-        if re.match(gl.check_object_id_number_re_pattern, id_number_copy) is None:
+        if re.match(gl.check_object_id_number_add_re_pattern, id_number_copy) is None:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
         try:
             self.role_object = CheckObject.objects.get(id_number=id_number_copy, is_active=True)
@@ -170,11 +170,9 @@ class CheckObjectAddForm(forms.Form):
                 raise forms.ValidationError(_('图片格式支持JPEG, JPG, PNG, GIF , BMP'))
             if len(buf) > settings.MAX_PHOTO_UPLOAD_SIZE * 1024:
                 raise forms.ValidationError(_('图片太大'))
-            photo_data
             o1 = StringIO()
             img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(o1,"JPEG")
-            photo_data = o1.getvalue()
-            return photo_data
+            return o1.getvalue()
         return None
         
     def clean_service_area_name(self):
