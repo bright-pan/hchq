@@ -3,7 +3,10 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
-
+from PIL import Image
+from StringIO import StringIO
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from hchq.untils import gl
 from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
 from hchq.department.models import Department
@@ -37,12 +40,11 @@ class CheckObjectAddForm(forms.Form):
         max_length=18,
         required=True,
         label=_(u'身份证号'),
-        error_messages = gl.check_object_id_error_messages,
+        error_messages = gl.check_object_id_number_error_messages,
         )
     photo = forms.ImageField(
         required=True,
         label=_(u'照片')
-        error_messages = gl.check_object_photo_error_messages,
         )
     service_area_name = forms.CharField(
         max_length=128,
@@ -114,7 +116,7 @@ class CheckObjectAddForm(forms.Form):
     ctp_method = forms.ChoiceField(
         required=True,
         label =_(u'避孕措施'),
-        choices=((u'none', u'未使用'),
+        choices=((u'0', u'未使用'),
                  (u'1', u'避孕环方式'),
                  (u'2', u'避孕药方式'),
                  (u'3', u'其他方式'),
@@ -125,14 +127,14 @@ class CheckObjectAddForm(forms.Form):
         required=False,
         label=_(u'实施时间'),
         help_text=_(u'例如：2010-10-25'),
-        error_messages = gl.check_project_ctp_method_time_error_messages,
+        error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
         help_text=_(u'例如：1985-1-1'),
-        error_messages = gl.check_project_wedding_time_error_messages,
+        error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
 
@@ -157,7 +159,24 @@ class CheckObjectAddForm(forms.Form):
         except ObjectDoesNotExist:
             return id_number_copy
         raise forms.ValidationError(gl.checkobject_id_number_error_messages['already_error'])
-
+    def clean_photo(self):
+        if self.files.get('photo'):
+            try:
+                buf = self.files['photo'].read()
+                img = Image.open(StringIO(buf))
+            except:
+                raise forms.ValidationError(_('图片格式支持JPEG, JPG, PNG, GIF , BMP'))
+            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
+                raise forms.ValidationError(_('图片格式支持JPEG, JPG, PNG, GIF , BMP'))
+            if len(buf) > settings.MAX_PHOTO_UPLOAD_SIZE * 1024:
+                raise forms.ValidationError(_('图片太大'))
+            photo_data
+            o1 = StringIO()
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(o1,"JPEG")
+            photo_data = o1.getvalue()
+            return photo_data
+        return None
+        
     def clean_service_area_name(self):
         try:
            service_area_name_copy = self.data.get('service_area_name')
@@ -211,11 +230,7 @@ class CheckObjectAddForm(forms.Form):
             raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
         if re.match(gl.check_object_id_number_re_pattern, id_number_copy) is None:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
-        try:
-            CheckObjectMate.objects.get(id_number=id_number_copy)
-        except ObjectDoesNotExist:
-            return id_number_copy
-        raise forms.ValidationError(gl.checkobject_id_number_error_messages['already_error'])
+        return id_number_copy
 
     def clean_mate_service_area_name(self):
         try:
@@ -254,14 +269,14 @@ class CheckObjectAddForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
         return department_name_copy
-
+        
     def clean_ctp_method_time(self):
         try:
             self.ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
-        if self.ctp_method_time_copy is not None
-            if self.ctp_method_time_copy > datetime.datetime.now().date()
+        if self.ctp_method_time_copy is not None:
+            if self.ctp_method_time_copy > datetime.datetime.now().date():
                 raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
         return self.ctp_method_time_copy
     def clean_wedding_time(self):
@@ -269,43 +284,56 @@ class CheckObjectAddForm(forms.Form):
             self.wedding_time_copy = self.cleaned_data.get('wedding_time')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_wedding_time_error_messages['form_error'])
-        if self.wedding_time_copy is not None
-            if self.wedding_time_copy > datetime.datetime.now().date()
+        if self.wedding_time_copy is not None:
+            if self.wedding_time_copy > datetime.datetime.now().date():
                 raise forms.ValidationError(gl.check_project_wedding_time_error_messages['logic_error'])
         return self.wedding_time_copy
 
     
-    def add(self):
-        user_object = None
-        if self.service_area_department_object is not None:
-            if self.cleaned_data['is_checker'] == u'is_checker':
-                is_checker_bool_value = True
+    def add(self, user = None):
+        if user is not None and self.service_area_department_object is not None and self.mate_service_area_department_object is not None:
+            if self.cleaned_data['is_family'] == u'is_family':
+                is_family_value = True
             else:
-                is_checker_bool_value = False
+                is_family_value = False
+
+            photo=self.cleaned_data['photo']
+            file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            default_storage.delete(file_path)
+            default_storage.save(file_path, ContentFile(self.cleaned_data['photo']))
+
             try:
-                user_object = User.objects.get(is_active=False, username=self.cleaned_data['name'])
+                check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
             except ObjectDoesNotExist:
-                user_object = User.objects.create_user(username=self.cleaned_data['name'],
-                                                    email=settings.CHECK_OBJECT_DEFAULT_EMAIL,
-                                                    password=settings.CHECK_OBJECT_DEFAULT_PASSWORD
-                                                    )
-                user_object.groups.add(self.role_object)
-                UserProfile.objects.create(user=user_object,
-                                           is_checker=is_checker_bool_value,
+                CheckObject.objects.create(name=self.cleaned_data['name'],
+                                           photo=file_path,
+                                           id_number=self.cleaned_data['id_number'],
                                            service_area_department=self.service_area_department_object,
+                                           is_family=is_family_value,
+                                           mate_name=self.cleaned_data['mate_name'],
+                                           mate_id_number=self.cleaned_data['mate_id_number'],
+                                           mate_service_area_department=self.mate_service_area_department_object,
+                                           ctp_method = self.cleaned_data['ctp_method'],
+                                           ctp_method_time = self.cleaned_data['ctp_method_time'],
+                                           wedding_time = self.cleaned_data['wedding_time'],
+                                           creater = user,
                                            )
-                return user_object
-            user_object.is_active = True
-            user_object.set_password(settings.CHECK_OBJECT_DEFAULT_PASSWORD)
-            user_object.groups.clear()
-            user_object.groups.add(self.role_object)
-            user_object_profile = user_object.get_profile()
-            user_object_profile.is_checker = is_checker_bool_value
-            user_object_profile.service_area_department=self.service_area_department_object
-            user_object_profile.save()
-            user_object.save()
-            return user_object
-        return user_object
+                return True
+            check_object.is_active =True
+            check_object.name=self.cleaned_data['name']
+            check_object.photo=file_path
+            check_object.service_area_department=self.service_area_department_object
+            check_object.is_family=is_family_value
+            check_object.mate_name=self.cleaned_data['mate_name']
+            check_object.mate_id_number=self.cleaned_data['mate_id_number']
+            check_object.mate_service_area_department=self.mate_service_area_department_object
+            check_object.ctp_method = self.cleaned_data['ctp_method']
+            check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
+            check_object.wedding_time = self.cleaned_data['wedding_time']
+            check_object.creater = user
+            check_object.save()
+            return True
+        return False
             
 
 class CheckObjectModifyForm(forms.Form):
