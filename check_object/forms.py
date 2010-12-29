@@ -40,10 +40,11 @@ class CheckObjectAddForm(forms.Form):
         max_length=18,
         required=True,
         label=_(u'身份证号'),
+        help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
     photo = forms.ImageField(
-        required=True,
+        required=False,
         label=_(u'照片')
         )
     service_area_name = forms.CharField(
@@ -90,6 +91,7 @@ class CheckObjectAddForm(forms.Form):
         max_length=18,
         required=True,
         label=_(u'身份证号'),
+        help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
     mate_service_area_name = forms.CharField(
@@ -226,7 +228,7 @@ class CheckObjectAddForm(forms.Form):
             id_number_copy = self.data.get('id_number')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
-        if re.match(gl.check_object_id_number_re_pattern, id_number_copy) is None:
+        if re.match(gl.check_object_id_number_add_re_pattern, id_number_copy) is None:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
         return id_number_copy
 
@@ -298,7 +300,7 @@ class CheckObjectAddForm(forms.Form):
             photo=self.cleaned_data['photo']
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
-            default_storage.save(file_path, ContentFile(self.cleaned_data['photo']))
+            default_storage.save(file_path, ContentFile(photo))
 
             try:
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])

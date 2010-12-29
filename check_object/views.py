@@ -28,9 +28,9 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'添加':
-            check_object_add_form = Check_ObjectAddForm(post_data)
+            check_object_add_form = CheckObjectAddForm(post_data, request.FILES)
             if check_object_add_form.is_valid():
-                check_object_add_form.add()
+                check_object_add_form.add(user)
             else:
                 pass
             return render_to_response(template_name,
@@ -42,7 +42,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
         else:
             raise Http404('Invalid Request!')
     else:
-        check_object_add_form = Check_ObjectAddForm()
+        check_object_add_form = CheckObjectAddForm()
         return render_to_response(template_name,
                                   {'add_form': check_object_add_form,
                                   'page_title': page_title,
@@ -66,7 +66,7 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
             except ValueError:
                 raise Http404('Invalid Request!')
             try:
-                result = UserProfile.objects.get(pk=check_object_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
+                result = CheckObject.objects.get(pk=check_object_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
             except ObjectDoesNotExist:
                 raise Http404('Invalid Request!')
             result.user.set_password(settings.CHECK_OBJECT_DEFAULT_PASSWORD)
@@ -81,7 +81,7 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
         except ValueError:
             raise Http404('Invalid Request!')
         try:
-            result = UserProfile.objects.get(pk=check_object_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
+            result = CheckObject.objects.get(pk=check_object_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
         
