@@ -19,7 +19,7 @@
   <div class="c66l">
     <div class="subc note">
       <!-- Insert your subtemplate content here -->
-      <form method="post" action="" class="yform full">{% csrf_token %}
+      <form method="post" action="" class="yform full" enctype="multipart/form-data">{% csrf_token %}
         <fieldset>
           <legend>请输入检查对象参数</legend>
           {% with add_form as form %}
@@ -45,18 +45,6 @@
           <div class="type-text">
             {{ form.id_number.label_tag }}<sup>{{ form.id_number.help_text}}</sup>
             {{ form.id_number }}
-          </div>
-          {% endif %}
-          {% if form.photo.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.photo.errors }}</strong>
-            {{ form.photo.label_tag }}<sup>{{ form.photo.help_text}}</sup>
-            {{ form.photo }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.photo.label_tag }}<sup>{{ form.photo.help_text}}</sup>
-            {{ form.photo }}
           </div>
           {% endif %}
           {% if form.is_family.errors %}
@@ -191,7 +179,12 @@
   <div class="c33r">
     <div class="subc">
       <!-- Insert your subtemplate content here -->
-      <img class="" src="E:\djcode\hchq\static\images\logo.png" />
+      <div id="csrf_token">{% csrf_token %}</div>
+      <p><a id="open_uploader_dialog" href="#">本地上传</a></p>
+      <div id="dialog" style="display:none;" title="本地上传">
+	<p>请选择你选需要的文件，并且在提示完成以后关闭对话框！</p>
+	<a id="uploader">选择文件</a>
+      </div>
     </div>
   </div>
 </div>

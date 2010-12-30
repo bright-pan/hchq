@@ -43,10 +43,6 @@ class CheckObjectAddForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
-    photo = forms.ImageField(
-        required=False,
-        label=_(u'照片')
-        )
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
@@ -160,22 +156,7 @@ class CheckObjectAddForm(forms.Form):
             self.role_object = CheckObject.objects.get(id_number=id_number_copy, is_active=True)
         except ObjectDoesNotExist:
             return id_number_copy
-        raise forms.ValidationError(gl.checkobject_id_number_error_messages['already_error'])
-    def clean_photo(self):
-        if self.files.get('photo'):
-            try:
-                buf = self.files['photo'].read()
-                img = Image.open(StringIO(buf))
-            except:
-                raise forms.ValidationError(_('图片格式支持JPEG, JPG, PNG, GIF , BMP'))
-            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
-                raise forms.ValidationError(_('图片格式支持JPEG, JPG, PNG, GIF , BMP'))
-            if len(buf) > settings.MAX_PHOTO_UPLOAD_SIZE * 1024:
-                raise forms.ValidationError(_('图片太大'))
-            o1 = StringIO()
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(o1,"JPEG")
-            return o1.getvalue()
-        return None
+        raise forms.ValidationError(gl.check_object_id_number_error_messages['already_error'])
         
     def clean_service_area_name(self):
         try:
@@ -283,10 +264,10 @@ class CheckObjectAddForm(forms.Form):
         try:
             self.wedding_time_copy = self.cleaned_data.get('wedding_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.check_project_wedding_time_error_messages['form_error'])
+            raise forms.ValidationError(gl.check_object_wedding_time_error_messages['form_error'])
         if self.wedding_time_copy is not None:
             if self.wedding_time_copy > datetime.datetime.now().date():
-                raise forms.ValidationError(gl.check_project_wedding_time_error_messages['logic_error'])
+                raise forms.ValidationError(gl.check_object_wedding_time_error_messages['logic_error'])
         return self.wedding_time_copy
 
     
@@ -296,12 +277,15 @@ class CheckObjectAddForm(forms.Form):
                 is_family_value = True
             else:
                 is_family_value = False
-
-            photo=self.cleaned_data['photo']
+            try:
+                file_temp = default_storage.open(u'images/photos/temp/%s.temp' % user.username)
+            except IOError:
+                return False
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
-            default_storage.save(file_path, ContentFile(photo))
-
+            default_storage.save(file_path, file_temp)
+            file_temp.close()
+            del file_temp
             try:
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
             except ObjectDoesNotExist:

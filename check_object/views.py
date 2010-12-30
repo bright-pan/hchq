@@ -8,7 +8,9 @@ from django.views.decorators.cache import never_cache, cache_page
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
-
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from PIL import Image
 from hchq.check_object.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
@@ -48,7 +50,41 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
                                   'page_title': page_title,
                                   },
                                   context_instance=RequestContext(request))
+@csrf_protect
+@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
+    if request.method == 'POST':
+        if request.FILES.get('photo'):
+            data = request.FILES['photo']
+            if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
+                raise Http404('Invalid Request!')
+            try:
+                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
+            except IOError:
+                raise Http404('Invalid Request!')
+            for chunk in data.chunks():
+                temp_file.write(chunk)
+            try:
+                image = Image.open(temp_file)
+            except IOError:
+                print "$$$$$$$$$$$$$$$"
+                raise Http404('Invalid Request!')
+            if not (image.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
+                raise Http404('Invalid Request!')
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            image.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+            temp_file.close()
+            del temp_file
+            del image
+            print '#####################'
+            return HttpResponse('success')
+        else:
+            raise Http404('Invalid Request!')
+    else:
+        raise Http404('Invalid Request!')
 
+    
 @csrf_protect
 @user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
 def check_object_show(request, template_name='', next='', check_object_index='1'):

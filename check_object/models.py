@@ -16,7 +16,7 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     mate_service_area_department = models.ForeignKey(ServiceAreaDepartment, related_name='check_object_mate')
     wedding_time = models.DateField(null=True)
     ctp_method = models.CharField(max_length=10, null=True)
-    ctp_method_start_time = models.DateField(null=True)
+    ctp_method_time = models.DateField(null=True)
     creater = models.ForeignKey(User)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
