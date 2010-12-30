@@ -19,7 +19,7 @@
   <div class="c66l">
     <div class="subc note">
       <!-- Insert your subtemplate content here -->
-      <form method="post" action="" class="yform full" enctype="multipart/form-data">{% csrf_token %}
+      <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
         <fieldset>
           <legend>请输入检查对象参数</legend>
           {% with add_form as form %}
@@ -170,7 +170,8 @@
           
           {% endwith %}
           <div class="type-button">
-            <input type="submit" name="submit" value="添加" class="submit"/>      
+            <input type="submit"  name="submit" value="添加" class="submit"/>
+            <span id="id_submit_error"></span>
           </div>
         </fieldset>
       </form>

@@ -55,6 +55,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
 def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
     if request.method == 'POST':
         if request.FILES.get('photo'):
+
             data = request.FILES['photo']
             if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
                 raise Http404('Invalid Request!')
@@ -64,20 +65,18 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
                 raise Http404('Invalid Request!')
             for chunk in data.chunks():
                 temp_file.write(chunk)
-            try:
-                image = Image.open(temp_file)
-            except IOError:
-                print "$$$$$$$$$$$$$$$"
-                raise Http404('Invalid Request!')
-            if not (image.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
-                raise Http404('Invalid Request!')
-            if image.mode != 'RGB':
-                image = image.convert('RGB')
-            image.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
             temp_file.close()
+            try:
+                img = Image.open(temp_file.name)
+            except IOError:
+                raise Http404('Invalid Request!')
+            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
+                raise Http404('Invalid Request!')
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
             del temp_file
-            del image
-            print '#####################'
+            del img
             return HttpResponse('success')
         else:
             raise Http404('Invalid Request!')
