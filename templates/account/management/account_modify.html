@@ -28,24 +28,24 @@
             {% if form.name.errors %}
             <div class="type-text error">
               <strong class="message">{{ form.name.errors }}</strong>
-              {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
+              {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
               {{ form.name }}
             </div>
             {% else %}
             <div class="type-text">
-              {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
+              {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
               {{ form.name }}
             </div>
             {% endif %}
             {% if form.service_area_name.errors %}
             <div class="type-text error">
               <strong class="message">{{ form.service_area_name.errors }}</strong>
-              {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+              {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
               {{ form.service_area_name }}
             </div>
             {% else %}
             <div class="type-text">
-              {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+              {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
               {{ form.service_area_name }}
             </div>
             {% endif %}
@@ -57,24 +57,24 @@
             {% if form.role_name.errors %}
             <div class="type-text error">
               <strong class="message">{{ form.role_name.errors }}</strong>
-              {{ form.role_name.label_tag }}<sup>{{ form.role_name.help_text}}</sup>
+              {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text}}</p>
               {{ form.role_name }}
             </div>
             {% else %}
             <div class="type-text">
-              {{ form.role_name.label_tag }}<sup>{{ form.role_name.help_text}}</sup>
+              {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text}}</p>
               {{ form.role_name }}
             </div>
             {% endif %}
             {% if form.department_name.errors %}
             <div class="type-text error">
               <strong class="message">{{ form.department_name.errors }}</strong>
-              {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+              {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
               {{ form.department_name }}
             </div>
             {% else %}
             <div class="type-text">
-              {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+              {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
               {{ form.department_name }}
             </div>
             {% endif %}
@@ -86,24 +86,24 @@
             {% if form.is_checker.errors %}
             <div class="type-select error">
               <strong class="message">{{ form.is_checker.errors }}</strong>
-              {{ form.is_checker.label_tag }}<sup>{{ form.is_checker.help_text}}</sup>
+              {{ form.is_checker.label_tag }}<p class="dimmed">{{ form.is_checker.help_text}}</p>
               {{ form.is_checker }}
             </div>
             {% else %}
             <div class="type-select">
-              {{ form.is_checker.label_tag }}<sup>{{ form.is_checker.help_text}}</sup>
+              {{ form.is_checker.label_tag }}<p class="dimmed">{{ form.is_checker.help_text}}</p>
               {{ form.is_checker }}
             </div>
             {% endif %}
             {% if form.is_fuzzy.errors %}
             <div class="type-check error">
               <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-              {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+              {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
               {{ form.is_fuzzy }}
             </div>
             {% else %}
             <div class="type-check">
-              {{ form.is_fuzzy.label_tag }}<br><sup>{{ form.is_fuzzy.help_text}}</sup><br>
+              {{ form.is_fuzzy.label_tag }}<br><p class="dimmed">{{ form.is_fuzzy.help_text}}</p><br>
               {{ form.is_fuzzy }}
             </div>
             {% endif %}

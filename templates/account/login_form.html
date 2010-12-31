@@ -4,24 +4,24 @@
     {% if form.username.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.username.errors }}</strong>
-      {{ form.username.label_tag }}<sup>{{ form.username.help_text}}</sup>
+      {{ form.username.label_tag }}<p class="dimmed">{{ form.username.help_text}}</p>
       {{ form.username }}
     </div>
     {% else %}
     <div class="type-text">
-      {{ form.username.label_tag }}<sup>{{ form.username.help_text}}</sup>
+      {{ form.username.label_tag }}<p class="dimmed">{{ form.username.help_text}}</p>
       {{ form.username }}
     </div>
     {% endif %}
     {% if form.password.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.password.errors }}</strong>
-      {{ form.password.label_tag }}<sup>{{ form.password.help_text}}</sup>
+      {{ form.password.label_tag }}<p class="dimmed">{{ form.password.help_text}}</p>
       {{ form.password }}
     </div>
     {% else %}
     <div class="type-text">
-      {{ form.password.label_tag }}<sup>{{ form.password.help_text}}</sup>
+      {{ form.password.label_tag }}<p class="dimmed">{{ form.password.help_text}}</p>
       {{ form.password }}
     </div>
     {% endif %}

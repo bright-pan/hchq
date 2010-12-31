@@ -27,24 +27,24 @@
           {% if form.service_area_department_name.errors %}
           <div class="type-text error">
             <strong class="message">{{ form.service_area_department_name.errors }}</strong>
-            {{ form.service_area_department_name.label_tag }}<sup>{{ form.service_area_department_name.help_text}}</sup>
+            {{ form.service_area_department_name.label_tag }}<p class="dimmed">{{ form.service_area_department_name.help_text}}</p>
             {{ form.service_area_department_name }}
           </div>
           {% else %}
           <div class="type-text">
-            {{ form.service_area_department_name.label_tag }}<sup>{{ form.service_area_department_name.help_text}}</sup>
+            {{ form.service_area_department_name.label_tag }}<p class="dimmed">{{ form.service_area_department_name.help_text}}</p>
             {{ form.service_area_department_name }}
           </div>
           {% endif %}
           {% if form.is_fuzzy.errors %}
           <div class="type-text error">
             <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
             {{ form.is_fuzzy }}
           </div>
           {% else %}
           <div class="type-check">
-            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
             {{ form.is_fuzzy }}
           </div>
           {% endif %}
@@ -69,12 +69,12 @@
           {% if form.service_area_department_name.errors %}
           <div class="type-select error">
             <strong class="message">{{ form.service_area_department_name.errors }}</strong>
-            {{ form.service_area_department_name.label_tag }}<sup>{{ form.service_area_department_name.help_text}}</sup>
+            {{ form.service_area_department_name.label_tag }}<p class="dimmed">{{ form.service_area_department_name.help_text}}</p>
             {{ form.service_area_department_name }}
           </div>
           {% else %}
           <div class="type-select">
-            {{ form.service_area_department_name.label_tag }}<sup>{{ form.service_area_department_name.help_text}}</sup>
+            {{ form.service_area_department_name.label_tag }}<p class="dimmed">{{ form.service_area_department_name.help_text}}</p>
             {{ form.service_area_department_name }}
           </div>
           {% endif %}

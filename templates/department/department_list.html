@@ -23,24 +23,24 @@
     {% if form.department_name.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.department_name.errors }}</strong>
-      {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+      {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
       {{ form.department_name }}
     </div>
     {% else %}
     <div class="type-text">
-      {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+      {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
       {{ form.department_name }}
     </div>
     {% endif %}
     {% if form.is_fuzzy.errors %}
     <div class="type-text error">
       <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-      {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
       {{ form.is_fuzzy }}
     </div>
     {% else %}
     <div class="type-check">
-      {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
       {{ form.is_fuzzy }}
     </div>
     {% endif %}

@@ -27,24 +27,24 @@
           {% if form.role_permission_name.errors %}
           <div class="type-text error">
             <strong class="message">{{ form.role_permission_name.errors }}</strong>
-            {{ form.role_permission_name.label_tag }}<sup>{{ form.role_permission_name.help_text}}</sup>
+            {{ form.role_permission_name.label_tag }}<p class="dimmed">{{ form.role_permission_name.help_text}}</p>
             {{ form.role_permission_name }}
           </div>
           {% else %}
           <div class="type-text">
-            {{ form.role_permission_name.label_tag }}<sup>{{ form.role_permission_name.help_text}}</sup>
+            {{ form.role_permission_name.label_tag }}<p class="dimmed">{{ form.role_permission_name.help_text}}</p>
             {{ form.role_permission_name }}
           </div>
           {% endif %}
           {% if form.is_fuzzy.errors %}
           <div class="type-text error">
             <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
             {{ form.is_fuzzy }}
           </div>
           {% else %}
           <div class="type-check">
-            {{ form.is_fuzzy.label_tag }}<sup>{{ form.is_fuzzy.help_text}}</sup>
+            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
             {{ form.is_fuzzy }}
           </div>
           {% endif %}
@@ -69,12 +69,12 @@
           {% if form.role_permission_name.errors %}
           <div class="type-select error">
             <strong class="message">{{ form.role_permission_name.errors }}</strong>
-            {{ form.role_permission_name.label_tag }}<sup>{{ form.role_permission_name.help_text}}</sup>
+            {{ form.role_permission_name.label_tag }}<p class="dimmed">{{ form.role_permission_name.help_text}}</p>
             {{ form.role_permission_name }}
           </div>
           {% else %}
           <div class="type-select">
-            {{ form.role_permission_name.label_tag }}<sup>{{ form.role_permission_name.help_text}}</sup>
+            {{ form.role_permission_name.label_tag }}<p class="dimmed">{{ form.role_permission_name.help_text}}</p>
             {{ form.role_permission_name }}
           </div>
           {% endif %}
