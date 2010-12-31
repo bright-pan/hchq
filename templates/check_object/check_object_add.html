@@ -15,122 +15,194 @@
 {% block col3_content %}
 <h3>检查对象添加</h3>
 <hr>
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc note">
-      <!-- Insert your subtemplate content here -->
-      <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+{% with add_form as form %}
+<form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+
+  <div class="subcolumns note">
+
+    <fieldset>
+      <legend>检查对象信息</legend>
+      <div class="c80l">
+        <div class="subc">
+          <div class="subcolumns">
+            <div class="c50l">
+              <div class="subc">
+                <!-- Insert your subtemplate content here -->
+                {% if form.name.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.name.errors }}</strong>
+                  {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
+                  {{ form.name }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
+                  {{ form.name }}
+                </div>
+                {% endif %}
+                {% if form.service_area_name.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.service_area_name.errors }}</strong>
+                  {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+                  {{ form.service_area_name }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
+                  {{ form.service_area_name }}
+                </div>
+                {% endif %}
+                {% if form.is_family.errors %}
+                <div class="type-check error">
+                  <strong class="message">{{ form.is_family.errors }}</strong>
+                  {{ form.is_family.label_tag }}<br><sup>{{ form.is_family.help_text}}</sup><br>
+                  {{ form.is_family }}
+                </div>
+                {% else %}
+                <div class="type-check">
+                  {{ form.is_family.label_tag }}<br><sup>{{ form.is_family.help_text}}</sup><br>
+                  {{ form.is_family }}
+                </div>
+                {% endif %}
+              </div>          
+            </div>         
+            <div class="c50r">
+              <div class="subc">
+                <!-- Insert your subtemplate content here -->
+                {% if form.id_number.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.id_number.errors }}</strong>
+                  {{ form.id_number.label_tag }}<sup>{{ form.id_number.help_text}}</sup>
+                  {{ form.id_number }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.id_number.label_tag }}<sup>{{ form.id_number.help_text}}</sup>
+                  {{ form.id_number }}
+                </div>
+                {% endif %}
+                {% if form.department_name.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.department_name.errors }}</strong>
+                  {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+                  {{ form.department_name }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
+                  {{ form.department_name }}
+                </div>
+                {% endif %}
+                {% if form.wedding_time.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.wedding_time.errors }}</strong>
+                  {{ form.wedding_time.label_tag }}<sup>{{ form.wedding_time.help_text}}</sup>
+                  {{ form.wedding_time }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.wedding_time.label_tag }}<sup>{{ form.wedding_time.help_text}}</sup>
+                  {{ form.wedding_time }}
+                </div>
+                {% endif %}
+              </div>          
+            </div>         
+          </div>          
+          <!-- Insert your subtemplate content here -->
+        </div>
+      </div>
+      <div class="c20r">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          <div id="csrf_token">{% csrf_token %}</div>
+          <div class="center">
+            <img id="id_photo" src="{{ MEDIA_URL }}images/photo.png"/>
+            <hr>
+            <span><button id="open_uploader_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">本地上传</button></span>
+            <span><button id="open_camera_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">拍照上传</button></span>
+          </div>
+          <div id="uploader_dialog" style="display:none;" title="本地上传">
+            <p>请选择你选需要的文件，并且在提示完成以后关闭对话框！</p>
+          </div>
+
+        </div>
+      </div>
+    </fieldset>      
+  </div>
+  <div class="subcolumns">
+    <div class="c66l">
+      <div class="subc note">
+        <!-- Insert your subtemplate content here -->
         <fieldset>
-          <legend>请输入检查对象参数</legend>
-          {% with add_form as form %}
-          {% if form.name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.name.errors }}</strong>
-            {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
-            {{ form.name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.name.label_tag }}<sup>{{ form.name.help_text}}</sup>
-            {{ form.name }}
-          </div>
-          {% endif %}
-          {% if form.id_number.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.id_number.errors }}</strong>
-            {{ form.id_number.label_tag }}<sup>{{ form.id_number.help_text}}</sup>
-            {{ form.id_number }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.id_number.label_tag }}<sup>{{ form.id_number.help_text}}</sup>
-            {{ form.id_number }}
-          </div>
-          {% endif %}
-          {% if form.is_family.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.is_family.errors }}</strong>
-            {{ form.is_family.label_tag }}<sup>{{ form.is_family.help_text}}</sup>
-            {{ form.is_family }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.is_family.label_tag }}<sup>{{ form.is_family.help_text}}</sup>
-            {{ form.is_family }}
-          </div>
-          {% endif %}
-          {% if form.service_area_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.service_area_name.errors }}</strong>
-            {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
-            {{ form.service_area_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.service_area_name.label_tag }}<sup>{{ form.service_area_name.help_text}}</sup>
-            {{ form.service_area_name }}
-          </div>
-          {% endif %}
-          {% if form.department_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.department_name.errors }}</strong>
-            {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
-            {{ form.department_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.department_name.label_tag }}<sup>{{ form.department_name.help_text}}</sup>
-            {{ form.department_name }}
-          </div>
-          {% endif %}
-          {% if form.mate_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.mate_name.errors }}</strong>
-            {{ form.mate_name.label_tag }}<sup>{{ form.mate_name.help_text}}</sup>
-            {{ form.mate_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.mate_name.label_tag }}<sup>{{ form.mate_name.help_text}}</sup>
-            {{ form.mate_name }}
-          </div>
-          {% endif %}
-          {% if form.mate_id_number.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.mate_id_number.errors }}</strong>
-            {{ form.mate_id_number.label_tag }}<sup>{{ form.mate_id_number.help_text}}</sup>
-            {{ form.mate_id_number }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.mate_id_number.label_tag }}<sup>{{ form.mate_id_number.help_text}}</sup>
-            {{ form.mate_id_number }}
-          </div>
-          {% endif %}
-          {% if form.mate_service_area_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.mate_service_area_name.errors }}</strong>
-            {{ form.mate_service_area_name.label_tag }}<sup>{{ form.mate_service_area_name.help_text}}</sup>
-            {{ form.mate_service_area_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.mate_service_area_name.label_tag }}<sup>{{ form.mate_service_area_name.help_text}}</sup>
-            {{ form.mate_service_area_name }}
-          </div>
-          {% endif %}
-          {% if form.mate_department_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.mate_department_name.errors }}</strong>
-            {{ form.mate_department_name.label_tag }}<sup>{{ form.mate_department_name.help_text}}</sup>
-            {{ form.mate_department_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.mate_department_name.label_tag }}<sup>{{ form.mate_department_name.help_text}}</sup>
-            {{ form.mate_department_name }}
-          </div>
-          {% endif %}
+          <legend>对象配偶信息</legend>
+          <div class="subcolumns">
+            <div class="c50l">
+              <div class="subc">
+                <!-- Insert your subtemplate content here -->
+                {% if form.mate_name.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.mate_name.errors }}</strong>
+                  {{ form.mate_name.label_tag }}<sup>{{ form.mate_name.help_text}}</sup>
+                  {{ form.mate_name }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.mate_name.label_tag }}<sup>{{ form.mate_name.help_text}}</sup>
+                  {{ form.mate_name }}
+                </div>
+                {% endif %}
+                {% if form.mate_service_area_name.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.mate_service_area_name.errors }}</strong>
+                  {{ form.mate_service_area_name.label_tag }}<sup>{{ form.mate_service_area_name.help_text}}</sup>
+                  {{ form.mate_service_area_name }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.mate_service_area_name.label_tag }}<sup>{{ form.mate_service_area_name.help_text}}</sup>
+                  {{ form.mate_service_area_name }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="c50r">
+              <div class="subc">
+                <!-- Insert your subtemplate content here -->
+                {% if form.mate_id_number.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.mate_id_number.errors }}</strong>
+                  {{ form.mate_id_number.label_tag }}<sup>{{ form.mate_id_number.help_text}}</sup>
+                  {{ form.mate_id_number }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.mate_id_number.label_tag }}<sup>{{ form.mate_id_number.help_text}}</sup>
+                  {{ form.mate_id_number }}
+                </div>
+                {% endif %}
+                {% if form.mate_department_name.errors %}
+                <div class="type-text error">
+                  <strong class="message">{{ form.mate_department_name.errors }}</strong>
+                  {{ form.mate_department_name.label_tag }}<sup>{{ form.mate_department_name.help_text}}</sup>
+                  {{ form.mate_department_name }}
+                </div>
+                {% else %}
+                <div class="type-text">
+                  {{ form.mate_department_name.label_tag }}<sup>{{ form.mate_department_name.help_text}}</sup>
+                  {{ form.mate_department_name }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>          
+        </fieldset>
+      </div>
+    </div>
+    <div class="c33r">
+      <div class="subc note">
+        <!-- Insert your subtemplate content here -->
+        <fieldset>
+          <legend>避孕措施信息</legend>
           {% if form.ctp_method.errors %}
           <div class="type-select error">
             <strong class="message">{{ form.ctp_method.errors }}</strong>
@@ -155,39 +227,14 @@
             {{ form.ctp_method_time }}
           </div>
           {% endif %}
-          {% if form.wedding_time.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.wedding_time.errors }}</strong>
-            {{ form.wedding_time.label_tag }}<sup>{{ form.wedding_time.help_text}}</sup>
-            {{ form.wedding_time }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.wedding_time.label_tag }}<sup>{{ form.wedding_time.help_text}}</sup>
-            {{ form.wedding_time }}
-          </div>
-          {% endif %}
-          
-          {% endwith %}
-          <div class="type-button">
-            <input type="submit"  name="submit" value="添加" class="submit"/>
-            <span id="id_submit_error"></span>
-          </div>
         </fieldset>
-      </form>
-    </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-      <div id="csrf_token">{% csrf_token %}</div>
-      <p><a id="open_uploader_dialog" href="#">本地上传</a></p>
-      <div id="dialog" style="display:none;" title="本地上传">
-	<p>请选择你选需要的文件，并且在提示完成以后关闭对话框！</p>
-	<a id="uploader">选择文件</a>
       </div>
     </div>
   </div>
-</div>
+  <div class="type-button">
+    <input type="submit"  name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+    <span id="id_submit_error"></span>
+  </div>
+</form>
+{% endwith %}
 {% endblock %}
-

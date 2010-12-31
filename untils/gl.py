@@ -166,4 +166,4 @@ check_object_wedding_time_error_messages={'required': _(u'请输入时间！'),
                                           'form_error': _(u'表单严重错误'),
                                           }
 
-check_object_image_size = (295,413)#宽/高
+check_object_image_size = (140,165)#宽/高

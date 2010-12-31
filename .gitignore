@@ -2,4 +2,4 @@
 *.pyc
 *#
 *.db
-
+static/images/photos/*.jpg

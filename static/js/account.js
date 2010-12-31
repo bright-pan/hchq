@@ -1,9 +1,5 @@
-
-//var data = ['我的家里', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-$().ready(function() {
-
-                $.getJSON("/account/role_name_ajax/",
+$(document).ready(function() {
+                $.getJSON("{% url role_name_ajax %}",
                           {
                           },
                           function(data) {
@@ -12,7 +8,7 @@ $().ready(function() {
                                                           max: 12,
 //                                                          autoFill: true,
 //                                                          mustMatch: true,
-//                                                          matchContains: false,
+                                                          matchContains: true,
                                                           scrollHeight: 220,
                                                           formatItem: function(data, i, total) {
                                                           // don't show the current month in the list of values (for whatever reason)
@@ -23,7 +19,7 @@ $().ready(function() {
                                           });
 
                           });
-                $.getJSON("/service_area/service_area_name_ajax/",
+                $.getJSON("{% url service_area_name_ajax %}",
                           {
                           },
                           function(data) {
@@ -32,7 +28,7 @@ $().ready(function() {
                                                           max: 12,
 //                                                          autoFill: true,
 //                                                          mustMatch: true,
-//                                                          matchContains: false,
+                                                          matchContains: true,
                                                           scrollHeight: 220,
                                                           formatItem: function(data, i, total) {
                                                           // don't show the current month in the list of values (for whatever reason)
@@ -51,7 +47,7 @@ $().ready(function() {
 //                                        alert('********');
                                         service_area_name_old = service_area_name;
                                         $("#id_department_name").unautocomplete();
-                                        $.getJSON("/department/department_name_ajax/",
+                                        $.getJSON("{% url department_name_ajax %}",
                                                   {
                                                   service_area_name :$("#id_service_area_name").val()
                                                                   },
@@ -61,7 +57,7 @@ $().ready(function() {
                                                                                   max: 12,
 //                                                          autoFill: true,
 //                                                          mustMatch: true,
-//                                                          matchContains: false,
+                                                          matchContains: true,
                                                                                   scrollHeight: 220,
                                                                                   formatItem: function(data, i, total) {
                                                                                   // don't show the current month in the list of values (for whatever reason)
@@ -76,4 +72,5 @@ $().ready(function() {
                                 }
                                 
                         });
+
         });

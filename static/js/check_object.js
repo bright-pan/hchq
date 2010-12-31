@@ -1,14 +1,120 @@
-$().ready(function(){
+$(document).ready(function(){
+                $.getJSON("/service_area/service_area_name_ajax/",
+                          {
+                          },
+                          function(data) {
+                                  $("#id_service_area_name").autocomplete(data, {
+                                          minChars: 0,
+                                                          max: 12,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                                          matchContains: true,
+                                                          scrollHeight: 220,
+                                                          formatItem: function(data, i, total) {
+                                                          // don't show the current month in the list of values (for whatever reason)
+                                                          //if ( data[0] == months[new Date().getMonth()] ) 
+                                                          //return false;
+                                                          return data[0];
+                                                  }
+                                          });
+                                  $("#id_mate_service_area_name").autocomplete(data, {
+                                          minChars: 0,
+                                                          max: 12,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                                          matchContains: true,
+                                                          scrollHeight: 220,
+                                                          formatItem: function(data, i, total) {
+                                                          // don't show the current month in the list of values (for whatever reason)
+                                                          //if ( data[0] == months[new Date().getMonth()] ) 
+                                                          //return false;
+                                                          return data[0];
+                                                  }
+                                          });
+
+                          });
+                $("#id_service_area_name").blur(function() {
+                                service_area_name_old = '';
+                                service_area_name = $("#id_service_area_name").val();
+                                if (service_area_name != '' && service_area_name != service_area_name_old)
+                                {
+//                                        alert('********');
+                                        service_area_name_old = service_area_name;
+                                        $("#id_department_name").unautocomplete();
+                                        $.getJSON("/department/department_name_ajax/",
+                                                  {
+                                                  service_area_name :$("#id_service_area_name").val()
+                                                                  },
+                                                  function(data) {
+                                                          $("#id_department_name").autocomplete(data, {
+                                                                  minChars: 0,
+                                                                                  max: 12,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                                                                  matchContains: true,
+                                                                                  scrollHeight: 220,
+                                                                                  formatItem: function(data, i, total) {
+                                                                                  // don't show the current month in the list of values (for whatever reason)
+                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
+                                                                                  //return false;
+                                                                                  return data[0];
+                                                                          }
+                                                                  });
+
+                                                  });
+
+                                }
+                                
+                        });
+                $("#id_mate_service_area_name").blur(function() {
+                                mate_service_area_name_old = '';
+                                mate_service_area_name = $("#id_mate_service_area_name").val();
+                                if (mate_service_area_name != '' && mate_service_area_name != mate_service_area_name_old)
+                                {
+//                                        alert('********');
+                                        mate_service_area_name_old = mate_service_area_name;
+                                        $("#id_mate_department_name").unautocomplete();
+                                        $.getJSON("/department/department_name_ajax/",
+                                                  {
+                                                  service_area_name :$("#id_mate_service_area_name").val()
+                                                                  },
+                                                  function(data) {
+                                                          $("#id_mate_department_name").autocomplete(data, {
+                                                                  minChars: 0,
+                                                                                  max: 12,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                                                                  matchContains: true,
+                                                                                  scrollHeight: 220,
+                                                                                  formatItem: function(data, i, total) {
+                                                                                  // don't show the current month in the list of values (for whatever reason)
+                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
+                                                                                  //return false;
+                                                                                  return data[0];
+                                                                          }
+                                                                  });
+
+                                                  });
+
+                                }
+                                
+                        });
+
                 var photo_ready = false;
-                $("#dialog").dialog({ autoOpen: false });
-		$('#open_uploader_dialog').click(function(){
-                                $("#dialog").dialog("open");
-                                return false;	
+                $("#uploader_dialog").dialog({ autoOpen: false ,
+                                        modal:true,
+                                        buttons: [
+                                                {id:"uploader",text:"上传文件",},
+                                                {text:"确定",click:function(){$(this).dialog('close')}}
+                                                ],
+                                        });
+                $('#open_uploader_dialog').click(function(){
+                                $("#uploader_dialog").dialog("open");
+                                return false;
                         });
                 var csrf_token = $('#csrf_token >div >input').attr("value");
-
-		new AjaxUpload('uploader', {
-			action: '/check_object/add/uploader/',
+                new AjaxUpload('uploader', {
+                        action: '/check_object/add/uploader/',
                                         name: 'photo',
                                         data: {
                                 csrfmiddlewaretoken : csrf_token,
@@ -28,9 +134,10 @@ $().ready(function(){
                                         onComplete : function(file){
                                         photo_ready = true;
                                         $('#uploader').text('成功上传 ' + file);
+                                        $('#id_photo').attr('')
                                         
                                 }		
-		});
+                });
                 $('#id_form_add').submit(function(){
                                 if(photo_ready == true)
                                 {
