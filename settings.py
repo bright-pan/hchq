@@ -41,7 +41,7 @@ LANGUAGE_CODE = 'zh-cn'
 
 SITE_ID = 1
 
-SITE_NAME = '会昌县环情孕情管理系统'
+SITE_NAME = '江西省会昌县环情孕情管理系统'
 META_KEYWORDS = '环孕检, 计生服务站, 计生委, 检查结果, 检查对象, 检查项目'
 META_DESCRIPTION = '环孕检系统是会昌县计生服务站题提供的环孕检集中管理服务，用户跟踪检查对象的环孕检结果，和个人信息，并生成报表。'
 
