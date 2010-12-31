@@ -33,7 +33,7 @@ class CheckObjectAddForm(forms.Form):
                                      'size':'30',
                                      }
                               ), 
-        help_text=_(u'例如：张三，李四'),
+        help_text=_(u'例如：张三、李四'),
         error_messages = gl.check_object_name_error_messages,
         )
     id_number = forms.CharField(
@@ -49,7 +49,7 @@ class CheckObjectAddForm(forms.Form):
         label=_(u'服务区域'),
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
-        help_text=_(u'例如：周田，周田乡...'),
+        help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
         )
     department_name = forms.CharField(
@@ -60,13 +60,13 @@ class CheckObjectAddForm(forms.Form):
                                      'size':'30',
                                      }
                               ), 
-        help_text=_(u'例如：县委/政法委，公安局，...'),
+        help_text=_(u'例如：县委、政法委、公安局'),
         error_messages = gl.department_name_error_messages,
         )
     is_family = forms.CharField(
         required=True,
         label =_(u'家属'),
-        help_text=_(u'例如：对象没有单位则打勾！'),
+        help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
                                           }, 
@@ -81,7 +81,7 @@ class CheckObjectAddForm(forms.Form):
                                      'size':'30',
                                      }
                               ), 
-        help_text=_(u'例如：张三，李四'),
+        help_text=_(u'例如：张三、李四'),
         error_messages = gl.check_object_name_error_messages,
         )
     mate_id_number = forms.CharField(
@@ -97,7 +97,7 @@ class CheckObjectAddForm(forms.Form):
         label=_(u'服务区域'), 
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
-        help_text=_(u'例如：周田，周田乡...'),
+        help_text=_(u'例如：西江镇、周田乡、'),
         error_messages = gl.service_area_name_error_messages,
         )
     mate_department_name = forms.CharField(
@@ -108,7 +108,7 @@ class CheckObjectAddForm(forms.Form):
                                      'size':'30',
                                      }
                               ), 
-        help_text=_(u'例如：县委/政法委，公安局，...'),
+        help_text=_(u'例如：县委、政法委、公安局'),
         error_messages = gl.department_name_error_messages,
         )
 
@@ -120,7 +120,7 @@ class CheckObjectAddForm(forms.Form):
                  (u'2', u'避孕药方式'),
                  (u'3', u'其他方式'),
                  ),
-        help_text=_(u'例如：已上环则选择避孕环方式。'),
+        help_text=_(u'例如：已上环则打勾'),
         )
     ctp_method_time = forms.DateField(
         required=False,
