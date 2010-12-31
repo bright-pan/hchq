@@ -161,6 +161,7 @@ INSTALLED_APPS = (
 )
 
 AUTH_PROFILE_MODULE = 'account.UserProfile'
+LOGIN_URL = '/account/login'
 
 MAX_PHOTO_UPLOAD_SIZE = 1024 * 1024
 

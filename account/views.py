@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
@@ -21,7 +21,7 @@ def my_layout_test(request, template_name = 'my.html'):
 
 @csrf_protect
 @never_cache
-def login(request, template_name = 'account/login.html', next = '/'):
+def login(request, template_name = 'account/login.html', next='/'):
 
     page_title = u'用户登入'
     login_form = None
@@ -44,7 +44,7 @@ def exit(request, template_name = 'my.html', next = '/'):
     return HttpResponseRedirect(next)
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 
 def person_password_modify(request, template_name = '', next = '/'):
     
@@ -81,21 +81,21 @@ def person_password_modify(request, template_name = '', next = '/'):
                                   context_instance=RequestContext(request))        
 
 
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def person_management(request, template_name = 'my.html', next = '/'):
     
     page_title = u'个人信息'
     return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))    
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def test_person_password_modify(request, template_name = 'my.html', next = '/'):
     
     page_title = u'密码修改'
     return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_add(request, template_name='my.html', next='/', role_page='1'):
     """
     角色添加视图，带添加预览功能！
@@ -185,7 +185,7 @@ def role_add(request, template_name='my.html', next='/', role_page='1'):
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_delete(request, template_name='my.html', next='/', role_page='1',):
     """
     角色删除视图
@@ -276,7 +276,7 @@ def role_delete(request, template_name='my.html', next='/', role_page='1',):
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_modify(request, template_name='my.html', next='/', role_page='1',):
     """
     角色修改视图
@@ -367,7 +367,7 @@ def role_modify(request, template_name='my.html', next='/', role_page='1',):
 
     
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_list(request, template_name='my.html', next='/', role_page='1',):
     """
     角色查询视图
@@ -428,7 +428,7 @@ def role_list(request, template_name='my.html', next='/', role_page='1',):
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_permission_add(request, template_name='my.html', next='/', role_permission_page='1', role_index='1',):
     """
     角色权限添加视图，带添加预览功能！
@@ -556,7 +556,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_permission_delete(request, template_name='my.html', next='/', role_permission_page='1', role_index='1',):
     """
     角色权限删除视图，带添加预览功能！
@@ -669,7 +669,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
                                   context_instance=RequestContext(request))
     
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def role_permission_list(request, template_name='my.html', next='/', role_permission_page='1', role_index='1',):
     """
     角色权限列表视图，带添加预览功能！
@@ -749,7 +749,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def account_add(request, template_name='my.html', next='/', account_page='1'):
     """
     系统用户添加视图，带添加预览功能！
@@ -783,7 +783,7 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def account_show(request, template_name='', next='', account_index='1'):
     """
     系统用户详细信息显示。
@@ -825,7 +825,7 @@ def account_show(request, template_name='', next='', account_index='1'):
                               context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def account_modify(request, template_name='my.html', next_template_name='my.html', account_page='1',):
     """
     系统用户修改视图
@@ -895,7 +895,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def account_detail_modify(request, template_name='my.html', next='/', account_page='1',):
     """
     系统用户修改视图
@@ -926,7 +926,7 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
         raise Http404('Invalid Request!')
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def account_delete(request, template_name='my.html', next='/', account_page='1',):
     """
     系统用户删除视图
@@ -988,7 +988,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def account_list(request, template_name='my.html', next='/', account_page='1',):
     """
     系统用户查询视图

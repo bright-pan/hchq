@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
@@ -18,7 +18,7 @@ from hchq import settings
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def department_add(request, template_name='my.html', next='/', department_page='1'):
     """
     单位部门添加视图，带添加预览功能！
@@ -118,7 +118,7 @@ def department_add(request, template_name='my.html', next='/', department_page='
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def department_show(request, template_name='', next='', department_index='1'):
     """
     单位部门详细信息显示。
@@ -138,7 +138,7 @@ def department_show(request, template_name='', next='', department_index='1'):
                               context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def department_modify(request, template_name='my.html', next='/', department_page='1',):
     """
     服务区修改视图
@@ -234,7 +234,7 @@ def department_modify(request, template_name='my.html', next='/', department_pag
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def department_delete(request, template_name='my.html', next='/', department_page='1',):
     """
     单位部门删除视图
@@ -331,7 +331,7 @@ def department_delete(request, template_name='my.html', next='/', department_pag
 
     
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def department_list(request, template_name='my.html', next='/', department_page='1',):
     """
     单位部门查询视图

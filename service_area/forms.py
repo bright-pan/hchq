@@ -173,6 +173,7 @@ class ServiceAreaSearchForm(forms.Form):
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
+        help_text=_(u'例如：打勾代表进行模糊搜索！'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'fuzzy_search',}, check_test=None),
         )
@@ -274,6 +275,7 @@ class ServiceAreaDepartmentSearchForm(forms.Form):
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
+        help_text=_(u'例如：打勾代表进行模糊搜索！'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'fuzzy_search',
                                           }, 

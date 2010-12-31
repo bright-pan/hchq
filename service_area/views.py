@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
@@ -19,7 +19,7 @@ from hchq import settings
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_add(request, template_name='my.html', next='/', service_area_page='1'):
     """
     服务区域添加视图，带添加预览功能！
@@ -119,7 +119,7 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_show(request, template_name='', next='', service_area_index='1'):
     """
     服务区域详细信息显示。
@@ -139,7 +139,7 @@ def service_area_show(request, template_name='', next='', service_area_index='1'
                               context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_modify(request, template_name='my.html', next='/', service_area_page='1',):
     """
     服务区域修改视图
@@ -235,7 +235,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_delete(request, template_name='my.html', next='/', service_area_page='1',):
     """
     服务区域删除视图
@@ -332,7 +332,7 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
 
     
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_list(request, template_name='my.html', next='/', service_area_page='1',):
     """
     服务区域查询视图
@@ -400,7 +400,7 @@ def service_area_list(request, template_name='my.html', next='/', service_area_p
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_department_add(request, template_name='my.html', next='/', service_area_department_page='1', service_area_index='1',):
     """
     服务区域单位部门添加视图，带添加预览功能！
@@ -531,7 +531,7 @@ def service_area_department_add(request, template_name='my.html', next='/', serv
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_department_delete(request, template_name='my.html', next='/', service_area_department_page='1', service_area_index='1',):
     """
     服务区域单位部门删除视图，带添加预览功能！
@@ -644,7 +644,7 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
                                   context_instance=RequestContext(request))
     
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/account/login')
+@login_required
 def service_area_department_list(request, template_name='my.html', next='/', service_area_department_page='1', service_area_index='1',):
     """
     服务区域单位部门列表视图，带添加预览功能！

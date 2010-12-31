@@ -1,38 +1,34 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>系统用户</caption>
   <thead>
-    <tr><th scope="col" colspan="9">系统用户编辑(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="7">系统用户编辑(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
   <tbody>
     <tr>
       <th scope="col">编号</th>
       <th scope="col">用户名称</th>
-      <th scope="col">服务区域</th>
-      <th scope="col">单位部门</th>
+      <th scope="col">服务区域<hr>单位部门</th>
       <th scope="col">角色权限</th>
       <th scope="col">检查人员</th>
-      <th scope="col">登入时间</th>
-      <th scope="col">创建时间</th>
+      <th scope="col">登入时间<hr>创建时间</th>
       <th scope="col">编辑命令</th>
     </tr>
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.user.username }}<a></td>
-      <td>{{ result.service_area_department.service_area.name }}</td>
-      <td>{{ result.service_area_department.department.name }}</td>
+      <td>{{ result.service_area_department.service_area.name }}<hr>{{ result.service_area_department.department.name }}</td>
       <td>{{ result.user.groups.get.name }}</td>
       {% if result.is_checker %} 
       <td>是</td>
       {% else %}
       <td>否</td>
       {% endif %}
-      <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
-      <td>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
+      <td>{{ user.last_login|date:"Y-m-d H:i:s" }}<hr>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
       <td>
         <form method="post" action=".">{% csrf_token %}
           <input type="hidden" name="id" value="{{ result.user.id }}" />
-          <input type="submit" name="submit" value="编辑" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
+          <input type="submit" name="submit" value="编辑" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
         </form>
       </td>
     </tr>

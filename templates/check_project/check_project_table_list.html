@@ -1,34 +1,30 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>检查项目</caption>
   <thead>
-    <tr><th scope="col" colspan="8">检查项目查询(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="6">检查项目查询(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
     <tr>
       <th scope="col">编号</th>
       <th scope="col">名称</th>
-      <th scope="col">开始时间</th>
-      <th scope="col">结束时间</th>
+      <th scope="col">开始时间<hr>结束时间</th>
       <th scope="col">是否启用</th>
       <th scope="col">创建者</th>
-      <th scope="col">创建时间</th>
-      <th scope="col">更新时间</th>
+      <th scope="col">创建时间<hr>更新时间</th>
     </tr>
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
-      <td>{{ result.start_time|date:"Y-m-d"}}</td>
-      <td>{{ result.end_time|date:"Y-m-d"}}</td>
+      <td>{{ result.start_time|date:"Y-m-d"}}<hr>{{ result.end_time|date:"Y-m-d"}}</td>
       {% if result.is_setup %} 
       <td>启用</td>
       {% else %}
       <td>未启用</td>
       {% endif %}
       <td>{{ result.creater.username }}</td>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
-      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}<hr>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     {% empty %}
     <p class="warning">没有检查项目可以查询！</p>

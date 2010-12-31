@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
@@ -18,7 +18,7 @@ from hchq import settings
 
 # Create your views here.
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_add(request, template_name='my.html', next='/', check_object_page='1'):
     """
     系统用户添加视图，带添加预览功能！
@@ -51,7 +51,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
                                   },
                                   context_instance=RequestContext(request))
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
     if request.method == 'POST':
         if request.FILES.get('photo'):
@@ -85,7 +85,7 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
 
     
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_show(request, template_name='', next='', check_object_index='1'):
     """
     系统用户详细信息显示。
@@ -127,7 +127,7 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
                               context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_modify(request, template_name='my.html', next_template_name='my.html', check_object_page='1',):
     """
     系统用户修改视图
@@ -197,7 +197,7 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                                   context_instance=RequestContext(request))
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_detail_modify(request, template_name='my.html', next='/', check_object_page='1',):
     """
     系统用户修改视图
@@ -228,7 +228,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
         raise Http404('Invalid Request!')
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_delete(request, template_name='my.html', next='/', check_object_page='1',):
     """
     系统用户删除视图
@@ -290,7 +290,7 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
 
 
 @csrf_protect
-@user_passes_test(lambda u: u.is_authenticated(), login_url='/check_object/login')
+@login_required
 def check_object_list(request, template_name='my.html', next='/', check_object_page='1',):
     """
     系统用户查询视图

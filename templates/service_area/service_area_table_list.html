@@ -1,7 +1,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>服务区域</caption>
   <thead>
-    <tr><th scope="col" colspan="8">服务区域查询(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="7">服务区域查询(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
@@ -9,8 +9,7 @@
       <th scope="col">编号</th>
       <th scope="col">名称</th>
       <th scope="col">创建者</th>
-      <th scope="col">创建时间</th>
-      <th scope="col">更新时间</th>
+      <th scope="col">创建时间<hr>更新时间</th>
       <th scope="col">查询关联单位</th>
       <th scope="col">添加关联单位</th>
       <th scope="col">删除关联单位</th>
@@ -21,8 +20,7 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
       <td>{{ result.creater }}</td>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
-      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}<hr>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
       <td>
         <a href="{% url service_area_department_list result.id '1' %}">查询关联单位</a>
       </td>
