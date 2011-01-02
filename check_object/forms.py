@@ -17,7 +17,7 @@ import datetime
 
 class CheckObjectAddForm(forms.Form):
     """
-    系统用户添加表单
+    检查对象添加表单
     """
 
     service_area_department_object = None
@@ -97,7 +97,7 @@ class CheckObjectAddForm(forms.Form):
         label=_(u'服务区域'), 
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
-        help_text=_(u'例如：西江镇、周田乡、'),
+        help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
         )
     mate_department_name = forms.CharField(
@@ -120,7 +120,7 @@ class CheckObjectAddForm(forms.Form):
                  (u'2', u'避孕药方式'),
                  (u'3', u'其他方式'),
                  ),
-        help_text=_(u'例如：已上环则打勾'),
+        help_text=_(u'例如：上环选避孕环方式'),
         )
     ctp_method_time = forms.DateField(
         required=False,
@@ -136,7 +136,6 @@ class CheckObjectAddForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
-
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -198,78 +197,80 @@ class CheckObjectAddForm(forms.Form):
         return department_name_copy
     def clean_mate_name(self):
         try:
-            name_copy = self.data.get('name')
-            if re.match(gl.check_object_name_add_re_pattern, name_copy) is None:
+            mate_name_copy = self.data.get('mate_name')
+            if re.match(gl.check_object_name_add_re_pattern, mate_name_copy) is None:
                 raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
-        return name_copy
+        return mate_name_copy
     
     def clean_mate_id_number(self):
         try:
-            id_number_copy = self.data.get('id_number')
+            mate_id_number_copy = self.data.get('mate_id_number')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
-        if re.match(gl.check_object_id_number_add_re_pattern, id_number_copy) is None:
+        if re.match(gl.check_object_id_number_add_re_pattern, mate_id_number_copy) is None:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
-        return id_number_copy
+        return mate_id_number_copy
 
     def clean_mate_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+           mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
-        if re.match(gl.service_area_name_add_re_pattern, service_area_name_copy) is None:
+        if re.match(gl.service_area_name_add_re_pattern, mate_service_area_name_copy) is None:
             raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
 
         try:
-            ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
+            ServiceArea.objects.get(name=mate_service_area_name_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
 
-        return service_area_name_copy
+        return mate_service_area_name_copy
 
     def clean_mate_department_name(self):
         try:
-            department_name_copy = self.data.get('department_name')
-            service_area_name_copy = self.data.get('service_area_name')
+            mate_department_name_copy = self.data.get('mate_department_name')
+            mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['form_error'])
-        if re.match(gl.department_name_add_re_pattern, department_name_copy) is None:
+        if re.match(gl.department_name_add_re_pattern, mate_department_name_copy) is None:
             raise forms.ValidationError(gl.department_name_error_messages['format_error'])
         try:
-            department_object = Department.objects.get(name=department_name_copy, is_active=True)
+            mate_department_object = Department.objects.get(name=mate_department_name_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_exist_error'])
         try:
-            service_area_object = ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
+            mate_service_area_object = ServiceArea.objects.get(name=mate_service_area_name_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
         try:
-            self.mate_service_area_department_object = ServiceAreaDepartment.objects.get(service_area=service_area_object, department=department_object)
+            self.mate_service_area_department_object = ServiceAreaDepartment.objects.get(service_area=mate_service_area_object, department=mate_department_object)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
-        return department_name_copy
+        return mate_department_name_copy
         
     def clean_ctp_method_time(self):
         try:
-            self.ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
+            ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
-        if self.ctp_method_time_copy is not None:
-            if self.ctp_method_time_copy > datetime.datetime.now().date():
+        if ctp_method_time_copy is not None:
+            if ctp_method_time_copy > datetime.datetime.now().date():
                 raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
-        return self.ctp_method_time_copy
+        return ctp_method_time_copy
+    
     def clean_wedding_time(self):
         try:
-            self.wedding_time_copy = self.cleaned_data.get('wedding_time')
+            wedding_time_copy = self.cleaned_data.get('wedding_time')
+            print wedding_time_copy
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_wedding_time_error_messages['form_error'])
-        if self.wedding_time_copy is not None:
-            if self.wedding_time_copy > datetime.datetime.now().date():
+        if wedding_time_copy is not None:
+            if wedding_time_copy > datetime.datetime.now().date():
                 raise forms.ValidationError(gl.check_object_wedding_time_error_messages['logic_error'])
-        return self.wedding_time_copy
+        return wedding_time_copy
 
     
     def add(self, user = None):
@@ -323,7 +324,7 @@ class CheckObjectAddForm(forms.Form):
 
 class CheckObjectModifyForm(forms.Form):
     """
-    系统用户修改表单
+    检查对象修改表单
     """
 
     id_object = None
@@ -351,7 +352,7 @@ class CheckObjectModifyForm(forms.Form):
 
 class CheckObjectDetailModifyForm(forms.Form):
     """
-    系统用户详细修改表单
+    检查对象详细修改表单
     """
 
     id_object = None
@@ -498,7 +499,7 @@ class CheckObjectDetailModifyForm(forms.Form):
 
 class CheckObjectDeleteForm(forms.Form):
     """
-    系统用户删除表单
+    检查对象删除表单
     """
     id_object = None
 
@@ -528,58 +529,122 @@ class CheckObjectDeleteForm(forms.Form):
 
 class CheckObjectSearchForm(forms.Form):
     """
-    系统用户搜索表单
+    检查对象搜索表单
     """
-    
+    is_fuzzy = False
     name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'系统用户名称'), 
+        label=_(u'妻子姓名'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
                               ), 
-        help_text=_(u'例如：张三，李四'),
+        help_text=_(u'例如：张三、李四'),
         error_messages = gl.check_object_name_error_messages,
         )
-    role_name = forms.CharField(
-        max_length=128,
+    id_number = forms.CharField(
+        max_length=18,
         required=False,
-        label=_(u'角色名称'), 
-        widget=forms.TextInput(attrs={'class':'',
-                                      'size':'30',}), 
-        help_text=_(u'例如：技术人员，区域主管...'),
-        error_messages = gl.role_name_error_messages,
+        label=_(u'身份证号'),
+        help_text=_(u'例如：360733199009130025'),
+        error_messages = gl.check_object_id_number_error_messages,
         )
     service_area_name = forms.CharField(
         max_length=128,
         required=False,
-        label=_(u'服务区域名称'), 
+        label=_(u'服务区域'),
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
-        help_text=_(u'例如：周田，周田乡...'),
+        help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
         )
     department_name = forms.CharField(
         max_length=128,
         required=False, 
-        label=_(u'单位部门名称'), 
+        label=_(u'单位部门'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
                               ), 
-        help_text=_(u'例如：县委/政法委，公安局，...'),
+        help_text=_(u'例如：县委、政法委、公安局'),
         error_messages = gl.department_name_error_messages,
         )
-    is_checker = forms.ChoiceField(
+    is_family = forms.ChoiceField(
         required=True,
-        label =_(u'检查人员'),
+        label =_(u'家属'),
+        help_text=_(u'例如：家属则选是'),
         choices=((u'none', u'未知'),
                  (u'true', u'是'),
                  (u'false', u'否'),
                  ),
-        help_text=_(u'例如：未知代表所有人员'),
         )
+
+    mate_name = forms.CharField(
+        max_length=64,
+        required=False,
+        label=_(u'丈夫姓名'),
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：张三、李四'),
+        error_messages = gl.check_object_name_error_messages,
+        )
+    mate_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        help_text=_(u'例如：360733199009130025'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
+    mate_service_area_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'服务区域'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                      'size':'30',}), 
+        help_text=_(u'例如：西江镇、周田乡'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    mate_department_name = forms.CharField(
+        max_length=128,
+        required=False, 
+        label=_(u'单位部门'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：县委、政法委、公安局'),
+        error_messages = gl.department_name_error_messages,
+        )
+
+    ctp_method = forms.ChoiceField(
+        required=True,
+        label =_(u'避孕措施'),
+        choices=((u'none', u'未知'),
+                 (u'0', u'未使用'),
+                 (u'1', u'避孕环方式'),
+                 (u'2', u'避孕药方式'),
+                 (u'3', u'其他方式'),
+                 ),
+        help_text=_(u'例如：上环选避孕环方式'),
+        )
+    ctp_method_time = forms.DateField(
+        required=False,
+        label=_(u'实施时间'),
+        help_text=_(u'例如：2010-10-25'),
+        error_messages = gl.check_object_ctp_method_time_error_messages,
+        input_formats = ('%Y-%m-%d',)
+        )
+    wedding_time = forms.DateField(
+        required=False,
+        label=_(u'结婚时间'),
+        help_text=_(u'例如：1985-1-1'),
+        error_messages = gl.check_object_wedding_time_error_messages,
+        input_formats = ('%Y-%m-%d',)
+        )
+
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
@@ -590,7 +655,6 @@ class CheckObjectSearchForm(forms.Form):
                                    ),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
         )
-    
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -600,22 +664,23 @@ class CheckObjectSearchForm(forms.Form):
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return name_copy
     
-    def clean_role_name(self):
+    def clean_id_number(self):
         try:
-            role_name_copy = self.data.get('role_name')
+            id_number_copy = self.data.get('id_number')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.role_name_error_messages['form_error'])
-        if re.match(gl.role_name_search_re_pattern, role_name_copy) is None:
-            raise forms.ValidationError(gl.role_name_error_messages['format_error'])
-        return role_name_copy
-
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return id_number_copy
     def clean_service_area_name(self):
         try:
            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+
         if re.match(gl.service_area_name_search_re_pattern, service_area_name_copy) is None:
             raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+
         return service_area_name_copy
 
     def clean_department_name(self):
@@ -627,12 +692,81 @@ class CheckObjectSearchForm(forms.Form):
             raise forms.ValidationError(gl.department_name_error_messages['format_error'])
         return department_name_copy
 
+    def clean_mate_name(self):
+        try:
+            mate_name_copy = self.data.get('mate_name')
+            if re.match(gl.check_object_name_search_re_pattern, mate_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return mate_name_copy
+    
+    def clean_mate_id_number(self):
+        try:
+            mate_id_number_copy = self.data.get('mate_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, mate_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return mate_id_number_copy
+
+    def clean_mate_service_area_name(self):
+        try:
+           mate_service_area_name_copy = self.data.get('mate_service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+
+        if re.match(gl.service_area_name_search_re_pattern, mate_service_area_name_copy) is None:
+            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+        return mate_service_area_name_copy
+
+    def clean_mate_department_name(self):
+        try:
+            mate_department_name_copy = self.data.get('mate_department_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        if re.match(gl.department_name_search_re_pattern, mate_department_name_copy) is None:
+            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
+        return mate_department_name_copy
+    
+    def clean_ctp_method_time(self):
+        try:
+            ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
+        if ctp_method_time_copy is not None:
+            if ctp_method_time_copy > datetime.datetime.now().date():
+                raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
+        return ctp_method_time_copy
+    def clean_wedding_time(self):
+        try:
+            wedding_time_copy = self.cleaned_data.get('wedding_time')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_wedding_time_error_messages['form_error'])
+        if wedding_time_copy is not None:
+            if wedding_time_copy > datetime.datetime.now().date():
+                raise forms.ValidationError(gl.check_object_wedding_time_error_messages['logic_error'])
+        return wedding_time_copy
+    
     def data_to_session(self, request):
         request.session[gl.session_check_object_name] = self.cleaned_data['name']
-        request.session[gl.session_check_object_role_name] = self.cleaned_data['role_name']
+        request.session[gl.session_check_object_id_number] = self.cleaned_data['id_number']
         request.session[gl.session_check_object_service_area_name] = self.cleaned_data['service_area_name']
         request.session[gl.session_check_object_department_name] = self.cleaned_data['department_name']
-        request.session[gl.session_check_object_is_checker] = self.cleaned_data['is_checker']
+        request.session[gl.session_check_object_is_family] = self.cleaned_data['is_family']
+        request.session[gl.session_check_object_mate_name] = self.cleaned_data['mate_name']
+        request.session[gl.session_check_object_mate_id_number] = self.cleaned_data['mate_id_number']
+        request.session[gl.session_check_object_mate_service_area_name] = self.cleaned_data['mate_service_area_name']
+        request.session[gl.session_check_object_mate_department_name] = self.cleaned_data['mate_department_name']
+        request.session[gl.session_check_object_ctp_method] = self.cleaned_data['ctp_method']
+        if self.cleaned_data['ctp_method_time'] is not None:
+            request.session[gl.session_check_object_ctp_method_time] = self.cleaned_data['ctp_method_time'].isoformat()
+        else:
+            request.session[gl.session_check_object_ctp_method_time] = u''
+        if self.cleaned_data['wedding_time'] is not None:
+            request.session[gl.session_check_object_wedding_time] = self.cleaned_data['wedding_time'].isoformat()
+        else:
+            request.session[gl.session_check_object_wedding_time] = u''
         is_fuzzy = self.cleaned_data['is_fuzzy']
 #        print is_fuzzy
         if is_fuzzy == u'is_fuzzy':
@@ -646,20 +780,34 @@ class CheckObjectSearchForm(forms.Form):
     def data_from_session(self, request):
         data = {}
         data['name'] = request.session.get(gl.session_check_object_name, u'')
-        data['role_name'] = request.session.get(gl.session_check_object_role_name, u'')
+        data['id_number'] = request.session.get(gl.session_check_object_id_number, u'')
         data['service_area_name'] = request.session.get(gl.session_check_object_service_area_name, u'')
         data['department_name'] = request.session.get(gl.session_check_object_department_name, u'')
-        data['is_checker'] = request.session.get(gl.session_check_object_is_checker, u'none')
+        data['is_family'] = request.session.get(gl.session_check_object_is_family, u'none')
+        data['mate_name'] = request.session.get(gl.session_check_object_mate_name, u'')
+        data['mate_id_number'] = request.session.get(gl.session_check_object_mate_id_number, u'')
+        data['mate_service_area_name'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
+        data['mate_department_name'] = request.session.get(gl.session_check_object_mate_department_name, u'')
+        data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'')
+        data['ctp_method_time'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
+        data['wedding_time'] = request.session.get(gl.session_check_object_wedding_time, u'')
         data['is_fuzzy'] = request.session.get(gl.session_check_object_is_fuzzy, False)
+
 #        print data['is_fuzzy']
         return data
-    
     def init_from_session(self, request):
         self.fields['name'].widget.attrs['value'] = request.session.get(gl.session_check_object_name, u'')
-        self.fields['role_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_role_name, u'')
+        self.fields['id_number'].widget.attrs['value'] = request.session.get(gl.session_check_object_id_number, u'')
         self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_service_area_name, u'')
         self.fields['department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_department_name, u'')
-        self.fields['is_checker'].widget.attrs['value'] = request.session.get(gl.session_check_object_is_checker, u'none')
+        self.fields['is_family'].widget.attrs['value'] = request.session.get(gl.session_check_object_is_family, u'none')
+        self.fields['mate_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_name, u'')
+        self.fields['mate_id_number'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_id_number, u'')
+        self.fields['mate_service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
+        self.fields['mate_department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_department_name, u'')
+        self.fields['ctp_method'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method, u'none')
+        self.fields['ctp_method_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
+        self.fields['wedding_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_wedding_time, u'')
         is_fuzzy = request.session.get(gl.session_check_object_is_fuzzy, False)
         if is_fuzzy == u'is_fuzzy':
             self.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
@@ -667,359 +815,220 @@ class CheckObjectSearchForm(forms.Form):
             pass
         return True
     
-    def search(self):
-        query_set = None
+    def query_name(self, query_set=None):
         name = self.cleaned_data['name']
-        service_area_name = self.cleaned_data['service_area_name']
-        department_name = self.cleaned_data['department_name']
-        role_name = self.cleaned_data['role_name']
-        is_checker = self.cleaned_data['is_checker']
-        if self.cleaned_data['is_fuzzy'] == u'is_fuzzy':
-            is_fuzzy = True
-        else:
-            is_fuzzy = False
+        is_fuzzy = self.is_fuzzy
         
-        if is_fuzzy is False:
-            if is_checker == u'true':
-                query_set = UserProfile.objects.filter(is_checker=True, user__is_active=True, user__is_superuser=False, user__is_staff=False)
-                if role_name == u'':
-                    if service_area_name == u'':
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
+        if query_set is None:
+            return query_set
 
-                    else:
-                        query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
-                else:
-                    query_set = query_set.filter(user__groups__name__startswith=role_name)
-                    if service_area_name == u'':
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__name__startswith=name)
-                    else:
-                        query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__startswith=name)
-            else:
-                if is_checker == u'false':
-                    query_set = UserProfile.objects.filter(is_checker=False, user__is_active=True, user__is_superuser=False, user__is_staff=False)
-                    if role_name == u'':
-                        if service_area_name == u'':
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                    else:
-                        query_set = query_set.filter(user__groups__name__startswith=role_name)
-                        if service_area_name == u'':
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__startswith=name)
-                else:
-                    if is_checker == u'none':
-                        query_set = UserProfile.objects.filter(user__is_active=True, user__is_superuser=False, user__is_staff=False)
-                        if role_name == u'':
-                            if service_area_name == u'':
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                        else:
-                            query_set = query_set.filter(user__groups__name__startswith=role_name)
-                            if service_area_name == u'':
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__startswith=name)
-                    else:
-                        pass
+        if name == u'':
+            pass
         else:
-            if is_checker == u'true':
-                query_set = UserProfile.objects.filter(is_checker=True, user__is_active=True, user__is_superuser=False, user__is_staff=False)
-                if role_name == u'':
-                    if service_area_name == u'':
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-
-                    else:
-                        query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-                else:
-                    query_set = query_set.filter(user__groups__name__icontains=role_name)
-                    if service_area_name == u'':
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-                    else:
-                        query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
-                        if department_name == u'':
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                            if name == u'':
-                                pass
-                            else:
-                                query_set = query_set.filter(user__username__icontains=name)
+            if is_fuzzy is False:
+                query_set = query_set.filter(name__startswith=name)
             else:
-                if is_checker == u'false':
-                    query_set = UserProfile.objects.filter(is_checker=False, user__is_active=True, user__is_superuser=False, user__is_staff=False)
-                    if role_name == u'':
-                        if service_area_name == u'':
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                    else:
-                        query_set = query_set.filter(user__groups__name__icontains=role_name)
-                        if service_area_name == u'':
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
-                            if department_name == u'':
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                if name == u'':
-                                    pass
-                                else:
-                                    query_set = query_set.filter(user__username__icontains=name)
-                else:
-                    if is_checker == u'none':
-                        query_set = UserProfile.objects.filter(user__is_active=True, user__is_superuser=False, user__is_staff=False)
-                        if role_name == u'':
-                            if service_area_name == u'':
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                        else:
-                            query_set = query_set.filter(user__groups__name__icontains=role_name)
-                            if service_area_name == u'':
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                            else:
-                                query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
-                                if department_name == u'':
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                                else:
-                                    query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
-                                    if name == u'':
-                                        pass
-                                    else:
-                                        query_set = query_set.filter(user__username__icontains=name)
-                    else:
-                        pass
+                query_set = query_set.filter(name__icontains=name)
+                
         return query_set
 
+    def query_id_number(self, query_set=None):
+        id_number = self.cleaned_data['id_number']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if id_number == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(id_number__startswith=id_number)
+            else:
+                query_set = query_set.filter(id_number__icontains=id_number)
+
+        return query_set
+    
+    def query_service_area_name(self, query_set=None):
+        service_area_name = self.cleaned_data['service_area_name']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if service_area_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+            else:
+                query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+
+        return query_set
+    
+    def query_department_name(self, query_set=None):
+        department_name = self.cleaned_data['department_name']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if department_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
+            else:
+                query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
+
+        return query_set
+
+    def query_is_family(self, query_set=None):
+        is_family = self.cleaned_data['is_family']
+
+        if query_set is None:
+            return query_set
+        
+        if is_family == u'true':
+            query_set = query_set.filter(is_family=True)
+        else:
+            if is_family == u'false':
+                query_set = query_set.filter(is_family=False)
+            else:
+                if is_family == u'none':
+                    pass
+                else:
+                    pass
+
+        return query_set
+
+    def query_mate_name(self, query_set=None):
+        mate_name = self.cleaned_data['mate_name']
+        is_fuzzy = self.is_fuzzy
+        
+        if query_set is None:
+            return query_set
+
+        if mate_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(mate_name__startswith=mate_name)
+            else:
+                query_set = query_set.filter(mate_name__icontains=mate_name)
+                
+        return query_set
+
+    def query_mate_id_number(self, query_set=None):
+        mate_id_number = self.cleaned_data['mate_id_number']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if mate_id_number == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(mate_id_number__startswith=mate_id_number)
+            else:
+                query_set = query_set.filter(mate_id_number__icontains=mate_id_number)
+
+        return query_set
+    
+    def query_mate_service_area_name(self, query_set=None):
+        mate_service_area_name = self.cleaned_data['mate_service_area_name']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if mate_service_area_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(mate_service_area_department__service_area__name__startswith=mate_service_area_name)
+            else:
+                query_set = query_set.filter(mate_service_area_department__service_area__name__icontains=mate_service_area_name)
+
+        return query_set
+    
+    def query_mate_department_name(self, query_set=None):
+        mate_department_name = self.cleaned_data['mate_department_name']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if mate_department_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(mate_service_area_department__department__name__startswith=mate_department_name)
+            else:
+                query_set = query_set.filter(mate_service_area_department__department__name__icontains=mate_department_name)
+
+        return query_set
+
+    def query_ctp_method(self, query_set=None):
+        ctp_method = self.cleaned_data['ctp_method']
+
+        if query_set is None:
+            return query_set
+        
+        if ctp_method == u'none':
+            pass
+        else:
+            query_set = query_set.filter(ctp_method=ctp_method)
+            
+        return query_set
+    
+    def query_ctp_method_time(self, query_set=None):
+        ctp_method_time = self.cleaned_data['ctp_method_time']
+
+        if query_set is None:
+            return query_set
+
+        if ctp_method_time == None:
+            pass
+        else:
+            query_set = query_set.filter(ctp_method_time=ctp_method_time)
+            
+        return query_set
+    
+    def query_wedding_time(self, query_set=None):
+        wedding_time = self.cleaned_data['wedding_time']
+
+        if query_set is None:
+            return query_set
+
+        if wedding_time == None:
+            pass
+        else:
+            query_set = query_set.filter(wedding_time=wedding_time)
+        
+        return query_set
+    
+    def search(self):
+
+        if self.cleaned_data['is_fuzzy'] == u'is_fuzzy':
+            self.is_fuzzy = True
+        else:
+            self.is_fuzzy = False
+
+        query_set = CheckObject.objects.filter(is_active=True)
+        
+        query_set = self.query_name(query_set)
+        query_set = self.query_id_number(query_set)
+        query_set = self.query_mate_name(query_set)
+        query_set = self.query_mate_id_number(query_set)
+        query_set = self.query_service_area_name(query_set)
+        query_set = self.query_department_name(query_set)
+        query_set = self.query_mate_service_area_name(query_set)
+        query_set = self.query_mate_department_name(query_set)
+        query_set = self.query_ctp_method(query_set)
+        query_set = self.query_is_family(query_set)
+        query_set = self.query_ctp_method_time(query_set)
+        query_set = self.query_wedding_time(query_set)
+        
+        return query_set

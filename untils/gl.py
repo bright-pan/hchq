@@ -167,3 +167,17 @@ check_object_wedding_time_error_messages={'required': _(u'请输入时间！'),
                                           }
 
 check_object_image_size = (140,165)#宽/高
+
+session_check_object_name = u'session_check_object_name'
+session_check_object_id_number = u'session_check_object_id_number'
+session_check_object_service_area_name = u'session_check_object_service_area_name'
+session_check_object_department_name = u'session_check_object_department_name'
+session_check_object_is_family = u'session_check_object_is_family'
+session_check_object_mate_name = u'session_check_object_mate_name'
+session_check_object_mate_id_number = u'session_check_object_mate_id_number'
+session_check_object_mate_service_area_name = u'session_check_object_mate_service_area_name'
+session_check_object_mate_department_name = u'session_check_object_mate_department_name'
+session_check_object_is_fuzzy = u'session_check_object_is_fuzzy'
+session_check_object_ctp_method = u'session_check_object_ctp_method'
+session_check_object_ctp_method_time = u'session_check_object_ctp_method_time'
+session_check_object_wedding_time = u'session_check_object_wedding_time'

@@ -21,9 +21,9 @@ from hchq import settings
 @login_required
 def check_object_add(request, template_name='my.html', next='/', check_object_page='1'):
     """
-    系统用户添加视图，带添加预览功能！
+    检查对象添加视图，带添加预览功能！
     """
-    page_title = u'添加系统用户'
+    page_title = u'添加检查对象'
     user = get_user(request)
 
     if request.method == 'POST':
@@ -88,27 +88,12 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
 @login_required
 def check_object_show(request, template_name='', next='', check_object_index='1'):
     """
-    系统用户详细信息显示。
+    检查对象详细信息显示。
     """
-    page_title=u'系统用户详情'
-    success = False
+    page_title=u'检查对象详情'
+
     if request.method == 'POST':
-        post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
-        if submit_value == u'密码重置':
-            try:
-                check_object_id = int(check_object_index)
-            except ValueError:
-                raise Http404('Invalid Request!')
-            try:
-                result = CheckObject.objects.get(pk=check_object_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
-            except ObjectDoesNotExist:
-                raise Http404('Invalid Request!')
-            result.user.set_password(settings.CHECK_OBJECT_DEFAULT_PASSWORD)
-            result.user.save()
-            success = True
-        else:
-            raise Http404('Invalid Request!')
+        raise Http404('Invalid Request!')
             
     else:
         try:
@@ -116,13 +101,12 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
         except ValueError:
             raise Http404('Invalid Request!')
         try:
-            result = CheckObject.objects.get(pk=check_object_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
+            result = CheckObject.objects.get(pk=check_object_id, is_active=True)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
         
     return render_to_response(template_name,
                               {'result': result,
-                               'success': success,
                                },
                               context_instance=RequestContext(request))
 
@@ -130,9 +114,9 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
 @login_required
 def check_object_modify(request, template_name='my.html', next_template_name='my.html', check_object_page='1',):
     """
-    系统用户修改视图
+    检查对象修改视图
     """
-    page_title = u'编辑系统用户'
+    page_title = u'编辑检查对象'
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
@@ -143,7 +127,7 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
 #                print check_object_modify_object
                 check_object_detail_modify_form = Check_ObjectDetailModifyForm()
                 check_object_detail_modify_form.set_value(check_object_modify_object)
-                page_title = u'修改系统用户'
+                page_title = u'修改检查对象'
                 return render_to_response(next_template_name,
                                           {'detail_modify_form': check_object_detail_modify_form,
                                            'check_object_name': check_object_modify_object.username,
@@ -200,10 +184,10 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
 @login_required
 def check_object_detail_modify(request, template_name='my.html', next='/', check_object_page='1',):
     """
-    系统用户修改视图
+    检查对象修改视图
     """
 
-    page_title = u'编辑系统用户'
+    page_title = u'编辑检查对象'
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
@@ -231,9 +215,9 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
 @login_required
 def check_object_delete(request, template_name='my.html', next='/', check_object_page='1',):
     """
-    系统用户删除视图
+    检查对象删除视图
     """
-    page_title = u'删除系统用户'
+    page_title = u'删除检查对象'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -293,13 +277,13 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
 @login_required
 def check_object_list(request, template_name='my.html', next='/', check_object_page='1',):
     """
-    系统用户查询视图
+    检查对象查询视图
     """
-    page_title = u'查询系统用户'
+    page_title = u'查询检查对象'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        check_object_search_form = Check_ObjectSearchForm(post_data)
+        check_object_search_form = CheckObjectSearchForm(post_data)
         if check_object_search_form.is_valid():
             check_object_search_form.data_to_session(request)
             check_object_search_form.init_from_session(request)
@@ -314,7 +298,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
                                    },
                                   context_instance=RequestContext(request))
     else:
-        check_object_search_form = Check_ObjectSearchForm(Check_ObjectSearchForm().data_from_session(request))
+        check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
         check_object_search_form.init_from_session(request)
         if check_object_search_form.is_valid():
             query_set = check_object_search_form.search()

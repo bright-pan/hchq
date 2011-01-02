@@ -17,72 +17,89 @@
 <!-- Insert your subtemplate content here -->
 <h3>检查对象详情</h3>
 <hr>
-{% if success %}
-<p class="important">检查对象【{{ result.user.username }}】密码已成功重置！</p>
-{% else %}
-{% endif %}
-
-
 {% if result %}
 <div class="note">
-  <table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>
-      检查对象
-    </caption>
-    <thead>
-      <tr><th scope="col" colspan="2">{{ result.user.username }}</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row" class="sub">用户名称</th>
-        <td>{{ result.user.username }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">服务区域</th>
-        <td>{{ result.service_area_department.service_area.name }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">单位部门</th>
-        <td>{{ result.service_area_department.department.name }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">角色权限</th>
-        <td>{{ result.user.groups.get.name }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">检查人员</th>
-        {% if result.is_checker %} 
-        <td>是</td>
-        {% else %}
-        <td>否</td>
-        {% endif %}
-      </tr>
-      <tr>
-        <th scope="row" class="sub">登入时间</th>
-        <td>{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">创建时间</th>
-        <td>{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
-      </tr>
-
-      <tr>
-        <th scope="row" class="sub">密码重置</th>
-        {% if success %} 
-        <td>已经重置</td>
-        {% else %}
-        <td>
-          <form method="post" action=".">{% csrf_token %}
-            <input type="submit" name="submit" value="密码重置"/>      
-          </form>
-        </td>
-        {% endif %}
-      </tr>
-    </tbody>
-  </table>
+  <div class="subcolumns">
+    <div class="c75l">
+      <div class="subc">
+        <table border="0" cellpadding="0" cellspacing="0" class="full">
+          <caption>
+            检查对象
+          </caption>
+          <thead>
+            <tr><th scope="col" colspan="2">{{ result.name }} | {{ result.id_number }}</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" class="sub">妻子姓名<hr>身份证号</th>
+              <td>{{ result.name }}<hr>{{ result.id_number }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">服务区域<hr>单位部门</th>
+              <td>{{ result.service_area_department.service_area.name }}<hr>{{ result.service_area_department.department.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">家属<hr>结婚时间</th>
+              {% if result.is_family %} 
+              <td>是<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              {% else %}
+              <td>否<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <th scope="row" class="sub">丈夫姓名<hr>身份证号</th>
+              <td>{{ result.mate_name }}<hr>{{ result.mate_id_number }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">服务区域<hr>单位部门</th>
+              <td>{{ result.mate_service_area_department.service_area.name }}<hr>{{ result.mate_service_area_department.department.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">避孕方式<hr>实施时间</th>
+              {% if result.ctp_method == '0' %}
+              <td>未使用<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+              {% if result.ctp_method == '1' %}
+              <td>避孕环方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+              {% if result.ctp_method == '2' %}
+              <td>避孕药方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+              {% if result.ctp_method == '3' %}
+              <td>其他方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <th scope="row" class="sub">创建人员</th>
+              <td>{{ result.creater.username }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">创建时间</th>
+              <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">更新时间</th>
+              <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="c25r">
+      <div class="subc important">
+        <div class="center">
+          <hr>
+          <img src="{{ result.photo.url }}"/>
+          <p>{{ result.name }}的照片</p>
+          <p>{{ result.id_number }}</p>          
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% else %}
-<p class="warning">对不起，该服务区不存在！</p>
+<p class="warning">对不起，该检查对象不存在！</p>
 {% endif %}
 {% endblock %}
 
