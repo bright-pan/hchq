@@ -1010,7 +1010,7 @@ class CheckObjectSearchForm(forms.Form):
         data['mate_id_number'] = request.session.get(gl.session_check_object_mate_id_number, u'')
         data['mate_service_area_name'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         data['mate_department_name'] = request.session.get(gl.session_check_object_mate_department_name, u'')
-        data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'')
+        data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'none')
         data['ctp_method_time'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         data['wedding_time'] = request.session.get(gl.session_check_object_wedding_time, u'')
         data['is_fuzzy'] = request.session.get(gl.session_check_object_is_fuzzy, False)

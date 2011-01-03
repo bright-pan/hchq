@@ -71,10 +71,11 @@ session_service_area_department_is_fuzzy = u'session_service_area_department_is_
 #角色表单
 ################################################################################
 role_name_error_messages={'required': _(u'请输入角色名称！'),
-                                  'max_length': _(u'输入的角色名称长度大于500个字符！'),
-                                  'format_error': _(u'角色名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
-                                  'form_error': _(u'表单严重错误！'),
-                                  'already_error': _(u'角色同名，请输入正确的角色名称！'),
+                          'max_length': _(u'输入的角色名称长度大于500个字符！'),
+                          'format_error': _(u'角色名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
+                          'form_error': _(u'表单严重错误！'),
+                          'already_error': _(u'角色同名，请输入正确的角色名称！'),
+                          'not_exist_error': _(u'角色不存在'),
                                   }
 permission_name_error_messages={'required': _(u'请输入权限名称！'),
                                   'max_length': _(u'输入的权限名称长度大于500个字符！'),

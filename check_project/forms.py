@@ -235,6 +235,7 @@ class CheckProjectDeleteForm(forms.Form):
 
         if self.check_project_id_object is not None:
             self.check_project_id_object.is_active = False
+            self.check_project_id_object.is_setup = False
             self.check_project_id_object.save()
         else:
             return False

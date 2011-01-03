@@ -1,0 +1,106 @@
+{% extends "check_result/check_result_layout.html" %}
+{% block header_describe %}{% endblock %}
+{% block teaser %}{% endblock %}
+
+{% block col1_content %}
+<h6 class="vlist">检查结果管理</h6>
+<ul class="vlist">
+  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
+  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+  <li><a href="{% url check_result_modify 1 %}">检查结果修改</a></li>
+  <li><a href="{% url check_result_delete 1 %}">检查结果删除</a></li>
+  <li class="active"><strong>检查结果详情</strong></li>
+  <li><a href="{% url check_result_list 1 %}">进入系统</a></li>
+</ul>
+{% endblock %}
+{% block col3_content %}
+<!-- Insert your subtemplate content here -->
+<h3>检查结果详情</h3>
+<hr>
+{% if result %}
+<div class="note">
+  <div class="subcolumns">
+    <div class="c75l">
+      <div class="subc">
+        <table border="0" cellpadding="0" cellspacing="0" class="full">
+          <caption>
+            检查结果
+          </caption>
+          <thead>
+            <tr><th scope="col" colspan="2">{{ result.name }} | {{ result.id_number }}</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" class="sub">妻子姓名<hr>身份证号</th>
+              <td>{{ result.name }}<hr>{{ result.id_number }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">服务区域<hr>单位部门</th>
+              <td>{{ result.service_area_department.service_area.name }}<hr>{{ result.service_area_department.department.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">家属<hr>结婚时间</th>
+              {% if result.is_family %} 
+              <td>是<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              {% else %}
+              <td>否<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <th scope="row" class="sub">丈夫姓名<hr>身份证号</th>
+              <td>{{ result.mate_name }}<hr>{{ result.mate_id_number }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">服务区域<hr>单位部门</th>
+              <td>{{ result.mate_service_area_department.service_area.name }}<hr>{{ result.mate_service_area_department.department.name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">避孕方式<hr>实施时间</th>
+              {% if result.ctp_method == '0' %}
+              <td>未使用<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+              {% if result.ctp_method == '1' %}
+              <td>避孕环方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+              {% if result.ctp_method == '2' %}
+              <td>避孕药方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+              {% if result.ctp_method == '3' %}
+              <td>其他方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% endif %}
+            </tr>
+            <tr>
+              <th scope="row" class="sub">创建人员</th>
+              <td>{{ result.creater.username }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">创建时间</th>
+              <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            <tr>
+              <th scope="row" class="sub">更新时间</th>
+              <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="c25r">
+      <div class="subc important">
+        <div class="center">
+          <hr>
+          <img src="{{ result.photo.url }}"/>
+          <p>{{ result.name }}的照片</p>
+          <p>{{ result.id_number }}</p>          
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<p class="warning">对不起，该检查结果不存在！</p>
+{% endif %}
+
+{% endblock %}
+
