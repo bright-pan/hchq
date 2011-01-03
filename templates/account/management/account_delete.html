@@ -9,7 +9,7 @@ X{% extends "account/management/account_layout.html" %}
   <li><a href="{% url account_add 1 %}">系统用户添加</a></li>
   <li><a href="{% url account_modify 1 %}">系统用户修改</a></li>
   <li class="active"><strong>系统用户删除</strong></li>
-  <li><a href="{% url hchq_index %}">进入系统</a></li>
+  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
 </ul>
 {% endblock %}
 {% block col3_content %}

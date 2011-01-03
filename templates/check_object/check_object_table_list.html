@@ -25,16 +25,16 @@
       {% else %}
       <td>否<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
       {% endif %}
-      {% if result.ctp_method == '0' %}
+      {% if result.ctp_method == 'method_0' %}
       <td>未使用<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
       {% endif %}
-      {% if result.ctp_method == '1' %}
+      {% if result.ctp_method == 'method_1' %}
       <td>避孕环方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
       {% endif %}
-      {% if result.ctp_method == '2' %}
+      {% if result.ctp_method == 'method_2' %}
       <td>避孕药方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
       {% endif %}
-      {% if result.ctp_method == '3' %}
+      {% if result.ctp_method == 'method_3' %}
       <td>其他方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
       {% endif %}
     </tr>

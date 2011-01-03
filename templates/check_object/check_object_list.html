@@ -119,7 +119,7 @@ $(document).ready(function(){
   <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
   <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
   <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
-  <li><a href="{% url hchq_index %}">进入系统</a></li>
+  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
 </ul>
 {% endblock %}
 {% block col3_content %}
@@ -212,18 +212,42 @@ $(document).ready(function(){
                 {{ form.wedding_time }}
               </div>
               {% endif %}
-              {% if form.is_family.errors %}
-              <div class="type-check error">
-                <strong class="message">{{ form.is_family.errors }}</strong>
-                {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
-                {{ form.is_family }}
+              <div class="subcolumns">
+                <div class="c50l">
+                  <div class="subc">
+                    {% if form.is_family.errors %}
+                    <div class="type-select error">
+                      <strong class="message">{{ form.is_family.errors }}</strong>
+                      {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
+                      {{ form.is_family }}
+                    </div>
+                    {% else %}
+                    <div class="type-select">
+                      {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
+                      {{ form.is_family }}
+                    </div>
+                    {% endif %}
+
+                  </div>
+                </div>
+                <div class="c50r">
+                  <div class="subc">
+                    {% if form.is_fuzzy.errors %}
+                    <div class="type-check error">
+                      <strong class="message">{{ form.is_fuzzy.errors }}</strong>
+                      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
+                      {{ form.is_fuzzy }}
+                    </div>
+                    {% else %}
+                    <div class="type-check">
+                      {{ form.is_fuzzy.label_tag }}<br><p class="dimmed">{{ form.is_fuzzy.help_text}}</p><br>
+                      {{ form.is_fuzzy }}
+                    </div>
+                    {% endif %}
+
+                  </div>
+                </div>
               </div>
-              {% else %}
-              <div class="type-check">
-                {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
-                {{ form.is_family }}
-              </div>
-              {% endif %}
             </div>          
           </div>         
         </div>       
@@ -335,6 +359,7 @@ $(document).ready(function(){
       </div>         
     </div>          
     <div class="center">
+
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <span id="id_submit_error"></span>

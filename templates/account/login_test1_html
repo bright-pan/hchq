@@ -35,7 +35,7 @@
 <ul class="vlist">
   <li class="active"><strong>个人资料</strong></li>
   <li><a href="#">密码修改</a></li>
-  <li><a href="{% url hchq_index %}">进入系统</a></li>
+  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
 </ul>
 {% endif %}
 {% endblock %}

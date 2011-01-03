@@ -10,6 +10,11 @@ urlpatterns = patterns('hchq.check_object.views',
        'check_object_add_uploader',
        {'template_name' : 'check_object/check_object_add.html', 'next': '/check_object/person_management', },
        'check_object_add_uploader'),
+
+       (r'detail_modify/uploader/$',
+       'check_object_detail_modify_uploader',
+       {'template_name' : 'check_object/check_object_add.html', 'next': '/check_object/person_management', },
+       'check_object_detail_modify_uploader'),
                        
        (r'show/(?P<check_object_index>\d{1,4})/$',
        'check_object_show',

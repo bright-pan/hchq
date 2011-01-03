@@ -135,15 +135,15 @@ session_account_is_fuzzy = u'session_account_is_fuzzy'
 #检查对象表单
 ################################################################################
 
-check_object_name_search_re_pattern = ur'^[\u4e00-\u9fa5\w]+$|(^$)'
-check_object_name_add_re_pattern = ur'^[\u4e00-\u9fa5\w]+$'
+check_object_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$|(^$)'
+check_object_name_add_re_pattern = ur'^[\u4e00-\u9fa5]+$'
 
 check_object_id_number_search_re_pattern = ur'^[\dxX]+$|(^$)'
 check_object_id_number_add_re_pattern = ur'(^[\d]{15}$)|([\d]{17}[\dxX]{1})'
 
 check_object_name_error_messages={'required': _(u'请输入检查对象名称！'),
                                    'max_length': _(u'输入的检查对象名称长度大于64个字符！'),
-                                   'format_error': _(u'检查对象名称必须是汉字、数字以及-组成！'),
+                                   'format_error': _(u'检查对象名称必须是汉字！'),
                                    'form_error': _(u'表单严重错误！'),
                                    'already_error': _(u'检查对象同名，请输入正确的检查对象名称！'),
                                    }
@@ -181,3 +181,5 @@ session_check_object_is_fuzzy = u'session_check_object_is_fuzzy'
 session_check_object_ctp_method = u'session_check_object_ctp_method'
 session_check_object_ctp_method_time = u'session_check_object_ctp_method_time'
 session_check_object_wedding_time = u'session_check_object_wedding_time'
+
+session_check_object_detail_modify_uploader = u'session_check_object_detail_modify_uploader'

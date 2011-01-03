@@ -82,6 +82,44 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
             raise Http404('Invalid Request!')
     else:
         raise Http404('Invalid Request!')
+    
+@csrf_protect
+@login_required
+def check_object_detail_modify_uploader(request, template_name='my.html', next='/', check_object_page='1'):
+    if request.method == 'POST':
+        if request.FILES.get('photo'):
+
+            data = request.FILES['photo']
+            
+            if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
+                raise Http404('Invalid Request!')
+            try:
+                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
+            except IOError:
+                raise Http404('Invalid Request!')
+            for chunk in data.chunks():
+                temp_file.write(chunk)
+            temp_file.close()
+
+            try:
+                img = Image.open(temp_file.name)
+            except IOError:
+                raise Http404('Invalid Request!')
+            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
+                raise Http404('Invalid Request!')
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+
+            del temp_file
+            del img
+            request.session[gl.session_check_object_detail_modify_uploader] = request.POST.get(u'id_number', u'')
+#            print request.POST.get(u'id_number', u'')
+            return HttpResponse('success')
+        else:
+            raise Http404('Invalid Request!')
+    else:
+        raise Http404('Invalid Request!')
 
     
 @csrf_protect
@@ -121,22 +159,25 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'编辑':
-            check_object_modify_form = Check_ObjectModifyForm(post_data)
+            check_object_modify_form = CheckObjectModifyForm(post_data)
             if check_object_modify_form.is_valid():
                 check_object_modify_object = check_object_modify_form.object()
-#                print check_object_modify_object
-                check_object_detail_modify_form = Check_ObjectDetailModifyForm()
-                check_object_detail_modify_form.set_value(check_object_modify_object)
-                page_title = u'修改检查对象'
-                return render_to_response(next_template_name,
-                                          {'detail_modify_form': check_object_detail_modify_form,
-                                           'check_object_name': check_object_modify_object.username,
-                                           'page_title': page_title,
-                                           },
-                                          context_instance=RequestContext(request))
+#                print check_object_modify_object.id_number
+                check_object_detail_modify_form = CheckObjectDetailModifyForm(CheckObjectDetailModifyForm().data_from_object(check_object_modify_object))
+                if check_object_detail_modify_form.is_valid():
+                    check_object_detail_modify_form.init_from_object(check_object_modify_object)
+                    page_title = u'修改检查对象'
+                    return render_to_response(next_template_name,
+                                              {'detail_modify_form': check_object_detail_modify_form,
+                                               'check_object': check_object_modify_object,
+                                               'page_title': page_title,
+                                               },
+                                              context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')                
             else:
                 pass
-            check_object_search_form = Check_ObjectSearchForm(Check_ObjectSearchForm().data_from_session(request))
+            check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
             check_object_search_form.init_from_session(request)
             if check_object_search_form.is_valid():
                 query_set = check_object_search_form.search()
@@ -145,8 +186,8 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                 results_page = None
         else:
             if submit_value == u'查询':
-                check_object_search_form = Check_ObjectSearchForm(post_data)
-                check_object_modify_form = Check_ObjectModifyForm()
+                check_object_search_form = CheckObjectSearchForm(post_data)
+                check_object_modify_form = CheckObjectModifyForm()
                 if check_object_search_form.is_valid():
                     check_object_search_form.data_to_session(request)
                     check_object_search_form.init_from_session(request)
@@ -164,8 +205,8 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                                    },
                                   context_instance=RequestContext(request))
     else:
-        check_object_modify_form = Check_ObjectModifyForm()
-        check_object_search_form = Check_ObjectSearchForm(Check_ObjectSearchForm().data_from_session(request))
+        check_object_modify_form = CheckObjectModifyForm()
+        check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
         check_object_search_form.init_from_session(request)
         if check_object_search_form.is_valid():
             query_set = check_object_search_form.search()
@@ -188,20 +229,21 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
     """
 
     page_title = u'编辑检查对象'
+    
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'修改':
-            check_object_detail_modify_form = Check_ObjectDetailModifyForm(post_data)
+            check_object_detail_modify_form = CheckObjectDetailModifyForm(post_data)
             if check_object_detail_modify_form.is_valid():
-                check_object_detail_modify_form.detail_modify()
+                check_object_detail_modify_form.detail_modify(request)
                 return HttpResponseRedirect(next)
             else:
                 check_object_id = int(check_object_detail_modify_form.data.get('id'))
-                check_object_object = CheckProject.objects.get(pk=check_object_id)
+                check_object_object = CheckObject.objects.get(pk=check_object_id)
                 return render_to_response(template_name,
                                           {'detail_modify_form': check_object_detail_modify_form,
-                                           'check_object_name': check_object_object.username,
+                                           'check_object': check_object_object,
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
@@ -223,12 +265,12 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'删除':
-            check_object_delete_form = Check_ObjectDeleteForm(post_data)
+            check_object_delete_form = CheckObjectDeleteForm(post_data)
             if check_object_delete_form.is_valid():
                 check_object_delete_form.delete()
             else:
                 pass
-            check_object_search_form = Check_ObjectSearchForm(Check_ObjectSearchForm().data_from_session(request))
+            check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
             check_object_search_form.init_from_session(request)
             if check_object_search_form.is_valid():
                 query_set = check_object_search_form.search()
@@ -237,8 +279,8 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
                 results_page = None
         else:
             if submit_value == u'查询':
-                check_object_search_form = Check_ObjectSearchForm(post_data)
-                check_object_delete_form = Check_ObjectDeleteForm()
+                check_object_search_form = CheckObjectSearchForm(post_data)
+                check_object_delete_form = CheckObjectDeleteForm()
                 if check_object_search_form.is_valid():
                     check_object_search_form.data_to_session(request)
                     check_object_search_form.init_from_session(request)
@@ -256,8 +298,8 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
                                    },
                                   context_instance=RequestContext(request))
     else:
-        check_object_delete_form = Check_ObjectDeleteForm()
-        check_object_search_form = Check_ObjectSearchForm(Check_ObjectSearchForm().data_from_session(request))
+        check_object_delete_form = CheckObjectDeleteForm()
+        check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
         check_object_search_form.init_from_session(request)
         if check_object_search_form.is_valid():
             query_set = check_object_search_form.search()
