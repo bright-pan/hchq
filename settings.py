@@ -158,6 +158,7 @@ INSTALLED_APPS = (
     'hchq.department',
     'hchq.check_project',
     'hchq.check_object',
+    'hchq.check_result',
 )
 
 AUTH_PROFILE_MODULE = 'account.UserProfile'

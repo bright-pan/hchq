@@ -40,9 +40,16 @@ urlpatterns += patterns('',
       (r'^check_project/', include('hchq.check_project.urls')),
                         
 )
+
 urlpatterns += patterns('',
 
       (r'^check_object/', include('hchq.check_object.urls')),
+                        
+)
+
+urlpatterns += patterns('',
+
+      (r'^check_result/', include('hchq.check_result.urls')),
                         
 )
 
