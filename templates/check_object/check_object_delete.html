@@ -1,4 +1,4 @@
-X{% extends "check_object/check_object_layout.html" %}
+{% extends "check_object/check_object_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 {% block media %}
@@ -218,12 +218,12 @@ $(document).ready(function(){
                     {% if form.is_family.errors %}
                     <div class="type-select error">
                       <strong class="message">{{ form.is_family.errors }}</strong>
-                      {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
+                      {{ form.is_family.label_tag }}<p class="dimmed">{{ form.is_family.help_text}}</p>
                       {{ form.is_family }}
                     </div>
                     {% else %}
                     <div class="type-select">
-                      {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
+                      {{ form.is_family.label_tag }}<p class="dimmed">{{ form.is_family.help_text}}</p>
                       {{ form.is_family }}
                     </div>
                     {% endif %}
@@ -240,7 +240,7 @@ $(document).ready(function(){
                     </div>
                     {% else %}
                     <div class="type-check">
-                      {{ form.is_fuzzy.label_tag }}<br><p class="dimmed">{{ form.is_fuzzy.help_text}}</p><br>
+                      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
                       {{ form.is_fuzzy }}
                     </div>
                     {% endif %}
