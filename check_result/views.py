@@ -174,30 +174,32 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        check_object_search_form = CheckResultSearchForm(post_data)
-        if check_object_search_form.is_valid():
-            check_object_search_form.data_to_session(request)
-            check_object_search_form.init_from_session(request)
-            query_set = check_object_search_form.search()
+        check_result_search_form = CheckResultSearchForm(post_data)
+        check_result_search_form.init_check_project()
+        if check_result_search_form.is_valid():
+            check_result_search_form.data_to_session(request)
+            check_result_search_form.init_from_session(request)
+            query_set = check_result_search_form.search()
             results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
-                                  {'search_form': check_object_search_form,
+                                  {'search_form': check_result_search_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
     else:
-        check_object_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
-        check_object_search_form.init_from_session(request)
-        if check_object_search_form.is_valid():
-            query_set = check_object_search_form.search()
+        check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
+        check_result_search_form.init_check_project()
+        check_result_search_form.init_from_session(request)
+        if check_result_search_form.is_valid():
+            query_set = check_result_search_form.search()
             results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
         else:
             results_page = None
         return render_to_response(template_name,
-                                  {'search_form': check_object_search_form,
+                                  {'search_form': check_result_search_form,
                                    'page_title': page_title,
                                    'results_page': results_page,
                                    },

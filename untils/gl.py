@@ -184,3 +184,16 @@ session_check_object_ctp_method_time = u'session_check_object_ctp_method_time'
 session_check_object_wedding_time = u'session_check_object_wedding_time'
 
 session_check_object_detail_modify_uploader = u'session_check_object_detail_modify_uploader'
+
+################################################
+
+#################################################
+
+session_check_result_pregnant = u'session_check_result_pregnant'
+session_check_result_ring = u'session_check_result_ring'
+session_check_result_pregnant_period = u'session_check_result_pregnant_period'
+session_check_result_checker = u'session_check_result_checker'
+session_check_result_recorder = u'session_check_result_recorder'
+session_check_result_check_project = u'session_check_result_check_project'
+session_check_result_start_time = u'session_check_result_start_time'
+session_check_result_end_time = u'session_check_result_end_time'

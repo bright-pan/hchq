@@ -117,9 +117,7 @@ $(document).ready(function(){
 <ul class="vlist">
   <li class="active"><strong>检查结果查询</strong></li>
   <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  <li><a href="{% url check_result_modify 1 %}">检查结果修改</a></li>
-  <li><a href="{% url check_result_delete 1 %}">检查结果删除</a></li>
-  <li><a href="{% url check_result_list 1 %}">进入系统</a></li>
+  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
 </ul>
 {% endblock %}
 {% block col3_content %}
@@ -357,7 +355,135 @@ $(document).ready(function(){
           
         </div>          
       </div>         
-    </div>          
+    </div>
+    <div class="subcolumns">
+      <div class="c50l">
+        <div class="subc">
+          <div class="c50l">
+            <div class="subc">
+              {% if form.pregnant.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.pregnant.errors }}</strong>
+                {{ form.pregnant.label_tag }}<p class="dimmed">{{ form.pregnant.help_text }}</p>
+                {{ form.pregnant }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.pregnant.label_tag }}<p class="dimmed">{{ form.pregnant.help_text }}</p>
+                {{ form.pregnant }}
+              </div>
+              {% endif %}
+              {% if form.ring.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.ring.errors }}</strong>
+                {{ form.ring.label_tag }}<p class="dimmed">{{ form.ring.help_text }}</p>
+                {{ form.ring }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.ring.label_tag }}<p class="dimmed">{{ form.ring.help_text }}</p>
+                {{ form.ring }}
+              </div>
+              {% endif %}
+              
+            </div>
+          </div>
+          <div class="c50r">
+            <div class="subc">
+              {% if form.pregnant_period.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.pregnant_period.errors }}</strong>
+                {{ form.pregnant_period.label_tag }}<p class="dimmed">{{ form.pregnant_period.help_text }}</p>
+                {{ form.pregnant_period }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.pregnant_period.label_tag }}<p class="dimmed">{{ form.pregnant_period.help_text }}</p>
+                {{ form.pregnant_period }}
+              </div>
+              {% endif %}
+              {% if form.check_project.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.check_project.errors }}</strong>
+                {{ form.check_project.label_tag }}<p class="dimmed">{{ form.check_project.help_text }}</p>
+                {{ form.check_project }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.check_project.label_tag }}<p class="dimmed">{{ form.check_project.help_text }}</p>
+                {{ form.check_project }}
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="c50r">
+        <div class="subc">
+          <div class="c50l">
+            <div class="subc">
+              {% if form.start_time.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.start_time.errors }}</strong>
+                {{ form.start_time.label_tag }}<p class="dimmed">{{ form.start_time.help_text }}</p>
+                {{ form.start_time }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.start_time.label_tag }}<p class="dimmed">{{ form.start_time.help_text }}</p>
+                {{ form.start_time }}
+              </div>
+              {% endif %}
+              {% if form.end_time.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.end_time.errors }}</strong>
+                {{ form.end_time.label_tag }}<p class="dimmed">{{ form.end_time.help_text }}</p>
+                {{ form.end_time }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.end_time.label_tag }}<p class="dimmed">{{ form.end_time.help_text }}</p>
+                {{ form.end_time }}
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+          <div class="c50r">
+            <div class="subc">
+              {% if form.checker.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.checker.errors }}</strong>
+                {{ form.checker.label_tag }}<p class="dimmed">{{ form.checker.help_text }}</p>
+                {{ form.checker }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.checker.label_tag }}<p class="dimmed">{{ form.checker.help_text }}</p>
+                {{ form.checker }}
+              </div>
+              {% endif %}
+              {% if form.recorder.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.recorder.errors }}</strong>
+                {{ form.recorder.label_tag }}<p class="dimmed">{{ form.recorder.help_text }}</p>
+                {{ form.recorder }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.recorder.label_tag }}<p class="dimmed">{{ form.recorder.help_text }}</p>
+                {{ form.recorder }}
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div> 
     <div class="center">
 
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
