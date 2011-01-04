@@ -125,7 +125,7 @@ $(document).ready(function(){
 <hr>
 <div class="important">
   {% with search_form as form %}
-  <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+  <form method="get" action="." class="yform full" id="id_form_add">{% csrf_token %}
     <div class="note">
       <fieldset>
         <legend>检查结果信息</legend>
@@ -356,11 +356,18 @@ $(document).ready(function(){
         </div>          
       </div>         
     </div>
+    <div class="note">
+    <fieldset>
+      <legend>对象配偶信息</legend>
+
     <div class="subcolumns">
-      <div class="c50l">
+      <div class="c60l">
         <div class="subc">
-          <div class="c50l">
-            <div class="subc">
+          <div class="subcolumns">
+            <div class="c40l">
+              <div class="subc">
+                
+
               {% if form.pregnant.errors %}
               <div class="type-text error">
                 <strong class="message">{{ form.pregnant.errors }}</strong>
@@ -385,11 +392,11 @@ $(document).ready(function(){
                 {{ form.ring }}
               </div>
               {% endif %}
-              
+
+              </div>
             </div>
-          </div>
-          <div class="c50r">
-            <div class="subc">
+            <div class="c60r">
+              <div class="subc">
               {% if form.pregnant_period.errors %}
               <div class="type-text error">
                 <strong class="message">{{ form.pregnant_period.errors }}</strong>
@@ -415,44 +422,16 @@ $(document).ready(function(){
               </div>
               {% endif %}
 
+              </div>
             </div>
           </div>
-
         </div>
       </div>
-      <div class="c50r">
+      <div class="c40r">
         <div class="subc">
-          <div class="c50l">
-            <div class="subc">
-              {% if form.start_time.errors %}
-              <div class="type-text error">
-                <strong class="message">{{ form.start_time.errors }}</strong>
-                {{ form.start_time.label_tag }}<p class="dimmed">{{ form.start_time.help_text }}</p>
-                {{ form.start_time }}
-              </div>
-              {% else %}
-              <div class="type-text">
-                {{ form.start_time.label_tag }}<p class="dimmed">{{ form.start_time.help_text }}</p>
-                {{ form.start_time }}
-              </div>
-              {% endif %}
-              {% if form.end_time.errors %}
-              <div class="type-text error">
-                <strong class="message">{{ form.end_time.errors }}</strong>
-                {{ form.end_time.label_tag }}<p class="dimmed">{{ form.end_time.help_text }}</p>
-                {{ form.end_time }}
-              </div>
-              {% else %}
-              <div class="type-text">
-                {{ form.end_time.label_tag }}<p class="dimmed">{{ form.end_time.help_text }}</p>
-                {{ form.end_time }}
-              </div>
-              {% endif %}
-
-            </div>
-          </div>
-          <div class="c50r">
-            <div class="subc">
+          <div class="subcolumns">
+            <div class="c50l">
+              <div class="subc">
               {% if form.checker.errors %}
               <div class="type-text error">
                 <strong class="message">{{ form.checker.errors }}</strong>
@@ -478,12 +457,44 @@ $(document).ready(function(){
               </div>
               {% endif %}
 
+              </div>
+            </div>
+            <div class="c50r">
+              <div class="subc">
+                              {% if form.start_time.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.start_time.errors }}</strong>
+                {{ form.start_time.label_tag }}<p class="dimmed">{{ form.start_time.help_text }}</p>
+                {{ form.start_time }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.start_time.label_tag }}<p class="dimmed">{{ form.start_time.help_text }}</p>
+                {{ form.start_time }}
+              </div>
+              {% endif %}
+              {% if form.end_time.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.end_time.errors }}</strong>
+                {{ form.end_time.label_tag }}<p class="dimmed">{{ form.end_time.help_text }}</p>
+                {{ form.end_time }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.end_time.label_tag }}<p class="dimmed">{{ form.end_time.help_text }}</p>
+                {{ form.end_time }}
+              </div>
+              {% endif %}
+
+              </div>
             </div>
           </div>
 
         </div>
       </div>
-    </div> 
+    </div>
+    </fieldset>
+    </div>
     <div class="center">
 
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
@@ -498,4 +509,8 @@ $(document).ready(function(){
   {% include 'check_result/check_result_table_list.html' %}
 </div>
 {% endblock %}
+
+
+
+
 
