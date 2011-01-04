@@ -123,7 +123,7 @@ class CheckResultDetailAddForm(forms.Form):
             self.fields['pregnant'].choices = ((u'none', u'有孕'),
                                               (u'no_pregnant', u'无孕'),
                                               )
-            self.fields['pregnant'].widget.attrs['size'] = u'4'
+            self.fields['pregnant'].widget.attrs['size'] = u'2'
             self.fields['ring'].choices = ((u'ring', u'有环'),
                                            (u'no_ring', u'有孕'),
                                            )

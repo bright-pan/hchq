@@ -130,10 +130,10 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
 
     page_title = u'编辑检查结果'
     user = get_user(request)
-    if request.method == 'POST':
-        post_data = request.POST.copy()
+    if request.method == 'GET':
+        post_data = request.GET.copy()
         submit_value = post_data[u'submit']
-        if submit_value == u'修改':
+        if submit_value == u'确定':
             check_result_id = int(post_data['id'])
             check_result_object = CheckObject.objects.get(pk=check_result_id)
             check_result_detail_add_form = CheckResultDetailAddForm(post_data)

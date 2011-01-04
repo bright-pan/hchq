@@ -26,30 +26,32 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
     page_title = u'添加检查对象'
     user = get_user(request)
 
-    if request.method == 'POST':
-        post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+    if request.method == 'GET':
+        post_data = request.GET.copy()
+        submit_value = post_data.get(u'submit', u'')
         if submit_value == u'添加':
             check_object_add_form = CheckObjectAddForm(post_data, request.FILES)
             if check_object_add_form.is_valid():
                 check_object_add_form.add(user)
+                next = "check_object/show/%s" % ()
+                return HttpResponseRedirect(next)
             else:
-                pass
+                return render_to_response(template_name,
+                                          {'add_form': check_object_add_form,
+                                           'page_title': page_title,
+                                           },
+                                          context_instance=RequestContext(request))
+
+        else:
+            check_object_add_form = CheckObjectAddForm()
             return render_to_response(template_name,
                                       {'add_form': check_object_add_form,
                                        'page_title': page_title,
                                        },
                                       context_instance=RequestContext(request))
-
-        else:
-            raise Http404('Invalid Request!')
     else:
-        check_object_add_form = CheckObjectAddForm()
-        return render_to_response(template_name,
-                                  {'add_form': check_object_add_form,
-                                  'page_title': page_title,
-                                  },
-                                  context_instance=RequestContext(request))
+        raise Http404('Invalid Request!')
+    
 @csrf_protect
 @login_required
 def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
@@ -227,17 +229,20 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
     """
     检查对象修改视图
     """
+    print '***********************************************************'
 
     page_title = u'编辑检查对象'
     
-    if request.method == 'POST':
-        post_data = request.POST.copy()
+    if request.method == 'GET':
+        post_data = request.GET.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'修改':
             check_object_detail_modify_form = CheckObjectDetailModifyForm(post_data)
+
             if check_object_detail_modify_form.is_valid():
                 check_object_detail_modify_form.detail_modify(request)
                 return HttpResponseRedirect(next)
+
             else:
                 check_object_id = int(check_object_detail_modify_form.data.get('id'))
                 check_object_object = CheckObject.objects.get(pk=check_object_id)

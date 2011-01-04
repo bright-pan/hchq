@@ -4,7 +4,7 @@ urlpatterns = patterns('hchq.check_object.views',
 
        (r'add/(?P<check_object_page>\d{1,4})/$',
        'check_object_add',
-       {'template_name' : 'check_object/check_object_add.html', 'next': '/check_object/person_management', },
+       {'template_name' : 'check_object/check_object_add.html', 'next': 'check_object/list/1', },
        'check_object_add'),
        (r'add/uploader/$',
        'check_object_add_uploader',

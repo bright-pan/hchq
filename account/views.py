@@ -912,7 +912,7 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
                 return HttpResponseRedirect(next)
             else:
                 account_id = int(account_detail_modify_form.data.get('id'))
-                account_object = CheckProject.objects.get(pk=account_id)
+                account_object = User.objects.get(pk=account_id)
                 return render_to_response(template_name,
                                           {'detail_modify_form': account_detail_modify_form,
                                            'account_name': account_object.username,

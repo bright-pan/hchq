@@ -122,7 +122,7 @@ $(document).ready(function(){
 </ul>
 {% endblock %}
 {% block col3_content %}
-<h3>检查结果添加</h3>
+<h3>检查结果编辑</h3>
 <hr>
 <div class="subcolumns">
   <div class="c75l">
@@ -219,7 +219,7 @@ $(document).ready(function(){
     <div class="subc important">
       <!-- Insert your subtemplate content here -->
       {% with detail_add_form as form %}
-      <form method="post" action="{% url check_result_detail_add %}" class="yform full" id="id_form_detail_add">{% csrf_token %}
+      <form method="get" action="{% url check_result_detail_add %}" class="yform full" id="id_form_detail_add">{% csrf_token %}
         <div class="">
           <fieldset>
             <legend>检查结果信息</legend>
@@ -276,7 +276,7 @@ $(document).ready(function(){
           </fieldset>
           {{ form.id }}
           <div class="center">
-            <input type="submit"  name="submit" value="修改" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+            <input type="submit"  name="submit" value="确定" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
             <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
             <span id="id_submit_error"></span>
           </div>

@@ -175,11 +175,10 @@ $(document).ready(function(){
 <h3>检查对象添加</h3>
 <hr>
 {% with add_form as form %}
-<form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+<form method="get" action="" class="yform full" id="id_form_add">{% csrf_token %}
   <div class="note">
     <fieldset>
       <legend>检查对象信息</legend>
-
       <div class="subcolumns">
         <div class="c75l">
           <div class="subc">
@@ -289,7 +288,7 @@ $(document).ready(function(){
       </div>       
 
     </fieldset>
-  </div>   
+  </div>     
   <div class="subcolumns">
     <div class="c75l">
       <div class="subc note">
@@ -397,7 +396,7 @@ $(document).ready(function(){
   </div>          
   <div class="center">
     <input type="submit"  name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+    <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
     <span id="id_submit_error"></span>
   </div>
 </form>

@@ -168,7 +168,7 @@ $(document).ready(function(){
 
 <div class="important">
   {% with detail_modify_form as form %}
-<form method="post" action="{% url check_object_detail_modify %}" class="yform full" id="id_form_detail_modify">{% csrf_token %}
+  <form method="get" action="{% url check_object_detail_modify %}" class="yform full" id="id_form_detail_modify">{% csrf_token %}
   <div class="note">
     <fieldset>
       <legend>检查对象信息</legend>
@@ -393,8 +393,8 @@ $(document).ready(function(){
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
     <span id="id_submit_error"></span>
   </div>
-</form>
-{% endwith %}
+  </form>
+  {% endwith %}
 </div>
 {% endblock %}
 
