@@ -6,6 +6,7 @@
       <div id="header">
         <div id="topnav">
         {% block topnav %}
+        你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
         {% endblock %}
         </div>
         <div id="vbox">
@@ -13,6 +14,7 @@
         </div>
         <div id="header_describe">
         {% block header_describe %}
+
         {% endblock %}
         </div>
       </div>
@@ -25,6 +27,7 @@
         </div>
       </div>
       {% block teaser %}
+
       {% endblock %}
       <div id="main">
         <div id="col1">

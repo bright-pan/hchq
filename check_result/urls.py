@@ -9,7 +9,7 @@ urlpatterns = patterns('hchq.check_result.views',
 
        (r'add/(?P<check_object_page>\d{1,4})/$',
        'check_result_add',
-       {'template_name' : 'check_result/check_result_add.html', 'next_template_name': 'check_result/check_result_detail_add.html', },
+       {'template_name' : 'check_result/check_result_add.html', 'next_template_name': 'check_result/check_result_detail_add.html', 'next_error':'check_result/check_result_detail_add_error.html'},
        'check_result_add'),
 
        (r'list/(?P<check_result_page>\d{1,4})/$',

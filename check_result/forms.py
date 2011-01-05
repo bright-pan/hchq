@@ -120,12 +120,12 @@ class CheckResultDetailAddForm(forms.Form):
             self.fields['checker'].choices = choices
             self.fields['checker'].widget.attrs['size'] = size
             
-            self.fields['pregnant'].choices = ((u'none', u'有孕'),
-                                              (u'no_pregnant', u'无孕'),
+            self.fields['pregnant'].choices = ((u'pregnant', u'有孕'),
+                                              (u'unpregnant', u'无孕'),
                                               )
             self.fields['pregnant'].widget.attrs['size'] = u'2'
             self.fields['ring'].choices = ((u'ring', u'有环'),
-                                           (u'no_ring', u'有孕'),
+                                           (u'unring', u'有孕'),
                                            )
             self.fields['ring'].widget.attrs['size'] = u'2'
             self.fields['id'].widget.attrs['value'] = check_object.id
@@ -133,6 +133,13 @@ class CheckResultDetailAddForm(forms.Form):
         else:
 
             return False
+        
+    def get_check_project(self):
+        try:
+            check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+        except ObjectDoesNotExist:
+            return None
+        return check_project
     
     def detail_add(self, user=None):
         check_object = self.id_object
@@ -860,20 +867,20 @@ class CheckResultSearchForm(forms.Form):
         if start_time == None:
             pass
         else:
-            query_set = query_set.filter(check_time__date__gte=start_time)
+            start_time = datetime.datetime(start_time.year, start_time.month, start_time.day)
+            query_set = query_set.filter(check_time__gte=start_time)
         
         return query_set
     def query_end_time(self, query_set=None):
         end_time = self.cleaned_data['end_time']
-
         if query_set is None:
             return query_set
 
         if end_time == None:
             pass
         else:
-            query_set = query_set.filter(check_time__date__lte=end_time)
-        
+            end_time = datetime.datetime(end_time.year, end_time.month, end_time.day, 23, 59, 59)
+            query_set = query_set.filter(check_time__lte=end_time)
         return query_set
 
     def init_check_project(self):

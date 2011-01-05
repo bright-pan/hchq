@@ -1,4 +1,5 @@
 {% extends "check_result/check_result_layout.html" %}
+{% load check_result_filter %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 
@@ -7,8 +8,6 @@
 <ul class="vlist">
   <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
   <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  <li><a href="{% url check_result_modify 1 %}">检查结果修改</a></li>
-  <li><a href="{% url check_result_delete 1 %}">检查结果删除</a></li>
   <li class="active"><strong>检查结果详情</strong></li>
   <li><a href="{% url check_result_list 1 %}">进入系统</a></li>
 </ul>
@@ -17,69 +16,69 @@
 <!-- Insert your subtemplate content here -->
 <h3>检查结果详情</h3>
 <hr>
-{% if result %}
+{% if check_object %}
 <div class="note">
   <div class="subcolumns">
     <div class="c75l">
       <div class="subc">
         <table border="0" cellpadding="0" cellspacing="0" class="full">
           <caption>
-            检查结果
+            检查人员
           </caption>
           <thead>
-            <tr><th scope="col" colspan="2">{{ result.name }} | {{ result.id_number }}</th></tr>
+            <tr><th scope="col" colspan="2">{{ check_object.name }} | {{ check_object.id_number }}</th></tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row" class="sub">妻子姓名<hr>身份证号</th>
-              <td>{{ result.name }}<hr>{{ result.id_number }}</td>
+              <td>{{ check_object.name }}<hr>{{ check_object.id_number }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">服务区域<hr>单位部门</th>
-              <td>{{ result.service_area_department.service_area.name }}<hr>{{ result.service_area_department.department.name }}</td>
+              <td>{{ check_object.service_area_department.service_area.name }}<hr>{{ check_object.service_area_department.department.name }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">家属<hr>结婚时间</th>
-              {% if result.is_family %} 
-              <td>是<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              {% if check_object.is_family %} 
+              <td>是<hr>{{ check_object.wedding_time|date:"Y-m-d" }}</td>
               {% else %}
-              <td>否<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              <td>否<hr>{{ check_object.wedding_time|date:"Y-m-d" }}</td>
               {% endif %}
             </tr>
             <tr>
               <th scope="row" class="sub">丈夫姓名<hr>身份证号</th>
-              <td>{{ result.mate_name }}<hr>{{ result.mate_id_number }}</td>
+              <td>{{ check_object.mate_name }}<hr>{{ check_object.mate_id_number }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">服务区域<hr>单位部门</th>
-              <td>{{ result.mate_service_area_department.service_area.name }}<hr>{{ result.mate_service_area_department.department.name }}</td>
+              <td>{{ check_object.mate_service_area_department.service_area.name }}<hr>{{ check_object.mate_service_area_department.department.name }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">避孕方式<hr>实施时间</th>
-              {% if result.ctp_method == '0' %}
-              <td>未使用<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% if check_object.ctp_method == '0' %}
+              <td>未使用<hr>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
               {% endif %}
-              {% if result.ctp_method == '1' %}
-              <td>避孕环方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% if check_object.ctp_method == '1' %}
+              <td>避孕环方式<hr>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
               {% endif %}
-              {% if result.ctp_method == '2' %}
-              <td>避孕药方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% if check_object.ctp_method == '2' %}
+              <td>避孕药方式<hr>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
               {% endif %}
-              {% if result.ctp_method == '3' %}
-              <td>其他方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+              {% if check_object.ctp_method == '3' %}
+              <td>其他方式<hr>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
               {% endif %}
             </tr>
             <tr>
               <th scope="row" class="sub">创建人员</th>
-              <td>{{ result.creater.username }}</td>
+              <td>{{ check_object.creater.username }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">创建时间</th>
-              <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+              <td>{{ check_object.created_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">更新时间</th>
-              <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
+              <td>{{ check_object.updated_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
           </tbody>
         </table>
@@ -89,18 +88,53 @@
       <div class="subc important">
         <div class="center">
           <hr>
-          <img src="{{ result.photo.url }}"/>
-          <p>{{ result.name }}的照片</p>
-          <p>{{ result.id_number }}</p>          
-          <hr>
+          <img src="{{ check_object.photo.url }}"/>
+          <p>{{ check_object.name }}的照片</p>
+          <p>{{ check_object.id_number }}</p>          
         </div>
       </div>
+
     </div>
   </div>
 </div>
-{% else %}
-<p class="warning">对不起，该检查结果不存在！</p>
-{% endif %}
+<div class="important">
+  <table border="0" cellpadding="0" cellspacing="0" class="full">
+    <caption>检查结果</caption>
+    <thead>
+      <tr><th scope="col" colspan="7">【{{ check_object.name }}】的检查结果(共{{ results.count}}项)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="col">编号</th>
+        <th scope="col">检查项目</th>
+        <th scope="col">检查结果</th>
+        <th scope="col">检查时间</th>
+        <th scope="col">检查人员</th>
+      </tr>
+      {% for result in results %}
+      <tr>
+        <th scope="row" class="sub">{{ forloop.counter }}</th>
+        {% if result.is_latest %}
+        <td><p>{{ result.check_project.name }}</p></td>
+        <td><p>{{ result.result|local }}</p></td>
+        <td><p>{{ result.check_time|date:"Y-m-d H:i:s" }}</p></td>
+        <td><p>{{ result.checker.username }}</p></td>
+          {% else %}
+        <td><del>{{ result.check_delroject.name }}</del></td>
+        <td><del>{{ result.result|local }}</del></td>
+        <td><del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del></td>
+        <td><del>{{ result.checker.username }}</del></td>
+          {% endif %}
+      </tr>
+      {% empty %}
+      <th scope="col" colspan="5"><p class="warning">没有检查结果可以查询！</p></th>
+      {% endfor %}
+    </tbody>
+  </table>
 
+</div>
+{% else %}
+<p class="warning">对不起，该检查对象不存在！</p>
+{% endif %}
 {% endblock %}
 

@@ -17,6 +17,7 @@ from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
 
+import datetime
 # Create your views here.
 def check_result_modify(request, template_name='my.html', next='/', check_result_page='1'):
     raise Http404('Invalid Request!')
@@ -42,18 +43,21 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
         except ValueError:
             raise Http404('Invalid Request!')
         try:
-            result = CheckResult.objects.get(pk=check_result_id, is_active=True)
+            check_object = CheckObject.objects.get(pk=check_result_id, is_active=True)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
+        results = check_object.check_result.order_by('-check_time')
         
+#        print type(results[0]['is_latest'])
     return render_to_response(template_name,
-                              {'result': result,
+                              {'results': results,
+                               'check_object': check_object,
                                },
                               context_instance=RequestContext(request))
 
 @csrf_protect
 @login_required
-def check_result_add(request, template_name='my.html', next_template_name='my.html', check_object_page='1',):
+def check_result_add(request, template_name='my.html', next_template_name='my.html', next_error='my.html', check_object_page='1',):
     """
     检查结果修改视图
     """
@@ -65,24 +69,44 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'检查':
-            check_result_add_form = CheckResultAddForm(post_data)
-            if check_result_add_form.is_valid():
-
-                check_result_add_object = check_result_add_form.object()
-                print check_result_add_object.id
-#                print check_result_add_object.id_number
-                check_result_detail_add_form = CheckResultDetailAddForm()
-                check_result_detail_add_form.init_value(user, check_result_add_object)
-#                print '************************8'
-                page_title = u'添加检查结果'
-                return render_to_response(next_template_name,
-                                          {'detail_add_form': check_result_detail_add_form,
-                                           'result': check_result_add_object,
+            try:
+                check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+            except ObjectDoesNotExist:
+                check_project = None
+            if check_project is not None:
+                today = datetime.datetime.now().date()
+                if check_project.start_time <= today and today <= check_project.end_time:
+                
+                    check_result_add_form = CheckResultAddForm(post_data)
+                    if check_result_add_form.is_valid():
+                        check_result_add_object = check_result_add_form.object()
+                    #                print check_result_add_object.id
+                    #                print check_result_add_object.id_number
+                        check_result_detail_add_form = CheckResultDetailAddForm()
+                        check_result_detail_add_form.init_value(user, check_result_add_object)
+                        page_title = u'添加检查结果'
+                        return render_to_response(next_template_name,
+                                                  {'detail_add_form': check_result_detail_add_form,
+                                                   'result': check_result_add_object,
+                                                   'page_title': page_title,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                    else:
+                        raise Http404('Invalid Request!')
+                else:
+                    page_title = u'检查受限制'
+                    return render_to_response(next_error,
+                                              {'check_project': check_project,
+                                               'page_title': page_title,
+                                               },
+                                              context_instance=RequestContext(request))
+            else:
+                page_title = u'检查受限制'
+                return render_to_response(next_error,
+                                          {'check_project': check_project,
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
-            else:
-                raise Http404('Invalid Request!')
         else:
             if submit_value == u'查询':
                 check_object_search_form = CheckObjectSearchForm(post_data)
@@ -148,7 +172,6 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
-
         else:
             raise Http404('Invalid Request!')
     else:
