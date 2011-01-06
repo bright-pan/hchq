@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
@@ -18,6 +18,7 @@ from hchq import settings
 
 @csrf_protect
 @login_required
+@permission_required('department.cp_management')
 def check_project_add(request, template_name='my.html', next='/', check_project_page='1'):
     """
     检查项目添加视图，带添加预览功能！
@@ -118,6 +119,7 @@ def check_project_add(request, template_name='my.html', next='/', check_project_
 
 @csrf_protect
 @login_required
+@permission_required('department.cp_management')
 def check_project_show(request, template_name='', next='', check_project_index='1'):
     """
     检查项目详细信息显示。
@@ -161,6 +163,7 @@ def check_project_show(request, template_name='', next='', check_project_index='
 
 @csrf_protect
 @login_required
+@permission_required('department.cp_management')
 def check_project_modify(request, template_name='my.html', next_template_name='my.html', check_project_page='1',):
     """
     服务区修改视图
@@ -266,6 +269,7 @@ def check_project_modify(request, template_name='my.html', next_template_name='m
                                   context_instance=RequestContext(request))
 @csrf_protect
 @login_required
+@permission_required('department.cp_management')
 def check_project_detail_modify(request, template_name='my.html', next='/', check_project_page='1',):
     """
     服务区修改视图
@@ -299,6 +303,7 @@ def check_project_detail_modify(request, template_name='my.html', next='/', chec
 
 @csrf_protect
 @login_required
+@permission_required('department.cp_management')
 def check_project_delete(request, template_name='my.html', next='/', check_project_page='1',):
     """
     检查项目删除视图
@@ -396,6 +401,7 @@ def check_project_delete(request, template_name='my.html', next='/', check_proje
     
 @csrf_protect
 @login_required
+@permission_required('department.cp_management')
 def check_project_list(request, template_name='my.html', next='/', check_project_page='1',):
     """
     检查项目查询视图

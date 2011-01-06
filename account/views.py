@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
@@ -96,6 +96,7 @@ def test_person_password_modify(request, template_name = 'my.html', next = '/'):
 
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_add(request, template_name='my.html', next='/', role_page='1'):
     """
     角色添加视图，带添加预览功能！
@@ -186,6 +187,7 @@ def role_add(request, template_name='my.html', next='/', role_page='1'):
 
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_delete(request, template_name='my.html', next='/', role_page='1',):
     """
     角色删除视图
@@ -277,6 +279,7 @@ def role_delete(request, template_name='my.html', next='/', role_page='1',):
 
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_modify(request, template_name='my.html', next='/', role_page='1',):
     """
     角色修改视图
@@ -368,6 +371,7 @@ def role_modify(request, template_name='my.html', next='/', role_page='1',):
     
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_list(request, template_name='my.html', next='/', role_page='1',):
     """
     角色查询视图
@@ -429,6 +433,7 @@ def role_list(request, template_name='my.html', next='/', role_page='1',):
 
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_permission_add(request, template_name='my.html', next='/', role_permission_page='1', role_index='1',):
     """
     角色权限添加视图，带添加预览功能！
@@ -557,6 +562,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
 
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_permission_delete(request, template_name='my.html', next='/', role_permission_page='1', role_index='1',):
     """
     角色权限删除视图，带添加预览功能！
@@ -670,6 +676,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
     
 @csrf_protect
 @login_required
+@permission_required('department.role_management')
 def role_permission_list(request, template_name='my.html', next='/', role_permission_page='1', role_index='1',):
     """
     角色权限列表视图，带添加预览功能！
