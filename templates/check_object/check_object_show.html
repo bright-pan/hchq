@@ -1,4 +1,5 @@
 {% extends "check_object/check_object_layout.html" %}
+{% load check_object_filter %}
 {% block header_describe %}{% endblock %}
 {% block teaser %}{% endblock %}
 
@@ -16,7 +17,7 @@
 {% block col3_content %}
 <!-- Insert your subtemplate content here -->
 <h3>检查对象详情</h3>
-<hr>
+<br>
 {% if result %}
 <div class="note">
   <div class="subcolumns">
@@ -31,43 +32,32 @@
           </thead>
           <tbody>
             <tr>
-              <th scope="row" class="sub">妻子姓名<hr>身份证号</th>
-              <td>{{ result.name }}<hr>{{ result.id_number }}</td>
+              <th scope="row" class="sub">妻子姓名<br>身份证号</th>
+              <td>{{ result.name }}<br>{{ result.id_number }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">服务区域<hr>单位部门</th>
-              <td>{{ result.service_area_department.service_area.name }}<hr>{{ result.service_area_department.department.name }}</td>
+              <th scope="row" class="sub">服务区域<br>单位部门</th>
+              <td class="odd">{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">家属<hr>结婚时间</th>
+              <th scope="row" class="sub">家属<br>结婚时间</th>
               {% if result.is_family %} 
-              <td>是<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
               {% else %}
-              <td>否<hr>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
               {% endif %}
             </tr>
             <tr>
-              <th scope="row" class="sub">丈夫姓名<hr>身份证号</th>
-              <td>{{ result.mate_name }}<hr>{{ result.mate_id_number }}</td>
+              <th scope="row" class="sub">丈夫姓名<br>身份证号</th>
+              <td class="odd">{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">服务区域<hr>单位部门</th>
-              <td>{{ result.mate_service_area_department.service_area.name }}<hr>{{ result.mate_service_area_department.department.name }}</td>
+              <th scope="row" class="sub">服务区域<br>单位部门</th>
+              <td>{{ result.mate_service_area_department.service_area.name }}<br>{{ result.mate_service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">避孕方式<hr>实施时间</th>
-              {% if result.ctp_method == '0' %}
-              <td>未使用<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
-              {% endif %}
-              {% if result.ctp_method == '1' %}
-              <td>避孕环方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
-              {% endif %}
-              {% if result.ctp_method == '2' %}
-              <td>避孕药方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
-              {% endif %}
-              {% if result.ctp_method == '3' %}
-              <td>其他方式<hr>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
-              {% endif %}
+              <th scope="row" class="sub">避孕方式<br>实施时间</th>
+              <td class="odd">{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">创建人员</th>
@@ -75,7 +65,7 @@
             </tr>
             <tr>
               <th scope="row" class="sub">创建时间</th>
-              <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+              <td class="odd">{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
             <tr>
               <th scope="row" class="sub">更新时间</th>
@@ -88,11 +78,11 @@
     <div class="c25r">
       <div class="subc important">
         <div class="center">
-          <hr>
+          <br>
           <img src="{{ result.photo.url }}"/>
           <p>{{ result.name }}的照片</p>
           <p>{{ result.id_number }}</p>          
-          <hr>
+          <br>
         </div>
       </div>
     </div>

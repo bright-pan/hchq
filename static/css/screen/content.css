@@ -187,8 +187,11 @@
   tbody th { background:#e0e0e0; color:#333; }
   tbody th[scope="row"], tbody th.sub { background:#f0f0f0; }
 
-  tbody th { border-bottom:1px solid #fff; text-align:left; }
-  tbody td { border-bottom:1px solid #eee; }
+  tbody th { border-bottom:1px solid #ddd; text-align:left; }
+  tbody td { border-bottom:1px solid #ddd; }
+  tbody td.odd { background: #e8edff; color:#83b5d9;}
+  tbody td.even { background: #83b5d9; color:#000000;}
+    
 
   tbody tr:hover th[scope="row"],
   tbody tr:hover tbody th.sub { background:#f0e8e8; }

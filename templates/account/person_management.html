@@ -32,35 +32,31 @@
         <tbody>
           <tr>
             <th scope="row" class="sub">个人名称</th>
-            <td>{{ user.username }}</td>
+            <td class="odd">{{ user.username }}</td>
           </tr>
           <tr>
             <th scope="row" class="sub">服务区域</th>
-            <td>{{ user.get_profile.service_area_department.service_area.name }}</td>
+            <td class="even">{{ user.get_profile.service_area_department.service_area.name }}</td>
           </tr>
           <tr>
             <th scope="row" class="sub">单位部门</th>
-            <td>{{ user.get_profile.service_area_department.department.name }}</td>
+            <td class="odd">{{ user.get_profile.service_area_department.department.name }}</td>
           </tr>
           <tr>
             <th scope="row" class="sub">角色权限</th>
-            <td>{{ user.groups.get.name }}</td>
+            <td class="even">{{ user.groups.get.name }}</td>
           </tr>
           <tr>
             <th scope="row" class="sub">检查人员</th>
-            {% if result.is_checker %} 
-            <td>是</td>
-            {% else %}
-            <td>否</td>
-            {% endif %}
+            <td class="odd">{% if result.is_checker %}是{% else %}否{% endif %}</td>
           </tr>
           <tr>
             <th scope="row" class="sub">登入时间</th>
-            <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
+            <td class="even">{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
           </tr>
           <tr>
             <th scope="row" class="sub">创建时间</th>
-            <td>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
+            <td class="odd">{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
           </tr>
         </tbody>
       </table>

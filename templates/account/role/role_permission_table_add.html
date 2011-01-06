@@ -12,7 +12,7 @@
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
-      <td>{{ result.name }}</td>
+      <td class="{% cycle 'odd' 'even' %}">{{ result.name }}</td>
     </tr>
     {% empty %}
     <p class="warning">【{{ role_name }}】没有权限相关联！</p>

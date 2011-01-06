@@ -15,10 +15,10 @@
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
-      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
-      <td>{{ result.creater }}</td>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
-      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td class="{% cycle 'odd' 'even' %}">{{ result.creater }}</td>
+      <td class="{% cycle 'odd' 'even' %}">{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+      <td class="{% cycle 'odd' 'even' %}">{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     {% empty %}
     <p class="warning">没有单位部门可以查询！</p>

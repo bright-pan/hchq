@@ -12,7 +12,7 @@
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
-      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
     </tr>
     {% empty %}
     <p class="warning">【{{ service_area_name }}】没有关联的单位部门！</p>

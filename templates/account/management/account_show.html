@@ -35,48 +35,43 @@
     <tbody>
       <tr>
         <th scope="row" class="sub">用户名称</th>
-        <td>{{ result.user.username }}</td>
+        <td class="odd">{{ result.user.username }}</td>
       </tr>
       <tr>
         <th scope="row" class="sub">服务区域</th>
-        <td>{{ result.service_area_department.service_area.name }}</td>
+        <td class="even">{{ result.service_area_department.service_area.name }}</td>
       </tr>
       <tr>
         <th scope="row" class="sub">单位部门</th>
-        <td>{{ result.service_area_department.department.name }}</td>
+        <td class="odd">{{ result.service_area_department.department.name }}</td>
       </tr>
       <tr>
         <th scope="row" class="sub">角色权限</th>
-        <td>{{ result.user.groups.get.name }}</td>
+        <td class="even">{{ result.user.groups.get.name }}</td>
       </tr>
       <tr>
         <th scope="row" class="sub">检查人员</th>
-        {% if result.is_checker %} 
-        <td>是</td>
-        {% else %}
-        <td>否</td>
-        {% endif %}
+        <td class="odd">{% if result.is_checker %}是{% else %}否{% endif %}</td>
+        
       </tr>
       <tr>
         <th scope="row" class="sub">登入时间</th>
-        <td>{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
+        <td class="even">{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
       </tr>
       <tr>
         <th scope="row" class="sub">创建时间</th>
-        <td>{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
+        <td class="odd">{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
       </tr>
 
       <tr>
         <th scope="row" class="sub">密码重置</th>
-        {% if success %} 
-        <td>已经重置</td>
-        {% else %}
-        <td>
+        <td class="even">{% if success %}
+        已经重置{% else %}
           <form method="post" action=".">{% csrf_token %}
-            <input type="submit" name="submit" value="密码重置"/>      
+            <input type="submit" name="submit" value="密码重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
           </form>
-        </td>
         {% endif %}
+          </td>
       </tr>
     </tbody>
   </table>

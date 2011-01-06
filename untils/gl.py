@@ -185,6 +185,12 @@ session_check_object_wedding_time = u'session_check_object_wedding_time'
 
 session_check_object_detail_modify_uploader = u'session_check_object_detail_modify_uploader'
 
+check_object_ctp_local = {u'method_0':u'未使用',
+                          u'method_1':u'避孕环方式',
+                          u'method_2':u'避孕药方式',
+                          u'method_3':u'其他方式',
+                      }
+
 ################################################
 
 #################################################

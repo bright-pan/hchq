@@ -37,39 +37,36 @@
     </tr>
     <tr>
       <th scope="row" class="sub">名称</th>
-      <td>{{ result.name }}</td>
+      <td class="odd">{{ result.name }}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">开始时间</th>
-      <td>{{ result.start_time|date:"Y-m-d"}}</td>
+      <td class="even">{{ result.start_time|date:"Y-m-d"}}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">结束时间</th>
-      <td>{{ result.end_time|date:"Y-m-d"}}</td>
+      <td class="odd">{{ result.end_time|date:"Y-m-d"}}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">是否启用</th>
-      {% if result.is_setup %} 
-      <td>已经启用</td>
-      {% else %}
-      <td>
+      <td class="even">{% if result.is_setup %}已经启用{% else %}
         <form method="post" action=".">{% csrf_token %}
-          <input type="submit" name="submit" value="启用"/>      
+          <input type="submit" name="submit" value="启用" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
         </form>
+        {% endif %}
       </td>
-      {% endif %}
     </tr>
     <tr>
       <th scope="row" class="sub">创建者</th>
-      <td>{{ result.creater.username }}</td>
+      <td class="odd">{{ result.creater.username }}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">创建时间</th>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+      <td class="even">{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">更新时间</th>
-      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <td class="odd">{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
   </tbody>
 </table>

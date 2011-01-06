@@ -14,12 +14,12 @@
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
-      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
-      <td>{{ result.start_time|date:"Y-m-d"}}<hr>{{ result.end_time|date:"Y-m-d"}}</td>
+      <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td class="{% cycle 'odd' 'even' %}">{{ result.start_time|date:"Y-m-d"}}<hr>{{ result.end_time|date:"Y-m-d"}}</td>
       {% if result.is_setup %} 
-      <td>启用</td>
+      <td class="{% cycle 'odd' 'even' %}">启用</td>
       {% else %}
-      <td>未启用</td>
+      <td class="{% cycle 'odd' 'even' %}">未启用</td>
       {% endif %}
     </tr>
     {% empty %}

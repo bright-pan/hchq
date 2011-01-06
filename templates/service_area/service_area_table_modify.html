@@ -13,8 +13,8 @@
     {% for result in results_page.object_list %}
     <tr>
       <th scope="row" class="sub">{{ result.id }}</th>
-      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
-      <td>
+      <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+      <td class="{% cycle 'odd' 'even' %}">
         <form method="post" action=".">{% csrf_token %}
           <label for="id_service_area_name">新服务区域名称</label>:
           <input name="service_area_name" maxlength="128" id="id_service_area_name" type="text" class="" size="30" value="{{ result.name}}" />

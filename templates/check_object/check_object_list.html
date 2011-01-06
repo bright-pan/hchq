@@ -108,6 +108,22 @@ $(document).ready(function(){
                                 }
                                 
                         });
+                $("#search_dialog").dialog({ autoOpen: false,
+//                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
+                                          bgiframe:true,
+//                                          height: 600,
+                                          width:800
+//                                        buttons: [
+//                                                {id:"uploader",text:"上传文件"},
+//                                                {text:"确定",click:function(){$(this).dialog("close")}}
+//                                                ]
+                                        });
+
+                $("#open_search_dialog").click(function(){
+                                $("#search_dialog").dialog("open");
+                                return false;
+                        });
+
         });
 </script>
 {% endblock %}
@@ -125,7 +141,8 @@ $(document).ready(function(){
 {% block col3_content %}
 <h3>检查对象查询</h3>
 <hr>
-<div class="important">
+<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">打开查询</button>
+<div id="search_dialog" style="display:none;" title="查询参数">
   {% with search_form as form %}
   <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
     <div class="note">
@@ -142,24 +159,24 @@ $(document).ready(function(){
                     {% if form.name.errors %}
                     <div class="type-text error">
                       <strong class="message">{{ form.name.errors }}</strong>
-                      {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+                      {{ form.name.label_tag }}
                       {{ form.name }}
                     </div>
                     {% else %}
                     <div class="type-text">
-                      {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+                      {{ form.name.label_tag }}
                       {{ form.name }}
                     </div>
                     {% endif %}
                     {% if form.service_area_name.errors %}
                     <div class="type-text error">
                       <strong class="message">{{ form.service_area_name.errors }}</strong>
-                      {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
+                      {{ form.service_area_name.label_tag }}
                       {{ form.service_area_name }}
                     </div>
                     {% else %}
                     <div class="type-text">
-                      {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
+                      {{ form.service_area_name.label_tag }}
                       {{ form.service_area_name }}
                     </div>
                     {% endif %}
@@ -171,24 +188,24 @@ $(document).ready(function(){
                     {% if form.id_number.errors %}
                     <div class="type-text error">
                       <strong class="message">{{ form.id_number.errors }}</strong>
-                      {{ form.id_number.label_tag }}<p class="dimmed">{{ form.id_number.help_text}}</p>
+                      {{ form.id_number.label_tag }}
                       {{ form.id_number }}
                     </div>
                     {% else %}
                     <div class="type-text">
-                      {{ form.id_number.label_tag }}<p class="dimmed">{{ form.id_number.help_text}}</p>
+                      {{ form.id_number.label_tag }}
                       {{ form.id_number }}
                     </div>
                     {% endif %}
                     {% if form.department_name.errors %}
                     <div class="type-text error">
                       <strong class="message">{{ form.department_name.errors }}</strong>
-                      {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
+                      {{ form.department_name.label_tag }}
                       {{ form.department_name }}
                     </div>
                     {% else %}
                     <div class="type-text">
-                      {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
+                      {{ form.department_name.label_tag }}
                       {{ form.department_name }}
                     </div>
                     {% endif %}
@@ -203,12 +220,12 @@ $(document).ready(function(){
               {% if form.wedding_time.errors %}
               <div class="type-text error">
                 <strong class="message">{{ form.wedding_time.errors }}</strong>
-                {{ form.wedding_time.label_tag }}<p class="dimmed">{{ form.wedding_time.help_text}}</p>
+                {{ form.wedding_time.label_tag }}
                 {{ form.wedding_time }}
               </div>
               {% else %}
               <div class="type-text">
-                {{ form.wedding_time.label_tag }}<p class="dimmed">{{ form.wedding_time.help_text}}</p>
+                {{ form.wedding_time.label_tag }}
                 {{ form.wedding_time }}
               </div>
               {% endif %}
@@ -218,12 +235,12 @@ $(document).ready(function(){
                     {% if form.is_family.errors %}
                     <div class="type-select error">
                       <strong class="message">{{ form.is_family.errors }}</strong>
-                      {{ form.is_family.label_tag }}<p class="dimmed">{{ form.is_family.help_text}}</p>
+                      {{ form.is_family.label_tag }}
                       {{ form.is_family }}
                     </div>
                     {% else %}
                     <div class="type-select">
-                      {{ form.is_family.label_tag }}<p class="dimmed">{{ form.is_family.help_text}}</p>
+                      {{ form.is_family.label_tag }}
                       {{ form.is_family }}
                     </div>
                     {% endif %}
@@ -235,12 +252,12 @@ $(document).ready(function(){
                     {% if form.is_fuzzy.errors %}
                     <div class="type-check error">
                       <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-                      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
+                      {{ form.is_fuzzy.label_tag }}
                       {{ form.is_fuzzy }}
                     </div>
                     {% else %}
                     <div class="type-check">
-                      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
+                      {{ form.is_fuzzy.label_tag }}
                       {{ form.is_fuzzy }}
                     </div>
                     {% endif %}
@@ -266,24 +283,24 @@ $(document).ready(function(){
                   {% if form.mate_name.errors %}
                   <div class="type-text error">
                     <strong class="message">{{ form.mate_name.errors }}</strong>
-                    {{ form.mate_name.label_tag }}<p class="dimmed">{{ form.mate_name.help_text}}</p>
+                    {{ form.mate_name.label_tag }}
                     {{ form.mate_name }}
                   </div>
                   {% else %}
                   <div class="type-text">
-                    {{ form.mate_name.label_tag }}<p class="dimmed">{{ form.mate_name.help_text}}</p>
+                    {{ form.mate_name.label_tag }}
                     {{ form.mate_name }}
                   </div>
                   {% endif %}
                   {% if form.mate_service_area_name.errors %}
                   <div class="type-text error">
                     <strong class="message">{{ form.mate_service_area_name.errors }}</strong>
-                    {{ form.mate_service_area_name.label_tag }}<p class="dimmed">{{ form.mate_service_area_name.help_text}}</p>
+                    {{ form.mate_service_area_name.label_tag }}
                     {{ form.mate_service_area_name }}
                   </div>
                   {% else %}
                   <div class="type-text">
-                    {{ form.mate_service_area_name.label_tag }}<p class="dimmed">{{ form.mate_service_area_name.help_text}}</p>
+                    {{ form.mate_service_area_name.label_tag }}
                     {{ form.mate_service_area_name }}
                   </div>
                   {% endif %}
@@ -295,24 +312,24 @@ $(document).ready(function(){
                   {% if form.mate_id_number.errors %}
                   <div class="type-text error">
                     <strong class="message">{{ form.mate_id_number.errors }}</strong>
-                    {{ form.mate_id_number.label_tag }}<p class="dimmed">{{ form.mate_id_number.help_text}}</p>
+                    {{ form.mate_id_number.label_tag }}
                     {{ form.mate_id_number }}
                   </div>
                   {% else %}
                   <div class="type-text">
-                    {{ form.mate_id_number.label_tag }}<p class="dimmed">{{ form.mate_id_number.help_text}}</p>
+                    {{ form.mate_id_number.label_tag }}
                     {{ form.mate_id_number }}
                   </div>
                   {% endif %}
                   {% if form.mate_department_name.errors %}
                   <div class="type-text error">
                     <strong class="message">{{ form.mate_department_name.errors }}</strong>
-                    {{ form.mate_department_name.label_tag }}<p class="dimmed">{{ form.mate_department_name.help_text}}</p>
+                    {{ form.mate_department_name.label_tag }}
                     {{ form.mate_department_name }}
                   </div>
                   {% else %}
                   <div class="type-text">
-                    {{ form.mate_department_name.label_tag }}<p class="dimmed">{{ form.mate_department_name.help_text}}</p>
+                    {{ form.mate_department_name.label_tag }}
                     {{ form.mate_department_name }}
                   </div>
                   {% endif %}
@@ -332,24 +349,24 @@ $(document).ready(function(){
             {% if form.ctp_method.errors %}
             <div class="type-select error">
               <strong class="message">{{ form.ctp_method.errors }}</strong>
-              {{ form.ctp_method.label_tag }}<p class="dimmed">{{ form.ctp_method.help_text }}</p>
+              {{ form.ctp_method.label_tag }}
               {{ form.ctp_method }}
             </div>
             {% else %}
             <div class="type-select">
-              {{ form.ctp_method.label_tag }}<p class="dimmed">{{ form.ctp_method.help_text }}</p>
+              {{ form.ctp_method.label_tag }}
               {{ form.ctp_method }}
             </div>
             {% endif %}
             {% if form.ctp_method_time.errors %}
             <div class="type-text error">
               <strong class="message">{{ form.ctp_method_time.errors }}</strong>
-              {{ form.ctp_method_time.label_tag }}<p class="dimmed">{{ form.ctp_method_time.help_text }}</p>
+              {{ form.ctp_method_time.label_tag }}
               {{ form.ctp_method_time }}
             </div>
             {% else %}
             <div class="type-text">
-              {{ form.ctp_method_time.label_tag }}<p class="dimmed">{{ form.ctp_method_time.help_text }}</p>
+              {{ form.ctp_method_time.label_tag }}
               {{ form.ctp_method_time }}
             </div>
             {% endif %}

@@ -33,19 +33,19 @@
     </tr>
     <tr>
       <th scope="row" class="sub">名称</th>
-      <td>{{ result.name }}</td>
+      <td class="odd">{{ result.name }}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">创建者</th>
-      <td>{{ result.creater.username }}</td>
+      <td class="even">{{ result.creater.username }}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">创建时间</th>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
+      <td class="odd">{{ result.created_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     <tr>
       <th scope="row" class="sub">更新时间</th>
-      <td>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
+      <td class="even">{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
   </tbody>
 </table>
