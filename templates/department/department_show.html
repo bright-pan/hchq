@@ -3,6 +3,9 @@
 {% block teaser %}{% endblock %}
 
 {% block col1_content %}
+{% load cache %}
+
+{% cache 500 department_show user.username %}
 <h6 class="vlist">单位部门管理</h6>
 <ul class="vlist">
   <li><a href="{% url department_list 1 %}">单位部门查询</a></li>
@@ -10,8 +13,9 @@
   <li><a href="{% url department_modify 1 %}">单位部门修改</a></li>
   <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
   <li class="active"><strong>单位部门详情</strong></li>
-  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
+  
 </ul>
+{% endcache %}
 {% endblock %}
 {% block col3_content %}
 <!-- Insert your subtemplate content here -->

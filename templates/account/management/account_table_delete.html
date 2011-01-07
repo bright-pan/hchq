@@ -19,11 +19,7 @@
       <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.user.username }}</a></td>
       <td class="{% cycle 'odd' 'even' %}">{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
       <td class="{% cycle 'odd' 'even' %}">{{ result.user.groups.get.name }}</td>
-      {% if result.is_checker %} 
-      <td class="{% cycle 'odd' 'even' %}">是</td>
-      {% else %}
-      <td class="{% cycle 'odd' 'even' %}">否</td>
-      {% endif %}
+      <td class="{% cycle 'odd' 'even' %}">{% if result.is_checker %}是{% else %}否{% endif %}</td>
       <td class="{% cycle 'odd' 'even' %}">{{ user.last_login|date:"Y-m-d H:i:s" }}<br>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
       <td class="{% cycle 'odd' 'even' %}">
         <form method="post" action=".">{% csrf_token %}

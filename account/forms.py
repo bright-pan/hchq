@@ -597,7 +597,17 @@ class AccountAddForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
         return department_name_copy
-
+    def init_permission(self, user=None):
+        if user is not None:
+            if user.has_perm('department.unlocal'):
+                return False
+            else:
+                self.fields['service_area_name'].widget.attrs['value'] = user.get_profile().service_area_department.service_area.name
+                self.fields['service_area_name'].widget.attrs['readonly'] = True
+                return True
+        else:
+            return None
+        
     
     def add(self):
         user_object = None
@@ -781,6 +791,7 @@ class AccountDetailModifyForm(forms.Form):
         if modify_object is not None:
             self.fields['role_name'].widget.attrs['value'] = modify_object.groups.get().name
             self.fields['service_area_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.service_area.name
+            self.fields['service_area_name'].widget.attrs['readonly'] = True
             self.fields['department_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.department.name
             self.fields['id'].widget.attrs['value'] = modify_object.id
             is_checker = modify_object.get_profile().is_checker
@@ -941,7 +952,10 @@ class AccountSearchForm(forms.Form):
     def data_to_session(self, request):
         request.session[gl.session_account_name] = self.cleaned_data['name']
         request.session[gl.session_account_role_name] = self.cleaned_data['role_name']
-        request.session[gl.session_account_service_area_name] = self.cleaned_data['service_area_name']
+        if request.user.has_perm('department.unlocal'):
+            request.session[gl.session_account_service_area_name] = self.cleaned_data['service_area_name']
+        else:
+            request.session[gl.session_account_service_area_name] = request.user.get_profile().service_area_department.service_area.name
         request.session[gl.session_account_department_name] = self.cleaned_data['department_name']
         request.session[gl.session_account_is_checker] = self.cleaned_data['is_checker']
         is_fuzzy = self.cleaned_data['is_fuzzy']
@@ -958,7 +972,10 @@ class AccountSearchForm(forms.Form):
         data = {}
         data['name'] = request.session.get(gl.session_account_name, u'')
         data['role_name'] = request.session.get(gl.session_account_role_name, u'')
-        data['service_area_name'] = request.session.get(gl.session_account_service_area_name, u'')
+        if request.user.has_perm('department.unlocal'):
+            data['service_area_name'] = request.session.get(gl.session_account_service_area_name, u'')
+        else:
+            data['service_area_name'] = request.user.get_profile().service_area_department.service_area.name
         data['department_name'] = request.session.get(gl.session_account_department_name, u'')
         data['is_checker'] = request.session.get(gl.session_account_is_checker, u'none')
         data['is_fuzzy'] = request.session.get(gl.session_account_is_fuzzy, False)
@@ -968,7 +985,11 @@ class AccountSearchForm(forms.Form):
     def init_from_session(self, request):
         self.fields['name'].widget.attrs['value'] = request.session.get(gl.session_account_name, u'')
         self.fields['role_name'].widget.attrs['value'] = request.session.get(gl.session_account_role_name, u'')
-        self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_account_service_area_name, u'')
+        if request.user.has_perm('department.unlocal'):
+            self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_account_service_area_name, u'')
+        else:
+            self.fields['service_area_name'].widget.attrs['value'] = request.user.get_profile().service_area_department.service_area.name
+            self.fields['service_area_name'].widget.attrs['readonly'] = True
         self.fields['department_name'].widget.attrs['value'] = request.session.get(gl.session_account_department_name, u'')
         self.fields['is_checker'].widget.attrs['value'] = request.session.get(gl.session_account_is_checker, u'none')
         is_fuzzy = request.session.get(gl.session_account_is_fuzzy, False)
@@ -978,10 +999,13 @@ class AccountSearchForm(forms.Form):
             pass
         return True
     
-    def search(self):
+    def search(self, request):
         query_set = None
         name = self.cleaned_data['name']
-        service_area_name = self.cleaned_data['service_area_name']
+        if request.user.has_perm('department.unlocal'):
+            service_area_name = self.cleaned_data['service_area_name']
+        else:
+            service_area_name = request.user.get_profile().service_area_department.service_area.name
         department_name = self.cleaned_data['department_name']
         role_name = self.cleaned_data['role_name']
         is_checker = self.cleaned_data['is_checker']

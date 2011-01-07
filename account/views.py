@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
@@ -757,6 +757,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
 
 @csrf_protect
 @login_required
+@permission_required('department.account_add')
 def account_add(request, template_name='my.html', next='/', account_page='1'):
     """
     系统用户添加视图，带添加预览功能！
@@ -769,10 +770,12 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
         submit_value = post_data[u'submit']
         if submit_value == u'添加':
             account_add_form = AccountAddForm(post_data)
+
             if account_add_form.is_valid():
                 account_add_form.add()
             else:
                 pass
+            account_add_form.init_permission(user)
             return render_to_response(template_name,
                                       {'add_form': account_add_form,
                                        'page_title': page_title,
@@ -783,6 +786,7 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
             raise Http404('Invalid Request!')
     else:
         account_add_form = AccountAddForm()
+        account_add_form.init_permission(user)
         return render_to_response(template_name,
                                   {'add_form': account_add_form,
                                   'page_title': page_title,
@@ -791,6 +795,10 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
 
 @csrf_protect
 @login_required
+#@permission_required('department.account_list')
+#@permission_required('department.account_modify')
+#@permission_required('department.account_delete')
+@user_passes_test(lambda u: (u.has_perm('department.account_list') or u.has_perm('department.account_modify') or u.has_perm('department.account_delete')))
 def account_show(request, template_name='', next='', account_index='1'):
     """
     系统用户详细信息显示。
@@ -809,9 +817,12 @@ def account_show(request, template_name='', next='', account_index='1'):
                 result = UserProfile.objects.get(pk=account_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
             except ObjectDoesNotExist:
                 raise Http404('Invalid Request!')
-            result.user.set_password(settings.ACCOUNT_DEFAULT_PASSWORD)
-            result.user.save()
-            success = True
+            if result.user.has_perm('department.account_modify'):
+                result.user.set_password(settings.ACCOUNT_DEFAULT_PASSWORD)
+                result.user.save()
+                success = True
+            else:
+                success = False
         else:
             raise Http404('Invalid Request!')
             
@@ -833,6 +844,7 @@ def account_show(request, template_name='', next='', account_index='1'):
 
 @csrf_protect
 @login_required
+@permission_required('department.account_modify')
 def account_modify(request, template_name='my.html', next_template_name='my.html', account_page='1',):
     """
     系统用户修改视图
@@ -860,7 +872,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
             account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
             account_search_form.init_from_session(request)
             if account_search_form.is_valid():
-                query_set = account_search_form.search()
+                query_set = account_search_form.search(request)
                 results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
             else:
                 results_page = None
@@ -871,7 +883,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                 if account_search_form.is_valid():
                     account_search_form.data_to_session(request)
                     account_search_form.init_from_session(request)
-                    query_set = account_search_form.search()
+                    query_set = account_search_form.search(request)
                     results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
                 else:
                     results_page = None
@@ -889,7 +901,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
         account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
         account_search_form.init_from_session(request)
         if account_search_form.is_valid():
-            query_set = account_search_form.search()
+            query_set = account_search_form.search(request)
             results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
             results_page = None
@@ -903,6 +915,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
 
 @csrf_protect
 @login_required
+@permission_required('department.account_modify')
 def account_detail_modify(request, template_name='my.html', next='/', account_page='1',):
     """
     系统用户修改视图
@@ -934,6 +947,7 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
 
 @csrf_protect
 @login_required
+@permission_required('department.account_delete')
 def account_delete(request, template_name='my.html', next='/', account_page='1',):
     """
     系统用户删除视图
@@ -952,7 +966,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
             account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
             account_search_form.init_from_session(request)
             if account_search_form.is_valid():
-                query_set = account_search_form.search()
+                query_set = account_search_form.search(request)
                 results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
             else:
                 results_page = None
@@ -963,7 +977,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
                 if account_search_form.is_valid():
                     account_search_form.data_to_session(request)
                     account_search_form.init_from_session(request)
-                    query_set = account_search_form.search()
+                    query_set = account_search_form.search(request)
                     results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
                 else:
                     results_page = None
@@ -981,7 +995,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
         account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
         account_search_form.init_from_session(request)
         if account_search_form.is_valid():
-            query_set = account_search_form.search()
+            query_set = account_search_form.search(request)
             results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
             results_page = None
@@ -996,6 +1010,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
 
 @csrf_protect
 @login_required
+@permission_required('department.account_list')
 def account_list(request, template_name='my.html', next='/', account_page='1',):
     """
     系统用户查询视图
@@ -1008,7 +1023,7 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
         if account_search_form.is_valid():
             account_search_form.data_to_session(request)
             account_search_form.init_from_session(request)
-            query_set = account_search_form.search()
+            query_set = account_search_form.search(request)
             results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
             results_page = None
@@ -1022,7 +1037,7 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
         account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
         account_search_form.init_from_session(request)
         if account_search_form.is_valid():
-            query_set = account_search_form.search()
+            query_set = account_search_form.search(request)
             results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
         else:
             results_page = None

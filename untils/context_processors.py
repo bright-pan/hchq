@@ -2,6 +2,7 @@
 
 from hchq import settings
 from hchq.check_project.models import *
+from django.db.models import ObjectDoesNotExist
 
 def hchq(request):
     try:

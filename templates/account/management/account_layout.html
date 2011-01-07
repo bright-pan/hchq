@@ -1,4 +1,5 @@
 {% extends "my_layout.html" %}
+
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
@@ -85,6 +86,8 @@ $(document).ready(function() {
 {% block header_describe %}{% endblock %}
 
 {% block nav %}
+{% load cache %}
+{% cache 500 account_layout user.username %}
 <ul>
   <li><a href="{% url account_person_management %}">个人管理</a></li>
   {% if perms.department.sd_management %}
@@ -97,7 +100,10 @@ $(document).ready(function() {
   {% if perms.department.role_management %}
   <li><a href="{% url check_project_list 1 %}">检查项目管理</a></li>
   {% endif %}
+  {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
   <li class="active"><strong>系统用户管理</strong></li>
+  {% endif %}
+
   <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
     {% if check_project != None %}
   <li class="active"><strong>{{ check_project.name }}</strong></li>
@@ -106,8 +112,8 @@ $(document).ready(function() {
   {% else %}
   <li class="active"><strong>尚未启用项目</strong></li>
   {% endif %}
-
 </ul>
+{% endcache %}
 {% endblock %}
 
 {% block teaser %}{% endblock %}

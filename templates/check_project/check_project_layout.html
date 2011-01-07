@@ -4,6 +4,8 @@
 {% block header_describe %}{% endblock %}
 
 {% block nav %}
+{% load cache %}
+{% cache 500 check_project_layout user.username %}
 <ul>
   <li><a href="{% url account_person_management %}">个人管理</a></li>
   {% if perms.department.sd_management %}
@@ -16,8 +18,9 @@
   {% if perms.department.role_management %}
   <li class="active"><strong>检查项目管理</strong></li>
   {% endif %}
-
+  {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
   <li><a href="{% url account_list 1 %}">系统用户管理</a></li>
+  {% endif %}
   <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
     {% if check_project != None %}
   <li class="active"><strong>{{ check_project.name }}</strong></li>
@@ -26,8 +29,8 @@
   {% else %}
   <li class="active"><strong>尚未启用项目</strong></li>
   {% endif %}
-
 </ul>
+{% endcache %}
 {% endblock %}
 
 {% block teaser %}{% endblock %}
