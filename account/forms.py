@@ -471,7 +471,7 @@ class RolePermissionDeleteForm(forms.Form):
                 role_permission_id_object = role.permissions.get(pk = self.role_permission_id_copy)
             except ObjectDoesNotExist:
                 return False
-            role.permissions.remove(pole_permission_id_object)
+            role.permissions.remove(role_permission_id_object)
             role.save()
             return True
         return False

@@ -3,6 +3,7 @@
 {% block teaser %}{% endblock %}
 
 {% block col1_content %}
+{% load cache %}
 {% cache 500 service_area_show user.username %}
 <h6 class="vlist">服务区域管理</h6>
 <ul class="vlist">

@@ -45,8 +45,9 @@ $(document).ready(function() {
                                           });
 
                           });
-                $("#id_service_area_name").blur(function() {
-                                service_area_name_old = '';
+                service_area_name_old = '';
+                $("#id_department_name").focus(function() {
+
                                 service_area_name = $("#id_service_area_name").val();
                                 if (service_area_name != '' && service_area_name != service_area_name_old)
                                 {
