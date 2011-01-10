@@ -129,14 +129,24 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block col1_content %}
+{% load cache %}
+{% cache 500 check_object_delete user.username %}
 <h6 class="vlist">检查对象管理</h6>
 <ul class="vlist">
+  {% if perms.department.co_list %}
   <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
+  {% endif %}
+  {% if perms.department.co_add %}
   <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
+  {% endif %}
+  {% if perms.department.co_modify %}
   <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
+  {% endif %}
+  {% if perms.department.co_delete %}
   <li class="active"><strong>检查对象删除</strong></li>
-  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
+  {% endif %}
 </ul>
+{% endcache %}
 {% endblock %}
 {% block col3_content %}
 <h3>检查对象删除</h3>

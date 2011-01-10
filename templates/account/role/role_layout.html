@@ -21,9 +21,10 @@
   {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
   <li><a href="{% url account_list 1 %}">系统用户管理</a></li>
   {% endif %}
-
+  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete or perms.department.cr_list or perms.department.cr_add or perms.department.report_print or perms.department.ct_print %}
   <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
-    {% if check_project != None %}
+  {% endif %}
+  {% if check_project != None %}
   <li class="active"><strong>{{ check_project.name }}</strong></li>
   <li class="active"><strong>{{ check_project.end_time|date:"Y-m-d" }}</strong></li>
   <li class="active"><strong>{{ check_project.start_time|date:"Y-m-d" }}</strong></li>

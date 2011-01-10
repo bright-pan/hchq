@@ -6,12 +6,18 @@
 {% endblock %}
 
 {% block nav %}
+{% load cache %}
+{% cache 500 check_result_layout user.username %}
 <ul>
+  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
   <li><a href="{% url check_object_list 1 %}">检查对象管理</a></li>
+  {% endif %}
+  {% if perms.department.cr_list or perms.department.cr_add %}
   <li class="active"><strong>检查结果管理</strong></li>
+  {% endif %}
   <li><a href="#">数据统计</a></li>
   <li><a href="#">报表打印</a></li>
-    {% if check_project != None %}
+  {% if check_project != None %}
   <li class="active"><strong>{{ check_project.name }}</strong></li>
   <li class="active"><strong>{{ check_project.end_time|date:"Y-m-d" }}</strong></li>
   <li class="active"><strong>{{ check_project.start_time|date:"Y-m-d" }}</strong></li>
@@ -20,6 +26,7 @@
   {% endif %}
 
 </ul>
+{% endcache %}
 {% endblock %}
 
 {% block teaser %}{% endblock %}

@@ -10,7 +10,7 @@
   {% if perms.department.account_list %}
   <li><a href="{% url account_list 1 %}">系统用户查询</a></li>
   {% endif %}
-  {% if perms.department.account_list %}
+  {% if perms.department.account_add %}
   <li><a href="{% url account_add 1 %}">系统用户添加</a></li>
   {% endif %}
   {% if perms.department.account_modify %}

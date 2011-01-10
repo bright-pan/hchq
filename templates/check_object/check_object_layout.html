@@ -4,9 +4,15 @@
 {% block header_describe %}{% endblock %}
 
 {% block nav %}
+{% load cache %}
+{% cache 500 check_object_layout user.username %}
 <ul>
+  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
   <li class="active"><strong>检查对象管理</strong></li>
+  {% endif %}
+  {% if perms.department.cr_list or perms.department.cr_add %}
   <li><a href="{% url check_result_add 1 %}">检查结果管理</a></li>
+  {% endif %}
   <li><a href="#">数据统计</a></li>
   <li><a href="#">报表打印</a></li>
     {% if check_project != None %}
@@ -16,8 +22,8 @@
   {% else %}
   <li class="active"><strong>尚未启用项目</strong></li>
   {% endif %}
-
 </ul>
+{% endcache %}
 {% endblock %}
 
 {% block teaser %}{% endblock %}
