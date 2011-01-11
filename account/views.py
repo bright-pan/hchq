@@ -770,17 +770,20 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
         submit_value = post_data[u'submit']
         if submit_value == u'添加':
             account_add_form = AccountAddForm(post_data)
-
             if account_add_form.is_valid():
-                account_add_form.add()
+                account_profile = account_add_form.add()
+                if account_profile is not None:
+                    return HttpResponseRedirect('account/show/%s' % account_profile.id)
+                else:
+                    raise Http404('Invalid Request!')
             else:
-                pass
-            account_add_form.init_permission(user)
-            return render_to_response(template_name,
-                                      {'add_form': account_add_form,
-                                       'page_title': page_title,
-                                       },
-                                      context_instance=RequestContext(request))
+                account_add_form.init_permission(user)
+                return render_to_response(template_name,
+                                          {'add_form': account_add_form,
+                                           'page_title': page_title,
+                                           },
+                                          context_instance=RequestContext(request))
+
 
         else:
             raise Http404('Invalid Request!')
@@ -798,7 +801,7 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
 #@permission_required('department.account_list')
 #@permission_required('department.account_modify')
 #@permission_required('department.account_delete')
-@user_passes_test(lambda u: (u.has_perm('department.account_list') or u.has_perm('department.account_modify') or u.has_perm('department.account_delete')))
+@user_passes_test(lambda u: (u.has_perm('department.account_list') or u.has_perm('department.account_modify') or u.has_perm('department.account_delete') or u.has_perm('department.account_add')))
 def account_show(request, template_name='', next='', account_index='1'):
     """
     系统用户详细信息显示。
@@ -850,6 +853,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
     系统用户修改视图
     """
     page_title = u'编辑系统用户'
+    user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
@@ -859,7 +863,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                 account_modify_object = account_modify_form.object()
 #                print account_modify_object
                 account_detail_modify_form = AccountDetailModifyForm()
-                account_detail_modify_form.set_value(account_modify_object)
+                account_detail_modify_form.set_value(account_modify_object, user)
                 page_title = u'修改系统用户'
                 return render_to_response(next_template_name,
                                           {'detail_modify_form': account_detail_modify_form,
@@ -928,8 +932,11 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
         if submit_value == u'修改':
             account_detail_modify_form = AccountDetailModifyForm(post_data)
             if account_detail_modify_form.is_valid():
-                account_detail_modify_form.detail_modify()
-                return HttpResponseRedirect(next)
+                account_profile = account_detail_modify_form.detail_modify()
+                if account_profile is not None:
+                    return HttpResponseRedirect('account/show/%s' % account_profile.id)
+                else:
+                    raise Http404('Invalid Request!')
             else:
                 account_id = int(account_detail_modify_form.data.get('id'))
                 account_object = User.objects.get(pk=account_id)

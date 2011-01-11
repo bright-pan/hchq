@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
@@ -19,6 +19,7 @@ from hchq import settings
 # Create your views here.
 @csrf_protect
 @login_required
+@permission_required('department.co_add')
 def check_object_add(request, template_name='my.html', next='/', check_object_page='1'):
     """
     检查对象添加视图，带添加预览功能！
@@ -32,10 +33,13 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
         if submit_value == u'添加':
             check_object_add_form = CheckObjectAddForm(post_data, request.FILES)
             if check_object_add_form.is_valid():
-                check_object_add_form.add(user)
-                next = "check_object/show/%s" % ()
-                return HttpResponseRedirect(next)
+                check_object = check_object_add_form.add(user)
+                if check_object is not None:
+                    return HttpResponseRedirect("check_object/show/%s" % check_object.id)
+                else:
+                    raise Http404('Invalid Request!')
             else:
+                check_object_add_form.init_permission(user)
                 return render_to_response(template_name,
                                           {'add_form': check_object_add_form,
                                            'page_title': page_title,
@@ -44,6 +48,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
 
         else:
             check_object_add_form = CheckObjectAddForm()
+            check_object_add_form.init_permission(user)
             return render_to_response(template_name,
                                       {'add_form': check_object_add_form,
                                        'page_title': page_title,
@@ -126,6 +131,7 @@ def check_object_detail_modify_uploader(request, template_name='my.html', next='
     
 @csrf_protect
 @login_required
+@user_passes_test(lambda u: (u.has_perm('department.co_list') or u.has_perm('department.co_modify') or u.has_perm('department.co_delete') or u.has_perm('department.co_add')))
 def check_object_show(request, template_name='', next='', check_object_index='1'):
     """
     检查对象详细信息显示。
@@ -152,11 +158,13 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
 
 @csrf_protect
 @login_required
+@permission_required('department.co_modify')
 def check_object_modify(request, template_name='my.html', next_template_name='my.html', check_object_page='1',):
     """
     检查对象修改视图
     """
     page_title = u'编辑检查对象'
+    user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
@@ -165,9 +173,9 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
             if check_object_modify_form.is_valid():
                 check_object_modify_object = check_object_modify_form.object()
 #                print check_object_modify_object.id_number
-                check_object_detail_modify_form = CheckObjectDetailModifyForm(CheckObjectDetailModifyForm().data_from_object(check_object_modify_object))
+                check_object_detail_modify_form = CheckObjectDetailModifyForm(CheckObjectDetailModifyForm().data_from_object(check_object_modify_object, user))
                 if check_object_detail_modify_form.is_valid():
-                    check_object_detail_modify_form.init_from_object(check_object_modify_object)
+                    check_object_detail_modify_form.init_from_object(check_object_modify_object, user)
                     page_title = u'修改检查对象'
                     return render_to_response(next_template_name,
                                               {'detail_modify_form': check_object_detail_modify_form,
@@ -176,6 +184,7 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                                                },
                                               context_instance=RequestContext(request))
                 else:
+                    print '$$$$$$$$$$$$$$$$'
                     raise Http404('Invalid Request!')                
             else:
                 pass
@@ -225,11 +234,11 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
 
 @csrf_protect
 @login_required
+@permission_required('department.co_modify')
 def check_object_detail_modify(request, template_name='my.html', next='/', check_object_page='1',):
     """
     检查对象修改视图
     """
-    print '***********************************************************'
 
     page_title = u'编辑检查对象'
     
@@ -240,9 +249,11 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
             check_object_detail_modify_form = CheckObjectDetailModifyForm(post_data)
 
             if check_object_detail_modify_form.is_valid():
-                check_object_detail_modify_form.detail_modify(request)
-                return HttpResponseRedirect(next)
-
+                check_object = check_object_detail_modify_form.detail_modify(request)
+                if check_object is not None:
+                    return HttpResponseRedirect("check_object/show/%s" % check_object.id)
+                else:
+                    raise Http404('Invalid Request!')
             else:
                 check_object_id = int(check_object_detail_modify_form.data.get('id'))
                 check_object_object = CheckObject.objects.get(pk=check_object_id)
@@ -260,6 +271,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
 
 @csrf_protect
 @login_required
+@permission_required('department.co_delete')
 def check_object_delete(request, template_name='my.html', next='/', check_object_page='1',):
     """
     检查对象删除视图
@@ -322,6 +334,7 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
 
 @csrf_protect
 @login_required
+@permission_required('department.co_list')
 def check_object_list(request, template_name='my.html', next='/', check_object_page='1',):
     """
     检查对象查询视图

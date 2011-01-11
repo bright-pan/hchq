@@ -1,6 +1,5 @@
 {% extends "check_object/check_object_layout.html" %}
 {% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
@@ -42,9 +41,10 @@ $(document).ready(function(){
                                           });
 
                           });
-                $("#id_service_area_name").blur(function() {
-                                service_area_name_old = '';
-                                service_area_name = $("#id_service_area_name").val();
+                       var service_area_name_old = '';
+                       $("#id_department_name").focus(function() {
+
+                                var service_area_name = $("#id_service_area_name").val();
                                 if (service_area_name != '' && service_area_name != service_area_name_old)
                                 {
 //                                        alert('********');
@@ -75,9 +75,10 @@ $(document).ready(function(){
                                 }
                                 
                         });
-                $("#id_mate_service_area_name").blur(function() {
-                                mate_service_area_name_old = '';
-                                mate_service_area_name = $("#id_mate_service_area_name").val();
+                        var mate_service_area_name_old = '';
+                        $("#id_mate_department_name").focus(function() {
+
+                                var mate_service_area_name = $("#id_mate_service_area_name").val();
                                 if (mate_service_area_name != '' && mate_service_area_name != mate_service_area_name_old)
                                 {
 //                                        alert('********');
@@ -151,35 +152,32 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 
-{% block col1_content %}
+{% block teaser %}
 {% load cache %}
 {% cache 500 check_object_detail_modify user.username %}
-<h6 class="vlist">检查对象管理</h6>
-<ul class="vlist">
-  {% if perms.department.co_list %}
-  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
-  {% endif %}
-  {% if perms.department.co_add %}
-  <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
-  {% endif %}
+<div class="nav_hlist">
+<ul>
   {% if perms.department.co_modify %}
-  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
+  <li class="active"><strong>检查对象编辑</strong></li>
   {% endif %}
   {% if perms.department.co_delete %}
   <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
   {% endif %}
-  
   {% if perms.department.co_modify %}
-  <li class="active"><strong>检查对象编辑</strong></li>
+  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
   {% endif %}
-
+  {% if perms.department.co_add %}
+  <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
+  {% endif %}
+  {% if perms.department.co_list %}
+  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
+  {% endif %}
 </ul>
+</div>
 {% endcache %}
 {% endblock %}
-{% block col3_content %}
-<h3>检查对象编辑</h3>
-<hr>
 
+{% block main %}
 <div class="important">
   {% with detail_modify_form as form %}
   <form method="get" action="{% url check_object_detail_modify %}" class="yform full" id="id_form_detail_modify">{% csrf_token %}

@@ -1,35 +1,34 @@
 {% extends "check_object/check_object_layout.html" %}
 {% load check_object_filter %}
 {% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
-{% block col1_content %}
+{% block teaser %}
 {% load cache %}
-{% cache 500 check_object_show user.username %}
-<h6 class="vlist">检查对象管理</h6>
-<ul class="vlist">
-  {% if perms.department.co_list %}
-  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
-  {% endif %}
-  {% if perms.department.co_add %}
-  <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
-  {% endif %}
-  {% if perms.department.co_modify %}
-  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
+{% cache 500 check_object_modify user.username %}
+<div class="nav_hlist">
+<ul>
+  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
+  <li class="active"><strong>检查对象详情</strong></li>
   {% endif %}
   {% if perms.department.co_delete %}
   <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
   {% endif %}
-  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
-  <li class="active"><strong>检查对象详情</strong></li>
+  {% if perms.department.co_modify %}
+  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
+  {% endif %}
+  {% if perms.department.co_add %}
+  <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
+  {% endif %}
+  {% if perms.department.co_list %}
+  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
   {% endif %}
 </ul>
+</div>
 {% endcache %}
 {% endblock %}
-{% block col3_content %}
+
+{% block main %}
 <!-- Insert your subtemplate content here -->
-<h3>检查对象详情</h3>
-<br>
 {% if result %}
 <div class="note">
   <div class="subcolumns">

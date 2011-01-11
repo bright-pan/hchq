@@ -17,14 +17,6 @@
   {% endif %}
   <li><a href="#">数据统计</a></li>
   <li><a href="#">报表打印</a></li>
-  {% if check_project != None %}
-  <li class="active"><strong>{{ check_project.name }}</strong></li>
-  <li class="active"><strong>{{ check_project.end_time|date:"Y-m-d" }}</strong></li>
-  <li class="active"><strong>{{ check_project.start_time|date:"Y-m-d" }}</strong></li>
-  {% else %}
-  <li class="active"><strong>尚未启用项目</strong></li>
-  {% endif %}
-
 </ul>
 {% endcache %}
 {% endblock %}

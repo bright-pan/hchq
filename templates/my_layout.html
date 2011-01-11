@@ -13,9 +13,23 @@
         <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
         </div>
         <div id="header_describe">
-        {% block header_describe %}
-
-        {% endblock %}
+          {% load cache %}
+          {% cache 500 check_project_nav %}
+          {% if check_project != None %}
+          <div style="text-align:right; color: #aaa; background: transparent;">
+          <p class="ui-state-default">
+            <strong>{{ check_project.name }}</strong>
+            <strong>{{ check_project.end_time|date:"Y-m-d" }}</strong> - 
+            <strong>{{ check_project.start_time|date:"Y-m-d" }}</strong>
+          </p>
+          </div>
+          {% else %}
+          <p><strong>尚未启用项目</strong></p>
+          {% endif %}
+          {% endcache %}
+          
+          {% block header_describe %}
+          {% endblock %}
         </div>
       </div>
       <div id="nav">
@@ -30,6 +44,7 @@
 
       {% endblock %}
       <div id="main">
+        {% block main %}
         <div id="col1">
           <div id="col1_content" class="clearfix">
             <!-- add your content here -->
@@ -46,6 +61,7 @@
           <!-- IE Column Clearing -->
           <div id="ie_clearing"> &#160; </div>
         </div>
+        {% endblock %}
       </div>
       <!-- begin: #footer -->
       <div id="footer">

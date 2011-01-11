@@ -1,6 +1,5 @@
 {% extends "check_result/check_result_layout.html" %}
 {% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
@@ -113,24 +112,23 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 
-{% block col1_content %}
+{% block teaser %}
 {% load cache %}
 {% cache 500 check_result_detail_add user.username %}
-<h6 class="vlist">检查结果管理</h6>
-<ul class="vlist">
+<div class="nav_hlist">
+<ul>
+  {% if perms.department.cr_add %}
+  <li class="active"><strong>检查结果录入</strong></li>
+  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+  {% endif %}
   {% if perms.department.cr_list %}
   <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
   {% endif %}
-  {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  <li class="active"><strong>检查结果编辑</strong></li>
-  {% endif %}
 </ul>
+</div>
 {% endcache %}
 {% endblock %}
-{% block col3_content %}
-<h3>检查结果编辑</h3>
-<hr>
+{% block main %}
 <div class="subcolumns">
   <div class="c75l">
     <div class="subc">

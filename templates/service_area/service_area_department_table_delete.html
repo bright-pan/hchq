@@ -15,10 +15,9 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
       <td class="{% cycle 'odd' 'even' %}">
-        <form method="post" action=".">{% csrf_token %}
+        <form method="post" action="#">{% csrf_token %}
           <input type="hidden" name="service_area_department_id" value="{{ result.id }}" />
           <input type="submit" name="submit" value="删除关联" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
         </form>
       </td>
     </tr>

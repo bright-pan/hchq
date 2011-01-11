@@ -473,7 +473,12 @@ class CheckResultSearchForm(forms.Form):
     def data_to_session(self, request):
         request.session[gl.session_check_object_name] = self.cleaned_data['name']
         request.session[gl.session_check_object_id_number] = self.cleaned_data['id_number']
-        request.session[gl.session_check_object_service_area_name] = self.cleaned_data['service_area_name']
+
+        if request.user.has_perm('department.unlocal'):
+            request.session[gl.session_check_object_service_area_name] = self.cleaned_data['service_area_name']
+        else:
+            request.session[gl.session_check_object_service_area_name] = request.user.get_profile().service_area_department.service_area.name
+        
         request.session[gl.session_check_object_department_name] = self.cleaned_data['department_name']
         request.session[gl.session_check_object_is_family] = self.cleaned_data['is_family']
         request.session[gl.session_check_object_mate_name] = self.cleaned_data['mate_name']
@@ -522,7 +527,10 @@ class CheckResultSearchForm(forms.Form):
         data = {}
         data['name'] = request.session.get(gl.session_check_object_name, u'')
         data['id_number'] = request.session.get(gl.session_check_object_id_number, u'')
-        data['service_area_name'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        if request.user.has_perm('department.unlocal'):
+            data['service_area_name'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        else:
+            data['service_area_name'] = request.user.get_profile().service_area_department.service_area.name
         data['department_name'] = request.session.get(gl.session_check_object_department_name, u'')
         data['is_family'] = request.session.get(gl.session_check_object_is_family, u'none')
         data['mate_name'] = request.session.get(gl.session_check_object_mate_name, u'')
@@ -548,7 +556,11 @@ class CheckResultSearchForm(forms.Form):
     def init_from_session(self, request):
         self.fields['name'].widget.attrs['value'] = request.session.get(gl.session_check_object_name, u'')
         self.fields['id_number'].widget.attrs['value'] = request.session.get(gl.session_check_object_id_number, u'')
-        self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        if request.user.has_perm('department.unlocal'):
+            self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        else:
+            self.fields['service_area_name'].widget.attrs['value'] = request.user.get_profile().service_area_department.service_area.name
+            self.fields['service_area_name'].widget.attrs['readonly'] = True
         self.fields['department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_department_name, u'')
         self.fields['is_family'].widget.attrs['value'] = request.session.get(gl.session_check_object_is_family, u'none')
         self.fields['mate_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_name, u'')

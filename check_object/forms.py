@@ -272,6 +272,16 @@ class CheckObjectAddForm(forms.Form):
                 raise forms.ValidationError(gl.check_object_wedding_time_error_messages['logic_error'])
         return wedding_time_copy
 
+    def init_permission(self, user=None):
+        if user is not None:
+            if user.has_perm('department.unlocal'):
+                return False
+            else:
+                self.fields['service_area_name'].widget.attrs['value'] = user.get_profile().service_area_department.service_area.name
+                self.fields['service_area_name'].widget.attrs['readonly'] = True
+                return True
+        else:
+            return None
     
     def add(self, user = None):
         if user is not None and self.service_area_department_object is not None and self.mate_service_area_department_object is not None:
@@ -282,7 +292,7 @@ class CheckObjectAddForm(forms.Form):
             try:
                 file_temp = default_storage.open(u'images/photos/temp/%s.temp' % user.username)
             except IOError:
-                return False
+                return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
             default_storage.save(file_path, file_temp)
@@ -291,7 +301,7 @@ class CheckObjectAddForm(forms.Form):
             try:
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
             except ObjectDoesNotExist:
-                CheckObject.objects.create(name=self.cleaned_data['name'],
+                check_object = CheckObject.objects.create(name=self.cleaned_data['name'],
                                            photo=file_path,
                                            id_number=self.cleaned_data['id_number'],
                                            service_area_department=self.service_area_department_object,
@@ -304,7 +314,7 @@ class CheckObjectAddForm(forms.Form):
                                            wedding_time = self.cleaned_data['wedding_time'],
                                            creater = user,
                                            )
-                return True
+                return check_object
             check_object.is_active =True
             check_object.name=self.cleaned_data['name']
             check_object.photo=file_path
@@ -318,8 +328,8 @@ class CheckObjectAddForm(forms.Form):
             check_object.wedding_time = self.cleaned_data['wedding_time']
             check_object.creater = user
             check_object.save()
-            return True
-        return False
+            return check_object
+        return None
             
 
 class CheckObjectModifyForm(forms.Form):
@@ -616,13 +626,17 @@ class CheckObjectDetailModifyForm(forms.Form):
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return id_copy
 
-    def data_from_object(self, modify_object=None):
+    def data_from_object(self, modify_object=None, user=None):
         data = {}
-        if modify_object is not None:
+        if modify_object is not None and user is not None:
 
             data['name'] = modify_object.name
             data['id_number'] = modify_object.id_number
-            data['service_area_name'] = modify_object.service_area_department.service_area.name
+            if user.has_perm('department.unlocal'):
+                data['service_area_name'] = modify_object.service_area_department.service_area.name
+            else:
+                data['service_area_name'] = user.get_profile().service_area_department.service_area.name
+            
             data['department_name'] = modify_object.service_area_department.department.name
             if modify_object.is_family is True:
                 data['is_family'] = u'is_family'
@@ -651,12 +665,16 @@ class CheckObjectDetailModifyForm(forms.Form):
         return data
 
 
-    def init_from_object(self, modify_object=None):
-        if modify_object is not None:
+    def init_from_object(self, modify_object=None, user=None):
+        if modify_object is not None and user is not None:
             self.fields['name'].widget.attrs['value'] = modify_object.name
             self.fields['id_number'].widget.attrs['value'] = modify_object.id_number
+            if user.has_perm('department.unlocal'):
+                self.fields['service_area_name'].widget.attrs['value'] = modify_object.service_area_department.service_area.name
+            else:
+                self.fields['service_area_name'].widget.attrs['value'] = user.get_profile().service_area_department.service_area.name
+                self.fields['service_area_name'].widget.attrs['readonly'] = True
 
-            self.fields['service_area_name'].widget.attrs['value'] = modify_object.service_area_department.service_area.name
             self.fields['department_name'].widget.attrs['value'] = modify_object.service_area_department.department.name
             self.fields['mate_name'].widget.attrs['value'] = modify_object.mate_name
             self.fields['mate_id_number'].widget.attrs['value'] = modify_object.mate_id_number
@@ -686,14 +704,14 @@ class CheckObjectDetailModifyForm(forms.Form):
         
         check_object = self.id_object
         if request is None:
-            return False
+            return None
         
         if request.session.get(gl.session_check_object_detail_modify_uploader, u'') == check_object.id_number:
 #            print "%%%%%%%%%%%%%%%%%%%%%%"
             try:
                 file_temp = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username)
             except IOError:
-                return False
+                return None
             file_path = u'images/photos/%s.jpg' % check_object.id_number
             default_storage.delete(file_path)
             default_storage.save(file_path, file_temp)
@@ -717,7 +735,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
         check_object.wedding_time = self.cleaned_data['wedding_time']
         check_object.save()
-        return True
+        return check_object
 
 class CheckObjectDeleteForm(forms.Form):
     """
@@ -973,7 +991,11 @@ class CheckObjectSearchForm(forms.Form):
     def data_to_session(self, request):
         request.session[gl.session_check_object_name] = self.cleaned_data['name']
         request.session[gl.session_check_object_id_number] = self.cleaned_data['id_number']
-        request.session[gl.session_check_object_service_area_name] = self.cleaned_data['service_area_name']
+        if request.user.has_perm('department.unlocal'):
+            request.session[gl.session_check_object_service_area_name] = self.cleaned_data['service_area_name']
+        else:
+            request.session[gl.session_check_object_service_area_name] = request.user.get_profile().service_area_department.service_area.name
+        
         request.session[gl.session_check_object_department_name] = self.cleaned_data['department_name']
         request.session[gl.session_check_object_is_family] = self.cleaned_data['is_family']
         request.session[gl.session_check_object_mate_name] = self.cleaned_data['mate_name']
@@ -1003,7 +1025,12 @@ class CheckObjectSearchForm(forms.Form):
         data = {}
         data['name'] = request.session.get(gl.session_check_object_name, u'')
         data['id_number'] = request.session.get(gl.session_check_object_id_number, u'')
-        data['service_area_name'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        
+        if request.user.has_perm('department.unlocal'):
+            data['service_area_name'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        else:
+            data['service_area_name'] = request.user.get_profile().service_area_department.service_area.name
+
         data['department_name'] = request.session.get(gl.session_check_object_department_name, u'')
         data['is_family'] = request.session.get(gl.session_check_object_is_family, u'none')
         data['mate_name'] = request.session.get(gl.session_check_object_mate_name, u'')
@@ -1020,7 +1047,12 @@ class CheckObjectSearchForm(forms.Form):
     def init_from_session(self, request):
         self.fields['name'].widget.attrs['value'] = request.session.get(gl.session_check_object_name, u'')
         self.fields['id_number'].widget.attrs['value'] = request.session.get(gl.session_check_object_id_number, u'')
-        self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        if request.user.has_perm('department.unlocal'):
+            self.fields['service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_service_area_name, u'')
+        else:
+            self.fields['service_area_name'].widget.attrs['value'] = request.user.get_profile().service_area_department.service_area.name
+            self.fields['service_area_name'].widget.attrs['readonly'] = True
+        
         self.fields['department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_department_name, u'')
         self.fields['is_family'].widget.attrs['value'] = request.session.get(gl.session_check_object_is_family, u'none')
         self.fields['mate_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_name, u'')

@@ -15,7 +15,7 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
       <td class="{% cycle 'odd' 'even' %}">
-        <form method="post" action=".">{% csrf_token %}
+        <form method="post" action="#">{% csrf_token %}
           <label for="id_department_name">新部门单位名称</label>:
           <input name="department_name" maxlength="128" id="id_department_name" type="text" class="" size="30" value="{{ result.name}}" />
           <input type="hidden" name="department_id" value="{{ result.id }}" />

@@ -15,7 +15,7 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td class="{% cycle 'odd' 'even' %}"><a href="{% url account_role_permission_list result.id '1' %}">{{ result.name }}</a></td>
       <td class="{% cycle 'odd' 'even' %}">
-        <form method="post" action=".">{% csrf_token %}
+        <form method="post" action="#">{% csrf_token %}
           <label for="id_role_name">新角色名称</label>:
           <input name="role_name" maxlength="128" id="id_role_name" type="text" class="" size="30" value="{{ result.name}}" />
           <input type="hidden" name="role_id" value="{{ result.id }}" />

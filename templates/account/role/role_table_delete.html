@@ -15,7 +15,7 @@
       <th scope="row" class="sub">{{ result.id }}</th>
       <td class="{% cycle 'odd' 'even' %}"><a href="{% url account_role_permission_list result.id '1' %}">{{ result.name }}</a></td>
       <td class="{% cycle 'odd' 'even' %}">
-        <form method="post" action=".">{% csrf_token %}
+        <form method="post" action="#">{% csrf_token %}
           <input type="hidden" name="role_id" value="{{ result.id }}" />
           <input type="submit" name="submit" value="删除" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
         </form>

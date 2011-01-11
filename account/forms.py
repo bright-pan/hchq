@@ -628,17 +628,18 @@ class AccountAddForm(forms.Form):
                                            is_checker=is_checker_bool_value,
                                            service_area_department=self.service_area_department_object,
                                            )
-                return user_object
+                return user_object.get_profile()
             user_object.is_active = True
             user_object.set_password(settings.ACCOUNT_DEFAULT_PASSWORD)
             user_object.groups.clear()
             user_object.groups.add(self.role_object)
             user_object_profile = user_object.get_profile()
             user_object_profile.is_checker = is_checker_bool_value
+            user_object_profile.is_active = True
             user_object_profile.service_area_department=self.service_area_department_object
             user_object_profile.save()
             user_object.save()
-            return user_object
+            return user_object.get_profile()
         return user_object
             
 
@@ -787,11 +788,14 @@ class AccountDetailModifyForm(forms.Form):
         return id_copy
 
 
-    def set_value(self, modify_object=None):
-        if modify_object is not None:
+    def set_value(self, modify_object=None, user=None):
+        if modify_object is not None and user is not None:
             self.fields['role_name'].widget.attrs['value'] = modify_object.groups.get().name
-            self.fields['service_area_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.service_area.name
-            self.fields['service_area_name'].widget.attrs['readonly'] = True
+            if user.has_perm('department.unlocal'):
+                self.fields['service_area_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.service_area.name
+            else:
+                self.fields['service_area_name'].widget.attrs['value'] = user.get_profile().service_area_department.service_area.name
+                self.fields['service_area_name'].widget.attrs['readonly'] = True
             self.fields['department_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.department.name
             self.fields['id'].widget.attrs['value'] = modify_object.id
             is_checker = modify_object.get_profile().is_checker
@@ -816,7 +820,7 @@ class AccountDetailModifyForm(forms.Form):
         id_object_profile.is_checker = is_checker
         id_object_profile.save()
         self.id_object.save()
-        return self.id_object
+        return id_object_profile
 
 class AccountDeleteForm(forms.Form):
     """
@@ -834,15 +838,21 @@ class AccountDeleteForm(forms.Form):
             try:
                 id_copy = int(self.data.get('id'))
             except ValueError:
+
                 raise forms.ValidationError(gl.account_name_error_messages['form_error'])
+            print id_copy
             self.id_object = User.objects.get(pk=id_copy, is_active=True, is_superuser=False, is_staff=False)
+            
         except ObjectDoesNotExist:
+            print "$$$$$$$$$$$$$$$$$"
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
         return id_copy
 
     def delete(self):
         if self.id_object is not None:
             self.id_object.is_active = False
+            self.id_object.get_profile().is_active = False
+            self.id_object.get_profile().save()
             self.id_object.save()
             return True
         else:

@@ -2,29 +2,29 @@
 {% load check_result_filter %}
 {% load check_object_filter %}
 {% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
-{% block col1_content %}
+{% block teaser %}
 {% load cache %}
 {% cache 500 check_result_show user.username %}
-<h6 class="vlist">检查结果管理</h6>
-<ul class="vlist">
-  {% if perms.department.cr_list %}
-  <li class="active"><strong>检查结果查询</strong></li>
-  {% endif %}
-  {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  {% endif %}
+<div class="nav_hlist">
+<ul>
   {% if perms.department.cr_list or perms.department.cr_add %}
   <li class="active"><strong>检查结果详情</strong></li>
   {% endif %}
+  {% if perms.department.cr_add %}
+  <li class="active"><strong>检查结果录入</strong></li>
+  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+  {% endif %}
+  {% if perms.department.cr_list %}
+  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
+  {% endif %}
 </ul>
+</div>
 {% endcache %}
 {% endblock %}
-{% block col3_content %}
+
+{% block main %}
 <!-- Insert your subtemplate content here -->
-<h3>检查结果详情</h3>
-<br>
 {% if check_object %}
 <div class="note">
   <div class="subcolumns">
@@ -32,7 +32,7 @@
       <div class="subc">
         <table border="0" cellpadding="0" cellspacing="0" class="full">
           <caption>
-            检查人员
+            检查对象
           </caption>
           <thead>
             <tr><th scope="col" colspan="2">{{ check_object.name }} | {{ check_object.id_number }}</th></tr>
@@ -109,7 +109,7 @@
       <tr>
         <th scope="row" class="sub">{{ forloop.counter }}</th>
         
-        <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.check_project.name }}</p>{% else %}<del>{{ result.check_delroject.name }}</del>{% endif %}</td>
+        <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.check_project.name }}</p>{% else %}<del>{{ result.check_project.name }}</del>{% endif %}</td>
         <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.result|local }}</p>{% else %}<del>{{ result.result|local }}</del>{% endif %}</td>
         <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.check_time|date:"Y-m-d H:i:s" }}</p>{% else %}<del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del>{% endif %}</td>
         <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.checker.username }}</p>{% else %}<del>{{ result.checker.username }}</del>{% endif %}</td>

@@ -8,6 +8,7 @@ import caching.base
 class UserProfile(caching.base.CachingMixin, models.Model):
     user = models.OneToOneField(User)
     is_checker = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     service_area_department = models.ForeignKey(ServiceAreaDepartment)
 
     @models.permalink

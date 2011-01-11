@@ -22,7 +22,7 @@
 <hr>
 <div class="important">
 {% with search_form as form %}
-<form method="post" action="." class="yform full">{% csrf_token %}
+<form method="post" action="#" class="yform full">{% csrf_token %}
   <fieldset>
     <legend>【{{ role_name }}】权限查询</legend>
     {% if form.role_permission_name.errors %}
