@@ -14,7 +14,7 @@ from hchq.account.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
-
+from hchq.report.user_report import user_report
 # Create your views here.
 def my_layout_test(request, template_name = 'my.html'):
     return render_to_response(template_name, context_instance=RequestContext(request))
@@ -1026,20 +1026,41 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        account_search_form = AccountSearchForm(post_data)
-        if account_search_form.is_valid():
-            account_search_form.data_to_session(request)
-            account_search_form.init_from_session(request)
-            query_set = account_search_form.search(request)
-            results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
+        submit_value = post_data.get(u'submit', u'')
+        if submit_value == u'查询':
+            account_search_form = AccountSearchForm(post_data)
+            if account_search_form.is_valid():
+                account_search_form.data_to_session(request)
+                account_search_form.init_from_session(request)
+                query_set = account_search_form.search(request)
+                results_page = pagination_results(account_page, query_set, settings.ACCOUNT_PER_PAGE)
+            else:
+                results_page = None
+            return render_to_response(template_name,
+                                      {'search_form': account_search_form,
+                                       'page_title': page_title,
+                                       'results_page': results_page,
+                                       },
+                                      context_instance=RequestContext(request))
         else:
-            results_page = None
-        return render_to_response(template_name,
-                                  {'search_form': account_search_form,
-                                   'page_title': page_title,
-                                   'results_page': results_page,
-                                   },
-                                  context_instance=RequestContext(request))
+            if submit_value == u'导出用户报表':
+                account_search_form = AccountSearchForm(post_data)
+                if account_search_form.is_valid():
+                    account_search_form.data_to_session(request)
+                    account_search_form.init_from_session(request)
+                    query_set = account_search_form.search(request)
+                    return user_report(query_set, request)
+                else:
+                    results_page = None
+                    return render_to_response(template_name,
+                                              {'search_form': account_search_form,
+                                               'page_title': page_title,
+                                               'results_page': results_page,
+                                               },
+                                              context_instance=RequestContext(request))
+                
+            else:
+                raise Http404('Invalid Request!')
     else:
         account_search_form = AccountSearchForm(AccountSearchForm().data_from_session(request))
         account_search_form.init_from_session(request)
