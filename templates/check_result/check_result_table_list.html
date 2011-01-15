@@ -22,8 +22,9 @@
       <td class="{% cycle 'odd' 'even' %}">{{ result.check_object.service_area_department.service_area.name }}<br>{{ result.check_object.service_area_department.department.name }}</td>
       <td class="{% cycle 'odd' 'even' %}">{{ result.check_object.mate_name }}<br>{{ result.check_object.mate_id_number }}</td>
       <td class="{% cycle 'odd' 'even' %}">{{ result.check_object.mate_service_area_department.service_area.name }}<br>{{ result.check_object.mate_service_area_department.department.name }}</td>
-      <td class="{% cycle 'odd' 'even' %}">{{ result.result|local }}<br>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
       <td class="{% cycle 'odd' 'even' %}">{{ result.checker.username }}<br>{{ result.check_project.name }}</td>
+      <td class="{% cycle 'odd' 'even' %}">{{ result.result|local }}<br>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
+
     </tr>
     {% empty %}
     <p class="warning">没有检查结果可以查询！</p>

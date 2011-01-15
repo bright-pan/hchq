@@ -16,7 +16,7 @@ from hchq.check_object.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
-
+from hchq.report.check_result_report import check_result_report
 import datetime
 # Create your views here.
 def check_result_modify(request, template_name='my.html', next='/', check_result_page='1'):
@@ -215,20 +215,36 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                                        },
                                       context_instance=RequestContext(request))
         else:
-            check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
-            check_result_search_form.init_check_project()
-            check_result_search_form.init_from_session(request)
-            if check_result_search_form.is_valid():
-                query_set = check_result_search_form.search()
-                results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
+            if submit_value == u'打印检查结果报表':
+                check_result_search_form = CheckResultSearchForm(post_data)
+                check_result_search_form.init_check_project()
+                if check_result_search_form.is_valid():
+                    check_result_search_form.data_to_session(request)
+                    check_result_search_form.init_from_session(request)
+                    query_set = check_result_search_form.search()
+                    return check_result_report(query_set, request)
+                else:
+                    results_page = None
+                    return render_to_response(template_name,
+                                              {'search_form': check_result_search_form,
+                                               'page_title': page_title,
+                                               'results_page': results_page,
+                                               },
+                                              context_instance=RequestContext(request))
             else:
-                results_page = None
-            return render_to_response(template_name,
-                                      {'search_form': check_result_search_form,
-                                       'page_title': page_title,
-                                       'results_page': results_page,
-                                       },
-                                      context_instance=RequestContext(request))
+                check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
+                check_result_search_form.init_check_project()
+                check_result_search_form.init_from_session(request)
+                if check_result_search_form.is_valid():
+                    query_set = check_result_search_form.search()
+                    results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
+                else:
+                    results_page = None
+                return render_to_response(template_name,
+                                          {'search_form': check_result_search_form,
+                                           'page_title': page_title,
+                                           'results_page': results_page,
+                                           },
+                                          context_instance=RequestContext(request))
     else:
-        
         raise Http404('Invalid Request!')               

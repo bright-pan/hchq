@@ -15,7 +15,7 @@ from hchq.check_object.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
-
+from hchq.report.check_object_report import check_object_report
 # Create your views here.
 @csrf_protect
 @login_required
@@ -343,20 +343,40 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        check_object_search_form = CheckObjectSearchForm(post_data)
-        if check_object_search_form.is_valid():
-            check_object_search_form.data_to_session(request)
-            check_object_search_form.init_from_session(request)
-            query_set = check_object_search_form.search()
-            results_page = pagination_results(check_object_page, query_set, settings.CHECK_OBJECT_PER_PAGE)
+        submit_value = post_data.get(u'submit', u'')
+        if submit_value == u'查询':
+            check_object_search_form = CheckObjectSearchForm(post_data)
+            if check_object_search_form.is_valid():
+                check_object_search_form.data_to_session(request)
+                check_object_search_form.init_from_session(request)
+                query_set = check_object_search_form.search()
+                results_page = pagination_results(check_object_page, query_set, settings.CHECK_OBJECT_PER_PAGE)
+            else:
+                results_page = None
+            return render_to_response(template_name,
+                                      {'search_form': check_object_search_form,
+                                       'page_title': page_title,
+                                       'results_page': results_page,
+                                       },
+                                      context_instance=RequestContext(request))
         else:
-            results_page = None
-        return render_to_response(template_name,
-                                  {'search_form': check_object_search_form,
-                                   'page_title': page_title,
-                                   'results_page': results_page,
-                                   },
-                                  context_instance=RequestContext(request))
+            if submit_value == u'打印检查对象报表':
+                check_object_search_form = CheckObjectSearchForm(post_data)
+                if check_object_search_form.is_valid():
+                    check_object_search_form.data_to_session(request)
+                    check_object_search_form.init_from_session(request)
+                    query_set = check_object_search_form.search()
+                    return check_object_report(query_set, request)
+                else:
+                    results_page = None
+                    return render_to_response(template_name,
+                                              {'search_form': check_object_search_form,
+                                               'page_title': page_title,
+                                               'results_page': results_page,
+                                               },
+                                              context_instance=RequestContext(request))
+            else:
+                raise Http404('Invalid Request!')                
     else:
         check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
         check_object_search_form.init_from_session(request)

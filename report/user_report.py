@@ -20,14 +20,15 @@ class UserReport(Report):
         elements = [
             SystemField(expression='%(report_title)s', top=0, left=0, width=BAND_WIDTH,
                         style={'fontName': 'yahei', 'fontSize': 20, 'alignment': TA_CENTER, 'textColor': navy}),     #这个地方的fontName设置属性似乎已经没有效果了！
-            Label(text=u"编号", top=1.7*cm, left=0),
-            Label(text=u"用户名称", top=1.7*cm, left=3*cm),
-            Label(text=u"服务区域", top=1.5*cm, left=7*cm),
-            Label(text=u"部门单位", top=1.9*cm, left=7*cm),
-            Label(text=u"角色权限", top=1.7*cm, left=16*cm),
-            Label(text=u"检查人员", top=1.7*cm, left=21*cm),
-            Label(text=u"登入时间", top=1.5*cm, left=24*cm),
-            Label(text=u"创建时间", top=1.9*cm, left=24*cm),
+            Line(left=0, top=1.4*cm, right=27.7*cm, bottom=1.4*cm, stroke_color=navy),
+            Label(text=u"编号", top=1.7*cm, left=0.5*cm),
+            Label(text=u"用户名称", top=1.7*cm, left=3.5*cm),
+            Label(text=u"服务区域", top=1.5*cm, left=7.5*cm),
+            Label(text=u"部门单位", top=1.9*cm, left=7.5*cm),
+            Label(text=u"角色权限", top=1.7*cm, left=16.5*cm),
+            Label(text=u"检查人员", top=1.7*cm, left=21.5*cm),
+            Label(text=u"登入时间", top=1.5*cm, left=23.7*cm),
+            Label(text=u"创建时间", top=1.9*cm, left=23.7*cm),
             
         ]
         borders = {'bottom': Line(stroke_color=navy)}
@@ -46,22 +47,21 @@ class UserReport(Report):
         height = 0.7*cm
         auto_expand_height = True
         elements = [
-            ObjectValue(attribute_name='user.id', top=0.3*cm, left=0),
-            ObjectValue(attribute_name='user.username', top=0.3*cm, left=3*cm),
-            ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=7*cm),
-            ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=7*cm),
-            ObjectValue(attribute_name='user.groups.get', top=0.3*cm, left=16*cm),
-            ObjectValue(attribute_name='is_checker', top=0.3*cm, left=21*cm,
-                        get_value=lambda instance: instance.is_checker and u'是' or '否'),
-            ObjectValue(attribute_name='user.last_login', top=0.1*cm, left=24*cm),
-            ObjectValue(attribute_name='user.date_joined', top=0.5*cm, left=24*cm),
+            ObjectValue(attribute_name='user.id', top=0.3*cm, left=0.5*cm),
+            ObjectValue(attribute_name='user.username', top=0.3*cm, left=3.5*cm),
+            ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=7.5*cm),
+            ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=7.5*cm),
+            ObjectValue(attribute_name='user.groups.get', top=0.3*cm, left=16.5*cm),
+            ObjectValue(attribute_name='is_checker', top=0.3*cm, left=21.5*cm,
+                        get_value=lambda instance: instance.is_checker and u'是' or u'否'),
+            ObjectValue(attribute_name='user.last_login', top=0.1*cm, left=23.7*cm),
+            ObjectValue(attribute_name='user.date_joined', top=0.5*cm, left=23.7*cm),
             ]
 
 def user_report(query_set=None, request=None):
     response = HttpResponse(mimetype='application/pdf')
 #    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
-    if query_set is not None and request is not None:
-        print query_set
+    if query_set is not None and request is not None and query_set:
         report = UserReport(query_set)
         report.author = request.user.username
         report.generate_by(PDFGenerator, filename=response)

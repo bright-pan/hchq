@@ -361,7 +361,7 @@ class CheckResultSearchForm(forms.Form):
         )
     check_project = forms.ChoiceField(
         required=True,
-        label =_(u'环检'),
+        label =_(u'检查项目'),
         )
     start_time = forms.DateField(
         required=False,

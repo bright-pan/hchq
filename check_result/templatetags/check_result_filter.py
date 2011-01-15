@@ -10,7 +10,7 @@ register = template.Library()
 @stringfilter
 def local(value):
     value_list = value.split()
-    print value_list
+#    print value_list
     if gl.check_result_local.has_key(value_list[0]) and gl.check_result_local.has_key(value_list[1]) and len(value_list) == 3:
         if value_list[2] == u'None':
             return u'%s|%s' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]])
