@@ -11,10 +11,11 @@ from django.db.models import ObjectDoesNotExist, Q
 
 from hchq.check_project.forms import *
 from hchq.check_project.models import CheckProject
+from hchq.service_area.models import ServiceArea
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
-
+from hchq.report.check_project_report import check_project_report
 
 @csrf_protect
 @login_required
@@ -465,3 +466,16 @@ def check_project_list(request, template_name='my.html', next='/', check_project
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
+
+@csrf_protect
+@login_required
+def check_project_statistics(request, template_name='my.html', next='/', check_project_page='1',):
+    """
+    检查项目数据统计
+    """
+    try:
+        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+    except ObjectDoesNotExist:
+        return check_project_report()
+    query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
+    return check_project_report(query_set, request)

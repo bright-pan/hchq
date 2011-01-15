@@ -47,6 +47,8 @@ urlpatterns = patterns('hchq.service_area.views',
        'service_area_name_ajax',
        {'template_name' : 'service_area/service_area_department_list.html', 'next': '/account/person_management', },
        'service_area_name_ajax'),
+
+                       
 #      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
 #      (r'logout$', 'exit', {'template_name' : 'account/login.html', 'next': '/', }, 'account_logout'),
 #      (r'person_management$', 'person_management', {'template_name' : 'account/person_management.html', 'next': '/', }, 'account_person_management'),

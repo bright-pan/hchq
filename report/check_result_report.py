@@ -63,7 +63,7 @@ class CheckResultReport(Report):
     class band_page_footer(ReportBand):
         height = 0.5*cm
         elements = [
-            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s 创建。', top=0.1*cm,
+            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建。', top=0.1*cm,
                         width=BAND_WIDTH, style={'alignment': TA_LEFT}),
             SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
                         width=BAND_WIDTH, style={'alignment': TA_RIGHT}),

@@ -33,6 +33,11 @@ urlpatterns = patterns('hchq.check_project.views',
        {'template_name' : 'check_project/check_project_detail_modify.html', 'next': 'check_project/modify/1', },
        'check_project_detail_modify'),
 
+       (r'statistics/$',
+       'check_project_statistics',
+       {'template_name' : 'check_project/check_project_detail_modify.html', 'next': 'check_project/modify/1', },
+       'check_project_statistics'),
+
 #      (r'login$', 'login', {'template_name' : 'account/login.html', 'next': '/account/person_management', }, 'account_login'),
 #      (r'logout$', 'exit', {'template_name' : 'account/login.html', 'next': '/', }, 'account_logout'),
 #      (r'person_management$', 'person_management', {'template_name' : 'account/person_management.html', 'next': '/', }, 'account_person_management'),
