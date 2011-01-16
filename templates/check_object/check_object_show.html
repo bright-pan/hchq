@@ -30,7 +30,6 @@
 {% block main %}
 <!-- Insert your subtemplate content here -->
 {% if result %}
-<div class="note">
   <div class="subcolumns">
     <div class="c75l">
       <div class="subc">
@@ -43,15 +42,15 @@
           </thead>
           <tbody>
             <tr>
-              <th scope="row" class="sub">妻子姓名<br>身份证号</th>
+              <td>妻子姓名<br>身份证号</td>
               <td>{{ result.name }}<br>{{ result.id_number }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">服务区域<br>单位部门</th>
+              <td class="odd">服务区域<br>单位部门</td>
               <td class="odd">{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">家属<br>结婚时间</th>
+              <td>家属<br>结婚时间</td>
               {% if result.is_family %} 
               <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
               {% else %}
@@ -59,27 +58,27 @@
               {% endif %}
             </tr>
             <tr>
-              <th scope="row" class="sub">丈夫姓名<br>身份证号</th>
+              <td class="odd">丈夫姓名<br>身份证号</td>
               <td class="odd">{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">服务区域<br>单位部门</th>
+              <td>服务区域<br>单位部门</td>
               <td>{{ result.mate_service_area_department.service_area.name }}<br>{{ result.mate_service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">避孕方式<br>实施时间</th>
+              <td class="odd">避孕方式<br>实施时间</td>
               <td class="odd">{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">创建人员</th>
+              <td>创建人员</td>
               <td>{{ result.creater.username }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">创建时间</th>
+              <td class="odd">创建时间</td>
               <td class="odd">{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">更新时间</th>
+              <td>更新时间</td>
               <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
           </tbody>
@@ -87,7 +86,7 @@
       </div>
     </div>
     <div class="c25r">
-      <div class="subc important">
+      <div class="subc">
         <div class="center">
           <br>
           <img src="{{ result.photo.url }}"/>
@@ -98,7 +97,6 @@
       </div>
     </div>
   </div>
-</div>
 {% else %}
 <p class="warning">对不起，该检查对象不存在！</p>
 {% endif %}

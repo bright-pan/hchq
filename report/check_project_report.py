@@ -22,11 +22,35 @@ from hchq.service_area.models import ServiceArea
 
 from hchq.untils import gl
 def get_check_count(instance=None):
-    return u''
+    if instance is None:
+        return u''
+    
+    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance).count()
+    return u'%s' % check_count
 def get_not_check_count(instance=None):
-    return u''
+    if instance is None:
+        return u''
+    
+    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+    check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=instance).count()
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance).count()
+    if check_object_count > check_count:
+        not_check_count = check_object_count - check_count
+    else:
+        not_check_count = 0
+
+    return u'%s' % not_check_count
+
+
 def get_check_object_count(instance=None):
-    return u''
+    if instance is None:
+        return u''
+
+    check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=instance).count()
+
+    return u'%s' % check_object_count
+
 def get_total_count(value=None):
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).count()
@@ -37,12 +61,30 @@ def get_total_count(value=None):
         complete_radio = (check_count / check_object_count) * 100.0
     else:
         not_check_count = 0
-        complete_radio = 100.00
+        if check_object_count == 0:
+            return u'检查项目：%s | 总已检人数：%s | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name, check_count, not_check_count, check_object_count)
+        else:
+            complete_radio = 100.00
+
+    return u'检查项目：%s | 总已检人数：%s | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (check_project.name, check_count, not_check_count, check_object_count, complete_radio)            
     
-    return u'检查项目：%s | 总已检人数：%s | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (check_project.name, check_count, not_check_count, check_object_count, complete_radio)
 
 def get_complete_radio(instance=None):
-    return u''
+    if instance is None:
+        return u''
+    
+    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+    check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=instance).count()
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance).count()
+    if check_object_count > check_count:
+        complete_radio = (check_count / check_object_count) * 100.0
+    else:
+        if check_object_count == 0:
+            return u'------'
+        else:
+            complete_radio = 100.00
+
+    return u'%.2f%%' % complete_radio
 
 class CheckProjectReport(Report):
     title = u'检查项目统计报表'
@@ -57,11 +99,11 @@ class CheckProjectReport(Report):
                   get_value=lambda text: get_total_count(text)),
             Line(left=0, top=1.6*cm, right=27.7*cm, bottom=1.6*cm, stroke_color=navy),
             Label(text=u"编号", top=1.8*cm, left=0.5*cm),
-            Label(text=u"服务区域", top=1.8*cm, left=3*cm),
-            Label(text=u"已检人数", top=1.8*cm, left=8*cm),
-            Label(text=u"未检人数", top=1.8*cm, left=13*cm),
-            Label(text=u"总人数", top=1.8*cm, left=18*cm),
-            Label(text=u"完成度", top=1.8*cm, left=23*cm),
+            Label(text=u"服务区域", top=1.8*cm, left=3.5*cm),
+            Label(text=u"已检人数", top=1.8*cm, left=9.5*cm),
+            Label(text=u"未检人数", top=1.8*cm, left=14.5*cm),
+            Label(text=u"总人数", top=1.8*cm, left=19.5*cm),
+            Label(text=u"完成度", top=1.8*cm, left=24.5*cm),
         ]
         borders = {'bottom': Line(stroke_color=navy)}
 
@@ -80,14 +122,14 @@ class CheckProjectReport(Report):
         auto_expand_height = True
         elements = [
             ObjectValue(attribute_name='id', top=0.2*cm, left=0.5*cm),
-            ObjectValue(attribute_name='name', top=0.2*cm, left=3*cm),
-            ObjectValue(attribute_name='name', top=0.2*cm, left=8*cm,
+            ObjectValue(attribute_name='name', top=0.2*cm, left=3.5*cm),
+            ObjectValue(attribute_name='name', top=0.2*cm, left=9.5*cm,
                         get_value=lambda instance: get_check_count(instance)),
-            ObjectValue(attribute_name='name', top=0.2*cm, left=13*cm,
+            ObjectValue(attribute_name='name', top=0.2*cm, left=14.5*cm,
                         get_value=lambda instance: get_not_check_count(instance)),
-            ObjectValue(attribute_name='name', top=0.2*cm, left=18*cm,
+            ObjectValue(attribute_name='name', top=0.2*cm, left=19.5*cm,
                         get_value=lambda instance: get_check_object_count(instance)),
-            ObjectValue(attribute_name='name', top=0.2*cm, left=23*cm,
+            ObjectValue(attribute_name='name', top=0.2*cm, left=24.5*cm,
                         get_value=lambda instance: get_complete_radio(instance)),
 
             ]

@@ -12,7 +12,6 @@
   <li class="active"><strong>检查结果详情</strong></li>
   {% endif %}
   {% if perms.department.cr_add %}
-  <li class="active"><strong>检查结果录入</strong></li>
   <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
   {% endif %}
   {% if perms.department.cr_list %}
@@ -24,9 +23,10 @@
 {% endblock %}
 
 {% block main %}
+<hr>
 <!-- Insert your subtemplate content here -->
 {% if check_object %}
-<div class="note">
+
   <div class="subcolumns">
     <div class="c75l">
       <div class="subc">
@@ -39,39 +39,39 @@
           </thead>
           <tbody>
             <tr>
-              <th scope="row" class="sub">妻子姓名<br>身份证号</th>
+              <td class="odd">妻子姓名<br>身份证号</td>
               <td class="odd">{{ check_object.name }}<br>{{ check_object.id_number }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">服务区域<br>单位部门</th>
-              <td class="even">{{ check_object.service_area_department.service_area.name }}<br>{{ check_object.service_area_department.department.name }}</td>
+              <td>服务区域<br>单位部门</td>
+              <td>{{ check_object.service_area_department.service_area.name }}<br>{{ check_object.service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">家属<br>结婚时间</th>
+              <td class="odd">家属<br>结婚时间</td>
               <td class="odd">{% if check_object.is_family %}是{% else %}否{% endif %}<br>{{ check_object.wedding_time|date:"Y-m-d" }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">丈夫姓名<br>身份证号</th>
-              <td class="even">{{ check_object.mate_name }}<br>{{ check_object.mate_id_number }}</td>
+              <td>丈夫姓名<br>身份证号</td>
+              <td>{{ check_object.mate_name }}<br>{{ check_object.mate_id_number }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">服务区域<br>单位部门</th>
+              <td class="odd">服务区域<br>单位部门</td>
               <td class="odd">{{ check_object.mate_service_area_department.service_area.name }}<br>{{ check_object.mate_service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">避孕方式<br>实施时间</th>
-              <td class="even">{{ check_object.ctp_method|ctp_local }}<br>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
+              <td>避孕方式<br>实施时间</td>
+              <td>{{ check_object.ctp_method|ctp_local }}<br>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">创建人员</th>
+              <td class="odd">创建人员</td>
               <td class="odd">{{ check_object.creater.username }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">创建时间</th>
-              <td class="even">{{ check_object.created_at|date:"Y-m-d H:i:s" }}</td>
+              <td>创建时间</td>
+              <td>{{ check_object.created_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
             <tr>
-              <th scope="row" class="sub">更新时间</th>
+              <td class="odd">更新时间</td>
               <td class="odd">{{ check_object.updated_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
           </tbody>
@@ -79,7 +79,7 @@
       </div>
     </div>
     <div class="c25r">
-      <div class="subc important">
+      <div class="subc">
         <div class="center">
           <hr>
           <img src="{{ check_object.photo.url }}"/>
@@ -90,12 +90,12 @@
 
     </div>
   </div>
-</div>
-<div class="important">
+<div>
+<hr>
   <table border="0" cellpadding="0" cellspacing="0" class="full">
     <caption>检查结果</caption>
     <thead>
-      <tr><th scope="col" colspan="7">【{{ check_object.name }}】的检查结果(共{{ results.count}}项)</th></tr>
+      <tr><th scope="col" colspan="6">【{{ check_object.name }}】的检查结果(共{{ results.count}}项)</th></tr>
     </thead>
     <tbody>
       <tr>
@@ -104,15 +104,16 @@
         <th scope="col">检查结果</th>
         <th scope="col">检查时间</th>
         <th scope="col">检查人员</th>
+        <th scope="col">记录人员</th>
       </tr>
       {% for result in results %}
       <tr>
-        <th scope="row" class="sub">{{ forloop.counter }}</th>
-        
-        <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.check_project.name }}</p>{% else %}<del>{{ result.check_project.name }}</del>{% endif %}</td>
-        <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.result|local }}</p>{% else %}<del>{{ result.result|local }}</del>{% endif %}</td>
-        <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.check_time|date:"Y-m-d H:i:s" }}</p>{% else %}<del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del>{% endif %}</td>
-        <td class="{% cycle 'odd' 'even' %}">{% if result.is_latest %}<p>{{ result.checker.username }}</p>{% else %}<del>{{ result.checker.username }}</del>{% endif %}</td>
+        <td>{{ forloop.counter }}</td>
+        <td>{% if result.is_latest %}<p>{{ result.check_project.name }}</p>{% else %}<del>{{ result.check_project.name }}</del>{% endif %}</td>
+        <td>{% if result.is_latest %}<p>{{ result.result|local }}</p>{% else %}<del>{{ result.result|local }}</del>{% endif %}</td>
+        <td>{% if result.is_latest %}<p>{{ result.check_time|date:"Y-m-d H:i:s" }}</p>{% else %}<del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del>{% endif %}</td>
+        <td>{% if result.is_latest %}<p>{{ result.checker.username }}</p>{% else %}<del>{{ result.checker.username }}</del>{% endif %}</td>
+        <td>{% if result.is_latest %}<p>{{ result.recorder.username }}</p>{% else %}<del>{{ result.recorder.username }}</del>{% endif %}</td>
       </tr>
       {% empty %}
       <th scope="col" colspan="5"><p class="warning">没有检查结果可以查询！</p></th>

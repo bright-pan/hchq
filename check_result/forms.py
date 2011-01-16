@@ -150,11 +150,11 @@ class CheckResultDetailAddForm(forms.Form):
         except ObjectDoesNotExist:
             return False
         try:
-            profile_id = int(self.cleaned_data['checker'])
+            checker_id = int(self.cleaned_data['checker'])
         except ValueError:
             return False
         try:
-            checker = UserProfile.objects.get(pk=profile_id).user
+            checker = User.objects.get(pk=checker_id)
         except ObjectDoesNotExist:
             return False
         result = "%s %s %s" % (self.cleaned_data['pregnant'],self.cleaned_data['ring'],self.cleaned_data['pregnant_period'])

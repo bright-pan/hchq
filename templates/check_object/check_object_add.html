@@ -187,7 +187,7 @@ $(document).ready(function(){
 {% block main %}
 {% with add_form as form %}
 <form method="get" action="" class="yform full" id="id_form_add">{% csrf_token %}
-  <div class="note">
+  
     <fieldset>
       <legend>检查对象信息</legend>
       <div class="subcolumns">
@@ -281,7 +281,7 @@ $(document).ready(function(){
           </div>          
         </div>         
         <div class="c25r">
-          <div class="subc important">
+          <div class="subc">
             <!-- Insert your subtemplate content here -->
 
             <div id="csrf_token">{% csrf_token %}</div>
@@ -299,10 +299,10 @@ $(document).ready(function(){
       </div>       
 
     </fieldset>
-  </div>     
+  
   <div class="subcolumns">
     <div class="c75l">
-      <div class="subc note">
+      <div class="subc">
         <!-- Insert your subtemplate content here -->
         <fieldset>
           <legend>对象配偶信息</legend>
@@ -370,7 +370,7 @@ $(document).ready(function(){
       </div>          
     </div>         
     <div class="c25r">
-      <div class="subc note">
+      <div class="subc">
         <!-- Insert your subtemplate content here -->
         <fieldset>
           <legend>避孕措施信息</legend>
