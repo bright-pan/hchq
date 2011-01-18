@@ -17,6 +17,7 @@ from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
 from hchq.report.check_result_report import check_result_report
+from hchq.report.certification_report import certification_report
 import datetime
 # Create your views here.
 def check_result_modify(request, template_name='my.html', next='/', check_result_page='1'):
@@ -35,8 +36,20 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
     page_title=u'检查结果详情'
 
     if request.method == 'POST':
-        raise Http404('Invalid Request!')
-            
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'打印证明':
+            try:
+                check_result_id = int(check_result_index)
+            except ValueError:
+                raise Http404('Invalid Request!')
+            try:
+                result = CheckObject.objects.filter(pk=check_result_id, is_active=True)
+            except ObjectDoesNotExist:
+                raise Http404('Invalid Request!')
+            return certification_report(result, request)
+        else:
+            raise Http404('Invalid Request!')
     else:
         try:
             check_result_id = int(check_result_index)
