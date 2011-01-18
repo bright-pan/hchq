@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,Http404
 from django.shortcuts import render_to_response, get_object_or_404
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.cache import never_cache, cache_page
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth import get_user
@@ -90,6 +90,35 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
     else:
         raise Http404('Invalid Request!')
     
+@csrf_exempt
+@login_required
+def check_object_add_camera(request, template_name='my.html', next='/', check_object_page='1'):
+    if request.method == 'POST':
+        if request.POST:
+            try:
+                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
+            except IOError:
+                raise Http404('Invalid Request!')
+            temp_file.write(request.raw_post_data)
+            temp_file.close()
+            try:
+                img = Image.open(temp_file.name)
+            except IOError:
+                raise Http404('Invalid Request!')
+            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
+                raise Http404('Invalid Request!')
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+            del temp_file
+            del img
+#            print "*************************8"
+            return HttpResponse('success')
+        else:
+            raise Http404('Invalid Request!')
+    else:
+        raise Http404('Invalid Request!')
+    
 @csrf_protect
 @login_required
 def check_object_detail_modify_uploader(request, template_name='my.html', next='/', check_object_page='1'):
@@ -120,7 +149,38 @@ def check_object_detail_modify_uploader(request, template_name='my.html', next='
 
             del temp_file
             del img
-            request.session[gl.session_check_object_detail_modify_uploader] = request.POST.get(u'id_number', u'')
+            request.session[gl.session_check_object_detail_modify_uploader] = request.user.username
+#            print request.POST.get(u'id_number', u'')
+            return HttpResponse('success')
+        else:
+            raise Http404('Invalid Request!')
+    else:
+        raise Http404('Invalid Request!')
+
+@csrf_exempt
+@login_required
+def check_object_detail_modify_camera(request, template_name='my.html', next='/', check_object_page='1'):
+    if request.method == 'POST':
+        if request.POST:
+            try:
+                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
+            except IOError:
+                raise Http404('Invalid Request!')
+            temp_file.write(request.raw_post_data)
+            temp_file.close()
+            try:
+                img = Image.open(temp_file.name)
+            except IOError:
+                raise Http404('Invalid Request!')
+            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
+                raise Http404('Invalid Request!')
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+
+            del temp_file
+            del img
+            request.session[gl.session_check_object_detail_modify_uploader] = request.user.username
 #            print request.POST.get(u'id_number', u'')
             return HttpResponse('success')
         else:

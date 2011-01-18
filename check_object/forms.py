@@ -705,9 +705,9 @@ class CheckObjectDetailModifyForm(forms.Form):
         check_object = self.id_object
         if request is None:
             return None
-        
-        if request.session.get(gl.session_check_object_detail_modify_uploader, u'') == check_object.id_number:
-#            print "%%%%%%%%%%%%%%%%%%%%%%"
+        print '***********************************8'
+        if request.session.get(gl.session_check_object_detail_modify_uploader, u'') == request.user.username:
+            print "%%%%%%%%%%%%%%%%%%%%%%"
             try:
                 file_temp = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username)
             except IOError:

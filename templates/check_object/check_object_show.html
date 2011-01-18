@@ -4,7 +4,7 @@
 
 {% block teaser %}
 {% load cache %}
-{% cache 500 check_object_modify user.username %}
+{% cache 500 check_object_show user.username %}
 <div class="nav_hlist">
 <ul>
   {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}

@@ -5,6 +5,7 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jpegcam/webcam.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
                 $.getJSON("{% url service_area_name_ajax %}",
@@ -111,7 +112,8 @@ $(document).ready(function(){
                         });
                 var photo_ready = false;
                 $("#uploader_dialog").dialog({ autoOpen: false,
-//                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
+                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
+                                          bgiframe:true,
                                         buttons: [
                                                 {id:"uploader",text:"上传文件"},
                                                 {text:"确定",click:function(){$(this).dialog("close")}}
@@ -121,6 +123,45 @@ $(document).ready(function(){
                                 $("#uploader_dialog").dialog("open");
                                 return false;
                         });
+
+                webcam.set_swf_url( "{{ MEDIA_URL }}js/jpegcam/webcam.swf" );
+                webcam.set_quality( 90 ); // JPEG quality (1 - 100)
+                webcam.set_shutter_sound( true, "{{ MEDIA_URL }}js/jpegcam/shutter.mp3" ); // play shutter click sound
+                webcam.set_api_url( "{% url check_object_add_camera %}" );
+                $("#camera_dialog").html( webcam.get_html(320, 240) );
+                webcam.set_hook('onComplete', function my_completion_handler(response) {
+                                            // extract URL out of PHP output
+                                                    photo_ready = true;
+                                                    $("#id_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                                                    // reset camera for another shot
+                                                    webcam.reset();
+                });
+
+
+
+                $("#camera_dialog").dialog({ autoOpen: false,
+                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
+                                          bgiframe:true,
+                                          width:346,
+                                        buttons: [
+
+                                                {text:"拍照",click:function(){webcam.freeze();}},
+                                                {text:"重拍",click:function(){webcam.reset();}},
+                                                {text:"上传照片",click:function(){
+                                                                             webcam.upload();
+                                                                             }},
+                                                {text:"配置",click:function(){webcam.configure();}}
+                                                ]
+                                        });
+                                     
+        
+
+               $("#open_camera_dialog").click(function(){
+                               
+                                $("#camera_dialog").dialog("open");
+                                return false;
+                        });
+
                 var csrf_token = $("#csrf_token >div >input").attr("value");
                 new AjaxUpload("uploader", {
                         action: "{% url check_object_add_uploader %}",
@@ -286,13 +327,15 @@ $(document).ready(function(){
 
             <div id="csrf_token">{% csrf_token %}</div>
             <div class="center">
-              <img id="id_photo" src="{{ MEDIA_URL }}images/photo.png"/>
+              <img id="id_photo" src="{{ MEDIA_URL }}images/photo.jpg"/>
               <hr>
               <span><button id="open_uploader_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">本地上传</button></span>
               <span><button id="open_camera_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">拍照上传</button></span>
             </div>
             <div id="uploader_dialog" style="display:none;" title="本地上传">
               <p>请选择你选需要的文件，并且在提示完成以后关闭对话框！</p>
+            </div>
+            <div id="camera_dialog" style="display:none;" title="拍照上传">
             </div>
           </div>          
         </div>         

@@ -177,7 +177,7 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
             check_result_detail_add_form.init_value(user, check_result_object)
             if check_result_detail_add_form.is_valid():
                 check_result_detail_add_form.detail_add(user)
-                return HttpResponseRedirect(next)
+                return HttpResponseRedirect("check_result/show/%s" % check_result_id)
             else:
                 return render_to_response(template_name,
                                           {'detail_add_form': check_result_detail_add_form,
