@@ -136,6 +136,16 @@ class CheckObjectAddForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    address = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'家庭住址'),
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.department_name_error_messages,
+        )
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -302,18 +312,19 @@ class CheckObjectAddForm(forms.Form):
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
             except ObjectDoesNotExist:
                 check_object = CheckObject.objects.create(name=self.cleaned_data['name'],
-                                           photo=file_path,
-                                           id_number=self.cleaned_data['id_number'],
-                                           service_area_department=self.service_area_department_object,
-                                           is_family=is_family_value,
-                                           mate_name=self.cleaned_data['mate_name'],
-                                           mate_id_number=self.cleaned_data['mate_id_number'],
-                                           mate_service_area_department=self.mate_service_area_department_object,
-                                           ctp_method = self.cleaned_data['ctp_method'],
-                                           ctp_method_time = self.cleaned_data['ctp_method_time'],
-                                           wedding_time = self.cleaned_data['wedding_time'],
-                                           creater = user,
-                                           )
+                                                          photo=file_path,
+                                                          id_number=self.cleaned_data['id_number'],
+                                                          service_area_department=self.service_area_department_object,
+                                                          is_family=is_family_value,
+                                                          mate_name=self.cleaned_data['mate_name'],
+                                                          mate_id_number=self.cleaned_data['mate_id_number'],
+                                                          mate_service_area_department=self.mate_service_area_department_object,
+                                                          ctp_method = self.cleaned_data['ctp_method'],
+                                                          ctp_method_time = self.cleaned_data['ctp_method_time'],
+                                                          wedding_time = self.cleaned_data['wedding_time'],
+                                                          address = self.cleaned_data['address'],
+                                                          creater = user,
+                                                          )
                 return check_object
             check_object.is_active =True
             check_object.name=self.cleaned_data['name']
@@ -326,6 +337,7 @@ class CheckObjectAddForm(forms.Form):
             check_object.ctp_method = self.cleaned_data['ctp_method']
             check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
             check_object.wedding_time = self.cleaned_data['wedding_time']
+            check_object.address = self.cleaned_data['address'],
             check_object.creater = user
             check_object.save()
             return check_object
@@ -480,6 +492,16 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：1985-1-1'),
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
+        )
+    address = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'家庭住址'),
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.department_name_error_messages,
         )
 
     id = forms.CharField(
@@ -647,6 +669,7 @@ class CheckObjectDetailModifyForm(forms.Form):
             data['mate_service_area_name'] = modify_object.mate_service_area_department.service_area.name
             data['mate_department_name'] = modify_object.mate_service_area_department.department.name
             data['ctp_method'] = modify_object.ctp_method
+            data['address'] = modify_object.address
             if modify_object.ctp_method_time is not None:
                 data['ctp_method_time'] = modify_object.ctp_method_time.isoformat()
             else:
@@ -681,6 +704,7 @@ class CheckObjectDetailModifyForm(forms.Form):
             self.fields['mate_service_area_name'].widget.attrs['value'] = modify_object.mate_service_area_department.service_area.name
             self.fields['mate_department_name'].widget.attrs['value'] = modify_object.mate_service_area_department.department.name
             self.fields['ctp_method'].widget.attrs['value'] = modify_object.ctp_method
+            self.fields['address'].widget.attrs['value'] = modify_object.address
             if modify_object.ctp_method_time is not None:
                 self.fields['ctp_method_time'].widget.attrs['value'] = modify_object.ctp_method_time.isoformat()
             else:
@@ -705,9 +729,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         check_object = self.id_object
         if request is None:
             return None
-        print '***********************************8'
         if request.session.get(gl.session_check_object_detail_modify_uploader, u'') == request.user.username:
-            print "%%%%%%%%%%%%%%%%%%%%%%"
             try:
                 file_temp = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username)
             except IOError:
@@ -734,6 +756,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         check_object.ctp_method = self.cleaned_data['ctp_method']
         check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
         check_object.wedding_time = self.cleaned_data['wedding_time']
+        check_object.address = self.cleaned_data['address']
         check_object.save()
         return check_object
 

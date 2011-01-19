@@ -113,7 +113,7 @@ $(document).ready(function(){
                 var photo_ready = false;
                 $("#uploader_dialog").dialog({ autoOpen: false,
                                         modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
-                                          bgiframe:true,
+                                        bgiframe:true,
                                         buttons: [
                                                 {id:"uploader",text:"上传文件"},
                                                 {text:"确定",click:function(){$(this).dialog("close")}}
@@ -239,18 +239,19 @@ $(document).ready(function(){
               <div class="c50l">
                 <div class="subc">
                   <!-- Insert your subtemplate content here -->
-                  {% if form.name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.name.errors }}</strong>
-                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-                    {{ form.name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-                    {{ form.name }}
-                  </div>
-                  {% endif %}
+                        {% if form.name.errors %}
+                        <div class="type-text error">
+                          <strong class="message">{{ form.name.errors }}</strong>
+                          {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+                          {{ form.name }}
+                        </div>
+                        {% else %}
+                        <div class="type-text">
+                          {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+                          {{ form.name }}
+                        </div>
+                        {% endif %}
+
                   {% if form.service_area_name.errors %}
                   <div class="type-text error">
                     <strong class="message">{{ form.service_area_name.errors }}</strong>
@@ -263,18 +264,18 @@ $(document).ready(function(){
                     {{ form.service_area_name }}
                   </div>
                   {% endif %}
-                  {% if form.is_family.errors %}
-                  <div class="type-check error">
-                    <strong class="message">{{ form.is_family.errors }}</strong>
-                    {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
-                    {{ form.is_family }}
-                  </div>
-                  {% else %}
-                  <div class="type-check">
-                    {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
-                    {{ form.is_family }}
-                  </div>
-                  {% endif %}
+                                          {% if form.is_family.errors %}
+                        <div class="type-check error">
+                          <strong class="message">{{ form.is_family.errors }}</strong>
+                          {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
+                          {{ form.is_family }}
+                        </div>
+                        {% else %}
+                        <div class="type-check">
+                          {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
+                          {{ form.is_family }}
+                        </div>
+                        {% endif %}
                 </div>
               </div>
               <div class="c50r">
@@ -318,7 +319,9 @@ $(document).ready(function(){
                   {% endif %}
                 </div>
               </div>
-            </div>          
+
+            </div>
+
           </div>          
         </div>         
         <div class="c25r">
@@ -327,8 +330,13 @@ $(document).ready(function(){
 
             <div id="csrf_token">{% csrf_token %}</div>
             <div class="center">
-              <img id="id_photo" src="{{ MEDIA_URL }}images/photo.jpg"/>
+              <br>
               <hr>
+              <br>
+              <img id="id_photo" src="{{ MEDIA_URL }}images/photo.jpg"/>
+              <br>
+              <hr>
+              <br>
               <span><button id="open_uploader_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">本地上传</button></span>
               <span><button id="open_camera_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">拍照上传</button></span>
             </div>
@@ -339,7 +347,39 @@ $(document).ready(function(){
             </div>
           </div>          
         </div>         
-      </div>       
+      </div>
+      <div class="subcolumns">
+        <div class="c75l">
+          <div class="subc">
+            <div class="subcolumns">
+              <div class="c99l">
+                <div class="subc">
+
+                  {% if form.address.errors %}
+                  <div class="type-text error">
+                    <strong class="message">{{ form.address.errors }}</strong>
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                  </div>
+                  {% else %}
+                  <div class="type-text">
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="c25r">
+          <div class="subc">
+
+          </div>
+        </div>
+      </div>
+
 
     </fieldset>
   

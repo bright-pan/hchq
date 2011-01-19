@@ -322,9 +322,14 @@ $(document).ready(function(){
             <div id="csrf_token">{% csrf_token %}</div>
             <div class="center">
               <img id="id_photo" src="{{ check_object.photo.url }}"/>
+              <br>
               <hr>
+              <br>
               <span><button id="open_uploader_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">本地上传</button></span>
               <span><button id="open_camera_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">拍照上传</button></span>
+              <br>
+              <hr>
+              <br>
             </div>
             <div id="uploader_dialog" style="display:none;" title="本地上传">
               <p>请选择你选需要的文件，并且在提示完成以后关闭对话框！</p>
@@ -334,6 +339,37 @@ $(document).ready(function(){
           </div>          
         </div>         
       </div>       
+      <div class="subcolumns">
+        <div class="c75l">
+          <div class="subc">
+            <div class="subcolumns">
+              <div class="c99l">
+                <div class="subc">
+
+                  {% if form.address.errors %}
+                  <div class="type-text error">
+                    <strong class="message">{{ form.address.errors }}</strong>
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                  </div>
+                  {% else %}
+                  <div class="type-text">
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="c25r">
+          <div class="subc">
+
+          </div>
+        </div>
+      </div>
 
     </fieldset>
   

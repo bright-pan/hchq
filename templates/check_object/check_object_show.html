@@ -50,11 +50,11 @@
               <td class="odd">{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
             </tr>
             <tr>
-              <td>家属<br>结婚时间</td>
+              <td>家属<br>结婚时间<br>家庭住址</td>
               {% if result.is_family %} 
-              <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
               {% else %}
-              <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
+              <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
               {% endif %}
             </tr>
             <tr>
