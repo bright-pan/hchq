@@ -70,6 +70,25 @@
               <td class="odd">{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
             </tr>
             <tr>
+              <td>孩子1<br>孩子2<br>孩子3</td>
+              <td>
+                {% if result.children_1_name %}
+                {{ result.children_1_name }}|{% if result.children_1_sex == 'm' %}男{% else %}女{% endif %}|{{ result.children_1_id_number }}
+                {% else %}
+                {% endif %}
+                <br>
+                {% if result.children_2_name %}
+                {{ result.children_2_name }}|{% if result.children_2_sex == 'm' %}男{% else %}女{% endif %}|{{ result.children_2_id_number }}
+                {% else %}
+                {% endif %}
+                <br>
+                {% if result.children_3_name %}
+                {{ result.children_3_name }}|{% if result.children_3_sex == 'm' %}男{% else %}女{% endif %}|{{ result.children_3_id_number }}
+                {% else %}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
               <td>创建人员</td>
               <td>{{ result.creater.username }}</td>
             </tr>

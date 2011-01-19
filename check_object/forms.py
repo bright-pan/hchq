@@ -146,6 +146,79 @@ class CheckObjectAddForm(forms.Form):
                               ), 
         error_messages = gl.department_name_error_messages,
         )
+
+    children_1_name = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'姓名'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.check_object_name_error_messages,
+        )
+    children_1_sex = forms.ChoiceField(
+        required=True,
+        label =_(u'性别'),
+        choices=((u'm', u'男'),
+                 (u'w', u'女'),
+                 ),
+        )
+
+    children_1_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
+    children_2_name = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'姓名'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.check_object_name_error_messages,
+        )
+    children_2_sex = forms.ChoiceField(
+        required=True,
+        label =_(u'性别'),
+        choices=((u'm', u'男'),
+                 (u'w', u'女'),
+                 ),
+        )
+
+    children_2_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
+    children_3_name = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'姓名'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.check_object_name_error_messages,
+        )
+    children_3_sex = forms.ChoiceField(
+        required=True,
+        label =_(u'性别'),
+        choices=((u'm', u'男'),
+                 (u'w', u'女'),
+                 ),
+        )
+
+    children_3_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -281,6 +354,57 @@ class CheckObjectAddForm(forms.Form):
             if wedding_time_copy > datetime.datetime.now().date():
                 raise forms.ValidationError(gl.check_object_wedding_time_error_messages['logic_error'])
         return wedding_time_copy
+    def clean_children_1_name(self):
+        try:
+            children_name_copy = self.data.get('children_1_name')
+            if re.match(gl.check_object_name_search_re_pattern, children_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return children_name_copy
+    
+    def clean_children_1_id_number(self):
+        try:
+            children_id_number_copy = self.data.get('children_1_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, children_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return children_id_number_copy
+    def clean_children_2_name(self):
+        try:
+            children_name_copy = self.data.get('children_2_name')
+            if re.match(gl.check_object_name_search_re_pattern, children_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return children_name_copy
+    
+    def clean_children_2_id_number(self):
+        try:
+            children_id_number_copy = self.data.get('children_2_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, children_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return children_id_number_copy
+    def clean_children_3_name(self):
+        try:
+            children_name_copy = self.data.get('children_3_name')
+            if re.match(gl.check_object_name_search_re_pattern, children_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return children_name_copy
+    
+    def clean_children_3_id_number(self):
+        try:
+            children_id_number_copy = self.data.get('children_3_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, children_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return children_id_number_copy
 
     def init_permission(self, user=None):
         if user is not None:
@@ -323,6 +447,15 @@ class CheckObjectAddForm(forms.Form):
                                                           ctp_method_time = self.cleaned_data['ctp_method_time'],
                                                           wedding_time = self.cleaned_data['wedding_time'],
                                                           address = self.cleaned_data['address'],
+                                                          children_1_name = self.cleaned_data['children_1_name'],
+                                                          children_1_sex = self.cleaned_data['children_2_sex'],
+                                                          children_1_id_number = self.cleaned_data['children_1_id_number'],
+                                                          children_2_name = self.cleaned_data['children_2_name'],
+                                                          children_2_sex = self.cleaned_data['children_2_sex'],
+                                                          children_2_id_number = self.cleaned_data['children_2_id_number'],
+                                                          children_3_name = self.cleaned_data['children_3_name'],
+                                                          children_3_sex = self.cleaned_data['children_3_sex'],
+                                                          children_3_id_number = self.cleaned_data['children_3_id_number'],
                                                           creater = user,
                                                           )
                 return check_object
@@ -338,6 +471,15 @@ class CheckObjectAddForm(forms.Form):
             check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
             check_object.wedding_time = self.cleaned_data['wedding_time']
             check_object.address = self.cleaned_data['address'],
+            check_object.children_1_name = self.cleaned_data['children_1_name'],
+            check_object.children_1_sex = self.cleaned_data['children_2_sex'],
+            check_object.children_1_id_number = self.cleaned_data['children_1_id_number'],
+            check_object.children_2_name = self.cleaned_data['children_2_name'],
+            check_object.children_2_sex = self.cleaned_data['children_2_sex'],
+            check_object.children_2_id_number = self.cleaned_data['children_2_id_number'],
+            check_object.children_3_name = self.cleaned_data['children_3_name'],
+            check_object.children_3_sex = self.cleaned_data['children_3_sex'],
+            check_object.children_3_id_number = self.cleaned_data['children_3_id_number'],
             check_object.creater = user
             check_object.save()
             return check_object
@@ -503,6 +645,78 @@ class CheckObjectDetailModifyForm(forms.Form):
                               ), 
         error_messages = gl.department_name_error_messages,
         )
+    children_1_name = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'姓名'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.check_object_name_error_messages,
+        )
+    children_1_sex = forms.ChoiceField(
+        required=True,
+        label =_(u'性别'),
+        choices=((u'm', u'男'),
+                 (u'w', u'女'),
+                 ),
+        )
+
+    children_1_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
+    children_2_name = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'姓名'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.check_object_name_error_messages,
+        )
+    children_2_sex = forms.ChoiceField(
+        required=True,
+        label =_(u'性别'),
+        choices=((u'm', u'男'),
+                 (u'w', u'女'),
+                 ),
+        )
+
+    children_2_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
+    children_3_name = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'姓名'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        error_messages = gl.check_object_name_error_messages,
+        )
+    children_3_sex = forms.ChoiceField(
+        required=True,
+        label =_(u'性别'),
+        choices=((u'm', u'男'),
+                 (u'w', u'女'),
+                 ),
+        )
+
+    children_3_id_number = forms.CharField(
+        max_length=18,
+        required=False,
+        label=_(u'身份证号'),
+        error_messages = gl.check_object_id_number_error_messages,
+        )
 
     id = forms.CharField(
         widget=forms.HiddenInput(),
@@ -634,6 +848,57 @@ class CheckObjectDetailModifyForm(forms.Form):
             if wedding_time_copy > datetime.datetime.now().date():
                 raise forms.ValidationError(gl.check_object_wedding_time_error_messages['logic_error'])
         return wedding_time_copy
+    def clean_children_1_name(self):
+        try:
+            children_name_copy = self.data.get('children_1_name')
+            if re.match(gl.check_object_name_search_re_pattern, children_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return children_name_copy
+    
+    def clean_children_1_id_number(self):
+        try:
+            children_id_number_copy = self.data.get('children_1_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, children_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return children_id_number_copy
+    def clean_children_2_name(self):
+        try:
+            children_name_copy = self.data.get('children_2_name')
+            if re.match(gl.check_object_name_search_re_pattern, children_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return children_name_copy
+    
+    def clean_children_2_id_number(self):
+        try:
+            children_id_number_copy = self.data.get('children_2_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, children_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return children_id_number_copy
+    def clean_children_3_name(self):
+        try:
+            children_name_copy = self.data.get('children_3_name')
+            if re.match(gl.check_object_name_search_re_pattern, children_name_copy) is None:
+                raise forms.ValidationError(gl.check_object_name_error_messages['format_error'])
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return children_name_copy
+    
+    def clean_children_3_id_number(self):
+        try:
+            children_id_number_copy = self.data.get('children_3_id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_search_re_pattern, children_id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return children_id_number_copy
 
     def clean_id(self):
         try:
@@ -670,6 +935,15 @@ class CheckObjectDetailModifyForm(forms.Form):
             data['mate_department_name'] = modify_object.mate_service_area_department.department.name
             data['ctp_method'] = modify_object.ctp_method
             data['address'] = modify_object.address
+            data['children_1_name'] = modify_object.children_1_name
+            data['children_1_sex'] = modify_object.children_1_sex
+            data['children_1_id_number'] = modify_object.children_1_id_number
+            data['children_2_name'] = modify_object.children_2_name
+            data['children_2_sex'] = modify_object.children_2_sex
+            data['children_2_id_number'] = modify_object.children_2_id_number
+            data['children_3_name'] = modify_object.children_3_name
+            data['children_3_sex'] = modify_object.children_3_sex
+            data['children_3_id_number'] = modify_object.children_3_id_number
             if modify_object.ctp_method_time is not None:
                 data['ctp_method_time'] = modify_object.ctp_method_time.isoformat()
             else:
@@ -705,6 +979,15 @@ class CheckObjectDetailModifyForm(forms.Form):
             self.fields['mate_department_name'].widget.attrs['value'] = modify_object.mate_service_area_department.department.name
             self.fields['ctp_method'].widget.attrs['value'] = modify_object.ctp_method
             self.fields['address'].widget.attrs['value'] = modify_object.address
+            self.fields['children_1_name'].widget.attrs['value'] = modify_object.children_1_name
+            self.fields['children_1_sex'].widget.attrs['value'] = modify_object.children_1_sex
+            self.fields['children_1_id_number'].widget.attrs['value'] = modify_object.children_1_id_number
+            self.fields['children_2_name'].widget.attrs['value'] = modify_object.children_2_name
+            self.fields['children_2_sex'].widget.attrs['value'] = modify_object.children_2_sex
+            self.fields['children_2_id_number'].widget.attrs['value'] = modify_object.children_2_id_number
+            self.fields['children_3_name'].widget.attrs['value'] = modify_object.children_3_name
+            self.fields['children_3_sex'].widget.attrs['value'] = modify_object.children_3_sex
+            self.fields['children_3_id_number'].widget.attrs['value'] = modify_object.children_3_id_number
             if modify_object.ctp_method_time is not None:
                 self.fields['ctp_method_time'].widget.attrs['value'] = modify_object.ctp_method_time.isoformat()
             else:
@@ -757,6 +1040,15 @@ class CheckObjectDetailModifyForm(forms.Form):
         check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
         check_object.wedding_time = self.cleaned_data['wedding_time']
         check_object.address = self.cleaned_data['address']
+        check_object.children_1_name = self.cleaned_data['children_1_name']
+        check_object.children_1_sex = self.cleaned_data['children_1_sex']
+        check_object.children_1_id_number = self.cleaned_data['children_1_id_number']
+        check_object.children_2_name = self.cleaned_data['children_2_name']
+        check_object.children_2_sex = self.cleaned_data['children_2_sex']
+        check_object.children_2_id_number = self.cleaned_data['children_2_id_number']
+        check_object.children_3_name = self.cleaned_data['children_3_name']
+        check_object.children_3_sex = self.cleaned_data['children_3_sex']
+        check_object.children_3_id_number = self.cleaned_data['children_3_id_number']
         check_object.save()
         return check_object
 

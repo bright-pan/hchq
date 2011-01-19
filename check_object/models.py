@@ -23,6 +23,19 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    children_1_name = models.CharField(max_length=128, null=True)
+    children_1_sex = models.CharField(max_length=10, null=True)
+    children_1_id_number = models.CharField(max_length=18, null=True)
+
+    children_2_name = models.CharField(max_length=128, null=True)
+    children_2_sex = models.CharField(max_length=10, null=True)
+    children_2_id_number = models.CharField(max_length=18, null=True)
+
+    children_3_name = models.CharField(max_length=128, null=True)
+    children_3_sex = models.CharField(max_length=10, null=True)
+    children_3_id_number = models.CharField(max_length=18, null=True)
+    
+    
     class Meta:
         db_table = 'check_object'
         ordering = ['-updated_at']
@@ -31,15 +44,4 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     def get_absolute_url(self):
         return ('check_object_show', (), {'check_object_index': self.id})
 
-    objects = caching.base.CachingManager()
-        
-class CheckObjectChildren(caching.base.CachingMixin, models.Model):
-    name = models.CharField(max_length=128)
-    sex = models.CharField(max_length=1)
-    id_number = models.CharField(max_length=18, null=True)
-    check_object = models.ForeignKey(CheckObject, related_name='check_object_children')
-    
-    class Meta:
-        db_table = 'check_object_children'
-        
     objects = caching.base.CachingManager()

@@ -239,18 +239,18 @@ $(document).ready(function(){
               <div class="c50l">
                 <div class="subc">
                   <!-- Insert your subtemplate content here -->
-                        {% if form.name.errors %}
-                        <div class="type-text error">
-                          <strong class="message">{{ form.name.errors }}</strong>
-                          {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-                          {{ form.name }}
-                        </div>
-                        {% else %}
-                        <div class="type-text">
-                          {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-                          {{ form.name }}
-                        </div>
-                        {% endif %}
+                  {% if form.name.errors %}
+                  <div class="type-text error">
+                    <strong class="message">{{ form.name.errors }}</strong>
+                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+                    {{ form.name }}
+                  </div>
+                  {% else %}
+                  <div class="type-text">
+                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+                    {{ form.name }}
+                  </div>
+                  {% endif %}
 
                   {% if form.service_area_name.errors %}
                   <div class="type-text error">
@@ -264,18 +264,18 @@ $(document).ready(function(){
                     {{ form.service_area_name }}
                   </div>
                   {% endif %}
-                                          {% if form.is_family.errors %}
-                        <div class="type-check error">
-                          <strong class="message">{{ form.is_family.errors }}</strong>
-                          {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
-                          {{ form.is_family }}
-                        </div>
-                        {% else %}
-                        <div class="type-check">
-                          {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
-                          {{ form.is_family }}
-                        </div>
-                        {% endif %}
+                  {% if form.is_family.errors %}
+                  <div class="type-check error">
+                    <strong class="message">{{ form.is_family.errors }}</strong>
+                    {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
+                    {{ form.is_family }}
+                  </div>
+                  {% else %}
+                  <div class="type-check">
+                    {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
+                    {{ form.is_family }}
+                  </div>
+                  {% endif %}
                 </div>
               </div>
               <div class="c50r">
@@ -487,7 +487,146 @@ $(document).ready(function(){
         
       </div>          
     </div>         
-  </div>          
+  </div>
+  <fieldset>
+    <legend>子女信息</legend>
+    <!-- Insert your subtemplate content here -->
+    <div class="subcolumns">
+      <div class="c33l">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.children_1_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.children__name.errors }}</strong>
+            {{ form.children_1_name.label_tag }}<p class="dimmed">{{ form.children_1_name.help_text}}</p>
+            {{ form.children_1_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.children_1_name.label_tag }}<p class="dimmed">{{ form.children_1_name.help_text}}</p>
+            {{ form.children_1_name }}
+          </div>
+          {% endif %}
+          {% if form.children_2_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.children__name.errors }}</strong>
+            {{ form.children_2_name.label_tag }}<p class="dimmed">{{ form.children_2_name.help_text}}</p>
+            {{ form.children_2_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.children_2_name.label_tag }}<p class="dimmed">{{ form.children_2_name.help_text}}</p>
+            {{ form.children_2_name }}
+          </div>
+          {% endif %}
+          {% if form.children_3_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.children__name.errors }}</strong>
+            {{ form.children_3_name.label_tag }}<p class="dimmed">{{ form.children_3_name.help_text}}</p>
+            {{ form.children_3_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.children_3_name.label_tag }}<p class="dimmed">{{ form.children_3_name.help_text}}</p>
+            {{ form.children_3_name }}
+          </div>
+          {% endif %}
+          
+
+        </div>
+      </div>
+      <div class="c33l">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+
+          {% if form.children_1_sex.errors %}
+          <div class="type-select error">
+            <strong class="message">{{ form.children__sex.errors }}</strong>
+            {{ form.children_1_sex.label_tag }}<p class="dimmed">{{ form.children__sex.help_text }}</p>
+            {{ form.children_1_sex }}
+          </div>
+          {% else %}
+          <div class="type-select">
+            {{ form.children_1_sex.label_tag }}<p class="dimmed">{{ form.children__sex.help_text }}</p>
+            {{ form.children_1_sex }}
+          </div>
+          {% endif %}
+          
+
+          {% if form.children_2_sex.errors %}
+          <div class="type-select error">
+            <strong class="message">{{ form.children__sex.errors }}</strong>
+            {{ form.children_2_sex.label_tag }}<p class="dimmed">{{ form.children_2_sex.help_text }}</p>
+            {{ form.children_2_sex }}
+          </div>
+          {% else %}
+          <div class="type-select">
+            {{ form.children_2_sex.label_tag }}<p class="dimmed">{{ form.children_2_sex.help_text }}</p>
+            {{ form.children_2_sex }}
+          </div>
+          {% endif %}
+          
+          {% if form.children_3_sex.errors %}
+          <div class="type-select error">
+            <strong class="message">{{ form.children__sex.errors }}</strong>
+            {{ form.children_3_sex.label_tag }}<p class="dimmed">{{ form.children_3_sex.help_text }}</p>
+            {{ form.children_3_sex }}
+          </div>
+          {% else %}
+          <div class="type-select">
+            {{ form.children_3_sex.label_tag }}<p class="dimmed">{{ form.children_3_sex.help_text }}</p>
+            {{ form.children_3_sex }}
+          </div>
+          {% endif %}
+          
+        </div>
+      </div>
+      <div class="c33r">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.children_1_id_number.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.children__id_number.errors }}</strong>
+            {{ form.children_1_id_number.label_tag }}<p class="dimmed">{{ form.children_1_id_number.help_text}}</p>
+            {{ form.children_1_id_number }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.children_1_id_number.label_tag }}<p class="dimmed">{{ form.children_1_id_number.help_text}}</p>
+            {{ form.children_1_id_number }}
+          </div>
+          {% endif %}
+          
+          {% if form.children_2_id_number.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.children__id_number.errors }}</strong>
+            {{ form.children_2_id_number.label_tag }}<p class="dimmed">{{ form.children_2_id_number.help_text}}</p>
+            {{ form.children_2_id_number }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.children_2_id_number.label_tag }}<p class="dimmed">{{ form.children_2_id_number.help_text}}</p>
+            {{ form.children_2_id_number }}
+          </div>
+          {% endif %}
+          
+          {% if form.children_3_id_number.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.children__id_number.errors }}</strong>
+            {{ form.children_3_id_number.label_tag }}<p class="dimmed">{{ form.children_3_id_number.help_text}}</p>
+            {{ form.children_3_id_number }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.children_3_id_number.label_tag }}<p class="dimmed">{{ form.children_3_id_number.help_text}}</p>
+            {{ form.children_3_id_number }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  
   <div class="center">
     <input type="submit"  name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
     <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
