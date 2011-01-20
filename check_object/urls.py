@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('hchq.check_object.views',
 
-       (r'add/(?P<check_object_page>\d{1,4})/$',
+       (r'add/(?P<check_object_page>\d{1,8})/$',
        'check_object_add',
        {'template_name' : 'check_object/check_object_add.html', 'next': 'check_object/list/1', },
        'check_object_add'),
@@ -26,22 +26,22 @@ urlpatterns = patterns('hchq.check_object.views',
        {'template_name' : 'check_object/check_object_add.html', 'next': '/check_object/person_management', },
        'check_object_detail_modify_camera'),
                        
-       (r'show/(?P<check_object_index>\d{1,4})/$',
+       (r'show/(?P<check_object_index>\d{1,8})/$',
        'check_object_show',
        {'template_name' : 'check_object/check_object_show.html', 'next': '', },
        'check_object_show'),
 
-       (r'modify/(?P<check_object_page>\d{1,4})/$',
+       (r'modify/(?P<check_object_page>\d{1,8})/$',
        'check_object_modify',
        {'template_name' : 'check_object/check_object_modify.html', 'next_template_name': 'check_object/check_object_detail_modify.html', },
        'check_object_modify'),
 
-       (r'delete/(?P<check_object_page>\d{1,4})/$',
+       (r'delete/(?P<check_object_page>\d{1,8})/$',
        'check_object_delete',
        {'template_name' : 'check_object/check_object_delete.html', 'next': '/check_object/person_management', },
        'check_object_delete'),
 
-       (r'list/(?P<check_object_page>\d{1,4})/$',
+       (r'list/(?P<check_object_page>\d{1,8})/$',
        'check_object_list',
        {'template_name' : 'check_object/check_object_list.html', 'next': '/check_object/person_management', },
        'check_object_list'),

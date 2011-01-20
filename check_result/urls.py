@@ -2,17 +2,17 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('hchq.check_result.views',
 
-       (r'show/(?P<check_result_index>\d{1,4})/$',
+       (r'show/(?P<check_result_index>\d{1,8})/$',
        'check_result_show',
        {'template_name' : 'check_result/check_result_show.html', 'next': '', },
        'check_result_show'),
 
-       (r'add/(?P<check_object_page>\d{1,4})/$',
+       (r'add/(?P<check_object_page>\d{1,8})/$',
        'check_result_add',
        {'template_name' : 'check_result/check_result_add.html', 'next_template_name': 'check_result/check_result_detail_add.html', 'next_error':'check_result/check_result_detail_add_error.html'},
        'check_result_add'),
 
-       (r'list/(?P<check_result_page>\d{1,4})/$',
+       (r'list/(?P<check_result_page>\d{1,8})/$',
        'check_result_list',
        {'template_name' : 'check_result/check_result_list.html', 'next': '/check_result/person_management', },
        'check_result_list'),
