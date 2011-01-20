@@ -85,10 +85,11 @@
           <img src="{{ check_object.photo.url }}"/>
           <p>{{ check_object.name }}的照片</p>
           <p>{{ check_object.id_number }}</p>
+          {% if perms.department.cr_report %}
           <form method="post" action=".">{% csrf_token %}
             <input type="submit" name="submit" value="打印证明" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
           </form>
-
+          {% endif %}
         </div>
       </div>
 

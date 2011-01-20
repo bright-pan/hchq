@@ -524,6 +524,17 @@ class AccountAddForm(forms.Form):
         help_text=_(u'例如：县委/政法委，公安局，...'),
         error_messages = gl.department_name_error_messages,
         )
+    contact = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'联系方式'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：13800000000'),
+        )
+
     is_checker = forms.CharField(
         required=True,
         label =_(u'检查人员'),
@@ -627,6 +638,7 @@ class AccountAddForm(forms.Form):
                 UserProfile.objects.create(user=user_object,
                                            is_checker=is_checker_bool_value,
                                            service_area_department=self.service_area_department_object,
+                                           contact = self.cleaned_data['contact'],
                                            )
                 return user_object.get_profile()
             user_object.is_active = True
@@ -637,6 +649,7 @@ class AccountAddForm(forms.Form):
             user_object_profile.is_checker = is_checker_bool_value
             user_object_profile.is_active = True
             user_object_profile.service_area_department=self.service_area_department_object
+            user_object_profile.contact = self.cleaned_data['contact']
             user_object_profile.save()
             user_object.save()
             return user_object.get_profile()
@@ -709,6 +722,17 @@ class AccountDetailModifyForm(forms.Form):
         help_text=_(u'例如：县委/政法委，公安局，...'),
         error_messages = gl.department_name_error_messages,
         )
+    contact = forms.CharField(
+        max_length=64,
+        required=False, 
+        label=_(u'联系方式'), 
+        widget=forms.TextInput(attrs={'class':'',
+                                     'size':'30',
+                                     }
+                              ), 
+        help_text=_(u'例如：13800000000'),
+        )
+
     is_checker = forms.CharField(
         required=True,
         label =_(u'检查人员'),
@@ -791,6 +815,7 @@ class AccountDetailModifyForm(forms.Form):
     def set_value(self, modify_object=None, user=None):
         if modify_object is not None and user is not None:
             self.fields['role_name'].widget.attrs['value'] = modify_object.groups.get().name
+            
             if user.has_perm('department.unlocal'):
                 self.fields['service_area_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.service_area.name
             else:
@@ -799,6 +824,7 @@ class AccountDetailModifyForm(forms.Form):
             self.fields['department_name'].widget.attrs['value'] = modify_object.get_profile().service_area_department.department.name
             self.fields['id'].widget.attrs['value'] = modify_object.id
             is_checker = modify_object.get_profile().is_checker
+            self.fields['contact'].widget.attrs['value'] = modify_object.get_profile().contact
             if is_checker is True:
                 self.fields['is_checker'].widget.attrs['checked'] = u'true'
             else:
@@ -817,7 +843,9 @@ class AccountDetailModifyForm(forms.Form):
         self.id_object.groups.add(self.role_object)
         id_object_profile = self.id_object.get_profile()
         id_object_profile.service_area_department = self.service_area_department_object
+        id_object_profile.contact = self.cleaned_data['contact']
         id_object_profile.is_checker = is_checker
+        id_object_profile.is_active = True
         id_object_profile.save()
         self.id_object.save()
         return id_object_profile

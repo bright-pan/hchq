@@ -34,8 +34,8 @@ class Department(caching.base.CachingMixin, models.Model):
             
             (u'cr_add', u'检查结果添加'),
             (u'cr_list', u'检查结果查询'),
-            (u'report_print', u'检查结果报表导出'),
-            (u'ct_print', u'证明导出'),
+            (u'cr_report', u'检查项目报表打印'),
+            (u'ct_report', u'证明打印'),
 
             )
 

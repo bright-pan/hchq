@@ -43,7 +43,7 @@
 <div class="pagination">
   {% if results_page.has_previous %}
   <span>
-    <a href="{% url check_result_modify results_page.previous_page_number %}">上一页</a>
+    <a href="{% url check_result_add results_page.previous_page_number %}">上一页</a>
   </span>
   {% else %}
   <span class="disable">
@@ -55,7 +55,7 @@
   </span>
   {% if results_page.has_next %}
   <span>
-    <a href="{% url check_result_modify results_page.next_page_number %}">下一页</a>
+    <a href="{% url check_result_add results_page.next_page_number %}">下一页</a>
   </span>
   {% else %}
   <span class="disable">

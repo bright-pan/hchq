@@ -13,7 +13,8 @@ class CheckResult(caching.base.CachingMixin, models.Model):
     result = models.CharField(max_length=128)
     checker = models.ForeignKey(User, related_name='check_result_checker')
     recorder = models.ForeignKey(User, related_name='check_result_recorder')
-    check_time = models.DateTimeField(auto_now_add=True)
+#    check_time = models.DateTimeField(auto_now_add=True)
+    check_time = models.DateTimeField()
     is_latest = models.BooleanField(default=True)
     
     class Meta:

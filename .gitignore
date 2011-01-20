@@ -3,4 +3,9 @@
 *#
 *.db
 static/images/photos/*.jpg
+static/images/photos/*.gif
+static/images/photos/*.JPG
+static/images/photos/*.BMP
+static/images/photos/*.bmp
+static/images/photos/null
 static/images/photos/temp/*.temp

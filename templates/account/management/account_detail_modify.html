@@ -86,6 +86,19 @@
             {{ form.is_checker }}
           </div>
           {% endif %}
+          {% if form.contact.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.contact.errors }}</strong>
+            {{ form.contact.label_tag }}<p class="dimmed">{{ form.contact.help_text}}</p>
+            {{ form.contact }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.contact.label_tag }}<p class="dimmed">{{ form.contact.help_text}}</p>
+            {{ form.contact }}
+          </div>
+          {% endif %}
+
           {{ form.id }}
           {% endwith %}
           <div class="center">

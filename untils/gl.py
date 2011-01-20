@@ -34,10 +34,10 @@ service_area_name_error_messages={'required': _(u'请输入服务区域名称！
                                   'already_error': _(u'服务区域同名，请输入正确的服务区域名称！'),
                                   'not_exist_error': _(u'服务区域不存在'),
                                   }
-service_area_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
-service_area_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
+service_area_name_add_re_pattern = ur'^[\u4e00-\u9fa5/()（）]+$'
+service_area_name_modify_re_pattern = ur'^[\u4e00-\u9fa5()（）]+$'
 #service_area_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$'
-service_area_name_search_re_pattern = ur'(^[\u4e00-\u9fa5]+$)|(^$)'
+service_area_name_search_re_pattern = ur'(^[\u4e00-\u9fa5()（）]+$)|(^$)'
 
 #过滤器
 def filter_null_string(n):
@@ -57,10 +57,10 @@ department_name_error_messages={'required': _(u'请输入单位部门名称！')
                                 'not_match_error': _(u'服务区域与单位部门未关联！'),
                                   }
 
-department_name_add_re_pattern = ur'^[\u4e00-\u9fa5/]+$'
-department_name_modify_re_pattern = ur'^[\u4e00-\u9fa5]+$'
+department_name_add_re_pattern = ur'^[\u4e00-\u9fa5/()（）]+$'
+department_name_modify_re_pattern = ur'^[\u4e00-\u9fa5()（）]+$'
 #department_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$'
-department_name_search_re_pattern = ur'(^[\u4e00-\u9fa5]+$)|(^$)'
+department_name_search_re_pattern = ur'(^[\u4e00-\u9fa5()（）]+$)|(^$)'
 
 session_department_name = u'session_department_name'
 session_department_is_fuzzy = u'session_department_is_fuzzy'

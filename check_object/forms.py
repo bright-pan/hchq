@@ -435,6 +435,7 @@ class CheckObjectAddForm(forms.Form):
             try:
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
             except ObjectDoesNotExist:
+#                print self.cleaned_data['wedding_time'], self.cleaned_data['address']
                 check_object = CheckObject.objects.create(name=self.cleaned_data['name'],
                                                           photo=file_path,
                                                           id_number=self.cleaned_data['id_number'],

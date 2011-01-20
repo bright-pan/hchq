@@ -15,7 +15,9 @@
   {% if perms.department.cr_list or perms.department.cr_add %}
   <li class="active"><strong>检查结果管理</strong></li>
   {% endif %}
+  {% if perms.department.cr_report %}
   <li><a href="{% url check_project_statistics %}">检查项目统计</a></li>
+  {% endif %}
 </ul>
 {% endcache %}
 {% endblock %}
