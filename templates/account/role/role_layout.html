@@ -21,9 +21,31 @@
   {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
   <li><a href="{% url account_list 1 %}">系统用户管理</a></li>
   {% endif %}
-  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete or perms.department.cr_list or perms.department.cr_add or perms.department.report_print or perms.department.ct_print %}
+  {% if perms.department.co_list %}
   <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
+  {% else %}
+  {% if perms.department.co_add %}
+  <li><a href="{% url check_object_add 1 %}">进入系统</a></li>
+  {% else %}
+  {% if perms.department.co_modify %}
+  <li><a href="{% url check_object_modify 1 %}">进入系统</a></li>
+  {% else %}
+  {% if perms.department.co_delete %}
+  <li><a href="{% url check_object_delete 1 %}">进入系统</a></li>
+  {% else %}
+  {% if perms.department.cr_list %}
+  <li><a href="{% url check_result_list 1 %}">进入系统</a></li>
+  {% else %}
+  {% if perms.department.cr_add %}
+  <li><a href="{% url check_result_add 1 %}">进入系统</a></li>
+  {% else %}  
   {% endif %}
+  {% endif %}  
+  {% endif %}
+  {% endif %}  
+  {% endif %}
+  {% endif %}
+
 </ul>
 {% endcache %}
 {% endblock %}
