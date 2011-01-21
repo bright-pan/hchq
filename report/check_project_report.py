@@ -285,7 +285,7 @@ class DepartmentReport(Report):
         height = 2.9*cm
         elements = [
             SystemField(expression='%(report_title)s', top=0, left=0, width=BAND_WIDTH,
-                        style={'fontName': 'yahei', 'fontSize': 20, 'alignment': TA_CENTER, 'textColor': navy}),
+                        style={'fontName': 'yahei', 'fontSize': 15, 'alignment': TA_CENTER, 'textColor': navy}),
             Line(left=0, top=1.6*cm, right=27.7*cm, bottom=1.6*cm, stroke_color=navy),
             Label(text=u"编号", top=2.0*cm, left=0.5*cm),
             Label(text=u"妻子姓名", top=1.8*cm, left=2*cm),
