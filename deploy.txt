@@ -1,13 +1,19 @@
 1. 安装apache服务器,并将wsgi模块放到apache目录下的modules子目录中,
    修改http.conf配置文件使能wsgi模块.参照模板http.conf文件.
-2. 安装python 2.6, 设置path环境变量
+   a. ServerName 127.0.0.1
+   b. Include "e:/work/hchq/apache/apache_django_wsgi.conf"
+2. 安装python 2.6, 设置path环境变量加入C:\Python26
 3. 安装setuptools
-4. 安装django-1.2.3, 设置path环境变量
+4. 安装django-1.2.3, 设置path环境变量加入C:\Python26\Lib\site-packages\django\bin
 5. 安装PIL, reportlab, geraldo
 6. 安装django-cache-machine
 7. 安装memcached-1.2.6-w32, python-memcached
-    'c:\memcached\memcached.exe -d start'
+    'c:\memcached\memcached.exe -d install -m 128'
+    'c:\memcached\memcached.exe -d start -m 128'
+    在服务中加入启动参数-m 128
 8. 安装mysql-5.1, mysql-workbench, mysql-python-1.2.2-w32并打补丁。
-9. 安装项目hchq.
+   设置root用户的密码为1234
+9. 安装项目hchq修改apache_django_wsgi.conf文件中的系统路径。
 10. 配置项目settings、apache目录中的文件以及http.conf
 11. 导入hchq数据库数据
+12. 测试安装成功与否。
