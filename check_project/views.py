@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cache, cache_page
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
@@ -469,6 +469,8 @@ def check_project_list(request, template_name='my.html', next='/', check_project
 
 @csrf_protect
 @login_required
+@permission_required('department.cr_report')
+@cache_page(60 * 15)
 def check_project_statistics(request, template_name='my.html', next='/', check_project_page='1',):
     """
     检查项目数据统计
