@@ -737,7 +737,7 @@ def service_area_name_ajax(request, template_name='my.html', next='/'):
         result = []
         if request.method == 'GET':
 #            print '******************8'
-            query_set = ServiceArea.objects.filter(is_active=True)
+            query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
             result = [ x.name for x in query_set]
 #            print result
         else:

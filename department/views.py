@@ -416,7 +416,7 @@ def department_name_ajax(request, template_name='my.html', next='/'):
                 else:    
                     query_set = Department.objects.filter(is_active=True,
                                                           department_to_service_area__service_area__name=service_area_name,
-                                                          department_to_service_area__is_active=True)
+                                                          department_to_service_area__is_active=True).order_by('name')
                     result = [ x.name for x in query_set]
 #                    print '$$$$$$$$$$$$$'
 #                    print result
