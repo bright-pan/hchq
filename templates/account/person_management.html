@@ -18,12 +18,12 @@
 {% if user %}
 <h3>你好,{{ user.username }},欢迎使用本系统！</h3>
 <hr>
+{% if user.is_superuser %}
+<p class="important">你是超级管理员，没有基本的用户资料！</p>
+{% else %}
 <div class="subcolumns">
   <div class="c66l">
     <div class="subc note">
-      {% if user.is_superuser %}
-      <p class="important">你是超级管理员，没有基本的用户资料！</p>
-      {% else %}
       <table border="0" cellpadding="0" cellspacing="0" class="full">
         <caption>
           个人资料

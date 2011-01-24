@@ -9,12 +9,15 @@
         你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
         {% endblock %}
         </div>
+        {% load cache %}
+        {% cache 500 header %}
         <div id="vbox">
         <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
         </div>
+        {% endcache %}        
+        {% load cache %}
+        {% cache 500 check_project_nav %}
         <div id="header_describe">
-          {% load cache %}
-          {% cache 500 check_project_nav %}
           {% if check_project != None %}
           <div style="text-align:right; color: #aaa; background: transparent;">
             <p class="ui-state-default">
@@ -30,11 +33,13 @@
             </p>
           </div>
           {% endif %}
-          {% endcache %}
+
           
           {% block header_describe %}
+          
           {% endblock %}
         </div>
+        {% endcache %}
       </div>
       <div id="nav">
         <!-- skiplink anchor: navigation -->
@@ -68,9 +73,13 @@
         {% endblock %}
       </div>
       <!-- begin: #footer -->
+      {% load cache %}
+      {% cache 500 footer %}
       <div id="footer">
         <p>©2010 江西省会昌县人口与计划生育委员会</p>
+        <img  src="{{ MEDIA_URL }}images/django_site.gif"/>
       </div>
+      {% endcache %}
     </div>
   </div>
 {% endblock %}
