@@ -369,7 +369,7 @@ def check_project_report(query_set=None, request=None):
         check_project_report.author = request.user.username
         canvas = check_project_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
 #        check_project_report.generate_by(PDFGenerator, filename=response)
-        query_set_service_area = ServiceArea.objects.filter(is_active=True)
+        query_set_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             service_area_report = ServiceAreaReport(query_set_service_area_department)
