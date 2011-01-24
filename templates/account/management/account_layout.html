@@ -1,5 +1,6 @@
 {% extends "my_layout.html" %}
-
+{% load cache %}
+{% cache 500 account_layout_media %}
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
@@ -83,7 +84,7 @@ $(document).ready(function() {
         });
 </script>
 {% endblock %}
-
+{% endcache %}
 {% block header_describe %}{% endblock %}
 
 {% block nav %}
