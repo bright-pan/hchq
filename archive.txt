@@ -1,0 +1,1 @@
+git archive --format=tar --prefix=hchq-v2.3.2/ v2.3.2 | (cd .. && gzip > hchq-2.3.2.tar.gz)
