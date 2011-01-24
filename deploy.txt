@@ -2,6 +2,7 @@
    修改http.conf配置文件使能wsgi模块.参照模板http.conf文件.
    a. ServerName 127.0.0.1
    b. Include "e:/work/hchq/apache/apache_django_wsgi.conf"
+   c. 在防火墙中加入例外:apache server:80
 2. 安装python 2.6, 设置path环境变量加入C:\Python26
 3. 安装setuptools
 4. 安装django-1.2.3, 设置path环境变量加入C:\Python26\Lib\site-packages\django\bin
