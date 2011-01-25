@@ -10,6 +10,7 @@ from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 from reportlab.lib.colors import navy, yellow, red
 from geraldo.generators import PDFGenerator
 from django.http import HttpResponse
+from django.core.cache import cache
 
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line
@@ -356,7 +357,15 @@ class CoverReport(Report):
         borders = {'top': Line(stroke_color=red)}
 
 
-def check_project_report(query_set=None, request=None):
+def check_project_report(query_set=None, request=None):    
+    if request.user.has_perm('department.unlocal'):
+        response = cache.get('check_project_report_unlocal')
+        if response is not None:
+            return response
+    else:
+        response = cache.get('check_project_report_%s' % request.user.id)
+        if response is not None:
+            return response
     response = HttpResponse(mimetype='application/pdf')
     try:
         check_project = CheckProject.objects.get(is_setup=True, is_active=True)
@@ -365,11 +374,20 @@ def check_project_report(query_set=None, request=None):
     
 #    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
     if query_set is not None and request is not None and query_set:
-        check_project_report = CheckProjectReport(query_set)
-        check_project_report.author = request.user.username
-        canvas = check_project_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        if request.user.has_perm('department.unlocal'):
+            check_project_report = CheckProjectReport(query_set)
+            check_project_report.author = request.user.username
+            canvas = check_project_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
 #        check_project_report.generate_by(PDFGenerator, filename=response)
-        query_set_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
+            query_set_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
+        else:
+            cover_report = CoverReport(query_set)
+            cover_report.author = request.user.username
+            cover_report.title = u'%s' % check_project.name
+            canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+            user_service_area_name = request.user.get_profile().service_area_department.service_area.name
+            query_set_service_area = ServiceArea.objects.filter(is_active=True, name=user_service_area_name)
+            
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             service_area_report = ServiceAreaReport(query_set_service_area_department)
@@ -402,5 +420,10 @@ def check_project_report(query_set=None, request=None):
         
     else:
         pass
-        
+
+    if request.user.has_perm('department.unlocal'):
+        cache.set('check_project_report_unlocal', response, 15*60)
+    else:
+        cache.set('check_project_report_%s' % request.user.id, response, 15*60)
+
     return response
