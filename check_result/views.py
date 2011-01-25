@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache, cache_page
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
@@ -29,6 +29,7 @@ def check_result_detail_modify_uploader(request, template_name='my.html', next='
     
 @csrf_protect
 @login_required
+@user_passes_test(lambda u: (u.has_perm('department.cr_list') or u.has_perm('department.cr_add')))
 def check_result_show(request, template_name='', next='', check_result_index='1'):
     """
     检查结果详细信息显示。
@@ -70,6 +71,7 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
 
 @csrf_protect
 @login_required
+@permission_required('department.cr_add')
 def check_result_add(request, template_name='my.html', next_template_name='my.html', next_error='my.html', check_object_page='1',):
     """
     检查结果修改视图
@@ -160,6 +162,7 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
 
 @csrf_protect
 @login_required
+@permission_required('department.co_add')
 def check_result_detail_add(request, template_name='my.html', next='/', check_result_page='1',):
     """
     检查结果修改视图
@@ -190,18 +193,10 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
     else:
         raise Http404('Invalid Request!')
 
-@csrf_protect
-@login_required
-def check_result_delete(request, template_name='my.html', next='/', check_result_page='1',):
-    """
-    检查结果删除视图
-    """
-
-    raise Http404('Invalid Request!')                
-
 
 @csrf_protect
 @login_required
+@permission_required('department.cr_list')
 def check_result_list(request, template_name='my.html', next='/', check_result_page='1',):
     """
     检查结果查询视图

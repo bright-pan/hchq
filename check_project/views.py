@@ -466,16 +466,3 @@ def check_project_list(request, template_name='my.html', next='/', check_project
                                    },
                                   context_instance=RequestContext(request))
 
-@csrf_protect
-@login_required
-@permission_required('department.cr_report')
-def check_project_statistics(request, template_name='my.html', next='/', check_project_page='1',):
-    """
-    检查项目数据统计
-    """
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
-        return check_project_report()
-    query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-    return check_project_report(query_set, request)

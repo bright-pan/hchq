@@ -1,3 +1,4 @@
+#% -*- coding: utf-8 -*-
 #coding=utf-8
 #file name is SimpleListReport.py
 import chinese #主要是为了解决ReportLab中文bug

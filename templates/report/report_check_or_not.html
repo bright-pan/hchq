@@ -1,0 +1,135 @@
+{% extends "check_result/check_result_layout.html" %}
+{% block header_describe %}{% endblock %}
+{% load cache %}
+{% cache 500 check_result_add_media %}
+{% block media %}
+<link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+                $.getJSON("{% url service_area_name_ajax %}",
+                          {
+                          },
+                          function(data) {
+                                  $("#id_service_area_name").autocomplete(data, {
+                                          minChars: 0,
+                                                          max: 200,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                                          matchContains: true,
+                                                          scrollHeight: 220,
+                                                          formatItem: function(data, i, total) {
+                                                          // don't show the current month in the list of values (for whatever reason)
+                                                          //if ( data[0] == months[new Date().getMonth()] ) 
+                                                          //return false;
+                                                          return data[0];
+                                                  }
+                                          });
+
+                          });
+                       var service_area_name_old = '';
+                       $("#id_department_name").focus(function() {
+
+                                var service_area_name = $("#id_service_area_name").val();
+                                if (service_area_name != '' && service_area_name != service_area_name_old)
+                                {
+//                                        alert('********');
+                                        service_area_name_old = service_area_name;
+                                        $("#id_department_name").unautocomplete();
+                                        $.getJSON("{% url department_name_ajax %}",
+                                                  {
+                                                  service_area_name :$("#id_service_area_name").val()
+                                                                  },
+                                                  function(data) {
+                                                          $("#id_department_name").autocomplete(data, {
+                                                                  minChars: 0,
+                                                                                  max: 200,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                                                                  matchContains: true,
+                                                                                  scrollHeight: 220,
+                                                                                  formatItem: function(data, i, total) {
+                                                                                  // don't show the current month in the list of values (for whatever reason)
+                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
+                                                                                  //return false;
+                                                                                  return data[0];
+                                                                          }
+                                                                  });
+
+                                                  });
+
+                                }
+                                
+                        });
+
+        });
+</script>
+{% endblock %}
+{% endcache %}
+{% block teaser %}
+{% load cache %}
+{% cache 500 report_check_or_not user.username %}
+<div class="nav_hlist">
+<ul>
+  {% if perms.department.cr_report %}
+  <li class="active"><strong>检查对象数据统计</strong></li>
+  {% endif %}
+  {% if perms.department.cr_report %}
+  <li><a href="{% url report_statistics 1 %}">检查项目数据统计</a></li>
+  {% endif %}
+</ul>
+</div>
+{% endcache %}
+{% endblock %}
+
+{% block main %}
+{% with search_form as form %}
+<form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+  <fieldset>
+    <legend>检查对象信息</legend>
+    <div class="subcolumns">
+      <div class="c50l">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.service_area_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.service_area_name.errors }}</strong>
+            {{ form.service_area_name.label_tag }}
+            {{ form.service_area_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.service_area_name.label_tag }}
+            {{ form.service_area_name }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="c50r">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+          {% if form.department_name.errors %}
+          <div class="type-text error">
+            <strong class="message">{{ form.department_name.errors }}</strong>
+            {{ form.department_name.label_tag }}
+            {{ form.department_name }}
+          </div>
+          {% else %}
+          <div class="type-text">
+            {{ form.department_name.label_tag }}
+            {{ form.department_name }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <div class="center">
+    <input type="submit"  name="submit" value="已检人员" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+    <input type="submit"  name="submit" value="未检人员" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+    <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+  </div>
+</form>
+{% endwith %}
+{% endblock %}

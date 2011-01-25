@@ -54,6 +54,12 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('',
+
+      (r'^report/', include('hchq.report.urls')),
+                        
+)
+
+urlpatterns += patterns('',
                         
       (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root' : settings.MEDIA_ROOT}),
                         

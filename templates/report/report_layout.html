@@ -1,20 +1,22 @@
 {% extends "my_layout.html" %}
 
 
-{% block header_describe %}{% endblock %}
+{% block header_describe %}
+
+{% endblock %}
 
 {% block nav %}
 {% load cache %}
-{% cache 500 check_object_layout user.username %}
+{% cache 500 report_layout user.username %}
 <ul>
   {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
-  <li class="active"><strong>检查对象管理</strong></li>
+  <li><a href="{% url check_object_list 1 %}">检查对象管理</a></li>
   {% endif %}
   {% if perms.department.cr_list or perms.department.cr_add %}
   <li><a href="{% url check_result_list 1 %}">检查结果管理</a></li>
   {% endif %}
   {% if perms.department.cr_report %}
-  <li><a href="{% url report_statistics %}">检查项目统计</a></li>
+  <li><a href="{% url report_statistics %}">检查数据统计</a></li>
   {% endif %}
 </ul>
 {% endcache %}
