@@ -93,6 +93,13 @@ def get_checker(instance=None):
         return u'%s' % result_object.checker.username
     else:
         return u''
+def get_check_service_area_department(instance=None):
+    if instance is not None:
+        result_object = instance.check_result.get(is_latest=True)
+        service_area_department_object = result_object.checker.get_profile().service_area_department
+        return u'%s %s' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+    else:
+        return u''
 
 def get_check_time(instance=None):
     if instance is not None:
@@ -155,22 +162,26 @@ def certification_report(query_set=None, request=None):
                         get_value=lambda instance: get_mate_id_number(instance)),
             ObjectValue(attribute_name='name', top=6.5*cm, left=3*cm,width=10*cm,
                         get_value=lambda instance: get_mate_service_area_department(instance)),
-            Label(text=u'__________________于________________________________进行环孕检，检查人员 ________________ 对此人进行检查的检查结果为 _____________________________。',
+            Label(text=u'_______________于________________________进行环孕检，检查人员 ____________ 对此人进行检查的检查结果为 _______________________，检查单位为_____________________________。',
                   top=7.5*cm, left=3*cm, width=15*cm),
-            ObjectValue(attribute_name='name', top=7.5*cm, left=2*cm,width=3*cm,
+            ObjectValue(attribute_name='name', top=7.5*cm, left=1.6*cm,width=3*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},),
-            ObjectValue(attribute_name='name', top=7.5*cm, left=5.8*cm,width=4*cm,
+            ObjectValue(attribute_name='name', top=7.5*cm, left=5*cm,width=4*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
                         get_value=lambda instance: get_check_time(instance)),
-            ObjectValue(attribute_name='name', top=7.5*cm, left=14.1*cm,width=3*cm,
+            ObjectValue(attribute_name='name', top=7.5*cm, left=11.5*cm,width=3*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
                         get_value=lambda instance: get_checker(instance)),
-            ObjectValue(attribute_name='name', top=8.0*cm, left=7*cm,width=3*cm,
+            ObjectValue(attribute_name='name', top=7.95*cm, left=3.5*cm,width=3*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
                         get_value=lambda instance: get_result(instance)),
-            Label(text=u'特   此   证   明！',
-                  top=9*cm, left=11*cm, width=5*cm,
-                  style={'fontName': 'yahei', 'fontSize': 15, 'alignment': TA_RIGHT},),
+            ObjectValue(attribute_name='name', top=7.95*cm, left=4.5*cm,width=10*cm,
+                        style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                        get_value=lambda instance: get_check_service_area_department(instance)),
+            Label(text=u'(本证明检查单位盖章有效)',
+                  top=9.2*cm, left=11*cm, width=5*cm,
+                  style={'fontName': 'yahei', 'fontSize': 10, 'alignment': TA_RIGHT},),
+
             Label(text=u'检查人员：______________',
                   top=10.5*cm, left=13*cm, width=5*cm,
                   style={'fontName': 'yahei', 'fontSize': 10, 'alignment': TA_RIGHT},),
@@ -191,22 +202,25 @@ def certification_report(query_set=None, request=None):
                         get_value=lambda instance: get_mate_id_number(instance)),
             ObjectValue(attribute_name='name', top=22*cm, left=3*cm,width=10*cm,
                         get_value=lambda instance: get_mate_service_area_department(instance)),
-            Label(text=u'__________________于________________________________进行环孕检，检查人员 ________________ 对此人进行检查的检查结果为 _____________________________。',
+            Label(text=u'_______________于________________________进行环孕检，检查人员 ____________ 对此人进行检查的检查结果为 _______________________，检查单位为_____________________________。',
                   top=23*cm, left=3*cm, width=15*cm),
-            ObjectValue(attribute_name='name', top=23*cm, left=2*cm,width=3*cm,
+            ObjectValue(attribute_name='name', top=23*cm, left=1.6*cm,width=3*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},),
-            ObjectValue(attribute_name='name', top=23*cm, left=5.8*cm,width=4*cm,
+            ObjectValue(attribute_name='name', top=23*cm, left=5*cm,width=4*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
                         get_value=lambda instance: get_check_time(instance)),
-            ObjectValue(attribute_name='name', top=23*cm, left=14.1*cm,width=3*cm,
+            ObjectValue(attribute_name='name', top=23*cm, left=11.5*cm,width=3*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
                         get_value=lambda instance: get_checker(instance)),
-            ObjectValue(attribute_name='name', top=23.5*cm, left=7*cm,width=3*cm,
+            ObjectValue(attribute_name='name', top=23.45*cm, left=3.5*cm,width=3*cm,
                         style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
                         get_value=lambda instance: get_result(instance)),
-            Label(text=u'特   此   证   明！',
-                  top=24.5*cm, left=11*cm, width=5*cm,
-                  style={'fontName': 'yahei', 'fontSize': 15, 'alignment': TA_RIGHT},),
+            ObjectValue(attribute_name='name', top=23.45*cm, left=4.5*cm,width=10*cm,
+                        style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                        get_value=lambda instance: get_check_service_area_department(instance)),
+            Label(text=u'(本证明检查单位盖章有效)',
+                  top=24.7*cm, left=11*cm, width=5*cm,
+                  style={'fontName': 'yahei', 'fontSize': 10, 'alignment': TA_RIGHT},),
             Label(text=u'检查人员：______________',
                   top=26*cm, left=13*cm, width=5*cm,
                   style={'fontName': 'yahei', 'fontSize': 10, 'alignment': TA_RIGHT},),
