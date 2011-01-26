@@ -112,5 +112,54 @@ class ReportCheckOrNotForm(forms.Form):
 
     
 class ReportStatisticsForm(forms.Form):
-    pass
-    
+
+    has_department_info = forms.CharField(
+        required=True,
+        label =_(u'单位统计'),
+        help_text=_(u'打勾则对服务区域中的单位进行统计'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_department_info',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+
+    has_check = forms.CharField(
+        required=True,
+        label =_(u'已检对象名单'),
+        help_text=_(u'打勾则包含已检对象名单'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_check',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+    has_not = forms.CharField(
+        required=True,
+        label =_(u'未检对象名单'),
+        help_text=_(u'打勾则包含未检对象名单'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_not',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+
+    def report(self, request=None):
+        if self.cleaned_data['has_department_info'] == u'has_department_info':
+            has_department_info = True
+        else:
+            has_department_info = False
+            
+        if self.cleaned_data['has_check'] == u'has_check':
+            has_check = True
+        else:
+            has_check = False
+            
+        if self.cleaned_data['has_not'] == u'has_not':
+            has_not = True
+        else:
+            has_not = False
+            
+        query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
+        return check_project_report(query_set, request, has_department_info, has_check, has_not)

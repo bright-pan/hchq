@@ -21,12 +21,30 @@ def report_statistics(request, template_name='my.html', next='/', ):
     """
     检查项目数据统计
     """
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
-        return check_project_report()
-    query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-    return check_project_report(query_set, request)
+    page_title = u'检查项目数据统计'
+    
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'生成项目报表':
+            report_statistics_form = ReportStatisticsForm(post_data)
+            if report_statistics_form.is_valid():
+                return report_statistics_form.report(request)
+            else:
+                return render_to_response(template_name,
+                                          {'report_form': report_statistics_form,
+                                           'page_title': page_title,
+                                           },
+                                          context_instance=RequestContext(request))
+        else:
+            raise Http404('Invalid Request!')                
+    else:
+        report_statistics_form = ReportStatisticsForm()
+        return render_to_response(template_name,
+                                  {'report_form': report_statistics_form,
+                                   'page_title': page_title,
+                                   },
+                                  context_instance=RequestContext(request))
 
 @csrf_protect
 @login_required

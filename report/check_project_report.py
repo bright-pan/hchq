@@ -357,15 +357,12 @@ class CoverReport(Report):
         borders = {'top': Line(stroke_color=red)}
 
 
-def check_project_report(query_set=None, request=None):
-    if request.user.has_perm('department.unlocal'):
-        response = cache.get('check_project_report_unlocal')
-        if response is not None:
-            return response
-    else:
-        response = cache.get('check_project_report_%s' % request.user.id)
-        if response is not None:
-            return response
+def check_project_report(query_set=None, request=None, has_department_info=False, has_check=False, has_not=False):
+    response = cache.get('check_project_report_%s_%s_%s_%s' % (request.user.id, has_department_info, has_check, has_not))
+    if response is not None:
+        print "*******************"
+        return response
+    print "$$$$$$$$$$$$$$$$$$$$$$$$"
     response = HttpResponse(mimetype='application/pdf')
     try:
         check_project = CheckProject.objects.get(is_setup=True, is_active=True)
@@ -374,17 +371,19 @@ def check_project_report(query_set=None, request=None):
     
 #    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
     if query_set is not None and request is not None and query_set:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         if request.user.has_perm('department.unlocal'):
             check_project_report = CheckProjectReport(query_set)
             check_project_report.author = request.user.username
-            canvas = check_project_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+            canvas = check_project_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
 #        check_project_report.generate_by(PDFGenerator, filename=response)
             query_set_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
+            if has_department_info is False:
+                query_set_service_area = []
         else:
-            cover_report = CoverReport(query_set)
-            cover_report.author = request.user.username
-            cover_report.title = u'%s' % check_project.name
-            canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
             user_service_area_name = request.user.get_profile().service_area_department.service_area.name
             query_set_service_area = ServiceArea.objects.filter(is_active=True, name=user_service_area_name)
             
@@ -399,33 +398,56 @@ def check_project_report(query_set=None, request=None):
                       get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
                 ]
             canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
-            for service_area_department_object in query_set_service_area_department:
-                query_set_not_check_object_in_department = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department_object).exclude(check_result__is_latest=True, check_result__check_project=check_project)
-                if query_set_not_check_object_in_department:
-                    department_report = DepartmentReport(query_set_not_check_object_in_department)
-                    department_report.author = request.user.username
-                    department_report.title = u'%s-%s-未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
-                    department_report.band_page_header.elements += [
-                        Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
-                              style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                              get_value=lambda text: get_department_total_count(text, service_area_department=service_area_department_object)),
-                        ]
-                    canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
-                else:
-                    pass
+            if has_check is True or has_not is True:
+                for service_area_department_object in query_set_service_area_department:
+                    if has_not is True:
+                        query_set_not_check_object_in_department = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department_object).exclude(check_result__is_latest=True, check_result__check_project=check_project)
+                        if query_set_not_check_object_in_department:
+                            department_report = DepartmentReport(query_set_not_check_object_in_department)
+                            department_report.author = request.user.username
+                            department_report.title = u'%s-%s-未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.band_page_header.elements += [
+                                Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                                      style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                                      get_value=lambda text: get_department_total_count(text, service_area_department=service_area_department_object)),
+                                ]
+                            canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                        else:
+                            pass
+                    if has_check is True:
+                        query_set_check_object_in_department = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department_object).filter(check_result__is_latest=True, check_result__check_project=check_project)
+                        if query_set_check_object_in_department:
+                            department_report = DepartmentReport(query_set_check_object_in_department)
+                            department_report.author = request.user.username
+                            department_report.title = u'%s-%s-已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.band_page_header.elements += [
+                                Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                                      style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                                      get_value=lambda text: get_department_total_count(text, service_area_department=service_area_department_object)),
+                                ]
+                            canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                        else:
+                            pass
+                    else:
+                        pass
+            else:
+                pass
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
         cover_report.generate_by(PDFGenerator, canvas=canvas)
         
     else:
-        pass
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
 
-    if request.user.has_perm('department.unlocal'):
-        cache.set('check_project_report_unlocal', response, 15*60)
-    else:
-        cache.set('check_project_report_%s' % request.user.id, response, 15*60)
-
+    cache.set('check_project_report_%s_%s_%s_%s' % (request.user.id, has_department_info, has_check, has_not), response, 15*60)
     return response
 
 def check_object_check_service_area_report(query_set=None, request=None):

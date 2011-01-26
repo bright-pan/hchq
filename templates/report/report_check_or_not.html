@@ -1,7 +1,7 @@
 {% extends "report/report_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% load cache %}
-{% cache 500 check_result_add_media %}
+{% cache 500 report_check_or_not_media %}
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
