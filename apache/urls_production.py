@@ -1,7 +1,6 @@
 from django.conf.urls.defaults import *
 
 from hchq import settings
-
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -50,6 +49,12 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
 
       (r'^check_result/', include('hchq.check_result.urls')),
+                        
+)
+
+urlpatterns += patterns('',
+
+      (r'^report/', include('hchq.report.urls')),
                         
 )
 
