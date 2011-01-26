@@ -1,4 +1,4 @@
-{% extends "check_result/check_result_layout.html" %}
+{% extends "report/report_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% load cache %}
 {% cache 500 check_result_add_media %}
@@ -73,10 +73,10 @@ $(document).ready(function(){
 <div class="nav_hlist">
 <ul>
   {% if perms.department.cr_report %}
-  <li class="active"><strong>检查对象数据统计</strong></li>
+  <li><a href="{% url report_statistics %}">检查项目数据统计</a></li>
   {% endif %}
   {% if perms.department.cr_report %}
-  <li><a href="{% url report_statistics 1 %}">检查项目数据统计</a></li>
+  <li class="active"><strong>检查对象数据统计</strong></li>
   {% endif %}
 </ul>
 </div>
@@ -84,8 +84,14 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main %}
-{% with search_form as form %}
-<form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+
+<p class="warning">
+  1. 如果你只输入服务区域，不输入单位部门出具的报表则是该服务区域的综合报表，如果二者同时输入则生成的报表是该服务区域单位部门的信息报表。<br>
+  2. 如果你想查看服务区域的综合报表则可能需要花费更多的时间，请耐心等待。
+</p>
+
+{% with report_form as form %}
+<form method="post" action="" class="yform full" id="id_form_report">{% csrf_token %}
   <fieldset>
     <legend>检查对象信息</legend>
     <div class="subcolumns">
