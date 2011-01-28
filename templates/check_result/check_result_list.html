@@ -524,7 +524,9 @@ $(document).ready(function(){
     <div class="center">
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+      {% if perms.department.cr_report %}
       <input type="submit"  name="submit" value="打印检查结果报表" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+      {% endif %}
       <span id="id_submit_error"></span>
     </div>
   </form>
