@@ -86,7 +86,7 @@ class CheckObjectAddForm(forms.Form):
         )
     mate_id_number = forms.CharField(
         max_length=18,
-        required=True,
+        required=False,
         label=_(u'身份证号'),
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
@@ -586,7 +586,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         )
     mate_id_number = forms.CharField(
         max_length=18,
-        required=True,
+        required=False,
         label=_(u'身份证号'),
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,

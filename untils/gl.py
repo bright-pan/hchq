@@ -140,7 +140,7 @@ check_object_name_search_re_pattern = ur'^[\u4e00-\u9fa5]+$|(^$)'
 check_object_name_add_re_pattern = ur'^[\u4e00-\u9fa5]+$'
 
 check_object_id_number_search_re_pattern = ur'^[\dxX]+$|(^$)'
-check_object_id_number_add_re_pattern = ur'(^[\d]{15}$)|([\d]{17}[\dxX]{1})'
+check_object_id_number_add_re_pattern = ur'(^[\d]{15}$)|([\d]{17}[\dxX]{1})|(^$)'
 
 check_object_name_error_messages={'required': _(u'请输入检查对象名称！'),
                                    'max_length': _(u'输入的检查对象名称长度大于64个字符！'),

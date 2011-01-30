@@ -13,7 +13,7 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     is_family = models.BooleanField(default=False)
     address = models.CharField(max_length=128, null=True)
     mate_name = models.CharField(max_length=128)
-    mate_id_number = models.CharField(max_length=18)
+    mate_id_number = models.CharField(max_length=18, null=True)
     mate_service_area_department = models.ForeignKey(ServiceAreaDepartment, related_name='check_object_mate')
     wedding_time = models.DateField(null=True)
     ctp_method = models.CharField(max_length=10, null=True)
