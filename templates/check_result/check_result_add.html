@@ -148,7 +148,7 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main %}
-<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">检查对象查询</button>
+<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">检查对象查询条件</button>
 <div id="search_dialog" style="display:none;" title="查询参数">
   {% with search_form as form %}
   <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
