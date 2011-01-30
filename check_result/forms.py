@@ -125,7 +125,7 @@ class CheckResultDetailAddForm(forms.Form):
                                               )
             self.fields['pregnant'].widget.attrs['size'] = u'2'
             self.fields['ring'].choices = ((u'ring', u'有环'),
-                                           (u'unring', u'有孕'),
+                                           (u'unring', u'无环'),
                                            )
             self.fields['ring'].widget.attrs['size'] = u'2'
             self.fields['id'].widget.attrs['value'] = check_object.id
