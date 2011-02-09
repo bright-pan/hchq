@@ -86,7 +86,7 @@ class CheckResultReport(Report):
             ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
             ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
             ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
-            ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm),
+            ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
             ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
                         get_value=lambda instance: get_result_value(instance)),
             ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
