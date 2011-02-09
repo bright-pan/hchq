@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
-from django.db.models import ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist, Q
 from PIL import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
@@ -790,7 +790,7 @@ class CheckResultSearchForm(forms.Form):
         if pregnant == u'none':
             pass
         else:
-            query_set = query_set.filter(result__icontains=pregnant)
+            query_set = query_set.filter(result__startswith=pregnant)
 
         return query_set
     def query_ring(self, query_set=None):
@@ -802,7 +802,7 @@ class CheckResultSearchForm(forms.Form):
         if ring == u'none':
             pass
         else:
-            query_set = query_set.filter(result__icontains=ring)
+            query_set = query_set.filter(Q(result__startswith=u'pregnant %s' % ring) | Q(result__startswith=u'unpregnant %s' % ring))
 
         return query_set
     
@@ -815,7 +815,7 @@ class CheckResultSearchForm(forms.Form):
         if pregnant_period is None:
             pass
         else:
-            query_set = query_set.filter(result__icontains=pregnant_period)
+            query_set = query_set.filter(Q(result__startswith=u'pregnant ring %s' % pregnant_period) | Q(result__startswith=u'pregnant unring %s' % pregnant_period) | Q(result__startswith=u'unpregnant ring %s' % pregnant_period) | Q(result__startswith=u'unpregnant unring %s' % pregnant_period))
 
         return query_set
 
