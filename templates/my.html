@@ -21,100 +21,30 @@
         </div>
         <div id="header_describe">
         {% block header_describe %}
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
         {% endblock %}
         </div>
       </div>
       {% block nav %}
-      <div id="nav">
-        <!-- skiplink anchor: navigation -->
-        <a id="navigation" name="navigation"></a>
-        <div class="hlist">
-          <!-- main navigation: horizontal list -->
-          <ul>
-            <li class="active"><strong>检查结果</strong></li>
-            <li><a href="#">检查对象</a></li>
-            <li><a href="#">检查项目</a></li>
-            <li><a href="#">数据统计</a></li>
-            <li><a href="#">报表打印</a></li>
-          </ul>
-        </div>
-      </div>
       {% endblock %}
       
       {% block teaser %}
       <div id="teaser">
-        <h3>H3 Heading</h3>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
       </div>
       {% endblock %}
       
       <div id="main">
-        <div id="col1">
-          <div id="col1_content" class="clearfix">
-            <!-- add your content here -->
-            {% block col1_content %}
-            <h5>H5 Heading</h5>
-            <ul>
-              <li>List Item 1</li>
-              <li>List Item 2</li>
-              <li>List Item 3</li>
-              <li>List Item 4</li>
-              <li>List Item 5</li>
-            </ul>
-            {% endblock %}
-            
-          </div>
-        </div>
-        <div id="col3">
-          <div id="col3_content" class="clearfix">
-            <!-- add your content here -->
-            {% block col3_content %}
-            <div class="subcolumns">
-              <div class="c33l">
-                <div class="subc">
-                  <!-- Insert your subtemplate content here -->
-                  <h6>H6 Heading</h6>
-                  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
-                </div>
-              </div>
-              <div class="c66r">
-                <div class="subc">
-                  <!-- Insert your subtemplate content here -->
-                  <h6>H6 Heading</h6>
-                  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et.</p>
-                </div>
-              </div>
-            </div>
-            <table class="full">
-              <caption>Table Heading</caption>
-              <tbody>
-                <tr>
-                  <th>Col 1</th>
-                  <th>Col 2</th>
-                  <th>Col 3</th>
-                </tr>
-                <tr>
-                  <th>Row 1</th>
-                  <td>content 1.1</td>
-                  <td>content 1.2</td>
-                </tr>
-                <tr>
-                  <th>Row 2 </th>
-                  <td>content 2.1</td>
-                  <td>content 2.3</td>
-                </tr>
-              </tbody>
-            </table>
-            {% endblock %}
-          </div>            
-          <!-- IE Column Clearing -->
-          <div id="ie_clearing"> &#160; </div>
+	<OBJECT id=hchq codeBase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" classid=clsid:d27cdb6e-ae6d-11cf-96b8-444553540000 width=1060 align=middle height=700>
+	  <PARAM NAME="allowScriptAccess" VALUE="sameDomain"><PARAM NAME="movie" VALUE="hchq.swf"><PARAM NAME="quality" VALUE="high"><PARAM NAME="bgcolor" VALUE="#ffffff">
+	  <embed src="{{ MEDIA_URL }}/flash/hchq.swf" quality="high" bgcolor="#ffffff" width="1060" height="700" name="hchq" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+	</OBJECT>
+        <!-- IE Column Clearing -->
+        <div id="ie_clearing"> &#160; </div>
         </div>
       </div>
       <!-- begin: #footer -->
       <div id="footer">
         <p>©2010 江西省会昌县人口与计划生育委员会</p>
+	<img  src="{{ MEDIA_URL }}images/django_site.gif"/>
       </div>
     </div>
   </div>
