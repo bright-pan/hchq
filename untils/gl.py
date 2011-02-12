@@ -53,7 +53,7 @@ department_name_error_messages={'required': _(u'请输入单位部门名称！')
                                 'format_error': _(u'单位部门名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
                                 'form_error': _(u'表单严重错误！'),
                                 'already_error': _(u'单位部门同名，请输入正确的单位部门名称！'),
-                                'not_exist_error': _(u'服务区域不存在'),
+                                'not_exist_error': _(u'单位部门不存在'),
                                 'not_match_error': _(u'服务区域与单位部门未关联！'),
                                   }
 
