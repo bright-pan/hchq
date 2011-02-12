@@ -1,7 +1,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>考勤结果</caption>
   <thead>
-    <tr><th scope="col" colspan="8">考勤结果查询(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="8">可以删除的考勤结果(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
   <tbody>
     <tr>
@@ -12,6 +12,7 @@
       <th scope="col">请假时间</th>
       <th scope="col">请假原因</th>
       <th scope="col">记录人员</th>
+      <th scope="col">删除命令</th>
     </tr>
     {% for result in results_page.object_list %}
     <tr>
@@ -23,6 +24,13 @@
       <td>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
       <td>{{ result.desc }}</td>
       <td>{{ result.recorder.username }}</td>
+      <td>
+        <form method="post" action=".">{% csrf_token %}
+          <input type="hidden" name="id" value="{{ result.id }}" />
+          <input type="submit" name="submit" value="删除" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+        </form>
+      </td>
+ 
     </tr>
     {% empty %}
     <p class="warning">没有考勤结果可以查询！</p>

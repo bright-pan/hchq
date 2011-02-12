@@ -29,12 +29,11 @@ def check_result_detail_modify_uploader(request, template_name='my.html', next='
     
 @csrf_protect
 @login_required
-@user_passes_test(lambda u: (u.has_perm('department.cr_list') or u.has_perm('department.cr_add')))
 def check_result_show(request, template_name='', next='', check_result_index='1'):
     """
-    检查结果详细信息显示。
+    考勤结果详细信息显示。
     """
-    page_title=u'检查结果详情'
+    page_title=u'考勤结果详情'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -71,57 +70,35 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
 
 @csrf_protect
 @login_required
-@permission_required('department.cr_add')
 def check_result_add(request, template_name='my.html', next_template_name='my.html', next_error='my.html', check_object_page='1',):
     """
-    检查结果修改视图
+    考勤结果修改视图
     """
     user = get_user(request)
     
-    page_title = u'选择检查对象'
+    page_title = u'选择考勤对象'
     
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data[u'submit']
-        if submit_value == u'检查':
-            try:
-                check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-            except ObjectDoesNotExist:
-                check_project = None
-            if check_project is not None:
-                today = datetime.datetime.now().date()
-                if check_project.start_time <= today and today <= check_project.end_time:
+        if submit_value == u'考勤':
+            check_result_add_form = CheckResultAddForm(post_data)
+            if check_result_add_form.is_valid():
+                check_result_add_object = check_result_add_form.object()
                 
-                    check_result_add_form = CheckResultAddForm(post_data)
-                    if check_result_add_form.is_valid():
-                        check_result_add_object = check_result_add_form.object()
-                    #                print check_result_add_object.id
-                    #                print check_result_add_object.id_number
-                        check_result_detail_add_form = CheckResultDetailAddForm()
-                        check_result_detail_add_form.init_value(user, check_result_add_object)
-                        page_title = u'添加检查结果'
-                        return render_to_response(next_template_name,
-                                                  {'detail_add_form': check_result_detail_add_form,
-                                                   'result': check_result_add_object,
-                                                   'page_title': page_title,
-                                                   },
-                                                  context_instance=RequestContext(request))
-                    else:
-                        raise Http404('Invalid Request!')
-                else:
-                    page_title = u'检查受限制'
-                    return render_to_response(next_error,
-                                              {'check_project': check_project,
-                                               'page_title': page_title,
-                                               },
-                                              context_instance=RequestContext(request))
-            else:
-                page_title = u'检查受限制'
-                return render_to_response(next_error,
-                                          {'check_project': check_project,
+                #                print check_result_add_object.id
+                #                print check_result_add_object.id_number
+                check_result_detail_add_form = CheckResultDetailAddForm()
+                check_result_detail_add_form.init_value(user, check_result_add_object)
+                page_title = u'添加考勤结果'
+                return render_to_response(next_template_name,
+                                          {'detail_add_form': check_result_detail_add_form,
+                                           'result': check_result_add_object,
                                            'page_title': page_title,
                                            },
                                           context_instance=RequestContext(request))
+            else:
+                raise Http404('Invalid Request!')
         else:
             if submit_value == u'查询':
                 check_object_search_form = CheckObjectSearchForm(post_data)
@@ -162,13 +139,12 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
 
 @csrf_protect
 @login_required
-@permission_required('department.co_add')
 def check_result_detail_add(request, template_name='my.html', next='/', check_result_page='1',):
     """
-    检查结果修改视图
+    考勤结果修改视图
     """
 
-    page_title = u'编辑检查结果'
+    page_title = u'编辑考勤结果'
     user = get_user(request)
     if request.method == 'GET':
         post_data = request.GET.copy()
@@ -196,19 +172,17 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
 
 @csrf_protect
 @login_required
-@permission_required('department.cr_list')
 def check_result_list(request, template_name='my.html', next='/', check_result_page='1',):
     """
-    检查结果查询视图
+    考勤结果查询视图
     """
-    page_title = u'查询检查结果'
+    page_title = u'查询考勤结果'
 
     if request.method == 'GET':
         post_data = request.GET.copy()
         submit_value = post_data.get(u'submit', u'')
         if submit_value == u'查询':
             check_result_search_form = CheckResultSearchForm(post_data)
-            check_result_search_form.init_check_project()
             if check_result_search_form.is_valid():
                 check_result_search_form.data_to_session(request)
                 check_result_search_form.init_from_session(request)
@@ -223,9 +197,8 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                                        },
                                       context_instance=RequestContext(request))
         else:
-            if submit_value == u'打印检查结果报表':
+            if submit_value == u'打印考勤结果报表':
                 check_result_search_form = CheckResultSearchForm(post_data)
-                check_result_search_form.init_check_project()
                 if check_result_search_form.is_valid():
                     check_result_search_form.data_to_session(request)
                     check_result_search_form.init_from_session(request)
@@ -241,7 +214,6 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                                               context_instance=RequestContext(request))
             else:
                 check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
-                check_result_search_form.init_check_project()
                 check_result_search_form.init_from_session(request)
                 if check_result_search_form.is_valid():
                     query_set = check_result_search_form.search()
@@ -256,3 +228,65 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                                           context_instance=RequestContext(request))
     else:
         raise Http404('Invalid Request!')               
+
+
+@csrf_protect
+@login_required
+def check_result_delete(request, template_name='my.html', next='/', check_result_page='1',):
+    """
+    考勤对象删除视图
+    """
+    page_title = u'删除考勤对象'
+
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'删除':
+            check_result_delete_form = CheckResultDeleteForm(post_data)
+            if check_result_delete_form.is_valid():
+                check_result_delete_form.delete()
+            else:
+                pass
+            check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
+            check_result_search_form.init_from_session(request)
+            if check_result_search_form.is_valid():
+                query_set = check_result_search_form.search()
+                results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
+            else:
+                results_page = None
+        else:
+            if submit_value == u'查询':
+                check_result_search_form = CheckResultSearchForm(post_data)
+                check_result_delete_form = CheckResultDeleteForm()
+                if check_result_search_form.is_valid():
+                    check_result_search_form.data_to_session(request)
+                    check_result_search_form.init_from_session(request)
+                    query_set = check_result_search_form.search()
+                    results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
+                else:
+                    results_page = None
+            else:
+                raise Http404('Invalid Request!')                
+        return render_to_response(template_name,
+                                  {'search_form': check_result_search_form,
+                                   'delete_form': check_result_delete_form,
+                                   'page_title': page_title,
+                                   'results_page':results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+    else:
+        check_result_delete_form = CheckResultDeleteForm()
+        check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
+        check_result_search_form.init_from_session(request)
+        if check_result_search_form.is_valid():
+            query_set = check_result_search_form.search()
+            results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
+        else:
+            results_page = None
+        return render_to_response(template_name,
+                                  {'search_form': check_result_search_form,
+                                   'delete_form': check_result_delete_form,
+                                   'page_title': page_title,
+                                   'results_page':results_page,
+                                   },
+                                  context_instance=RequestContext(request))

@@ -1,25 +1,14 @@
 {% extends "check_result/check_result_layout.html" %}
-{% load check_result_filter %}
-{% load check_object_filter %}
 {% block header_describe %}{% endblock %}
 
 {% block teaser %}
-{% load cache %}
-{% cache 500 check_result_show user.username %}
 <div class="nav_hlist">
 <ul>
-  {% if perms.department.cr_list or perms.department.cr_add %}
   <li class="active"><strong>考勤结果详情</strong></li>
-  {% endif %}
-  {% if perms.department.cr_add %}
   <li><a href="{% url check_result_add 1 %}">考勤结果添加</a></li>
-  {% endif %}
-  {% if perms.department.cr_list %}
   <li><a href="{% url check_result_list 1 %}">考勤结果查询</a></li>
-  {% endif %}
 </ul>
 </div>
-{% endcache %}
 {% endblock %}
 
 {% block main %}
@@ -35,32 +24,16 @@
             考勤对象
           </caption>
           <thead>
-            <tr><th scope="col" colspan="2">{{ check_object.name }} | {{ check_object.id_number }}</th></tr>
+            <tr><th scope="col" colspan="2">{{ check_object.name }}</th></tr>
           </thead>
           <tbody>
             <tr>
-              <td class="odd">妻子姓名<br>身份证号</td>
-              <td class="odd">{{ check_object.name }}<br>{{ check_object.id_number }}</td>
+              <td class="odd">考勤对象姓名</td>
+              <td class="odd">{{ check_object.name }}</td>
             </tr>
             <tr>
-              <td>服务区域<br>单位部门</td>
-              <td>{{ check_object.service_area_department.service_area.name }}<br>{{ check_object.service_area_department.department.name }}</td>
-            </tr>
-            <tr>
-              <td class="odd">家属<br>结婚时间<br>家庭住址</td>
-              <td class="odd">{% if check_object.is_family %}是{% else %}否{% endif %}<br>{{ check_object.wedding_time|date:"Y-m-d" }}<br>{{ check_object.address }}</td>
-            </tr>
-            <tr>
-              <td>丈夫姓名<br>身份证号</td>
-              <td>{{ check_object.mate_name }}<br>{{ check_object.mate_id_number }}</td>
-            </tr>
-            <tr>
-              <td class="odd">服务区域<br>单位部门</td>
-              <td class="odd">{{ check_object.mate_service_area_department.service_area.name }}<br>{{ check_object.mate_service_area_department.department.name }}</td>
-            </tr>
-            <tr>
-              <td>避孕方式<br>实施时间</td>
-              <td>{{ check_object.ctp_method|ctp_local }}<br>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
+              <td>科室名称</td>
+              <td>{{ check_object.department.name }}</td>
             </tr>
             <tr>
               <td class="odd">创建人员</td>
@@ -80,19 +53,7 @@
     </div>
     <div class="c25r">
       <div class="subc">
-        <div class="center">
-          <hr>
-          <img src="{{ check_object.photo.url }}"/>
-          <p>{{ check_object.name }}的照片</p>
-          <p>{{ check_object.id_number }}</p>
-          {% if perms.department.cr_report %}
-          <form method="post" action=".">{% csrf_token %}
-            <input type="submit" name="submit" value="打印证明" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-          </form>
-          {% endif %}
-        </div>
       </div>
-
     </div>
   </div>
 <div>
@@ -105,20 +66,19 @@
     <tbody>
       <tr>
         <th scope="col">编号</th>
-        <th scope="col">考勤项目</th>
-        <th scope="col">考勤结果</th>
-        <th scope="col">考勤时间</th>
-        <th scope="col">考勤人员</th>
+        <th scope="col">请假天数</th>
+        <th scope="col">请假原因</th>
+        <th scope="col">请假时间</th>
         <th scope="col">微机录入人员</th>
       </tr>
       {% for result in results %}
       <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{% if result.is_latest %}<p>{{ result.check_project.name }}</p>{% else %}<del>{{ result.check_project.name }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.result|local }}</p>{% else %}<del>{{ result.result|local }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.check_time|date:"Y-m-d H:i:s" }}</p>{% else %}<del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.checker.username }}</p>{% else %}<del>{{ result.checker.username }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.recorder.username }}</p>{% else %}<del>{{ result.recorder.username }}</del>{% endif %}</td>
+	<td>{{ result.days }}</td>
+        <td>{{ result.desc }}</td>
+	<td>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
+        <td>{{ result.recorder.username }}</td>
+	
       </tr>
       {% empty %}
       <th scope="col" colspan="5"><p class="warning">没有考勤结果可以查询！</p></th>

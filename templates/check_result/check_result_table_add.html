@@ -1,4 +1,3 @@
-{% load check_object_filter %}
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>考勤对象</caption>
   <thead>
@@ -7,27 +6,21 @@
   <tbody>
     <tr>
       <th scope="col">编号</th>
-      <th scope="col">妻子姓名<br>身份证号</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">丈夫姓名<br>身份证号</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">是否家属<br>结婚时间</th>
-      <th scope="col">避孕措施<br>实施时间</th>
+      <th scope="col">考勤对象姓名</th>
+      <th scope="col">科室名称</th>
+      <th scope="col">创建人员</th>
+      <th scope="col">创建时间</th>
+      <th scope="col">更新时间</th>
       <th scope="col">考勤命令</th>
     </tr>
     {% for result in results_page.object_list %}
     <tr>
       <td>{{ result.id }}</td>
-      <td>{{ result.name }}<br><a href="{% url check_result_show result.id%}">{{ result.id_number }}</a></td>
-      <td>{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
-      <td>{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
-      <td>{{ result.mate_service_area_department.service_area.name }}<br>{{ result.mate_service_area_department.department.name }}</td>
-      {% if result.is_family %} 
-      <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
-      {% else %}
-      <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
-      {% endif %}
-      <td>{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+      <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
+      <td>{{ result.department.name }}</td>
+      <td>{{ result.creater.username }}</td>
+      <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+      <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
       <td>
         <form method="post" action=".">{% csrf_token %}
           <input type="hidden" name="id" value="{{ result.id }}" />
@@ -36,7 +29,7 @@
       </td>
     </tr>
     {% empty %}
-    <p class="warning">没有考勤结果可以编辑！</p>
+    <p class="warning">没有考勤对象可以查询！</p>
     {% endfor %}
   </tbody>
 </table>

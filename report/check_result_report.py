@@ -37,7 +37,7 @@ def get_family_value(instance = None):
         return u''
     
 class CheckResultReport(Report):
-    title = u'检查结果报表'
+    title = u'考勤结果报表'
     page_size = landscape(A4)
     class band_page_header(ReportBand):
         height = 2.5*cm
@@ -45,19 +45,13 @@ class CheckResultReport(Report):
             SystemField(expression='%(report_title)s', top=0, left=0, width=BAND_WIDTH,
                         style={'fontName': 'yahei', 'fontSize': 20, 'alignment': TA_CENTER, 'textColor': navy}),     #这个地方的fontName设置属性似乎已经没有效果了！
             Line(left=0, top=1.4*cm, right=27.7*cm, bottom=1.4*cm, stroke_color=navy),
-            Label(text=u"编号", top=1.7*cm, left=0.5*cm),
-            Label(text=u"妻子姓名|家属", top=1.5*cm, left=2*cm),
-            Label(text=u"身份证号", top=1.9*cm, left=2*cm),
-            Label(text=u"服务区域", top=1.5*cm, left=6.2*cm),
-            Label(text=u"部门单位", top=1.9*cm, left=6.2*cm),
-            Label(text=u"丈夫姓名", top=1.5*cm, left=11.5*cm),
-            Label(text=u"身份证号", top=1.9*cm, left=11.5*cm),
-            Label(text=u"服务区域", top=1.5*cm, left=15.7*cm),
-            Label(text=u"部门单位", top=1.9*cm, left=15.7*cm),
-            Label(text=u"检查人员", top=1.5*cm, left=21*cm),
-            Label(text=u"检查项目", top=1.9*cm, left=21*cm),
-            Label(text=u"检查结果", top=1.5*cm, left=24*cm),
-            Label(text=u"检查时间", top=1.9*cm, left=24*cm),
+            Label(text=u"编号", top=1.5*cm, left=0.5*cm),
+            Label(text=u"对象名称", top=1.5*cm, left=2*cm),
+            Label(text=u"科室名称", top=1.5*cm, left=6*cm),
+            Label(text=u"请假天数", top=1.5*cm, left=10*cm),
+            Label(text=u"请假时间", top=1.5*cm, left=14*cm),
+            Label(text=u"请假原因", top=1.5*cm, left=20*cm),
+            Label(text=u"记录人员", top=1.5*cm, left=26*cm),
         ]
         borders = {'bottom': Line(stroke_color=navy)}
 
@@ -75,21 +69,13 @@ class CheckResultReport(Report):
         height = 0.7*cm
         auto_expand_height = True
         elements = [
-            ObjectValue(attribute_name='id', top=0.3*cm, left=0.5*cm),
-            ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
-                        get_value=lambda instance: get_family_value(instance)),
-            ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),
-            ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
-            ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
-            ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
-            ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-            ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-            ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
-            ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
-            ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
-            ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
-                        get_value=lambda instance: get_result_value(instance)),
-            ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
+            ObjectValue(attribute_name='id', top=0.1*cm, left=0.5*cm),
+            ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm),
+            ObjectValue(attribute_name='check_object.department.name', top=0.1*cm, left=6*cm),
+            ObjectValue(attribute_name='days', top=0.1*cm, left=10*cm),
+            ObjectValue(attribute_name='check_time', top=0.1*cm, left=14*cm),
+            ObjectValue(attribute_name='desc', top=0.1*cm, left=20*cm, width=6*cm),
+            ObjectValue(attribute_name='recorder.username', top=0.1*cm, left=26*cm),
             ]
 
 def check_result_report(query_set=None, request=None):

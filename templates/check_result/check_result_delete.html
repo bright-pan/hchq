@@ -1,7 +1,7 @@
 {% extends "check_result/check_result_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% load cache %}
-{% cache 500 check_result_add_media %}
+{% cache 500 check_result_delete_media %}
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
@@ -50,19 +50,18 @@ $(document).ready(function(){
 {% block teaser %}
 <div class="nav_hlist">
 <ul>
-  <li><a href="{% url check_result_delete 1 %}">考勤结果删除</a></li>
-  <li class="active"><strong>考勤结果添加</strong></li>
+  <li class="active"><strong>考勤结果删除</strong></li>
+  <li><a href="{% url check_result_add 1 %}">考勤结果添加</a></li>
   <li><a href="{% url check_result_list 1 %}">考勤结果查询</a></li>
-
 </ul>
 </div>
 {% endblock %}
 
 {% block main %}
-<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">考勤对象查询条件</button>
+<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">考勤结果查询条件</button>
 <div id="search_dialog" style="display:none;" title="查询参数">
   {% with search_form as form %}
-  <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+  <form method="get" action="." class="yform full" id="id_form_search">{% csrf_token %}
     <div class="note">
       <fieldset>
         <legend>考勤对象信息</legend>
@@ -116,6 +115,50 @@ $(document).ready(function(){
         </div>       
       </fieldset>
     </div>   
+    <div class="subcolumns">
+      <!-- Insert your subtemplate content here -->
+      <div class="note">
+	<fieldset>
+          <legend>考勤时间信息</legend>
+          <div class="subcolumns">
+            <div class="c50l">
+              <div class="subc">
+		<!-- Insert your subtemplate content here -->
+		{% if form.start_time.errors %}
+		<div class="type-text error">
+                  <strong class="message">{{ form.start_time.errors }}</strong>
+                  {{ form.start_time.label_tag }}
+                  {{ form.start_time }}
+		</div>
+		{% else %}
+		<div class="type-text">
+                  {{ form.start_time.label_tag }}
+                  {{ form.start_time }}
+		</div>
+		{% endif %}
+              </div>
+            </div>
+            <div class="c50r">
+              <div class="subc">
+		<!-- Insert your subtemplate content here -->
+		{% if form.end_time.errors %}
+		<div class="type-text error">
+                  <strong class="message">{{ form.end_time.errors }}</strong>
+                  {{ form.end_time.label_tag }}
+                  {{ form.end_time }}
+		</div>
+		{% else %}
+		<div class="type-text">
+                  {{ form.end_time.label_tag }}
+                  {{ form.end_time }}
+		</div>
+		{% endif %}
+              </div>
+            </div>
+          </div>          
+	</fieldset>
+      </div>
+    </div>
     <div class="center">
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
@@ -125,11 +168,10 @@ $(document).ready(function(){
   {% endwith %}
 </div>
 <hr>
-{% with modify_form as form %}
-{% for error in form.id.errors %}
-<p class="warning">{{ error }}</p>
-{% empty %}
-{% endfor %}
-  {% include 'check_result/check_result_table_add.html' %}
-{% endwith %}
+  {% include 'check_result/check_result_table_delete.html' %}
 {% endblock %}
+
+
+
+
+

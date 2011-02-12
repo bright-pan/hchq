@@ -21,6 +21,11 @@ urlpatterns = patterns('hchq.check_result.views',
        'check_result_detail_add',
        {'template_name' : 'check_result/check_result_detail_add.html', 'next': 'check_result/add/1', },
        'check_result_detail_add'),
-                        
+
+       (r'delete/(?P<check_result_page>\d{1,8})/$',
+       'check_result_delete',
+       {'template_name' : 'check_result/check_result_delete.html', 'next': '/check_result/person_management', },
+       'check_result_delete'),
+                       
 ) 
 
