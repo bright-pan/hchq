@@ -46,15 +46,15 @@ def filter_null_string(n):
 session_service_area_name = u'session_service_area_name'
 session_service_area_is_fuzzy = u'session_service_area_is_fuzzy'
 ################################################################################
-#单位部门表单
+#科室名称表单
 ################################################################################
-department_name_error_messages={'required': _(u'请输入单位部门名称！'),
-                                'max_length': _(u'输入的单位部门名称长度大于500个字符！'),
-                                'format_error': _(u'单位部门名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
+department_name_error_messages={'required': _(u'请输入科室名称名称！'),
+                                'max_length': _(u'输入的科室名称名称长度大于500个字符！'),
+                                'format_error': _(u'科室名称名称必须是汉字组成，并且多个服务区名称使用/字符分隔！'),
                                 'form_error': _(u'表单严重错误！'),
-                                'already_error': _(u'单位部门同名，请输入正确的单位部门名称！'),
-                                'not_exist_error': _(u'服务区域不存在'),
-                                'not_match_error': _(u'服务区域与单位部门未关联！'),
+                                'already_error': _(u'科室名称同名，请输入正确的科室名称名称！'),
+                                'not_exist_error': _(u'科室名称不存在'),
+                                'not_match_error': _(u'服务区域与科室名称未关联！'),
                                   }
 
 department_name_add_re_pattern = ur'^[\u4e00-\u9fa5/()（）、]+$'

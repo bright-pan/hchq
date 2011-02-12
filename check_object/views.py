@@ -19,19 +19,18 @@ from hchq.report.check_object_report import check_object_report
 # Create your views here.
 @csrf_protect
 @login_required
-@permission_required('department.co_add')
 def check_object_add(request, template_name='my.html', next='/', check_object_page='1'):
     """
-    检查对象添加视图，带添加预览功能！
+    考勤对象添加视图，带添加预览功能！
     """
-    page_title = u'添加检查对象'
+    page_title = u'添加考勤对象'
     user = get_user(request)
 
     if request.method == 'GET':
         post_data = request.GET.copy()
         submit_value = post_data.get(u'submit', u'')
         if submit_value == u'添加':
-            check_object_add_form = CheckObjectAddForm(post_data, request.FILES)
+            check_object_add_form = CheckObjectAddForm(post_data)
             if check_object_add_form.is_valid():
                 check_object = check_object_add_form.add(user)
                 if check_object is not None:
@@ -39,7 +38,6 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
                 else:
                     raise Http404('Invalid Request!')
             else:
-                check_object_add_form.init_permission(user)
                 return render_to_response(template_name,
                                           {'add_form': check_object_add_form,
                                            'page_title': page_title,
@@ -48,7 +46,6 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
 
         else:
             check_object_add_form = CheckObjectAddForm()
-            check_object_add_form.init_permission(user)
             return render_to_response(template_name,
                                       {'add_form': check_object_add_form,
                                        'page_title': page_title,
@@ -57,146 +54,14 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
     else:
         raise Http404('Invalid Request!')
     
-@csrf_protect
-@login_required
-def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
-    if request.method == 'POST':
-        if request.FILES.get('photo'):
-
-            data = request.FILES['photo']
-            if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
-                raise Http404('Invalid Request!')
-            try:
-                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
-            except IOError:
-                raise Http404('Invalid Request!')
-            for chunk in data.chunks():
-                temp_file.write(chunk)
-            temp_file.close()
-            try:
-                img = Image.open(temp_file.name)
-            except IOError:
-                raise Http404('Invalid Request!')
-            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
-                raise Http404('Invalid Request!')
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
-            del temp_file
-            del img
-            return HttpResponse('success')
-        else:
-            raise Http404('Invalid Request!')
-    else:
-        raise Http404('Invalid Request!')
-    
-@csrf_exempt
-@login_required
-def check_object_add_camera(request, template_name='my.html', next='/', check_object_page='1'):
-    if request.method == 'POST':
-        if request.POST:
-            try:
-                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
-            except IOError:
-                raise Http404('Invalid Request!')
-            temp_file.write(request.raw_post_data)
-            temp_file.close()
-            try:
-                img = Image.open(temp_file.name)
-            except IOError:
-                raise Http404('Invalid Request!')
-            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
-                raise Http404('Invalid Request!')
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
-            del temp_file
-            del img
-#            print "*************************8"
-            return HttpResponse('success')
-        else:
-            raise Http404('Invalid Request!')
-    else:
-        raise Http404('Invalid Request!')
     
 @csrf_protect
 @login_required
-def check_object_detail_modify_uploader(request, template_name='my.html', next='/', check_object_page='1'):
-    if request.method == 'POST':
-        if request.FILES.get('photo'):
-
-            data = request.FILES['photo']
-            
-            if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
-                raise Http404('Invalid Request!')
-            try:
-                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
-            except IOError:
-                raise Http404('Invalid Request!')
-            for chunk in data.chunks():
-                temp_file.write(chunk)
-            temp_file.close()
-
-            try:
-                img = Image.open(temp_file.name)
-            except IOError:
-                raise Http404('Invalid Request!')
-            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
-                raise Http404('Invalid Request!')
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
-
-            del temp_file
-            del img
-            request.session[gl.session_check_object_detail_modify_uploader] = request.user.username
-#            print request.POST.get(u'id_number', u'')
-            return HttpResponse('success')
-        else:
-            raise Http404('Invalid Request!')
-    else:
-        raise Http404('Invalid Request!')
-
-@csrf_exempt
-@login_required
-def check_object_detail_modify_camera(request, template_name='my.html', next='/', check_object_page='1'):
-    if request.method == 'POST':
-        if request.POST:
-            try:
-                temp_file = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username, 'wb+')
-            except IOError:
-                raise Http404('Invalid Request!')
-            temp_file.write(request.raw_post_data)
-            temp_file.close()
-            try:
-                img = Image.open(temp_file.name)
-            except IOError:
-                raise Http404('Invalid Request!')
-            if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
-                raise Http404('Invalid Request!')
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
-
-            del temp_file
-            del img
-            request.session[gl.session_check_object_detail_modify_uploader] = request.user.username
-#            print request.POST.get(u'id_number', u'')
-            return HttpResponse('success')
-        else:
-            raise Http404('Invalid Request!')
-    else:
-        raise Http404('Invalid Request!')
-
-    
-@csrf_protect
-@login_required
-@user_passes_test(lambda u: (u.has_perm('department.co_list') or u.has_perm('department.co_modify') or u.has_perm('department.co_delete') or u.has_perm('department.co_add')))
 def check_object_show(request, template_name='', next='', check_object_index='1'):
     """
-    检查对象详细信息显示。
+    考勤对象详细信息显示。
     """
-    page_title=u'检查对象详情'
+    page_title=u'考勤对象详情'
 
     if request.method == 'POST':
         raise Http404('Invalid Request!')
@@ -218,12 +83,11 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
 
 @csrf_protect
 @login_required
-@permission_required('department.co_modify')
 def check_object_modify(request, template_name='my.html', next_template_name='my.html', check_object_page='1',):
     """
-    检查对象修改视图
+    考勤对象修改视图
     """
-    page_title = u'编辑检查对象'
+    page_title = u'编辑考勤对象'
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -236,7 +100,7 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                 check_object_detail_modify_form = CheckObjectDetailModifyForm(CheckObjectDetailModifyForm().data_from_object(check_object_modify_object, user))
                 if check_object_detail_modify_form.is_valid():
                     check_object_detail_modify_form.init_from_object(check_object_modify_object, user)
-                    page_title = u'修改检查对象'
+                    page_title = u'修改考勤对象'
                     return render_to_response(next_template_name,
                                               {'detail_modify_form': check_object_detail_modify_form,
                                                'check_object': check_object_modify_object,
@@ -244,7 +108,6 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                                                },
                                               context_instance=RequestContext(request))
                 else:
-                    print '$$$$$$$$$$$$$$$$'
                     raise Http404('Invalid Request!')                
             else:
                 pass
@@ -294,13 +157,12 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
 
 @csrf_protect
 @login_required
-@permission_required('department.co_modify')
 def check_object_detail_modify(request, template_name='my.html', next='/', check_object_page='1',):
     """
-    检查对象修改视图
+    考勤对象修改视图
     """
 
-    page_title = u'编辑检查对象'
+    page_title = u'编辑考勤对象'
     
     if request.method == 'GET':
         post_data = request.GET.copy()
@@ -331,12 +193,11 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
 
 @csrf_protect
 @login_required
-@permission_required('department.co_delete')
 def check_object_delete(request, template_name='my.html', next='/', check_object_page='1',):
     """
-    检查对象删除视图
+    考勤对象删除视图
     """
-    page_title = u'删除检查对象'
+    page_title = u'删除考勤对象'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -394,12 +255,11 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
 
 @csrf_protect
 @login_required
-@permission_required('department.co_list')
 def check_object_list(request, template_name='my.html', next='/', check_object_page='1',):
     """
-    检查对象查询视图
+    考勤对象查询视图
     """
-    page_title = u'查询检查对象'
+    page_title = u'查询考勤对象'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -420,7 +280,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
                                        },
                                       context_instance=RequestContext(request))
         else:
-            if submit_value == u'打印检查对象报表':
+            if submit_value == u'打印考勤对象报表':
                 check_object_search_form = CheckObjectSearchForm(post_data)
                 if check_object_search_form.is_valid():
                     check_object_search_form.data_to_session(request)

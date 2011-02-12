@@ -6,15 +6,13 @@
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jpegcam/webcam.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-                $.getJSON("{% url service_area_name_ajax %}",
+                $.getJSON("{% url department_name_ajax %}",
                           {
                           },
                           function(data) {
-                                  $("#id_service_area_name").autocomplete(data, {
+                                  $("#id_department_name").autocomplete(data, {
                                           minChars: 0,
                                                           max: 200,
 //                                                          autoFill: true,
@@ -28,607 +26,65 @@ $(document).ready(function(){
                                                           return data[0];
                                                   }
                                           });
-                                  $("#id_mate_service_area_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
+                 });
 
-                          });
-                       var service_area_name_old = '';
-                       $("#id_department_name").focus(function() {
-
-                                var service_area_name = $("#id_service_area_name").val();
-                                if (service_area_name != '' && service_area_name != service_area_name_old)
-                                {
-//                                        alert('********');
-                                        service_area_name_old = service_area_name;
-                                        $("#id_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                                                  matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
-                                }
-                                
-                        });
-                        var mate_service_area_name_old = '';
-                        $("#id_mate_department_name").focus(function() {
-
-                                var mate_service_area_name = $("#id_mate_service_area_name").val();
-                                if (mate_service_area_name != '' && mate_service_area_name != mate_service_area_name_old)
-                                {
-//                                        alert('********');
-                                        mate_service_area_name_old = mate_service_area_name;
-                                        $("#id_mate_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_mate_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_mate_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                                                  matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
-                                }
-                                
-                        });
-                var photo_ready = false;
-                $("#uploader_dialog").dialog({ autoOpen: false,
-                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
-                                        bgiframe:true,
-                                        buttons: [
-                                                {id:"uploader",text:"上传文件"},
-                                                {text:"确定",click:function(){$(this).dialog("close")}}
-                                                ]
-                                        });
-                $("#open_uploader_dialog").click(function(){
-                                $("#uploader_dialog").dialog("open");
-                                return false;
-                        });
-
-                webcam.set_swf_url( "{{ MEDIA_URL }}js/jpegcam/webcam.swf" );
-                webcam.set_quality( 90 ); // JPEG quality (1 - 100)
-                webcam.set_shutter_sound( true, "{{ MEDIA_URL }}js/jpegcam/shutter.mp3" ); // play shutter click sound
-                webcam.set_api_url( "{% url check_object_add_camera %}" );
-                $("#camera_dialog").html( webcam.get_html(320, 240) );
-                webcam.set_hook('onComplete', function my_completion_handler(response) {
-                                            // extract URL out of PHP output
-                                                    photo_ready = true;
-                                                    $("#id_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
-                                                    // reset camera for another shot
-                                                    webcam.reset();
-                });
-
-
-
-                $("#camera_dialog").dialog({ autoOpen: false,
-                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
-                                          bgiframe:true,
-                                          width:346,
-                                        buttons: [
-
-                                                {text:"拍照",click:function(){webcam.freeze();}},
-                                                {text:"重拍",click:function(){webcam.reset();}},
-                                                {text:"上传照片",click:function(){
-                                                                             webcam.upload();
-                                                                             }},
-                                                {text:"配置",click:function(){webcam.configure();}}
-                                                ]
-                                        });
-                                     
-        
-
-               $("#open_camera_dialog").click(function(){
-                               
-                                $("#camera_dialog").dialog("open");
-                                return false;
-                        });
-
-                var csrf_token = $("#csrf_token >div >input").attr("value");
-                new AjaxUpload("uploader", {
-                        action: "{% url check_object_add_uploader %}",
-                                        name: "photo",
-                                        data: {
-                                               csrfmiddlewaretoken : csrf_token
-                                                },
-                                        onSubmit : function(file , ext){
-                                        if (ext && /^(jpg|png|jpeg|gif)$/.test(ext)){
-                                                /* Setting data */
-                                                $("#uploader").text("正在上传" + file);
-                                                this.disable();
-                                        } else {					
-                                                // extension is not allowed
-                                                $("#uploader").text("请上传jpg|png|jpeg|gif格式的文件");
-                                                // cancel upload
-                                                return false;				
-                                        }
-                                },
-                                        onComplete : function(file){
-                                        photo_ready = true;
-                                        $("#uploader").text("上传成功" + file);
-                                        $("#id_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
-                                        
-                                }		
-                });
-                $("#id_form_add").submit(function(){
-                                if(photo_ready == true)
-                                {
-                                        return true;
-                                }
-                                else
-                                {
-                                        $("#id_submit_error").text("请先上传照片或者拍照！").show().fadeOut(5000);
-                                        return false;
-                                }
-                        });
         });
 </script>
 {% endblock %}
 {% endcache %}
 {% block teaser %}
-{% load cache %}
-{% cache 500 check_object_add user.username %}
 <div class="nav_hlist">
 <ul>
-  {% if perms.department.co_delete %}
-  <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
-  {% endif %}
-  {% if perms.department.co_modify %}
-  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
-  {% endif %}
-  {% if perms.department.co_add %}
-  <li class="active"><strong>检查对象添加</strong></li>
-  {% endif %}
-  {% if perms.department.co_list %}
-  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
-  {% endif %}
+  <li><a href="{% url check_object_delete 1 %}">考勤对象删除</a></li>
+  <li><a href="{% url check_object_modify 1 %}">考勤对象修改</a></li>
+  <li class="active"><strong>考勤对象添加</strong></li>
+  <li><a href="{% url check_object_list 1 %}">考勤对象查询</a></li>
 </ul>
 </div>
-{% endcache %}
 {% endblock %}
 
 {% block main %}
 {% with add_form as form %}
-<form method="get" action="" class="yform full" id="id_form_add">{% csrf_token %}
-  
-    <fieldset>
-      <legend>检查对象信息</legend>
-      <div class="subcolumns">
-        <div class="c75l">
-          <div class="subc">
-            <!-- Insert your subtemplate content here -->
-            <div class="subcolumns">
-              <div class="c50l">
-                <div class="subc">
-                  <!-- Insert your subtemplate content here -->
-                  {% if form.name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.name.errors }}</strong>
-                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-                    {{ form.name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-                    {{ form.name }}
-                  </div>
-                  {% endif %}
-
-                  {% if form.service_area_name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.service_area_name.errors }}</strong>
-                    {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-                    {{ form.service_area_name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-                    {{ form.service_area_name }}
-                  </div>
-                  {% endif %}
-                  {% if form.is_family.errors %}
-                  <div class="type-check error">
-                    <strong class="message">{{ form.is_family.errors }}</strong>
-                    {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p><br>
-                    {{ form.is_family }}
-                  </div>
-                  {% else %}
-                  <div class="type-check">
-                    {{ form.is_family.label_tag }}<br><p class="dimmed">{{ form.is_family.help_text}}</p>
-                    {{ form.is_family }}
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-              <div class="c50r">
-                <div class="subc">
-                  <!-- Insert your subtemplate content here -->
-                  {% if form.id_number.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.id_number.errors }}</strong>
-                    {{ form.id_number.label_tag }}<p class="dimmed">{{ form.id_number.help_text}}</p>
-                    {{ form.id_number }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.id_number.label_tag }}<p class="dimmed">{{ form.id_number.help_text}}</p>
-                    {{ form.id_number }}
-                  </div>
-                  {% endif %}
-                  {% if form.department_name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.department_name.errors }}</strong>
-                    {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
-                    {{ form.department_name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
-                    {{ form.department_name }}
-                  </div>
-                  {% endif %}
-                  {% if form.wedding_time.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.wedding_time.errors }}</strong>
-                    {{ form.wedding_time.label_tag }}<p class="dimmed">{{ form.wedding_time.help_text}}</p>
-                    {{ form.wedding_time }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.wedding_time.label_tag }}<p class="dimmed">{{ form.wedding_time.help_text}}</p>
-                    {{ form.wedding_time }}
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-
-            </div>
-
-          </div>          
-        </div>         
-        <div class="c25r">
-          <div class="subc">
-            <!-- Insert your subtemplate content here -->
-
-            <div id="csrf_token">{% csrf_token %}</div>
-            <div class="center">
-              <br>
-              <hr>
-              <br>
-              <img id="id_photo" src="{{ MEDIA_URL }}images/photo.jpg"/>
-              <br>
-              <hr>
-              <br>
-              <span><button id="open_uploader_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">本地上传</button></span>
-              <span><button id="open_camera_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">拍照上传</button></span>
-            </div>
-            <div id="uploader_dialog" style="display:none;" title="本地上传">
-              <p>请选择你选需要的文件，并且在提示完成以后关闭对话框！</p>
-            </div>
-            <div id="camera_dialog" style="display:none;" title="拍照上传">
-            </div>
-          </div>          
-        </div>         
-      </div>
-      <div class="subcolumns">
-        <div class="c75l">
-          <div class="subc">
-            <div class="subcolumns">
-              <div class="c99l">
-                <div class="subc">
-
-                  {% if form.address.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.address.errors }}</strong>
-                    {{ form.address.label_tag }}
-                    {{ form.address }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.address.label_tag }}
-                    {{ form.address }}
-                  </div>
-                  {% endif %}
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="c25r">
-          <div class="subc">
-
-          </div>
-        </div>
-      </div>
-
-
-    </fieldset>
-  
-  <div class="subcolumns">
-    <div class="c75l">
-      <div class="subc">
-        <!-- Insert your subtemplate content here -->
-        <fieldset>
-          <legend>对象配偶信息</legend>
-          <div class="subcolumns">
-            <div class="c50l">
-              <div class="subc">
-                <!-- Insert your subtemplate content here -->
-                {% if form.mate_name.errors %}
-                <div class="type-text error">
-                  <strong class="message">{{ form.mate_name.errors }}</strong>
-                  {{ form.mate_name.label_tag }}<p class="dimmed">{{ form.mate_name.help_text}}</p>
-                  {{ form.mate_name }}
-                </div>
-                {% else %}
-                <div class="type-text">
-                  {{ form.mate_name.label_tag }}<p class="dimmed">{{ form.mate_name.help_text}}</p>
-                  {{ form.mate_name }}
-                </div>
-                {% endif %}
-                {% if form.mate_service_area_name.errors %}
-                <div class="type-text error">
-                  <strong class="message">{{ form.mate_service_area_name.errors }}</strong>
-                  {{ form.mate_service_area_name.label_tag }}<p class="dimmed">{{ form.mate_service_area_name.help_text}}</p>
-                  {{ form.mate_service_area_name }}
-                </div>
-                {% else %}
-                <div class="type-text">
-                  {{ form.mate_service_area_name.label_tag }}<p class="dimmed">{{ form.mate_service_area_name.help_text}}</p>
-                  {{ form.mate_service_area_name }}
-                </div>
-                {% endif %}
-              </div>
-            </div>
-            <div class="c50r">
-              <div class="subc">
-                <!-- Insert your subtemplate content here -->
-                {% if form.mate_id_number.errors %}
-                <div class="type-text error">
-                  <strong class="message">{{ form.mate_id_number.errors }}</strong>
-                  {{ form.mate_id_number.label_tag }}<p class="dimmed">{{ form.mate_id_number.help_text}}</p>
-                  {{ form.mate_id_number }}
-                </div>
-                {% else %}
-                <div class="type-text">
-                  {{ form.mate_id_number.label_tag }}<p class="dimmed">{{ form.mate_id_number.help_text}}</p>
-                  {{ form.mate_id_number }}
-                </div>
-                {% endif %}
-                {% if form.mate_department_name.errors %}
-                <div class="type-text error">
-                  <strong class="message">{{ form.mate_department_name.errors }}</strong>
-                  {{ form.mate_department_name.label_tag }}<p class="dimmed">{{ form.mate_department_name.help_text}}</p>
-                  {{ form.mate_department_name }}
-                </div>
-                {% else %}
-                <div class="type-text">
-                  {{ form.mate_department_name.label_tag }}<p class="dimmed">{{ form.mate_department_name.help_text}}</p>
-                  {{ form.mate_department_name }}
-                </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>          
-        </fieldset>        
-      </div>          
-    </div>         
-    <div class="c25r">
-      <div class="subc">
-        <!-- Insert your subtemplate content here -->
-        <fieldset>
-          <legend>避孕措施信息</legend>
-          <!-- Insert your subtemplate content here -->
-          <br>
-          {% if form.ctp_method.errors %}
-          <div class="type-select error">
-            <strong class="message">{{ form.ctp_method.errors }}</strong>
-            {{ form.ctp_method.label_tag }}<p class="dimmed">{{ form.ctp_method.help_text }}</p>
-            {{ form.ctp_method }}
-          </div>
-          {% else %}
-          <div class="type-select">
-            {{ form.ctp_method.label_tag }}<p class="dimmed">{{ form.ctp_method.help_text }}</p>
-            {{ form.ctp_method }}
-          </div>
-          {% endif %}
-          {% if form.ctp_method_time.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.ctp_method_time.errors }}</strong>
-            {{ form.ctp_method_time.label_tag }}<p class="dimmed">{{ form.ctp_method_time.help_text }}</p>
-            {{ form.ctp_method_time }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.ctp_method_time.label_tag }}<p class="dimmed">{{ form.ctp_method_time.help_text }}</p>
-            {{ form.ctp_method_time }}
-          </div>
-          {% endif %}
-        </fieldset>
-        
-      </div>          
-    </div>         
-  </div>
+<form method="get" action="" class="yform full" id="id_form_add">{% csrf_token %}  
   <fieldset>
-    <legend>子女信息</legend>
-    <!-- Insert your subtemplate content here -->
+    <legend>考勤对象信息</legend>
     <div class="subcolumns">
-      <div class="c33l">
+      <div class="c75l">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
-          {% if form.children_1_name.errors %}
+	  {% if form.name.errors %}
           <div class="type-text error">
-            <strong class="message">{{ form.children__name.errors }}</strong>
-            {{ form.children_1_name.label_tag }}<p class="dimmed">{{ form.children_1_name.help_text}}</p>
-            {{ form.children_1_name }}
+            <strong class="message">{{ form.name.errors }}</strong>
+            {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+            {{ form.name }}
           </div>
           {% else %}
           <div class="type-text">
-            {{ form.children_1_name.label_tag }}<p class="dimmed">{{ form.children_1_name.help_text}}</p>
-            {{ form.children_1_name }}
+            {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
+            {{ form.name }}
           </div>
           {% endif %}
-          {% if form.children_2_name.errors %}
+          {% if form.department_name.errors %}
           <div class="type-text error">
-            <strong class="message">{{ form.children__name.errors }}</strong>
-            {{ form.children_2_name.label_tag }}<p class="dimmed">{{ form.children_2_name.help_text}}</p>
-            {{ form.children_2_name }}
+            <strong class="message">{{ form.department_name.errors }}</strong>
+            {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
+            {{ form.department_name }}
           </div>
           {% else %}
           <div class="type-text">
-            {{ form.children_2_name.label_tag }}<p class="dimmed">{{ form.children_2_name.help_text}}</p>
-            {{ form.children_2_name }}
+            {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
+            {{ form.department_name }}
           </div>
           {% endif %}
-          {% if form.children_3_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.children__name.errors }}</strong>
-            {{ form.children_3_name.label_tag }}<p class="dimmed">{{ form.children_3_name.help_text}}</p>
-            {{ form.children_3_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.children_3_name.label_tag }}<p class="dimmed">{{ form.children_3_name.help_text}}</p>
-            {{ form.children_3_name }}
-          </div>
-          {% endif %}
-          
-
-        </div>
-      </div>
-      <div class="c33l">
+        </div>          
+      </div>         
+      <div class="c25r">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
-
-          {% if form.children_1_sex.errors %}
-          <div class="type-select error">
-            <strong class="message">{{ form.children__sex.errors }}</strong>
-            {{ form.children_1_sex.label_tag }}<p class="dimmed">{{ form.children__sex.help_text }}</p>
-            {{ form.children_1_sex }}
-          </div>
-          {% else %}
-          <div class="type-select">
-            {{ form.children_1_sex.label_tag }}<p class="dimmed">{{ form.children__sex.help_text }}</p>
-            {{ form.children_1_sex }}
-          </div>
-          {% endif %}
-          
-
-          {% if form.children_2_sex.errors %}
-          <div class="type-select error">
-            <strong class="message">{{ form.children__sex.errors }}</strong>
-            {{ form.children_2_sex.label_tag }}<p class="dimmed">{{ form.children_2_sex.help_text }}</p>
-            {{ form.children_2_sex }}
-          </div>
-          {% else %}
-          <div class="type-select">
-            {{ form.children_2_sex.label_tag }}<p class="dimmed">{{ form.children_2_sex.help_text }}</p>
-            {{ form.children_2_sex }}
-          </div>
-          {% endif %}
-          
-          {% if form.children_3_sex.errors %}
-          <div class="type-select error">
-            <strong class="message">{{ form.children__sex.errors }}</strong>
-            {{ form.children_3_sex.label_tag }}<p class="dimmed">{{ form.children_3_sex.help_text }}</p>
-            {{ form.children_3_sex }}
-          </div>
-          {% else %}
-          <div class="type-select">
-            {{ form.children_3_sex.label_tag }}<p class="dimmed">{{ form.children_3_sex.help_text }}</p>
-            {{ form.children_3_sex }}
-          </div>
-          {% endif %}
-          
-        </div>
-      </div>
-      <div class="c33r">
-        <div class="subc">
-          <!-- Insert your subtemplate content here -->
-          {% if form.children_1_id_number.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.children__id_number.errors }}</strong>
-            {{ form.children_1_id_number.label_tag }}<p class="dimmed">{{ form.children_1_id_number.help_text}}</p>
-            {{ form.children_1_id_number }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.children_1_id_number.label_tag }}<p class="dimmed">{{ form.children_1_id_number.help_text}}</p>
-            {{ form.children_1_id_number }}
-          </div>
-          {% endif %}
-          
-          {% if form.children_2_id_number.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.children__id_number.errors }}</strong>
-            {{ form.children_2_id_number.label_tag }}<p class="dimmed">{{ form.children_2_id_number.help_text}}</p>
-            {{ form.children_2_id_number }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.children_2_id_number.label_tag }}<p class="dimmed">{{ form.children_2_id_number.help_text}}</p>
-            {{ form.children_2_id_number }}
-          </div>
-          {% endif %}
-          
-          {% if form.children_3_id_number.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.children__id_number.errors }}</strong>
-            {{ form.children_3_id_number.label_tag }}<p class="dimmed">{{ form.children_3_id_number.help_text}}</p>
-            {{ form.children_3_id_number }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.children_3_id_number.label_tag }}<p class="dimmed">{{ form.children_3_id_number.help_text}}</p>
-            {{ form.children_3_id_number }}
-          </div>
-          {% endif %}
-        </div>
-      </div>
+        </div>          
+      </div>         
     </div>
   </fieldset>
-  
   <div class="center">
     <input type="submit"  name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
     <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>

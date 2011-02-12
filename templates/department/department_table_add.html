@@ -1,7 +1,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>单位部门</caption>
+  <caption>科室名称</caption>
   <thead>
-    <tr><th scope="col" colspan="2">单位部门名称预览(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="2">科室名称名称预览(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
@@ -15,7 +15,7 @@
       <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
     </tr>
     {% empty %}
-    <p class="warning">没有单位部门可以预览！</p>
+    <p class="warning">没有科室名称可以预览！</p>
     {% endfor %}
   </tbody>
 </table>

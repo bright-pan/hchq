@@ -120,11 +120,11 @@ $(document).ready(function(){
 <div class="nav_hlist">
 <ul>
   {% if perms.department.cr_add %}
-  <li class="active"><strong>检查结果录入</strong></li>
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+  <li class="active"><strong>考勤结果录入</strong></li>
+  <li><a href="{% url check_result_add 1 %}">考勤结果添加</a></li>
   {% endif %}
   {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
+  <li><a href="{% url check_result_list 1 %}">考勤结果查询</a></li>
   {% endif %}
 </ul>
 </div>
@@ -142,7 +142,7 @@ $(document).ready(function(){
             <div class="subc">
               <table border="0" cellpadding="0" cellspacing="0" class="full">
                 <caption>
-                  检查对象
+                  考勤对象
                 </caption>
                 <thead>
                   <tr><th scope="col" colspan="2">{{ result.name }} | {{ result.id_number }}</th></tr>
@@ -226,7 +226,7 @@ $(document).ready(function(){
         </div>
       
       {% else %}
-      <p class="warning">对不起，该检查对象不存在！</p>
+      <p class="warning">对不起，该考勤对象不存在！</p>
       {% endif %}
       
     </div>          
@@ -238,7 +238,7 @@ $(document).ready(function(){
       <form method="get" action="{% url check_result_detail_add %}" class="yform full" id="id_form_detail_add">{% csrf_token %}
         <div class="">
           <fieldset>
-            <legend>检查结果信息</legend>
+            <legend>考勤结果信息</legend>
             {% if form.pregnant.errors %}
             <div class="type-select error">
               <strong class="message">{{ form.pregnant.errors }}</strong>

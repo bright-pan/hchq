@@ -24,7 +24,7 @@ class DepartmentAddForm(forms.Form):
                                      'rows':'3',
                                      }
                               ), 
-        help_text=_(u'例如：县委/政法委，公安局，...'),
+        help_text=_(u'例如：综治办/政策法规股、政策法规股、'),
         error_messages = gl.department_name_error_messages,
         )
     
@@ -71,7 +71,7 @@ class DepartmentModifyForm(forms.Form):
                                       'size':'30',
                                       }
                                ), 
-        help_text=_(u'例如：周田，周田乡...'),
+        help_text=_(u'例如：综治办/政策法规股、政策法规股、'),
         error_messages = gl.department_name_error_messages,
         )
     department_id = forms.CharField(
@@ -171,7 +171,7 @@ class DepartmentSearchForm(forms.Form):
                                       'size':'30',
                                       }
                                ), 
-        help_text=_(u'例如：县委，政法委...'),
+        help_text=_(u'例如：综治办/政策法规股、政策法规股、'),
         error_messages = gl.department_name_error_messages,
         )
     is_fuzzy = forms.CharField(

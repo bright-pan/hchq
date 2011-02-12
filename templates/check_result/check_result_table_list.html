@@ -1,8 +1,8 @@
 {% load check_result_filter %}
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>检查结果</caption>
+  <caption>考勤结果</caption>
   <thead>
-    <tr><th scope="col" colspan="7">检查结果查询(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="7">考勤结果查询(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
   <tbody>
     <tr>
@@ -11,8 +11,8 @@
       <th scope="col">服务区域<br>单位部门</th>
       <th scope="col">丈夫姓名<br>身份证号</th>
       <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">检查人员<br>检查项目</th>
-      <th scope="col">检查结果<br>检查时间</th>
+      <th scope="col">考勤人员<br>考勤项目</th>
+      <th scope="col">考勤结果<br>考勤时间</th>
     </tr>
     {% for result in results_page.object_list %}
     <tr>
@@ -27,7 +27,7 @@
 
     </tr>
     {% empty %}
-    <p class="warning">没有检查结果可以查询！</p>
+    <p class="warning">没有考勤结果可以查询！</p>
     {% endfor %}
   </tbody>
 </table>

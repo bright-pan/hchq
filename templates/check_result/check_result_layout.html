@@ -6,20 +6,10 @@
 {% endblock %}
 
 {% block nav %}
-{% load cache %}
-{% cache 500 check_result_layout user.username %}
 <ul>
-  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
-  <li><a href="{% url check_object_list 1 %}">检查对象管理</a></li>
-  {% endif %}
-  {% if perms.department.cr_list or perms.department.cr_add %}
-  <li class="active"><strong>检查结果管理</strong></li>
-  {% endif %}
-  {% if perms.department.cr_report %}
+  <li class="active"><strong>考勤结果管理</strong></li>
   <li><a href="{% url report_check_or_not %}">数据统计报表</a></li>
-  {% endif %}
 </ul>
-{% endcache %}
 {% endblock %}
 
 {% block teaser %}{% endblock %}

@@ -9,13 +9,13 @@
 <div class="nav_hlist">
 <ul>
   {% if perms.department.cr_list or perms.department.cr_add %}
-  <li class="active"><strong>检查结果详情</strong></li>
+  <li class="active"><strong>考勤结果详情</strong></li>
   {% endif %}
   {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+  <li><a href="{% url check_result_add 1 %}">考勤结果添加</a></li>
   {% endif %}
   {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
+  <li><a href="{% url check_result_list 1 %}">考勤结果查询</a></li>
   {% endif %}
 </ul>
 </div>
@@ -32,7 +32,7 @@
       <div class="subc">
         <table border="0" cellpadding="0" cellspacing="0" class="full">
           <caption>
-            检查对象
+            考勤对象
           </caption>
           <thead>
             <tr><th scope="col" colspan="2">{{ check_object.name }} | {{ check_object.id_number }}</th></tr>
@@ -98,17 +98,17 @@
 <div>
 <hr>
   <table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>检查结果</caption>
+    <caption>考勤结果</caption>
     <thead>
-      <tr><th scope="col" colspan="6">【{{ check_object.name }}】的检查结果(共{{ results.count}}项)</th></tr>
+      <tr><th scope="col" colspan="6">【{{ check_object.name }}】的考勤结果(共{{ results.count}}项)</th></tr>
     </thead>
     <tbody>
       <tr>
         <th scope="col">编号</th>
-        <th scope="col">检查项目</th>
-        <th scope="col">检查结果</th>
-        <th scope="col">检查时间</th>
-        <th scope="col">检查人员</th>
+        <th scope="col">考勤项目</th>
+        <th scope="col">考勤结果</th>
+        <th scope="col">考勤时间</th>
+        <th scope="col">考勤人员</th>
         <th scope="col">微机录入人员</th>
       </tr>
       {% for result in results %}
@@ -121,14 +121,14 @@
         <td>{% if result.is_latest %}<p>{{ result.recorder.username }}</p>{% else %}<del>{{ result.recorder.username }}</del>{% endif %}</td>
       </tr>
       {% empty %}
-      <th scope="col" colspan="5"><p class="warning">没有检查结果可以查询！</p></th>
+      <th scope="col" colspan="5"><p class="warning">没有考勤结果可以查询！</p></th>
       {% endfor %}
     </tbody>
   </table>
 
 </div>
 {% else %}
-<p class="warning">对不起，该检查对象不存在！</p>
+<p class="warning">对不起，该考勤对象不存在！</p>
 {% endif %}
 {% endblock %}
 

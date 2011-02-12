@@ -137,10 +137,10 @@ $(document).ready(function(){
 <div class="nav_hlist">
 <ul>
   {% if perms.department.cr_add %}
-  <li class="active"><strong>检查结果添加</strong></li>
+  <li class="active"><strong>考勤结果添加</strong></li>
   {% endif %}
   {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
+  <li><a href="{% url check_result_list 1 %}">考勤结果查询</a></li>
   {% endif %}
 </ul>
 </div>
@@ -148,13 +148,13 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main %}
-<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">检查对象查询条件</button>
+<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">考勤对象查询条件</button>
 <div id="search_dialog" style="display:none;" title="查询参数">
   {% with search_form as form %}
   <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
     <div class="note">
       <fieldset>
-        <legend>检查对象信息</legend>
+        <legend>考勤对象信息</legend>
         <div class="subcolumns">
           <div class="c75l">
             <div class="subc">

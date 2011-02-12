@@ -1,7 +1,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>单位部门</caption>
+  <caption>科室名称</caption>
   <thead>
-    <tr><th scope="col" colspan="5">单位部门查询(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="5">科室名称查询(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
 
   <tbody>
@@ -21,7 +21,7 @@
       <td class="{% cycle 'odd' 'even' %}">{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
     </tr>
     {% empty %}
-    <p class="warning">没有单位部门可以查询！</p>
+    <p class="warning">没有科室名称可以查询！</p>
     {% endfor %}
   </tbody>
 </table>

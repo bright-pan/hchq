@@ -19,7 +19,6 @@ from hchq import settings
 
 @csrf_protect
 @login_required
-@permission_required('department.sd_management')
 def department_add(request, template_name='my.html', next='/', department_page='1'):
     """
     单位部门添加视图，带添加预览功能！
@@ -120,7 +119,6 @@ def department_add(request, template_name='my.html', next='/', department_page='
 
 @csrf_protect
 @login_required
-@permission_required('department.sd_management')
 def department_show(request, template_name='', next='', department_index='1'):
     """
     单位部门详细信息显示。
@@ -141,7 +139,6 @@ def department_show(request, template_name='', next='', department_index='1'):
 
 @csrf_protect
 @login_required
-@permission_required('department.sd_management')
 def department_modify(request, template_name='my.html', next='/', department_page='1',):
     """
     服务区修改视图
@@ -238,7 +235,6 @@ def department_modify(request, template_name='my.html', next='/', department_pag
 
 @csrf_protect
 @login_required
-@permission_required('department.sd_management')
 def department_delete(request, template_name='my.html', next='/', department_page='1',):
     """
     单位部门删除视图
@@ -336,7 +332,6 @@ def department_delete(request, template_name='my.html', next='/', department_pag
     
 @csrf_protect
 @login_required
-@permission_required('department.sd_management')
 def department_list(request, template_name='my.html', next='/', department_page='1',):
     """
     单位部门查询视图
@@ -400,29 +395,13 @@ def department_list(request, template_name='my.html', next='/', department_page=
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
-@cache_page(60 * 15)
+
 def department_name_ajax(request, template_name='my.html', next='/'):
     if request.is_ajax():
         result = []
         if request.method == 'GET':
-
-            if request.GET.has_key('service_area_name'):
-                service_area_name = request.GET['service_area_name']
-#                print '***********************'
-#                print type(service_area_name)
-                if service_area_name == u'':
-#                    print '******************8'
-                    pass
-                else:    
-                    query_set = Department.objects.filter(is_active=True,
-                                                          department_to_service_area__service_area__name=service_area_name,
-                                                          department_to_service_area__is_active=True).order_by('name')
-                    result = [ x.name for x in query_set]
-#                    print '$$$$$$$$$$$$$'
-#                    print result
-
-            else:
-                pass
+            query_set = Department.objects.filter(is_active=True,).order_by('-updated_at')
+            result = [ x.name for x in query_set]
         else:
             pass
         json = simplejson.dumps(result)

@@ -137,10 +137,10 @@ $(document).ready(function(){
 <div class="nav_hlist">
 <ul>
   {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+  <li><a href="{% url check_result_add 1 %}">考勤结果添加</a></li>
   {% endif %}
   {% if perms.department.cr_list %}
-  <li class="active"><strong>检查结果查询</strong></li>
+  <li class="active"><strong>考勤结果查询</strong></li>
   {% endif %}
 </ul>
 </div>
@@ -148,13 +148,13 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main %}
-<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">检查结果查询条件</button>
+<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">考勤结果查询条件</button>
 <div id="search_dialog" style="display:none;" title="查询参数">
   {% with search_form as form %}
   <form method="get" action="." class="yform full" id="id_form_search">{% csrf_token %}
     <div class="note">
       <fieldset>
-        <legend>检查对象信息</legend>
+        <legend>考勤对象信息</legend>
         <div class="subcolumns">
           <div class="c75l">
             <div class="subc">
@@ -525,7 +525,7 @@ $(document).ready(function(){
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       {% if perms.department.cr_report %}
-      <input type="submit"  name="submit" value="打印检查结果报表" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+      <input type="submit"  name="submit" value="打印考勤结果报表" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       {% endif %}
       <span id="id_submit_error"></span>
     </div>

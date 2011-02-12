@@ -6,26 +6,26 @@
 {% load cache %}
 
 {% cache 500 department_show user.username %}
-<h6 class="vlist">单位部门管理</h6>
+<h6 class="vlist">科室名称管理</h6>
 <ul class="vlist">
-  <li><a href="{% url department_list 1 %}">单位部门查询</a></li>
-  <li><a href="{% url department_add 1 %}">单位部门添加</a></li>
-  <li><a href="{% url department_modify 1 %}">单位部门修改</a></li>
-  <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
-  <li class="active"><strong>单位部门详情</strong></li>
+  <li><a href="{% url department_list 1 %}">科室名称查询</a></li>
+  <li><a href="{% url department_add 1 %}">科室名称添加</a></li>
+  <li><a href="{% url department_modify 1 %}">科室名称修改</a></li>
+  <li><a href="{% url department_delete 1 %}">科室名称删除</a></li>
+  <li class="active"><strong>科室名称详情</strong></li>
   
 </ul>
 {% endcache %}
 {% endblock %}
 {% block col3_content %}
 <!-- Insert your subtemplate content here -->
-<h3>单位部门详情</h3>
+<h3>科室名称详情</h3>
 <hr>
 {% if result %}
 <div class="important">
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>
-    单位部门
+    科室名称
   </caption>
   <thead>
     <tr><th scope="col" colspan="2">{{ result.name }}</th></tr>
