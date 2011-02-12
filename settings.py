@@ -16,17 +16,17 @@ MANAGERS = (
 
 MANAGERS = ADMINS
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'hchq',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '1234',                  # Not used with sqlite3.
-        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '%s/hckq.database' % CURRENT_PATH,                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -54,9 +54,7 @@ LANGUAGE_CODE = 'zh-cn'
 
 SITE_ID = 1
 
-SITE_NAME = '江西省会昌县环情孕情管理系统'
-META_KEYWORDS = '环孕检, 计生服务站, 计生委, 检查结果, 检查对象, 检查项目'
-META_DESCRIPTION = '环孕检系统是会昌县计生服务站题提供的环孕检集中管理服务，用户跟踪检查对象的环孕检结果，和个人信息，并生成报表。'
+SITE_NAME = '江西省会昌县计生委考勤管理系统'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -136,12 +134,12 @@ SESSION_FILE_PATH = None                                # Directory to store ses
 
 # The cache backend to use.  See the docstring in django.core.cache for the
 # possible values.
-#CACHE_BACKEND = 'locmem://'
+CACHE_BACKEND = 'locmem://'
 #CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
-CACHE_BACKEND = 'caching.backends.memcached://localhost:11211'
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
-CACHE_MIDDLEWARE_SECONDS = 600
-CACHE_COUNT_TIMEOUT = 60  # seconds, not too long.
+#CACHE_BACKEND = 'caching.backends.memcached://localhost:11211'
+#CACHE_MIDDLEWARE_KEY_PREFIX = ''
+#CACHE_MIDDLEWARE_SECONDS = 600
+#CACHE_COUNT_TIMEOUT = 60  # seconds, not too long.
 
 INSTALLED_APPS = (
     'django.contrib.auth',
