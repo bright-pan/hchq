@@ -16,13 +16,6 @@ import datetime
     
 class ReportStatisticsForm(forms.Form):
 
-    profit = forms.DecimalField(
-        required=True,
-        label=_(u'加班工资/天'),
-        help_text=_(u'例如:100.54天的加班工资为100.54元。'),
-        max_digits=9,
-        decimal_places=2,
-        )
 
     start_time = forms.DateField(
         required=False,
@@ -65,7 +58,6 @@ class ReportStatisticsForm(forms.Form):
         return query_set
 
     def report(self, request=None):
-        profit = self.cleaned_data['profit']
         query_set_check_result = CheckResult.objects.all()
         query_set_check_result = self.query_start_time(query_set_check_result)
         query_set_check_result = self.query_end_time(query_set_check_result)
@@ -79,7 +71,7 @@ class ReportStatisticsForm(forms.Form):
             dict_check_object['department_name'] = check_object.department.name
             dict_check_object['check_result_counts'] = qs.count()
             dict_check_object['check_result_days'] = qs.aggregate(days=Sum('days'))['days']
-            dict_check_object['profit'] = profit * dict_check_object['check_result_days']
+            dict_check_object['profit'] = dict_check_object['check_result_days'] * check_object.profit
             query_set.append(dict_check_object)
 
         return check_project_report(query_set, request)

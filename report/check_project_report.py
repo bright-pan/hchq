@@ -27,9 +27,9 @@ class CheckProjectReport(Report):
             Label(text=u"编号", top=1.8*cm, left=0.5*cm),
             Label(text=u"考勤对象", top=1.8*cm, left=3.5*cm),
             Label(text=u"所属科室", top=1.8*cm, left=9.5*cm),
-            Label(text=u"加班天数", top=1.8*cm, left=14.5*cm),
+            Label(text=u"加班天数(天)", top=1.8*cm, left=14.5*cm),
             Label(text=u"加班次数", top=1.8*cm, left=19.5*cm),
-            Label(text=u"加班工资", top=1.8*cm, left=24.5*cm),
+            Label(text=u"加班工资(元)", top=1.8*cm, left=24.5*cm),
         ]
         borders = {'bottom': Line(stroke_color=navy)}
 
@@ -85,11 +85,11 @@ def check_project_report(query_set=None, request=None):
     if query_set is not None and request is not None and query_set:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
-        cover_report.title = u'考勤综合数据报表'
+        cover_report.title = u'江西省会昌县人口与计划生育委员会考勤综合报表'
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         check_project_report = CheckProjectReport(query_set)
         check_project_report.author = request.user.username
-        check_project_report.title = u'江西省会昌县人口与计划生育委员会'
+        check_project_report.title = u'加班统计报表'
         canvas = check_project_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username

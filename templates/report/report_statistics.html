@@ -16,7 +16,7 @@
   <fieldset>
     <legend>数据统计报表生成条件</legend>
     <div class="subcolumns">
-      <div class="c33l">
+      <div class="c50l">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
 	  {% if form.start_time.errors %}
@@ -33,7 +33,7 @@
 	  {% endif %}
         </div>
       </div>
-      <div class="c33l">
+      <div class="c50r">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
 	  {% if form.end_time.errors %}
@@ -46,23 +46,6 @@
 	  <div class="type-text">
             {{ form.end_time.label_tag }}
             {{ form.end_time }}
-	  </div>
-	  {% endif %}
-        </div>
-      </div>
-      <div class="c33r">
-        <div class="subc">
-          <!-- Insert your subtemplate content here -->
-	  {% if form.profit.errors %}
-	  <div class="type-text error">
-            <strong class="message">{{ form.profit.errors }}</strong>
-            {{ form.profit.label_tag }}
-            {{ form.profit }}
-	  </div>
-	  {% else %}
-	  <div class="type-text">
-            {{ form.profit.label_tag }}
-            {{ form.profit }}
 	  </div>
 	  {% endif %}
         </div>

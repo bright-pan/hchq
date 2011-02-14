@@ -41,6 +41,14 @@ class CheckObjectAddForm(forms.Form):
         help_text=_(u'例如：综治办/政策法规股、政策法规股、'),
         error_messages = gl.department_name_error_messages,
         )
+    profit = forms.DecimalField(
+        required=True,
+        label=_(u'加班工资/天'),
+        help_text=_(u'例如:100.54天的加班工资为100.54元。'),
+        max_digits=9,
+        decimal_places=2,
+        )
+
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -77,12 +85,14 @@ class CheckObjectAddForm(forms.Form):
 #                print self.cleaned_data['wedding_time'], self.cleaned_data['address']
                 check_object, created = CheckObject.objects.get_or_create(name=self.cleaned_data['name'],
                                                           department=self.department_object,
+                                                          profit=self.cleaned_data['profit'],
                                                           creater = user,
                                                           )
                 return check_object
             check_object.is_active =True
             check_object.name=self.cleaned_data['name']
             check_object.department=self.department_object
+            check_object.profit=self.cleaned_data['profit'],
             check_object.creater = user
             check_object.save()
             return check_object
@@ -147,6 +157,13 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：综治办/政策法规股、政策法规股、'),
         error_messages = gl.department_name_error_messages,
         )
+    profit = forms.DecimalField(
+        required=True,
+        label=_(u'加班工资/天'),
+        help_text=_(u'例如:100.54天的加班工资为100.54元。'),
+        max_digits=9,
+        decimal_places=2,
+        )
 
     id = forms.CharField(
         widget=forms.HiddenInput(),
@@ -191,6 +208,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         data = {}
         if modify_object is not None and user is not None:
             data['name'] = modify_object.name
+            data['profit'] = modify_object.profit
             data['department_name'] = modify_object.department.name
             data['id'] = modify_object.id
         else:
@@ -201,6 +219,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     def init_from_object(self, modify_object=None, user=None):
         if modify_object is not None and user is not None:
             self.fields['name'].widget.attrs['value'] = modify_object.name
+            self.fields['profit'].widget.attrs['value'] = modify_object.profit
             self.fields['department_name'].widget.attrs['value'] = modify_object.department.name
             self.fields['id'].widget.attrs['value'] = modify_object.id
             return True
@@ -215,6 +234,7 @@ class CheckObjectDetailModifyForm(forms.Form):
 
         check_object.is_active =True
         check_object.name=self.cleaned_data['name']
+        check_object.profit=self.cleaned_data['profit']
         check_object.department=self.department_object
         check_object.save()
         return check_object

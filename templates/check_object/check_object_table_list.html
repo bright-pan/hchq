@@ -8,6 +8,7 @@
       <th scope="col">编号</th>
       <th scope="col">考勤对象</th>
       <th scope="col">所属科室</th>
+      <th scope="col">加班工资系数</th>
       <th scope="col">创建人员</th>
       <th scope="col">创建时间</th>
       <th scope="col">更新时间</th>
@@ -17,6 +18,7 @@
       <td>{{ result.id }}</td>
       <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
       <td>{{ result.department.name }}</td>
+      <td>{{ result.profit }}</td>
       <td>{{ result.creater.username }}</td>
       <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
       <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>

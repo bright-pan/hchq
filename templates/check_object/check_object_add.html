@@ -49,7 +49,7 @@ $(document).ready(function(){
   <fieldset>
     <legend>考勤对象信息</legend>
     <div class="subcolumns">
-      <div class="c75l">
+      <div class="c33l">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
 	  {% if form.name.errors %}
@@ -64,7 +64,13 @@ $(document).ready(function(){
             {{ form.name }}
           </div>
           {% endif %}
-          {% if form.department_name.errors %}
+          
+        </div>          
+      </div>         
+      <div class="c33l">
+        <div class="subc">
+          <!-- Insert your subtemplate content here -->
+	  {% if form.department_name.errors %}
           <div class="type-text error">
             <strong class="message">{{ form.department_name.errors }}</strong>
             {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
@@ -76,11 +82,25 @@ $(document).ready(function(){
             {{ form.department_name }}
           </div>
           {% endif %}
+
         </div>          
       </div>         
-      <div class="c25r">
+      <div class="c33r">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
+	  {% if form.profit.errors %}
+	  <div class="type-text error">
+            <strong class="message">{{ form.profit.errors }}</strong>
+            {{ form.profit.label_tag }}<p class="dimmed">{{ form.profit.help_text}}</p>
+            {{ form.profit }}
+	  </div>
+	  {% else %}
+	  <div class="type-text">
+            {{ form.profit.label_tag }}<p class="dimmed">{{ form.profit.help_text}}</p>
+            {{ form.profit }}
+	  </div>
+	  {% endif %}
+
         </div>          
       </div>         
     </div>
