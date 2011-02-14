@@ -164,8 +164,6 @@ INSTALLED_APPS = (
 
     # local app
     'hchq.untils',
-    'hchq.account',
-    'hchq.service_area',
     'hchq.department',
     'hchq.check_project',
     'hchq.check_object',

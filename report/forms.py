@@ -2,164 +2,84 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
-from django.db.models import ObjectDoesNotExist
-from PIL import Image
-from StringIO import StringIO
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+from django.db.models import ObjectDoesNotExist, Sum, Count
 from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
 from hchq.department.models import Department
-from hchq.check_project.models import CheckProject
 from hchq.check_object.models import *
+from hchq.check_result.models import *
+from hchq.report.check_project_report import check_project_report
 from hchq import settings
 import re
 import datetime
 
-from hchq.report.check_project_report import *
-
-class ReportCheckOrNotForm(forms.Form):
-    
-    service_area_department_object = None
-
-    service_area_name = forms.CharField(
-        max_length=128,
-        required=True,
-        label=_(u'服务区域'),
-        widget=forms.TextInput(attrs={'class':'',
-                                      'size':'30',}), 
-        help_text=_(u'例如：西江镇、周田乡'),
-        error_messages = gl.service_area_name_error_messages,
-        )
-    department_name = forms.CharField(
-        max_length=128,
-        required=False, 
-        label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
-                                     'size':'30',
-                                     }
-                              ), 
-        help_text=_(u'例如：县委、政法委、公安局'),
-        error_messages = gl.department_name_error_messages,
-        )
-
-    def clean_service_area_name(self):
-        try:
-           service_area_name_copy = self.data.get('service_area_name')
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
-
-        if re.match(gl.service_area_name_add_re_pattern, service_area_name_copy) is None:
-            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
-
-        try:
-            ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
-        return service_area_name_copy
-
-    def clean_department_name(self):
-        try:
-            department_name_copy = self.data.get('department_name')
-            service_area_name_copy = self.data.get('service_area_name')
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
-        if re.match(gl.department_name_search_re_pattern, department_name_copy) is None:
-            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
-        if department_name_copy == u'':
-            return department_name_copy
-        try:
-            department_object = Department.objects.get(name=department_name_copy, is_active=True)
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.department_name_error_messages['not_exist_error'])
-        try:
-            service_area_object = ServiceArea.objects.get(name=service_area_name_copy, is_active=True)
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.service_area_name_error_messages['not_exist_error'])
-        try:
-            self.service_area_department_object = ServiceAreaDepartment.objects.get(service_area=service_area_object, department=department_object)
-        except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
-        return department_name_copy
-    def init_permission(self, user=None):
-        if user is not None:
-            if user.has_perm('department.unlocal'):
-                return False
-            else:
-                self.fields['service_area_name'].widget.attrs['value'] = user.get_profile().service_area_department.service_area.name
-                self.fields['service_area_name'].widget.attrs['readonly'] = True
-                return True
-        else:
-            return None
-
-    def check_report(self, request=None):
-        if self.service_area_department_object is None:
-            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return check_object_check_service_area_report(query_set, request)
-        else:
-            return check_object_check_service_area_department_report([self.service_area_department_object], request)
-
-        return response
-
-    def not_report(self, request=None):
-        if self.service_area_department_object is None:
-            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return check_object_not_service_area_report(query_set, request)
-        else:
-            return check_object_not_service_area_department_report([self.service_area_department_object], request)
-
-        return response
 
     
 class ReportStatisticsForm(forms.Form):
 
-    has_department_info = forms.CharField(
+    profit = forms.DecimalField(
         required=True,
-        label =_(u'单位统计'),
-        help_text=_(u'打勾则对服务区域中的单位进行统计'),
-        widget=forms.CheckboxInput(attrs={'class':'',
-                                          'value':'has_department_info',
-                                          }, 
-                                   check_test=None,
-                                   ),
+        label=_(u'加班工资/天'),
+        help_text=_(u'例如:100.54天的加班工资为100.54元。'),
+        max_digits=9,
+        decimal_places=2,
         )
 
-    has_check = forms.CharField(
-        required=True,
-        label =_(u'已检对象名单'),
-        help_text=_(u'打勾则包含已检对象名单'),
-        widget=forms.CheckboxInput(attrs={'class':'',
-                                          'value':'has_check',
-                                          }, 
-                                   check_test=None,
-                                   ),
+    start_time = forms.DateField(
+        required=False,
+        label=_(u'开始时间'),
+        help_text=_(u'例如：2010-10-1'),
+        input_formats = ('%Y-%m-%d',)
         )
-    has_not = forms.CharField(
-        required=True,
-        label =_(u'未检对象名单'),
-        help_text=_(u'打勾则包含未检对象名单'),
-        widget=forms.CheckboxInput(attrs={'class':'',
-                                          'value':'has_not',
-                                          }, 
-                                   check_test=None,
-                                   ),
+    end_time  = forms.DateField(
+        required=False,
+        label=_(u'结束时间'),
+        help_text=_(u'例如：2010-10-31'),
+        input_formats = ('%Y-%m-%d',)
         )
+    def query_start_time(self, query_set=None):
+        start_time = self.cleaned_data['start_time']
+
+        if query_set is None:
+            return query_set
+
+        if start_time == None:
+            pass
+        else:
+            start_time = datetime.datetime(start_time.year, start_time.month, start_time.day)
+            query_set = query_set.filter(check_time__gte=start_time)
+        
+        return query_set
+
+    def query_end_time(self, query_set=None):
+        end_time = self.cleaned_data['end_time']
+        if query_set is None:
+            return query_set
+
+        if end_time == None:
+            pass
+        else:
+            end_time = datetime.datetime(end_time.year, end_time.month, end_time.day, 23, 59, 59)
+            print end_time
+            print query_set
+            query_set = query_set.filter(check_time__lte=end_time)
+        return query_set
 
     def report(self, request=None):
-        if self.cleaned_data['has_department_info'] == u'has_department_info':
-            has_department_info = True
-        else:
-            has_department_info = False
-            
-        if self.cleaned_data['has_check'] == u'has_check':
-            has_check = True
-        else:
-            has_check = False
-            
-        if self.cleaned_data['has_not'] == u'has_not':
-            has_not = True
-        else:
-            has_not = False
-            
-        query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-        return check_project_report(query_set, request, has_department_info, has_check, has_not)
+        profit = self.cleaned_data['profit']
+        query_set_check_result = CheckResult.objects.all()
+        query_set_check_result = self.query_start_time(query_set_check_result)
+        query_set_check_result = self.query_end_time(query_set_check_result)
+        query_set_check_object = CheckObject.objects.all().order_by('name')
+        query_set = []
+        for check_object in query_set_check_object:
+            qs = query_set_check_result.filter(check_object=check_object)
+            dict_check_object = {}
+            dict_check_object['id'] = check_object.id
+            dict_check_object['name'] = check_object.name
+            dict_check_object['department_name'] = check_object.department.name
+            dict_check_object['check_result_counts'] = qs.count()
+            dict_check_object['check_result_days'] = qs.aggregate(days=Sum('days'))['days']
+            dict_check_object['profit'] = profit * dict_check_object['check_result_days']
+            query_set.append(dict_check_object)
+
+        return check_project_report(query_set, request)

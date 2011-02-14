@@ -115,20 +115,14 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block teaser %}
-{% load cache %}
-{% cache 500 check_result_detail_add user.username %}
 <div class="nav_hlist">
 <ul>
-  {% if perms.department.cr_add %}
   <li class="active"><strong>考勤结果录入</strong></li>
+  <li><a href="{% url check_result_delete 1 %}">考勤结果删除</a></li>
   <li><a href="{% url check_result_add 1 %}">考勤结果添加</a></li>
-  {% endif %}
-  {% if perms.department.cr_list %}
   <li><a href="{% url check_result_list 1 %}">考勤结果查询</a></li>
-  {% endif %}
 </ul>
 </div>
-{% endcache %}
 {% endblock %}
 {% block main %}
 <div class="subcolumns">
@@ -145,11 +139,11 @@ $(document).ready(function(){
         </thead>
         <tbody>
           <tr>
-            <td>考勤对象姓名</td>
+            <td>考勤对象</td>
             <td>{{ result.name }}</td>
           </tr>
           <tr>
-            <td>科室名称</td>
+            <td>所属科室</td>
             <td>{{ result.department.name }}</td>
           </tr>
           <tr>

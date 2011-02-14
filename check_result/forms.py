@@ -47,7 +47,7 @@ class CheckResultDetailAddForm(forms.Form):
     
     days = forms.DecimalField(
         required=True, 
-        label=_(u'请假天数'),
+        label=_(u'加班天数'),
         help_text=_(u'例如:半天：0.5，一天半：1.5。'),
         max_digits=9,
         decimal_places=1,
@@ -55,7 +55,7 @@ class CheckResultDetailAddForm(forms.Form):
     desc = forms.CharField(
         max_length=200,
         required=False, 
-        label=_(u'请假原因描述'), 
+        label=_(u'加班原因描述'), 
         widget=forms.Textarea(attrs={'class':'',
                                      'size':'30',
                                      'rows':'5',
