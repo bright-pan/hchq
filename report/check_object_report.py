@@ -32,9 +32,10 @@ class CheckObjectReport(Report):
             Label(text=u"编号", top=1.5*cm, left=0.5*cm),
             Label(text=u"对象姓名", top=1.5*cm, left=2*cm),
             Label(text=u"科室名称", top=1.5*cm, left=6*cm),
-            Label(text=u"创建人员", top=1.5*cm, left=12*cm),
-            Label(text=u"创建时间", top=1.5*cm, left=15*cm),
-            Label(text=u"更新时间", top=1.5*cm, left=22*cm),
+            Label(text=u"加班工资系数", top=1.5*cm, left=10*cm),
+            Label(text=u"创建人员", top=1.5*cm, left=15*cm),
+            Label(text=u"创建时间", top=1.5*cm, left=18*cm),
+            Label(text=u"更新时间", top=1.5*cm, left=23*cm),
         ]
         borders = {'bottom': Line(stroke_color=navy)}
 
@@ -55,9 +56,10 @@ class CheckObjectReport(Report):
             ObjectValue(attribute_name='id', top=0.1*cm, left=0.5*cm),
             ObjectValue(attribute_name='name', top=0.1*cm, left=2*cm),
             ObjectValue(attribute_name='department.name', top=0.1*cm, left=6*cm),
-            ObjectValue(attribute_name='creater.username', top=0.1*cm, left=12*cm),
-            ObjectValue(attribute_name='created_at', top=0.1*cm, left=15*cm),
-            ObjectValue(attribute_name='updated_at', top=0.1*cm, left=22*cm),
+            ObjectValue(attribute_name='profit', top=0.1*cm, left=10*cm),
+            ObjectValue(attribute_name='creater.username', top=0.1*cm, left=15*cm),
+            ObjectValue(attribute_name='created_at', top=0.1*cm, left=18*cm),
+            ObjectValue(attribute_name='updated_at', top=0.1*cm, left=23*cm),
             ]
 
 def check_object_report(query_set=None, request=None):
