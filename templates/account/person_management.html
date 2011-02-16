@@ -9,7 +9,9 @@
 <h6 class="vlist">个人管理</h6>
 <ul class="vlist">
   <li class="active"><strong>个人资料</strong></li>
+  {% if user.username != '003' %}
   <li><a href="{% url account_person_password_modify %}">密码修改</a></li>
+  {% endif %}
 </ul>
 {% endcache %}
 {% endblock %}
