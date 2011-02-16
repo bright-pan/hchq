@@ -28,7 +28,7 @@ class CheckObjectAddForm(forms.Form):
     name = forms.CharField(
         max_length=64,
         required=True, 
-        label=_(u'妻子姓名'), 
+        label=_(u'妻子姓名(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -39,14 +39,14 @@ class CheckObjectAddForm(forms.Form):
     id_number = forms.CharField(
         max_length=18,
         required=True,
-        label=_(u'身份证号'),
+        label=_(u'身份证号(*)'),
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'服务区域'),
+        label=_(u'服务区域(*)'),
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
@@ -55,7 +55,7 @@ class CheckObjectAddForm(forms.Form):
     department_name = forms.CharField(
         max_length=128,
         required=True, 
-        label=_(u'单位部门'), 
+        label=_(u'单位部门(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -65,7 +65,7 @@ class CheckObjectAddForm(forms.Form):
         )
     is_family = forms.CharField(
         required=True,
-        label =_(u'家属'),
+        label =_(u'家属(*)'),
         help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
@@ -76,7 +76,7 @@ class CheckObjectAddForm(forms.Form):
     mate_name = forms.CharField(
         max_length=64,
         required=True,
-        label=_(u'丈夫姓名'),
+        label=_(u'丈夫姓名(*)'),
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -94,7 +94,7 @@ class CheckObjectAddForm(forms.Form):
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'服务区域'), 
+        label=_(u'服务区域(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
@@ -103,7 +103,7 @@ class CheckObjectAddForm(forms.Form):
     mate_department_name = forms.CharField(
         max_length=128,
         required=True, 
-        label=_(u'单位部门'), 
+        label=_(u'单位部门(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -528,7 +528,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     name = forms.CharField(
         max_length=64,
         required=True, 
-        label=_(u'妻子姓名'), 
+        label=_(u'妻子姓名(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -539,14 +539,14 @@ class CheckObjectDetailModifyForm(forms.Form):
     id_number = forms.CharField(
         max_length=18,
         required=True,
-        label=_(u'身份证号'),
+        label=_(u'身份证号(*)'),
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'服务区域'),
+        label=_(u'服务区域(*)'),
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
@@ -555,7 +555,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     department_name = forms.CharField(
         max_length=128,
         required=True, 
-        label=_(u'单位部门'), 
+        label=_(u'单位部门(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -565,7 +565,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         )
     is_family = forms.CharField(
         required=True,
-        label =_(u'家属'),
+        label =_(u'家属(*)'),
         help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
@@ -576,7 +576,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     mate_name = forms.CharField(
         max_length=64,
         required=True,
-        label=_(u'丈夫姓名'),
+        label=_(u'丈夫姓名(*)'),
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
@@ -594,7 +594,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'服务区域'), 
+        label=_(u'服务区域(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
@@ -603,7 +603,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     mate_department_name = forms.CharField(
         max_length=128,
         required=True, 
-        label=_(u'单位部门'), 
+        label=_(u'单位部门(*)'), 
         widget=forms.TextInput(attrs={'class':'',
                                      'size':'30',
                                      }
