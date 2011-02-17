@@ -2,7 +2,7 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
   <caption>检查对象</caption>
   <thead>
-    <tr><th scope="col" colspan="9">可供检查的检查对象(共{{ results_page.paginator.count}}项)</th></tr>
+    <tr><th scope="col" colspan="8">可供检查的检查对象(共{{ results_page.paginator.count}}项)</th></tr>
   </thead>
   <tbody>
     <tr>
@@ -12,7 +12,7 @@
       <th scope="col">丈夫姓名<br>身份证号</th>
       <th scope="col">服务区域<br>单位部门</th>
       <th scope="col">是否家属<br>结婚时间</th>
-      <th scope="col">避孕措施<br>实施时间</th>
+      <!-- <th scope="col">避孕措施<br>实施时间</th> -->
       <th scope="col">检查命令</th>
     </tr>
     {% for result in results_page.object_list %}
@@ -27,7 +27,7 @@
       {% else %}
       <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}</td>
       {% endif %}
-      <td>{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+      <!-- <td>{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td> -->
       <td>
         <form method="post" action=".">{% csrf_token %}
           <input type="hidden" name="id" value="{{ result.id }}" />
