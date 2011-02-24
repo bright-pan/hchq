@@ -27,6 +27,14 @@
 <!-- Insert your subtemplate content here -->
 {% if check_object %}
 
+{% if success != 'false' %}
+{% if success == 'add' %}
+<p class="warning">检查对象【{{ check_object.name }} | {{ check_object.id_number }}】的检查结果已成功添加, 详情如下！</p>
+{% else %}
+{% endif %}
+{% else %}
+{% endif %}
+
   <div class="subcolumns">
     <div class="c75l">
       <div class="subc">
@@ -121,7 +129,7 @@
         <td>{% if result.is_latest %}<p>{{ result.recorder.username }}</p>{% else %}<del>{{ result.recorder.username }}</del>{% endif %}</td>
       </tr>
       {% empty %}
-      <th scope="col" colspan="5"><p class="warning">没有检查结果可以查询！</p></th>
+      <th scope="col" colspan="6"><p class="warning">没有检查结果可以查询！</p></th>
       {% endfor %}
     </tbody>
   </table>

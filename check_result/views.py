@@ -30,7 +30,7 @@ def check_result_detail_modify_uploader(request, template_name='my.html', next='
 @csrf_protect
 @login_required
 @user_passes_test(lambda u: (u.has_perm('department.cr_list') or u.has_perm('department.cr_add')))
-def check_result_show(request, template_name='', next='', check_result_index='1'):
+def check_result_show(request, template_name='', next='', check_result_index='1', success=u'false'):
     """
     检查结果详细信息显示。
     """
@@ -66,6 +66,7 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
     return render_to_response(template_name,
                               {'results': results,
                                'check_object': check_object,
+                               'success': success,
                                },
                               context_instance=RequestContext(request))
 
@@ -180,7 +181,7 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
             check_result_detail_add_form.init_value(user, check_result_object)
             if check_result_detail_add_form.is_valid():
                 check_result_detail_add_form.detail_add(user)
-                return HttpResponseRedirect("check_result/show/%s" % check_result_id)
+                return HttpResponseRedirect("check_result/show/%s/add/" % check_result_id)
             else:
                 return render_to_response(template_name,
                                           {'detail_add_form': check_result_detail_add_form,

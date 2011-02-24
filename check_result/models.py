@@ -23,7 +23,7 @@ class CheckResult(caching.base.CachingMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('check_result_show', (), {'check_result_index': self.check_object.id})
+        return ('check_result_show', (), {'check_result_index': self.check_object.id, 'success': u'false'})
 
     objects = caching.base.CachingManager()
         

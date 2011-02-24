@@ -35,7 +35,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
             if check_object_add_form.is_valid():
                 check_object = check_object_add_form.add(user)
                 if check_object is not None:
-                    return HttpResponseRedirect("check_object/show/%s" % check_object.id)
+                    return HttpResponseRedirect("check_object/show/%s/add/" % (check_object.id))
                 else:
                     raise Http404('Invalid Request!')
             else:
@@ -192,7 +192,7 @@ def check_object_detail_modify_camera(request, template_name='my.html', next='/'
 @csrf_protect
 @login_required
 @user_passes_test(lambda u: (u.has_perm('department.co_list') or u.has_perm('department.co_modify') or u.has_perm('department.co_delete') or u.has_perm('department.co_add')))
-def check_object_show(request, template_name='', next='', check_object_index='1'):
+def check_object_show(request, template_name='', next='', check_object_index='1', success=u'false'):
     """
     检查对象详细信息显示。
     """
@@ -210,9 +210,10 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
             result = CheckObject.objects.get(pk=check_object_id, is_active=True)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
-        
+
     return render_to_response(template_name,
                               {'result': result,
+                               'success': success,
                                },
                               context_instance=RequestContext(request))
 
@@ -311,7 +312,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
             if check_object_detail_modify_form.is_valid():
                 check_object = check_object_detail_modify_form.detail_modify(request)
                 if check_object is not None:
-                    return HttpResponseRedirect("check_object/show/%s" % check_object.id)
+                    return HttpResponseRedirect("check_object/show/%s/modify/" % check_object.id)
                 else:
                     raise Http404('Invalid Request!')
             else:

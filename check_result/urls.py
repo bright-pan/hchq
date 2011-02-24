@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('hchq.check_result.views',
 
-       (r'show/(?P<check_result_index>\d{1,8})/$',
+       (r'show/(?P<check_result_index>\d{1,8})/(?P<success>\w+)/$',
        'check_result_show',
        {'template_name' : 'check_result/check_result_show.html', 'next': '', },
        'check_result_show'),

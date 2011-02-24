@@ -30,6 +30,19 @@
 {% block main %}
 <!-- Insert your subtemplate content here -->
 {% if result %}
+
+{% if success != 'false' %}
+{% if success == 'add' %}
+<p class="warning">检查对象【{{ result.name }} | {{ result.id_number }}】已成功添加, 详情如下！</p>
+{% else %}
+{% if success == 'modify' %}
+<p class="warning">检查对象【{{ result.name }} | {{ result.id_number }}】已成功修改, 详情如下！</p>
+{% else %}
+{% endif %}
+{% endif %}
+{% else %}
+{% endif %}
+
   <div class="subcolumns">
     <div class="c75l">
       <div class="subc">

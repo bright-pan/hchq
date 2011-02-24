@@ -42,6 +42,6 @@ class CheckObject(caching.base.CachingMixin, models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('check_object_show', (), {'check_object_index': self.id})
+        return ('check_object_show', (), {'check_object_index': self.id, 'success': u'false'})
 
     objects = caching.base.CachingManager()

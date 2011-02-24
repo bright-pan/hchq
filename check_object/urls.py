@@ -26,7 +26,7 @@ urlpatterns = patterns('hchq.check_object.views',
        {'template_name' : 'check_object/check_object_add.html', 'next': '/check_object/person_management', },
        'check_object_detail_modify_camera'),
                        
-       (r'show/(?P<check_object_index>\d{1,8})/$',
+       (r'show/(?P<check_object_index>\d{1,8})/(?P<success>\w+)/$',
        'check_object_show',
        {'template_name' : 'check_object/check_object_show.html', 'next': '', },
        'check_object_show'),
