@@ -820,7 +820,7 @@ def account_show(request, template_name='', next='', account_index='1'):
                 result = UserProfile.objects.get(pk=account_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
             except ObjectDoesNotExist:
                 raise Http404('Invalid Request!')
-            if result.user.has_perm('department.account_modify'):
+            if request.user.has_perm('department.account_modify'):
                 result.user.set_password(settings.ACCOUNT_DEFAULT_PASSWORD)
                 result.user.save()
                 success = True
