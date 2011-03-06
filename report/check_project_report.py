@@ -88,7 +88,7 @@ def get_complete_radio(instance=None):
     return u'%.2f%%' % complete_radio
 
 class CheckProjectReport(Report):
-    title = u'会昌县检查项目统计报表'
+    title = u'江西省会昌县环孕检统计报表'
     page_size = landscape(A4)
     class band_page_header(ReportBand):
         height = 2.5*cm
@@ -343,7 +343,9 @@ class CoverReport(Report):
         height = 2*cm
         elements = [
             Line(left=0, top=0.5*cm, right=27.7*cm, bottom=0.5*cm, stroke_color=navy),
-            SystemField(expression='%(report_title)s', top=8*cm, left=0, width=BAND_WIDTH,
+            SystemField(expression='%(report_title)s', top=9.5*cm, left=0, width=BAND_WIDTH,
+                        style={'fontName': 'yahei', 'fontSize': 30, 'alignment': TA_CENTER, 'textColor': navy}),
+            SystemField(expression=u'江 西 省 会 昌 县', top=7.5*cm, left=0, width=BAND_WIDTH,
                         style={'fontName': 'yahei', 'fontSize': 30, 'alignment': TA_CENTER, 'textColor': navy}),
             
         ]
@@ -391,7 +393,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             service_area_report = ServiceAreaReport(query_set_service_area_department)
             service_area_report.author = request.user.username
-            service_area_report.title = u'%s-检查项目统计报表' % service_area_object.name
+            service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
             service_area_report.band_page_header.elements += [
                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -405,7 +407,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                         if query_set_not_check_object_in_department:
                             department_report = DepartmentReport(query_set_not_check_object_in_department)
                             department_report.author = request.user.username
-                            department_report.title = u'%s-%s-未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                             department_report.band_page_header.elements += [
                                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -419,7 +421,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                         if query_set_check_object_in_department:
                             department_report = DepartmentReport(query_set_check_object_in_department)
                             department_report.author = request.user.username
-                            department_report.title = u'%s-%s-已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                             department_report.band_page_header.elements += [
                                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -474,7 +476,7 @@ def check_object_check_service_area_report(query_set=None, request=None):
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             service_area_report = ServiceAreaReport(query_set_service_area_department)
             service_area_report.author = request.user.username
-            service_area_report.title = u'%s-检查项目统计报表' % service_area_object.name
+            service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
             service_area_report.band_page_header.elements += [
                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -486,7 +488,7 @@ def check_object_check_service_area_report(query_set=None, request=None):
                 if query_set_not_check_object_in_department:
                     department_report = DepartmentReport(query_set_not_check_object_in_department)
                     department_report.author = request.user.username
-                    department_report.title = u'%s-%s-已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     department_report.band_page_header.elements += [
                         Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -538,7 +540,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
             if query_set_not_check_object_in_department:
                 department_report = DepartmentReport(query_set_not_check_object_in_department)
                 department_report.author = request.user.username
-                department_report.title = u'%s-%s-已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -589,7 +591,7 @@ def check_object_not_service_area_report(query_set=None, request=None):
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             service_area_report = ServiceAreaReport(query_set_service_area_department)
             service_area_report.author = request.user.username
-            service_area_report.title = u'%s-检查项目统计报表' % service_area_object.name
+            service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
             service_area_report.band_page_header.elements += [
                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
