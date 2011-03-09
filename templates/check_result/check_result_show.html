@@ -121,12 +121,12 @@
       </tr>
       {% for result in results %}
       <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{% if result.is_latest %}<p>{{ result.check_project.name }}</p>{% else %}<del>{{ result.check_project.name }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.result|local }}</p>{% else %}<del>{{ result.result|local }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.check_time|date:"Y-m-d H:i:s" }}</p>{% else %}<del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.checker.username }}</p>{% else %}<del>{{ result.checker.username }}</del>{% endif %}</td>
-        <td>{% if result.is_latest %}<p>{{ result.recorder.username }}</p>{% else %}<del>{{ result.recorder.username }}</del>{% endif %}</td>
+        <td {% if result.is_latest %}class="odd"{% endif %}>{{ forloop.counter }}</td>
+        {% if result.is_latest %}<td class="odd">{{ result.check_project.name }}</td>{% else %}<td><del>{{ result.check_project.name }}</del></td>{% endif %}
+        {% if result.is_latest %}<td class="odd">{{ result.result|local }}</td>{% else %}<td><del>{{ result.result|local }}</del></td>{% endif %}
+        {% if result.is_latest %}<td class="odd">{{ result.check_time|date:"Y-m-d H:i:s" }}</td>{% else %}<del><td>{{ result.check_time|date:"Y-m-d H:i:s" }}</del></td>{% endif %}
+        {% if result.is_latest %}<td class="odd">{{ result.checker.username }}</td>{% else %}<td><del>{{ result.checker.username }}</del></td>{% endif %}
+        {% if result.is_latest %}<td class="odd">{{ result.recorder.username }}</td>{% else %}<td><del>{{ result.recorder.username }}</del></td>{% endif %}
       </tr>
       {% empty %}
       <th scope="col" colspan="6"><p class="warning">没有检查结果可以查询！</p></th>
