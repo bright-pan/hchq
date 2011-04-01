@@ -29,9 +29,21 @@
   <fieldset>
     <legend>检查项目报表生成条件</legend>
     <div class="subcolumns">
-      <div class="c33l">
+      <div class="c50l">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
+          {% if form.check_project.errors %}
+          <div class="type-select error">
+            <strong class="message">{{ form.check_project.errors }}</strong>
+            {{ form.check_project.label_tag }}
+            {{ form.check_project }}
+          </div>
+          {% else %}
+          <div class="type-select">
+            {{ form.check_project.label_tag }}
+            {{ form.check_project }}
+          </div>
+          {% endif %}
           {% if form.has_department_info.errors %}
           <div class="type-check error">
             <strong class="message">{{ form.has_department_info.errors }}</strong>
@@ -46,7 +58,7 @@
           {% endif %}          
         </div>
       </div>
-      <div class="c33l">
+      <div class="c50r">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
           {% if form.has_check.errors %}
@@ -61,11 +73,6 @@
             {{ form.has_check }}
           </div>
           {% endif %}
-        </div>
-      </div>
-      <div class="c33r">
-        <div class="subc">
-          <!-- Insert your subtemplate content here -->
           {% if form.has_not.errors %}
           <div class="type-check error">
             <strong class="message">{{ form.has_not.errors }}</strong>

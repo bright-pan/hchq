@@ -897,7 +897,7 @@ class CheckResultSearchForm(forms.Form):
 
     def init_check_project(self):
         choices = ((u'none',u'未知'),)
-        query_set = CheckProject.objects.filter(is_active=True) 
+        query_set = CheckProject.objects.filter(is_active=True)
         for query in query_set:
             choices += (str(query.pk), query.name),
         self.fields['check_project'].choices = choices

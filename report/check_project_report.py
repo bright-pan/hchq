@@ -359,17 +359,21 @@ class CoverReport(Report):
         borders = {'top': Line(stroke_color=red)}
 
 
-def check_project_report(query_set=None, request=None, has_department_info=False, has_check=False, has_not=False):
+def check_project_report(query_set=None, request=None, has_department_info=False, has_check=False, has_not=False, check_project_id=None):
     response = cache.get('check_project_report_%s_%s_%s_%s' % (request.user.id, has_department_info, has_check, has_not))
+
     if response is not None:
-        print "*******************"
         return response
-    print "$$$$$$$$$$$$$$$$$$$$$$$$"
+    
     response = HttpResponse(mimetype='application/pdf')
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
-        return response
+    
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
     
 #    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
     if query_set is not None and request is not None and query_set:
@@ -452,11 +456,14 @@ def check_project_report(query_set=None, request=None, has_department_info=False
     cache.set('check_project_report_%s_%s_%s_%s' % (request.user.id, has_department_info, has_check, has_not), response, 15*60)
     return response
 
-def check_object_check_service_area_report(query_set=None, request=None):
-    
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
+def check_object_check_service_area_report(query_set=None, request=None, check_project_id=None):
+
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
@@ -515,11 +522,14 @@ def check_object_check_service_area_report(query_set=None, request=None):
     cache.set('check_object_check_service_area_report_%s' % query_set[0].id, response, 15*60)
     return response
 
-def check_object_check_service_area_department_report(query_set=None, request=None):
+def check_object_check_service_area_department_report(query_set=None, request=None, check_project_id=None):
     
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
@@ -567,13 +577,16 @@ def check_object_check_service_area_department_report(query_set=None, request=No
     cache.set('check_object_check_service_area_department_report_%s' % query_set[0].id, response, 15*60)
     return response
 
-def check_object_not_service_area_report(query_set=None, request=None):
+def check_object_not_service_area_report(query_set=None, request=None, check_project_id=None):
     
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
         check_project = None
-
+        
     if query_set is not None and request is not None and query_set:
         response = cache.get('check_object_not_service_area_report_%s' % query_set[0].id)
         if response is not None:
@@ -630,11 +643,14 @@ def check_object_not_service_area_report(query_set=None, request=None):
     cache.set('check_object_not_service_area_report_%s' % query_set[0].id, response, 15*60)
     return response
 
-def check_object_not_service_area_department_report(query_set=None, request=None):
+def check_object_not_service_area_department_report(query_set=None, request=None, check_project_id=None):
     
-    try:
-        check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    except ObjectDoesNotExist:
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:

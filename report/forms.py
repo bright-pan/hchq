@@ -42,6 +42,11 @@ class ReportCheckOrNotForm(forms.Form):
         help_text=_(u'例如：县委、政法委、公安局'),
         error_messages = gl.department_name_error_messages,
         )
+    check_project = forms.ChoiceField(
+        required=True,
+        label =_(u'检查项目(*)'),
+        help_text=_(u'选择一个合适的检查项目'),
+        )
 
     def clean_service_area_name(self):
         try:
@@ -81,6 +86,22 @@ class ReportCheckOrNotForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['not_match_error'])
         return department_name_copy
+
+    def clean_check_project(self):
+        try:
+           check_project_copy = self.data.get('check_project')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
+        try:
+            check_project_id = int(check_project_copy)
+        except ValueError:
+            raise forms.ValidationError(u'请选择一个正确检查项目')
+        try:
+            CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(u'这个检查项目不存在')
+        return check_project_id
+
     def init_permission(self, user=None):
         if user is not None:
             if user.has_perm('department.unlocal'):
@@ -92,21 +113,28 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return None
 
+    def init_check_project(self):
+        choices = ((u'none',u'未知'),)
+        query_set = CheckProject.objects.filter(is_active=True)
+        for query in query_set:
+            choices += (str(query.pk), query.name),
+        self.fields['check_project'].choices = choices
+
     def check_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return check_object_check_service_area_report(query_set, request)
+            return check_object_check_service_area_report(query_set, request, self.cleaned_data['check_project'])
         else:
-            return check_object_check_service_area_department_report([self.service_area_department_object], request)
+            return check_object_check_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
         return response
 
     def not_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return check_object_not_service_area_report(query_set, request)
+            return check_object_not_service_area_report(query_set, request, self.cleaned_data['check_project'])
         else:
-            return check_object_not_service_area_department_report([self.service_area_department_object], request)
+            return check_object_not_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
         return response
 
@@ -144,6 +172,32 @@ class ReportStatisticsForm(forms.Form):
                                    check_test=None,
                                    ),
         )
+    check_project = forms.ChoiceField(
+        required=True,
+        label =_(u'检查项目(*)'),
+        help_text=_(u'选择一个合适的检查项目'),
+        )
+    def clean_check_project(self):
+        try:
+           check_project_copy = self.data.get('check_project')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
+        try:
+            check_project_id = int(check_project_copy)
+        except ValueError:
+            raise forms.ValidationError(u'请选择一个正确检查项目')
+        try:
+            CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(u'这个检查项目不存在')
+        return check_project_id
+
+    def init_check_project(self):
+        choices = ((u'none',u'未知'),)
+        query_set = CheckProject.objects.filter(is_active=True)
+        for query in query_set:
+            choices += (str(query.pk), query.name),
+        self.fields['check_project'].choices = choices
 
     def report(self, request=None):
         if self.cleaned_data['has_department_info'] == u'has_department_info':
@@ -162,4 +216,4 @@ class ReportStatisticsForm(forms.Form):
             has_not = False
             
         query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-        return check_project_report(query_set, request, has_department_info, has_check, has_not)
+        return check_project_report(query_set, request, has_department_info, has_check, has_not, self.cleaned_data['check_project'])

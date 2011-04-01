@@ -17,6 +17,7 @@ from hchq.report.check_project_report import check_project_report
 @csrf_protect
 @login_required
 @permission_required('department.cr_report')
+@permission_required('department.unlocal')
 def report_statistics(request, template_name='my.html', next='/', ):
     """
     检查项目数据统计
@@ -28,6 +29,7 @@ def report_statistics(request, template_name='my.html', next='/', ):
         submit_value = post_data[u'submit']
         if submit_value == u'生成项目报表':
             report_statistics_form = ReportStatisticsForm(post_data)
+            report_statistics_form.init_check_project()
             if report_statistics_form.is_valid():
                 return report_statistics_form.report(request)
             else:
@@ -40,6 +42,7 @@ def report_statistics(request, template_name='my.html', next='/', ):
             raise Http404('Invalid Request!')                
     else:
         report_statistics_form = ReportStatisticsForm()
+        report_statistics_form.init_check_project()
         return render_to_response(template_name,
                                   {'report_form': report_statistics_form,
                                    'page_title': page_title,
@@ -61,10 +64,11 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
         submit_value = post_data[u'submit']
         if submit_value == u'已检人员':
             report_check_or_not_form = ReportCheckOrNotForm(post_data)
+            report_check_or_not_form.init_check_project()
+            report_check_or_not_form.init_permission(user)
             if report_check_or_not_form.is_valid():
                 return report_check_or_not_form.check_report(request)
             else:
-                report_check_or_not_form.init_permission(user)
                 return render_to_response(template_name,
                                           {'report_form': report_check_or_not_form,
                                            'page_title': page_title,
@@ -73,10 +77,11 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
         else:
             if submit_value == u'未检人员':
                 report_check_or_not_form = ReportCheckOrNotForm(post_data)
+                report_check_or_not_form.init_check_project()
+                report_check_or_not_form.init_permission(user)
                 if report_check_or_not_form.is_valid():
                     return report_check_or_not_form.not_report(request)
                 else:
-                    report_check_or_not_form.init_permission(user)
                     return render_to_response(template_name,
                                               {'report_form': report_check_or_not_form,
                                                'page_title': page_title,
@@ -86,6 +91,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                 raise Http404('Invalid Request!')                
     else:
         report_check_or_not_form = ReportCheckOrNotForm()
+        report_check_or_not_form.init_check_project()
         report_check_or_not_form.init_permission(user)
         return render_to_response(template_name,
                                   {'report_form': report_check_or_not_form,
