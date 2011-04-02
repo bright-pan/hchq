@@ -111,10 +111,13 @@ class CheckProjectReport(Report):
     class band_page_footer(ReportBand):
         height = 0.5*cm
         elements = [
-            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建。', top=0.1*cm,
-                        width=BAND_WIDTH, style={'alignment': TA_LEFT}),
-            SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
+            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建', top=0.1*cm,
                         width=BAND_WIDTH, style={'alignment': TA_RIGHT}),
+            SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_CENTER}),
+            SystemField(expression = u'江西省会昌县人口与计划生育委员会', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_LEFT}),
+
         ]
         borders = {'top': Line(stroke_color=red)}
 
@@ -229,10 +232,13 @@ class ServiceAreaReport(Report):
     class band_page_footer(ReportBand):
         height = 0.5*cm
         elements = [
-            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建。', top=0.1*cm,
-                        width=BAND_WIDTH, style={'alignment': TA_LEFT}),
-            SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
+            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建', top=0.1*cm,
                         width=BAND_WIDTH, style={'alignment': TA_RIGHT}),
+            SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_CENTER}),
+            SystemField(expression = u'江西省会昌县人口与计划生育委员会', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_LEFT}),
+
         ]
         borders = {'top': Line(stroke_color=red)}
 
@@ -308,11 +314,14 @@ class DepartmentReport(Report):
     class band_page_footer(ReportBand):
         height = 0.5*cm
         elements = [
-            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建。', top=0.1*cm,
-                        width=BAND_WIDTH, style={'alignment': TA_LEFT}),
-            SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
+            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建', top=0.1*cm,
                         width=BAND_WIDTH, style={'alignment': TA_RIGHT}),
-        ]
+            SystemField(expression = u'页号 %(page_number)d / %(page_count)d', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_CENTER}),
+            SystemField(expression = u'江西省会昌县人口与计划生育委员会', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_LEFT}),
+
+            ]
         borders = {'top': Line(stroke_color=red)}
 
     class band_detail(ReportBand):
@@ -353,7 +362,9 @@ class CoverReport(Report):
     class band_page_footer(ReportBand):
         height = 0.5*cm
         elements = [
-            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建。', top=0.1*cm,
+            SystemField(expression = u'由 %(report_author)s 于 %(now:%Y-%m-%d)s %(now:%H:%M)s创建', top=0.1*cm,
+                        width=BAND_WIDTH, style={'alignment': TA_RIGHT}),
+            SystemField(expression = u'江西省会昌县人口与计划生育委员会', top=0.1*cm,
                         width=BAND_WIDTH, style={'alignment': TA_LEFT}),
         ]
         borders = {'top': Line(stroke_color=red)}
