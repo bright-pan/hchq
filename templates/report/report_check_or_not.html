@@ -72,7 +72,7 @@ $(document).ready(function(){
 {% cache 500 report_check_or_not user.username %}
 <div class="nav_hlist">
 <ul>
-  {% if perms.department.cr_report and perms.department.unlocal %}
+  {% if perms.department.cr_report %}
   <li><a href="{% url report_statistics %}">检查项目数据统计</a></li>
   {% endif %}
   {% if perms.department.cr_report %}

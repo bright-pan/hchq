@@ -17,7 +17,7 @@ from hchq.report.check_project_report import check_project_report
 @csrf_protect
 @login_required
 @permission_required('department.cr_report')
-@permission_required('department.unlocal')
+#@permission_required('department.unlocal')
 def report_statistics(request, template_name='my.html', next='/', ):
     """
     检查项目数据统计
