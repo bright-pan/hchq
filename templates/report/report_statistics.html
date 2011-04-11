@@ -17,7 +17,13 @@
 {% endblock %}
 
 {% block main %}
-
+<script type="text/javascript">
+  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+  if (is_chrome)
+  {
+  document.write("<br><br>");
+  }
+</script>
 <p class="warning">
   1. 如果选择单位统计则每个服务区域中的各个单位部门都会做数据统计。<br>
   2. 如果选择单位统计，并且选择已检人员或则未检人员则对每个单位做数据统计的同时，并且生成已检人员或未检人员的名单。<br>

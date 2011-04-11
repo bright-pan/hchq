@@ -84,7 +84,13 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main %}
-
+<script type="text/javascript">
+  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+  if (is_chrome)
+  {
+  document.write("<br><br>");
+  }
+</script>
 <p class="warning">
   1. 如果你只输入服务区域，不输入单位部门出具的报表则是该服务区域的综合报表，如果二者同时输入则生成的报表是该服务区域单位部门的信息报表。<br>
   2. 如果你想查看服务区域的综合报表则可能需要花费更多的时间，请耐心等待。

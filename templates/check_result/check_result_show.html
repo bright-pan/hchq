@@ -29,6 +29,13 @@
 
 {% if success != 'false' %}
 {% if success == 'add' %}
+<script type="text/javascript">
+  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+  if (is_chrome)
+  {
+  document.write("<br><br>")
+  }
+</script>
 <p class="warning">检查对象【{{ check_object.name }} | {{ check_object.id_number }}】的检查结果已成功添加, 详情如下！</p>
 {% else %}
 {% endif %}
