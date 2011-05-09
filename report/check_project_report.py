@@ -406,15 +406,18 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
-            service_area_report = ServiceAreaReport(query_set_service_area_department)
-            service_area_report.author = request.user.username
-            service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
-            service_area_report.band_page_header.elements += [
-                Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
-                      style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                      get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
-                ]
-            canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            if query_set_service_area_department:
+                service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.author = request.user.username
+                service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
+                service_area_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
+                    ]
+                canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
             if has_check is True or has_not is True:
                 for service_area_department_object in query_set_service_area_department:
                     if has_not is True:
@@ -492,15 +495,18 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         query_set_service_area = query_set
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
-            service_area_report = ServiceAreaReport(query_set_service_area_department)
-            service_area_report.author = request.user.username
-            service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
-            service_area_report.band_page_header.elements += [
-                Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
-                      style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                      get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
-                ]
-            canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            if query_set_service_area_department:
+                service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.author = request.user.username
+                service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
+                service_area_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
+                    ]
+                canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
             for service_area_department_object in query_set_service_area_department:
                 query_set_not_check_object_in_department = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department_object).filter(check_result__is_latest=True, check_result__check_project=check_project)
                 if query_set_not_check_object_in_department:
