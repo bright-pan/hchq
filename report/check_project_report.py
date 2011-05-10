@@ -164,6 +164,25 @@ def get_service_area_total_count(value=None, service_area=None):
             complete_radio = 100.00
 
     return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (check_project.name, check_count, pregnant_count, not_check_count, check_object_count, complete_radio)            
+def get_service_area_pregnant_total_count(value=None, service_area=None):
+    if service_area is None:
+        return u''
+    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+    check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=service_area).count()
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=service_area)
+    check_count = check_result.count()
+    pregnant_count = check_result.filter(result__startswith='pregnant').count()    
+    if check_object_count > check_count:
+        not_check_count = check_object_count - check_count
+        complete_radio = (check_count / check_object_count) * 100.0
+    else:
+        not_check_count = 0
+        if check_object_count == 0:
+            return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name, check_count, pregnant_count, not_check_count, check_object_count)
+        else:
+            complete_radio = 100.00
+
+    return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (check_project.name, check_count, pregnant_count, not_check_count, check_object_count, complete_radio)            
 
 def get_department_check_count(instance=None):
     if instance is None:
@@ -278,19 +297,20 @@ def get_department_total_count(value=None, service_area_department=None):
         return u''
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department).count()
-    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=service_area_department).count()
-    
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=service_area_department)
+    check_count = check_result.count()
+    pregnant_count = check_result.filter(result__startswith='pregnant').count()    
     if check_object_count > check_count:
         not_check_count = check_object_count - check_count
         complete_radio = (check_count / check_object_count) * 100.0
     else:
         not_check_count = 0
         if check_object_count == 0:
-            return u'检查项目：%s | 总已检人数：%s | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name, check_count, not_check_count, check_object_count)
+            return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name, check_count, pregnant_count, not_check_count, check_object_count)
         else:
             complete_radio = 100.00
 
-    return u'检查项目：%s | 总已检人数：%s | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (check_project.name, check_count, not_check_count, check_object_count, complete_radio)
+    return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (check_project.name, check_count, pregnant_count, not_check_count, check_object_count, complete_radio)            
 
 def get_ctp_value(instance=None):
     if instance is not None and gl.check_object_ctp_local.has_key(instance.ctp_method):
@@ -416,8 +436,8 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             query_set_service_area = ServiceArea.objects.filter(is_active=True, name=user_service_area_name)
             
         for service_area_object in query_set_service_area:
+            query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             if has_department_info is True:
-                query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
                 if query_set_service_area_department:
                     service_area_report = ServiceAreaReport(query_set_service_area_department)
                     service_area_report.author = request.user.username
@@ -438,6 +458,11 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                     check_result_report = CheckResultReport(query_set_check_result)
                     check_result_report.author = request.user.username
                     check_result_report.title = u'%s - 有孕人员名单' % service_area_object.name
+                    check_result_report.band_page_header.elements += [
+                        Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                              style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                              get_value=lambda text: get_service_area_pregnant_total_count(text, service_area=service_area_object)),
+                        ]
                     canvas = check_result_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
                 else:
                     pass
