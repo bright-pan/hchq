@@ -50,47 +50,97 @@
             {{ form.check_project }}
           </div>
           {% endif %}
-          {% if form.has_department_info.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.has_department_info.errors }}</strong>
-            {{ form.has_department_info.label_tag }}<br><p class="dimmed">{{ form.has_department_info.help_text}}</p><br>
-            {{ form.has_department_info }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.has_department_info.label_tag }}<br><p class="dimmed">{{ form.has_department_info.help_text}}</p>
-            {{ form.has_department_info }}
-          </div>
-          {% endif %}          
+
         </div>
       </div>
       <div class="c50r">
         <div class="subc">
           <!-- Insert your subtemplate content here -->
-          {% if form.has_check.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.has_check.errors }}</strong>
-            {{ form.has_check.label_tag }}<br><p class="dimmed">{{ form.has_check.help_text}}</p><br>
-            {{ form.has_check }}
+          <div class="subcolumns">
+            <div class="c50l">
+              <div class="subc">
+                <!-- Insert your subtemplate content here -->
+                <div class="subcolumns">
+                  <div class="c50l">
+                    <div class="subc">
+                      <!-- Insert your subtemplate content here -->
+                      {% if form.has_department_info.errors %}
+                      <div class="type-check error">
+                        <strong class="message">{{ form.has_department_info.errors }}</strong>
+                        {{ form.has_department_info.label_tag }}<br><p class="dimmed">{{ form.has_department_info.help_text}}</p><br>
+                        {{ form.has_department_info }}
+                      </div>
+                      {% else %}
+                      <div class="type-check">
+                        {{ form.has_department_info.label_tag }}<br><p class="dimmed">{{ form.has_department_info.help_text}}</p>
+                        {{ form.has_department_info }}
+                      </div>
+                      {% endif %}          
+                    </div>
+                  </div>
+                  <div class="c50r">
+                    <div class="subc">
+                      {% if form.has_pregnant_info.errors %}
+                      <div class="type-check error">
+                        <strong class="message">{{ form.has_pregnant_info.errors }}</strong>
+                        {{ form.has_pregnant_info.label_tag }}<br><p class="dimmed">{{ form.has_pregnant_info.help_text}}</p><br>
+                        {{ form.has_pregnant_info }}
+                      </div>
+                      {% else %}
+                      <div class="type-check">
+                        {{ form.has_pregnant_info.label_tag }}<br><p class="dimmed">{{ form.has_pregnant_info.help_text}}</p>
+                        {{ form.has_pregnant_info }}
+                      </div>
+                      {% endif %}          
+
+                    </div>
+                  </div>
+                </div>
+                
+                
+              </div>
+            </div>
+            <div class="c50r">
+              <div class="subc">
+                <div class="subcolumns">
+                  <div class="c50l">
+                    <div class="subc">
+                      <!-- Insert your subtemplate content here -->
+                      {% if form.has_check.errors %}
+                      <div class="type-check error">
+                        <strong class="message">{{ form.has_check.errors }}</strong>
+                        {{ form.has_check.label_tag }}<br><p class="dimmed">{{ form.has_check.help_text}}</p><br>
+                        {{ form.has_check }}
+                      </div>
+                      {% else %}
+                      <div class="type-check">
+                        {{ form.has_check.label_tag }}<br><p class="dimmed">{{ form.has_check.help_text}}</p>
+                        {{ form.has_check }}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="c50r">
+                    <div class="subc">
+                      {% if form.has_not.errors %}
+                      <div class="type-check error">
+                        <strong class="message">{{ form.has_not.errors }}</strong>
+                        {{ form.has_not.label_tag }}<br><p class="dimmed">{{ form.has_not.help_text}}</p><br>
+                        {{ form.has_not }}
+                      </div>
+                      {% else %}
+                      <div class="type-check">
+                        {{ form.has_not.label_tag }}<br><p class="dimmed">{{ form.has_not.help_text}}</p>
+                        {{ form.has_not }}
+                      </div>
+                      {% endif %}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.has_check.label_tag }}<br><p class="dimmed">{{ form.has_check.help_text}}</p>
-            {{ form.has_check }}
-          </div>
-          {% endif %}
-          {% if form.has_not.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.has_not.errors }}</strong>
-            {{ form.has_not.label_tag }}<br><p class="dimmed">{{ form.has_not.help_text}}</p><br>
-            {{ form.has_not }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.has_not.label_tag }}<br><p class="dimmed">{{ form.has_not.help_text}}</p>
-            {{ form.has_not }}
-          </div>
-          {% endif %}
 
         </div>
       </div>

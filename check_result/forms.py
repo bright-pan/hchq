@@ -791,7 +791,6 @@ class CheckResultSearchForm(forms.Form):
             pass
         else:
             query_set = query_set.filter(result__startswith=pregnant)
-
         return query_set
     def query_ring(self, query_set=None):
         ring = self.cleaned_data['ring']

@@ -143,10 +143,21 @@ class ReportStatisticsForm(forms.Form):
 
     has_department_info = forms.CharField(
         required=True,
-        label =_(u'单位统计'),
-        help_text=_(u'打勾则对服务区域中的单位进行统计'),
+        label =_(u'单位数据统计'),
+        help_text=_(u'进行单位统计'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_department_info',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+
+    has_pregnant_info = forms.CharField(
+        required=True,
+        label =_(u'有孕人员名单'),
+        help_text=_(u'包含有孕名单'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_pregnant_info',
                                           }, 
                                    check_test=None,
                                    ),
@@ -155,7 +166,7 @@ class ReportStatisticsForm(forms.Form):
     has_check = forms.CharField(
         required=True,
         label =_(u'已检对象名单'),
-        help_text=_(u'打勾则包含已检对象名单'),
+        help_text=_(u'包含已检名单'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_check',
                                           }, 
@@ -165,7 +176,7 @@ class ReportStatisticsForm(forms.Form):
     has_not = forms.CharField(
         required=True,
         label =_(u'未检对象名单'),
-        help_text=_(u'打勾则包含未检对象名单'),
+        help_text=_(u'包含未检名单'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_not',
                                           }, 
@@ -205,6 +216,11 @@ class ReportStatisticsForm(forms.Form):
         else:
             has_department_info = False
             
+        if self.cleaned_data['has_pregnant_info'] == u'has_pregnant_info':
+            has_pregnant_info = True
+        else:
+            has_pregnant_info = False
+            
         if self.cleaned_data['has_check'] == u'has_check':
             has_check = True
         else:
@@ -216,4 +232,4 @@ class ReportStatisticsForm(forms.Form):
             has_not = False
             
         query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-        return check_project_report(query_set, request, has_department_info, has_check, has_not, self.cleaned_data['check_project'])
+        return check_project_report(query_set, request, has_department_info, has_pregnant_info, has_check, has_not, self.cleaned_data['check_project'])
