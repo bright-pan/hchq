@@ -7,6 +7,8 @@ from django.db import IntegrityError
 
 from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
 from hchq.department.models import Department
+from hchq.service_area.models import ServiceAreaDepartment
+
 from hchq.untils import gl
 import re
 
@@ -143,6 +145,11 @@ class ServiceAreaDeleteForm(forms.Form):
             self.service_area_id_object = ServiceArea.objects.get(pk=self.service_area_id_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+        exist_test = ServiceAreaDepartment.objects.filter(service_area = self.service_area_id_object, is_active=True).exists()
+        if exist_test is True:
+            raise forms.ValidationError(u'你无法删除该服务区域，因为该服务区域已经关联了单位部门，请将该服务区域的所有单位部门删除以后再删除该服务区域。')
+        else:
+            pass
         return self.service_area_id_copy
 
     def service_area_delete(self):

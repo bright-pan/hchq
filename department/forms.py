@@ -6,6 +6,7 @@ from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
 from hchq.department.models import Department
+from hchq.check_object.models import CheckObject
 from hchq.service_area.models import ServiceAreaDepartment
 from hchq.untils import gl
 import re
@@ -145,6 +146,11 @@ class DepartmentDeleteForm(forms.Form):
             self.department_id_object = Department.objects.get(pk=self.department_id_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        exist_test = CheckObject.objects.filter(service_area_department__department = self.department_id_object, is_active=True).exists()
+        if exist_test is True:
+            raise forms.ValidationError(u'你无法删除该单位，因为该单位已经包含了检查对象，请将包含该单位的服务区域的所有检查对象移除以后再删除。')
+        else:
+            pass
         return self.department_id_copy
 
     def department_delete(self):
