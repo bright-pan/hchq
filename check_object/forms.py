@@ -1200,6 +1200,18 @@ class CheckObjectSearchForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    modify_start_time = forms.DateField(
+        required=False,
+        label=_(u'修改开始时间'),
+        help_text=_(u'例如：2010-10-25'),
+        input_formats = ('%Y-%m-%d',)
+        )
+    modify_end_time  = forms.DateField(
+        required=False,
+        label=_(u'修改结束时间'),
+        help_text=_(u'例如：2010-10-25'),
+        input_formats = ('%Y-%m-%d',)
+        )
 
     is_fuzzy = forms.CharField(
         required=True,
@@ -1335,6 +1347,15 @@ class CheckObjectSearchForm(forms.Form):
         else:
 #            print u'false'
             request.session[gl.session_check_object_is_fuzzy] = False
+        if self.cleaned_data['modify_start_time'] is not None:
+            request.session[gl.session_check_object_modify_start_time] = self.cleaned_data['modify_start_time'].isoformat()
+        else:
+            request.session[gl.session_check_object_modify__start_time] = u''
+        if self.cleaned_data['modify_end_time'] is not None:
+            request.session[gl.session_check_object_modify_end_time] = self.cleaned_data['modify_end_time'].isoformat()
+        else:
+            request.session[gl.session_check_object_modify_end_time] = u''
+
         return True
     
     def data_from_session(self, request):
@@ -1356,6 +1377,8 @@ class CheckObjectSearchForm(forms.Form):
         data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'none')
         data['ctp_method_time'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         data['wedding_time'] = request.session.get(gl.session_check_object_wedding_time, u'')
+        data['modify_start_time'] = request.session.get(gl.session_check_object_modify_start_time, u'')
+        data['modify_end_time'] = request.session.get(gl.session_check_object_modify_end_time, u'')
         data['is_fuzzy'] = request.session.get(gl.session_check_object_is_fuzzy, False)
 
 #        print data['is_fuzzy']
@@ -1378,6 +1401,8 @@ class CheckObjectSearchForm(forms.Form):
         self.fields['ctp_method'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method, u'none')
         self.fields['ctp_method_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         self.fields['wedding_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_wedding_time, u'')
+        self.fields['modify_start_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_modify_start_time, u'')
+        self.fields['modify_end_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_modify_end_time, u'')
         is_fuzzy = request.session.get(gl.session_check_object_is_fuzzy, False)
         if is_fuzzy == u'is_fuzzy':
             self.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
@@ -1578,6 +1603,32 @@ class CheckObjectSearchForm(forms.Form):
             query_set = query_set.filter(wedding_time=wedding_time)
         
         return query_set
+
+    def query_modify_start_time(self, query_set=None):
+        start_time = self.cleaned_data['modify_start_time']
+
+        if query_set is None:
+            return query_set
+
+        if start_time == None:
+            pass
+        else:
+            start_time = datetime.datetime(start_time.year, start_time.month, start_time.day)
+            query_set = query_set.filter(updated_at__gte=start_time)
+        
+        return query_set
+    def query_modify_end_time(self, query_set=None):
+        end_time = self.cleaned_data['modify_end_time']
+        if query_set is None:
+            return query_set
+
+        if end_time == None:
+            pass
+        else:
+            end_time = datetime.datetime(end_time.year, end_time.month, end_time.day, 23, 59, 59)
+            query_set = query_set.filter(updated_at__lte=end_time)
+        return query_set
+
     
     def search(self):
 
@@ -1600,5 +1651,7 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_is_family(query_set)
         query_set = self.query_ctp_method_time(query_set)
         query_set = self.query_wedding_time(query_set)
+        query_set = self.query_modify_start_time(query_set)
+        query_set = self.query_modify_end_time(query_set)
         
         return query_set

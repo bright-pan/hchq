@@ -182,6 +182,8 @@ session_check_object_is_fuzzy = u'session_check_object_is_fuzzy'
 session_check_object_ctp_method = u'session_check_object_ctp_method'
 session_check_object_ctp_method_time = u'session_check_object_ctp_method_time'
 session_check_object_wedding_time = u'session_check_object_wedding_time'
+session_check_object_modify_start_time = u'session_check_object_modify_start_time'
+session_check_object_modify_end_time = u'session_check_object_modify_end_time'
 
 session_check_object_detail_modify_uploader = u'session_check_object_detail_modify_uploader'
 
