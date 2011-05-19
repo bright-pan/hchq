@@ -10,6 +10,9 @@
   {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
   <li class="active"><strong>检查对象详情</strong></li>
   {% endif %}
+  {% if perms.department.co_list %}
+  <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
+  {% endif %}
   {% if perms.department.co_delete %}
   <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
   {% endif %}

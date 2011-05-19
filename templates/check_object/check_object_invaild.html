@@ -1,7 +1,7 @@
 {% extends "check_object/check_object_layout.html" %}
 {% block header_describe %}{% endblock %}
 {% load cache %}
-{% cache 500 check_object_list_media %}
+{% cache 500 check_object_invaild_media %}
 {% block media %}
 <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
@@ -133,11 +133,11 @@ $(document).ready(function(){
 {% endcache %}
 {% block teaser %}
 {% load cache %}
-{% cache 500 check_object_list user.username %}
+{% cache 500 check_object_invaild user.username %}
 <div class="nav_hlist">
 <ul>
   {% if perms.department.co_list %}
-  <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
+  <li class="active"><strong>已删对象查询</strong></li>
   {% endif %}
   {% if perms.department.co_delete %}
   <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
@@ -149,7 +149,7 @@ $(document).ready(function(){
   <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
   {% endif %}
   {% if perms.department.co_list %}
-  <li class="active"><strong>检查对象查询</strong></li>
+  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
   {% endif %}
 </ul>
 </div>
@@ -157,13 +157,13 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block main %}
-<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">检查对象查询条件</button>
+<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">已删对象查询条件</button>
 <div id="search_dialog" style="display:none;" title="查询参数">
   {% with search_form as form %}
   <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
     <div class="note">
       <fieldset>
-        <legend>检查对象信息</legend>
+        <legend>已删对象信息</legend>
         <div class="subcolumns">
           <div class="c75l">
             <div class="subc">
@@ -438,7 +438,7 @@ $(document).ready(function(){
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       {% if perms.department.cr_report %}
-      <input type="submit"  name="submit" value="打印检查对象报表" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+      <input type="submit"  name="submit" value="打印已删对象报表" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       {% endif %}
       <span id="id_submit_error"></span>
     </div>
@@ -446,6 +446,6 @@ $(document).ready(function(){
   {% endwith %}
 </div>
 <hr>
-{% include 'check_object/check_object_table_list.html' %}
+{% include 'check_object/check_object_table_invaild.html' %}
 {% endblock %}
 

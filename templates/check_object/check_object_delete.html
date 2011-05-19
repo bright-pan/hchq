@@ -136,6 +136,9 @@ $(document).ready(function(){
 {% cache 500 check_object_delete user.username %}
 <div class="nav_hlist">
 <ul>
+  {% if perms.department.co_list %}
+  <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
+  {% endif %}
   {% if perms.department.co_delete %}
   <li class="active"><strong>检查对象删除</strong></li>
   {% endif %}
@@ -387,7 +390,50 @@ $(document).ready(function(){
           
         </div>          
       </div>         
-    </div>          
+    </div>
+    <div class="note">
+      <fieldset>
+        <legend>修改时间</legend>
+        <!-- Insert your subtemplate content here -->
+        <div class="subcolumns">
+          <div class="c50l">
+            <div class="subc">
+              <!-- Insert your subtemplate content here -->
+              {% if form.modify_start_time.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.modify_start_time.errors }}</strong>
+                {{ form.modify_start_time.label_tag }}
+                {{ form.modify_start_time }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.modify_start_time.label_tag }}
+                {{ form.modify_start_time }}
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+          <div class="c50r">
+            <div class="subc">
+              <!-- Insert your subtemplate content here -->
+              {% if form.modify_end_time.errors %}
+              <div class="type-text error">
+                <strong class="message">{{ form.modify_end_time.errors }}</strong>
+                {{ form.modify_end_time.label_tag }}
+                {{ form.modify_end_time }}
+              </div>
+              {% else %}
+              <div class="type-text">
+                {{ form.modify_end_time.label_tag }}
+                {{ form.modify_end_time }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>          
+      </fieldset>
+    </div>
     <div class="center">
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>

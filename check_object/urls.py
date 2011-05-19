@@ -45,6 +45,11 @@ urlpatterns = patterns('hchq.check_object.views',
        'check_object_list',
        {'template_name' : 'check_object/check_object_list.html', 'next': '/check_object/person_management', },
        'check_object_list'),
+                       
+       (r'invaild/(?P<check_object_page>\d{1,8})/$',
+       'check_object_invaild',
+       {'template_name' : 'check_object/check_object_invaild.html', 'next': '/check_object/person_management', },
+       'check_object_invaild'),
 
        (r'detail_modify/$',
        'check_object_detail_modify',

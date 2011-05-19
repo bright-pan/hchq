@@ -89,3 +89,15 @@ def check_object_report(query_set=None, request=None):
     else:
         pass
     return response
+
+def check_object_unreport(query_set=None, request=None):
+    response = HttpResponse(mimetype='application/pdf')
+#    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
+    if query_set is not None and request is not None and query_set:
+        report = CheckObjectReport(query_set)
+        report.title = u'已删对象报表'
+        report.author = request.user.username
+        report.generate_by(PDFGenerator, filename=response)
+    else:
+        pass
+    return response

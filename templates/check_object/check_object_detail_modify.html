@@ -201,6 +201,9 @@ $(document).ready(function(){
 {% cache 500 check_object_detail_modify user.username %}
 <div class="nav_hlist">
 <ul>
+  {% if perms.department.co_list %}
+  <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
+  {% endif %}
   {% if perms.department.co_modify %}
   <li class="active"><strong>检查对象编辑</strong></li>
   {% endif %}

@@ -1083,6 +1083,36 @@ class CheckObjectDeleteForm(forms.Form):
         else:
             return False
 
+class CheckObjectRestoreForm(forms.Form):
+    """
+    检查对象恢复表单
+    """
+    id_object = None
+
+    id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.check_object_name_error_messages,
+        )
+    
+    def clean_id(self):
+        try:
+            try:
+                id_copy = int(self.data.get('id'))
+            except ValueError:
+                raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+            self.id_object = CheckObject.objects.get(pk=id_copy, is_active=False)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return id_copy
+
+    def restore(self):
+        if self.id_object is not None:
+            self.id_object.is_active = True
+            self.id_object.save()
+            return True
+        else:
+            return False
+
 class CheckObjectSearchForm(forms.Form):
     """
     检查对象搜索表单
@@ -1350,7 +1380,7 @@ class CheckObjectSearchForm(forms.Form):
         if self.cleaned_data['modify_start_time'] is not None:
             request.session[gl.session_check_object_modify_start_time] = self.cleaned_data['modify_start_time'].isoformat()
         else:
-            request.session[gl.session_check_object_modify__start_time] = u''
+            request.session[gl.session_check_object_modify_start_time] = u''
         if self.cleaned_data['modify_end_time'] is not None:
             request.session[gl.session_check_object_modify_end_time] = self.cleaned_data['modify_end_time'].isoformat()
         else:
@@ -1655,3 +1685,30 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_modify_end_time(query_set)
         
         return query_set
+
+    def unsearch(self):
+
+        if self.cleaned_data['is_fuzzy'] == u'is_fuzzy':
+            self.is_fuzzy = True
+        else:
+            self.is_fuzzy = False
+
+        query_set = CheckObject.objects.filter(is_active=False)
+        
+        query_set = self.query_name(query_set)
+        query_set = self.query_id_number(query_set)
+        query_set = self.query_mate_name(query_set)
+        query_set = self.query_mate_id_number(query_set)
+        query_set = self.query_service_area_name(query_set)
+        query_set = self.query_department_name(query_set)
+        query_set = self.query_mate_service_area_name(query_set)
+        query_set = self.query_mate_department_name(query_set)
+        query_set = self.query_ctp_method(query_set)
+        query_set = self.query_is_family(query_set)
+        query_set = self.query_ctp_method_time(query_set)
+        query_set = self.query_wedding_time(query_set)
+        query_set = self.query_modify_start_time(query_set)
+        query_set = self.query_modify_end_time(query_set)
+        
+        return query_set
+    
