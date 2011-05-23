@@ -28,7 +28,7 @@ def get_check_count(instance=None):
         return u''
     
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance)
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance, check_object__is_active=True)
     check_count = check_result.count()
     pregnant_count = check_result.filter(result__startswith='pregnant').count()
 #    print '********************************'
@@ -40,7 +40,7 @@ def get_not_check_count(instance=None):
     
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=instance).count()
-    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance).count()
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance, check_object__is_active=True).count()
     if check_object_count > check_count:
         not_check_count = check_object_count - check_count
     else:
@@ -60,7 +60,7 @@ def get_check_object_count(instance=None):
 def get_total_count(value=None):
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).count()
-    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project)
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project, check_object__is_active=True)
     check_count = check_result.count()
     pregnant_count = check_result.filter(result__startswith='pregnant').count()    
     if check_object_count > check_count:
@@ -82,7 +82,7 @@ def get_complete_radio(instance=None):
     
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=instance).count()
-    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance).count()
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=instance, check_object__is_active=True).count()
     if check_object_count > check_count:
         complete_radio = (check_count / check_object_count) * 100.0
     else:
@@ -150,7 +150,7 @@ def get_service_area_total_count(value=None, service_area=None):
         return u''
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=service_area).count()
-    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=service_area)
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=service_area, check_object__is_active=True)
     check_count = check_result.count()
     pregnant_count = check_result.filter(result__startswith='pregnant').count()    
     if check_object_count > check_count:
@@ -169,7 +169,7 @@ def get_service_area_pregnant_total_count(value=None, service_area=None):
         return u''
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department__service_area=service_area).count()
-    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=service_area)
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department__service_area=service_area, check_object__is_active=True)
     check_count = check_result.count()
     pregnant_count = check_result.filter(result__startswith='pregnant').count()    
     if check_object_count > check_count:
@@ -189,7 +189,7 @@ def get_department_check_count(instance=None):
         return u''
     
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=instance)
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=instance, check_object__is_active=True)
     check_count = check_result.count()
     pregnant_count = check_result.filter(result__startswith='pregnant').count()
 #    print '********************************'
@@ -203,7 +203,7 @@ def get_department_not_check_count(instance=None):
     
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department=instance).count()
-    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=instance).count()
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=instance, check_object__is_active=True).count()
     if check_object_count > check_count:
         not_check_count = check_object_count - check_count
     else:
@@ -226,7 +226,7 @@ def get_department_complete_radio(instance=None):
     
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department=instance).count()
-    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=instance).count()
+    check_count = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=instance, check_object__is_active=True).count()
     if check_object_count > check_count:
         complete_radio = (check_count / check_object_count) * 100.0
     else:
@@ -297,7 +297,7 @@ def get_department_total_count(value=None, service_area_department=None):
         return u''
     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
     check_object_count = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department).count()
-    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=service_area_department)
+    check_result = CheckResult.objects.filter(is_latest=True, check_project=check_project).filter(check_object__service_area_department=service_area_department, check_object__is_active=True)
     check_count = check_result.count()
     pregnant_count = check_result.filter(result__startswith='pregnant').count()    
     if check_object_count > check_count:
