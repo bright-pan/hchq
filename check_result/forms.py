@@ -919,7 +919,7 @@ class CheckResultSearchForm(forms.Form):
         query_set = self.query_start_time(query_set)
         query_set = self.query_end_time(query_set)
 
-        query_set = query_set.filter(check_object__is_active=True)
+        #query_set = query_set.filter(check_object__is_active=True)
         
         query_set = self.query_name(query_set)
         query_set = self.query_id_number(query_set)
