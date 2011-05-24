@@ -11,6 +11,8 @@ from hchq.untils import gl
 from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
 from hchq.department.models import Department
 from hchq.check_object.models import *
+from hchq.check_project.models import *
+from hchq.check_result.models import *
 from hchq import settings
 import re
 import datetime
@@ -1073,8 +1075,16 @@ class CheckObjectDeleteForm(forms.Form):
             self.id_object = CheckObject.objects.get(pk=id_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
-        return id_copy
-
+        try:
+            check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+        try:
+            CheckResult.objects.get(check_object=self.id_object, check_project=check_project)
+        except ObjectDoesNotExist:
+            return id_copy
+        raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象！')
+    
     def delete(self):
         if self.id_object is not None:
             self.id_object.is_active = False
