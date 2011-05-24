@@ -1,0 +1,6 @@
+from check_project.models import *
+from check_object.models import *
+from check_result.models import *
+check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+check_object = CheckObject.objects.filter(is_active=False, check_result__check_project=check_project)
+check_object.update(is_active=True)
