@@ -1053,6 +1053,7 @@ class CheckObjectDetailModifyForm(forms.Form):
 
         check_object.is_active =True
         check_object.name=self.cleaned_data['name']
+        check_object.id_number=self.cleaned_data['id_number']
         check_object.service_area_department=self.service_area_department_object
         check_object.is_family=is_family_value
         check_object.mate_name=self.cleaned_data['mate_name']
