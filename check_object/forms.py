@@ -17,6 +17,8 @@ from hchq import settings
 import re
 import datetime
 
+
+
 class CheckObjectAddForm(forms.Form):
     """
     检查对象添加表单
@@ -526,7 +528,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     mate_service_area_department_object = None
     ctp_method_time_copy = None
     wedding_time_copy = None
-    
+
     name = forms.CharField(
         max_length=64,
         required=True, 
@@ -735,8 +737,24 @@ class CheckObjectDetailModifyForm(forms.Form):
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return name_copy
     def clean_id_number(self):
-        self.fields['id_number'].widget.attrs['readonly'] = True
-        return self.cleaned_data['id_number']
+        try:
+            id_number_copy = self.data.get('id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_add_re_pattern, id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        try:
+            self.role_object = CheckObject.objects.get(id_number=id_number_copy, is_active=True)
+        except ObjectDoesNotExist:
+            return id_number_copy
+        if gl.check_object_init_flag == False:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['already_error'])
+        else:
+            #print '$$$$$$$$$$$$$$$$$$$$$$$'
+            gl.check_object_init_flag = False
+            return id_number_copy
+    #self.fields['id_number'].widget.attrs['readonly'] = True
+    #return self.cleaned_data['id_number']
     
     def clean_service_area_name(self):
         try:
@@ -917,6 +935,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         return id_copy
 
     def data_from_object(self, modify_object=None, user=None):
+        gl.check_object_init_flag = True
         data = {}
         if modify_object is not None and user is not None:
 
