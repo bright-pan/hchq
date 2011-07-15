@@ -78,7 +78,7 @@ class CheckResultReport(Report):
         height = 0.7*cm
         auto_expand_height = True
         elements = [
-            ObjectValue(attribute_name='id', top=0.3*cm, left=0.5*cm),
+            ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
             ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
                         get_value=lambda instance: get_family_value(instance)),
             ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),

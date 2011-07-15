@@ -669,15 +669,18 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
         query_set_service_area = query_set
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
-            service_area_report = ServiceAreaReport(query_set_service_area_department)
-            service_area_report.author = request.user.username
-            service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
-            service_area_report.band_page_header.elements += [
-                Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
-                      style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                      get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
-                ]
-            canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            if query_set_service_area_department:
+                service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.author = request.user.username
+                service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
+                service_area_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
+                    ]
+                canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
             for service_area_department_object in query_set_service_area_department:
                 query_set_not_check_object_in_department = CheckObject.objects.filter(is_active=True).filter(service_area_department=service_area_department_object).exclude(check_result__is_latest=True, check_result__check_project=check_project)
                 if query_set_not_check_object_in_department:
@@ -763,4 +766,127 @@ def check_object_not_service_area_department_report(query_set=None, request=None
         return response
 
     cache.set('check_object_not_service_area_department_report_%s' % query_set[0].id, response, 15*60)
+    return response
+def check_object_service_area_has_pregnant_report(query_set=None, request=None, check_project_id=None):
+    
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
+        
+    if query_set is not None and request is not None and query_set:
+        response = cache.get('check_object_service_area_has_pregnant_report_%s' % query_set[0].id)
+        if response is not None:
+            return response
+        response = HttpResponse(mimetype='application/pdf')
+        if check_project == None:
+            return response
+        
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        query_set_service_area = query_set
+        for service_area_object in query_set_service_area:
+            query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            if query_set_service_area_department:
+                service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.author = request.user.username
+                service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
+                service_area_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: get_service_area_total_count(text, service_area=service_area_object)),
+                    ]
+                canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
+            for service_area_department_object in query_set_service_area_department:
+                query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_object__is_active=True).filter(check_object__service_area_department=service_area_department_object).filter(is_latest=True, check_project=check_project, result__startswith='pregnant')
+                if query_set_check_result_has_pregnant_in_department:
+                    department_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
+                    department_report.author = request.user.username
+                    department_report.title = u'%s-%s-有孕人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.band_page_header.elements += [
+                        Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                              style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                              get_value=lambda text: get_department_total_count(text, service_area_department=service_area_department_object)),
+                        ]
+                    canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                else:
+                    pass
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        cover_report.generate_by(PDFGenerator, canvas=canvas)
+        
+    else:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
+
+    cache.set('check_object_service_area_has_pregnant_report_%s' % query_set[0].id, response, 15*60)
+    return response
+
+def check_object_service_area_department_has_pregnant_report(query_set=None, request=None, check_project_id=None):
+    
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
+
+    if query_set is not None and request is not None and query_set:
+        response = cache.get('check_object_service_area_department_has_pregnant_report_%s' % query_set[0].id)
+        if response is not None:
+            return response
+        response = HttpResponse(mimetype='application/pdf')
+        if check_project == None:
+            return response
+        
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        query_set_service_area_department = query_set
+        for service_area_department_object in query_set_service_area_department:
+            query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_object__is_active=True).filter(check_object__service_area_department=service_area_department_object).filter(is_latest=True, check_project=check_project, result__startswith='pregnant')
+            if query_set_check_result_has_pregnant_in_department:
+                department_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
+                department_report.author = request.user.username
+                department_report.title = u'%s-%s-有孕人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.band_page_header.elements += [
+                    Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: get_department_total_count(text, service_area_department=service_area_department_object)),
+                    ]
+                canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
+            cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        cover_report.generate_by(PDFGenerator, canvas=canvas)
+        
+    else:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
+
+    cache.set('check_object_service_area_department_has_pregnant_report_%s' % query_set[0].id, response, 15*60)
     return response

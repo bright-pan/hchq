@@ -137,6 +137,14 @@ class ReportCheckOrNotForm(forms.Form):
             return check_object_not_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
         return response
+    def has_pregnant_report(self, request=None):
+        if self.service_area_department_object is None:
+            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
+            return check_object_service_area_has_pregnant_report(query_set, request, self.cleaned_data['check_project'])
+        else:
+            return check_object_service_area_department_has_pregnant_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
+
+        return response
 
     
 class ReportStatisticsForm(forms.Form):
