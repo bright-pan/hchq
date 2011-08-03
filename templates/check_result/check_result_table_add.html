@@ -6,7 +6,7 @@
   </thead>
   <tbody>
     <tr>
-      <th scope="col">编号</th>
+      <th scope="col">照片</th>
       <th scope="col">妻子姓名<br>身份证号</th>
       <th scope="col">服务区域<br>单位部门</th>
       <th scope="col">丈夫姓名<br>身份证号</th>
@@ -17,7 +17,7 @@
     </tr>
     {% for result in results_page.object_list %}
     <tr>
-      <td>{{ result.id }}</td>
+      <td><a href="{{ result.get_absolute_url }}"><img src="{{ result.photo.url }}" width="47" height="41"/></a></td>
       <td>{{ result.name }}<br><a href="{% url check_result_show result.id 'false'%}">{{ result.id_number }}</a></td>
       <td>{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
       <td>{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
