@@ -169,8 +169,10 @@ check_object_wedding_time_error_messages={'required': _(u'请输入时间！'),
 
 check_object_image_size = (208,156)#宽/高
 check_object_id_mark = (0,140)#宽/高
-check_object_id_mark_color = (39, 96, 137)
-check_object_id_mark_bottom_color = (204,223,243)
+#check_object_id_mark_color = (39, 96, 137)
+#check_object_id_mark_bottom_color = (204,223,243)
+check_object_id_mark_color = (255,255,255)
+check_object_id_mark_bottom_color = (0,45,0)
 session_check_object_name = u'session_check_object_name'
 session_check_object_id_number = u'session_check_object_id_number'
 session_check_object_service_area_name = u'session_check_object_service_area_name'

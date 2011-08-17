@@ -14,11 +14,11 @@ from hchq import settings
 
 def photo():
     qs_co = CheckObject.objects.all()
+    font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)                    
     for co in qs_co:
         temp_file = default_storage.open(co.photo.name)
         temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
         temp_file.close()
-        font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
         try:
             img = Image.open(u'%s' % temp_file_name)
             print temp_file_name

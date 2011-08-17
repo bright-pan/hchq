@@ -69,7 +69,7 @@ class CheckObjectAddForm(forms.Form):
         )
     is_family = forms.CharField(
         required=True,
-        label =_(u'家属(*)'),
+        label =_(u'家属'),
         help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
@@ -585,7 +585,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         )
     is_family = forms.CharField(
         required=True,
-        label =_(u'家属(*)'),
+        label =_(u'家属'),
         help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
