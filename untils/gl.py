@@ -168,7 +168,9 @@ check_object_wedding_time_error_messages={'required': _(u'请输入时间！'),
                                           }
 
 check_object_image_size = (208,156)#宽/高
-
+check_object_id_mark = (0,140)#宽/高
+check_object_id_mark_color = (39, 96, 137)
+check_object_id_mark_bottom_color = (204,223,243)
 session_check_object_name = u'session_check_object_name'
 session_check_object_id_number = u'session_check_object_id_number'
 session_check_object_service_area_name = u'session_check_object_service_area_name'
@@ -186,13 +188,14 @@ session_check_object_modify_start_time = u'session_check_object_modify_start_tim
 session_check_object_modify_end_time = u'session_check_object_modify_end_time'
 
 session_check_object_detail_modify_uploader = u'session_check_object_detail_modify_uploader'
+session_check_object_detail_modify_id_number = u'session_check_object_detail_modify_id_number'
 
 check_object_ctp_local = {u'method_0':u'未使用',
                           u'method_1':u'避孕环方式',
                           u'method_2':u'避孕药方式',
                           u'method_3':u'其他方式',
                       }
-check_object_init_flag = False
+#check_object_init_flag = False
 ################################################
 
 #################################################
@@ -211,3 +214,5 @@ check_result_local = {u'pregnant':u'有孕',
                       u'ring':u'有环',
                       u'unring':u'无环',
                       }
+
+

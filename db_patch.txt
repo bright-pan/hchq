@@ -4,3 +4,32 @@ from check_result.models import *
 check_project = CheckProject.objects.get(is_setup=True, is_active=True)
 check_object = CheckObject.objects.filter(is_active=False, check_result__check_project=check_project)
 check_object.update(is_active=True)
+
+
+from hchq.check_object.models import *
+from hchq.untils import gl
+from django.core.files.storage import default_storage
+from PIL import Image,ImageDraw,ImageFont
+from hchq import settings
+
+def photo():
+    qs_co = CheckObject.objects.all()
+    for co in qs_co:
+        temp_file = default_storage.open(co.photo.name)
+        temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
+        temp_file.close()
+        font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+        try:
+            img = Image.open(u'%s' % temp_file_name)
+            print temp_file_name
+        except IOError:
+            print '*******88'
+            img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+                img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+        draw = ImageDraw.Draw(img)
+        draw.rectangle([gl.check_object_id_mark, gl.check_object_image_size], fill=gl.check_object_id_mark_bottom_color)
+        draw.text(gl.check_object_id_mark, u'%s %s' % (co.name, co.id_number),gl.check_object_id_mark_color,font=font)
+        del draw
+        img.save(temp_file_name,"JPEG")

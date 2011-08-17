@@ -72,16 +72,17 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
                 raise Http404('Invalid Request!')
             for chunk in data.chunks():
                 temp_file.write(chunk)
+            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
             temp_file.close()
             try:
-                img = Image.open(temp_file.name)
+                img = Image.open(temp_file_name)
             except IOError:
                 raise Http404('Invalid Request!')
             if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
                 raise Http404('Invalid Request!')
             if img.mode != "RGB":
                 img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file_name,"JPEG")
             del temp_file
             del img
             return HttpResponse('success')
@@ -100,16 +101,17 @@ def check_object_add_camera(request, template_name='my.html', next='/', check_ob
             except IOError:
                 raise Http404('Invalid Request!')
             temp_file.write(request.raw_post_data)
+            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
             temp_file.close()
             try:
-                img = Image.open(temp_file.name)
+                img = Image.open(temp_file_name)
             except IOError:
                 raise Http404('Invalid Request!')
             if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
                 raise Http404('Invalid Request!')
             if img.mode != "RGB":
                 img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file_name,"JPEG")
             del temp_file
             del img
 #            print "*************************8"
@@ -135,17 +137,18 @@ def check_object_detail_modify_uploader(request, template_name='my.html', next='
                 raise Http404('Invalid Request!')
             for chunk in data.chunks():
                 temp_file.write(chunk)
+            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
             temp_file.close()
 
             try:
-                img = Image.open(temp_file.name)
+                img = Image.open(temp_file_name)
             except IOError:
                 raise Http404('Invalid Request!')
             if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
                 raise Http404('Invalid Request!')
             if img.mode != "RGB":
                 img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file_name,"JPEG")
 
             del temp_file
             del img
@@ -167,16 +170,17 @@ def check_object_detail_modify_camera(request, template_name='my.html', next='/'
             except IOError:
                 raise Http404('Invalid Request!')
             temp_file.write(request.raw_post_data)
+            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
             temp_file.close()
             try:
-                img = Image.open(temp_file.name)
+                img = Image.open(temp_file_name)
             except IOError:
                 raise Http404('Invalid Request!')
             if not (img.format.lower() in ['jpeg','jpg','gif', 'png','bmp']):
                 raise Http404('Invalid Request!')
             if img.mode != "RGB":
                 img = img.convert("RGB")
-            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file.name,"JPEG")
+            img.resize(gl.check_object_image_size,Image.ANTIALIAS).save(temp_file_name,"JPEG")
 
             del temp_file
             del img
@@ -234,7 +238,9 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
             if check_object_modify_form.is_valid():
                 check_object_modify_object = check_object_modify_form.object()
 #                print check_object_modify_object.id_number
-                check_object_detail_modify_form = CheckObjectDetailModifyForm(CheckObjectDetailModifyForm().data_from_object(check_object_modify_object, user))
+                check_object_data = CheckObjectDetailModifyForm().data_from_object(check_object_modify_object, user)
+                request.session[gl.session_check_object_detail_modify_id_number] = check_object_data[u'id_number']
+                check_object_detail_modify_form = CheckObjectDetailModifyForm(check_object_data)
                 if check_object_detail_modify_form.is_valid():
                     check_object_detail_modify_form.init_from_object(check_object_modify_object, user)
                     page_title = u'修改检查对象'
@@ -310,6 +316,32 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
             check_object_detail_modify_form = CheckObjectDetailModifyForm(post_data)
 
             if check_object_detail_modify_form.is_valid():
+                check_object_id_number = request.session.get(gl.session_check_object_detail_modify_id_number, u'')
+                if check_object_id_number == u'':
+                    raise Http404('Invalid Request!')
+                else:
+                    if check_object_id_number == check_object_detail_modify_form.data.get('id_number'):
+                        pass
+                    else:
+                        try:
+                            CheckObject.objects.get(id_number=check_object_detail_modify_form.data.get('id_number'), is_active=True)
+                        except ObjectDoesNotExist:
+                            check_object = check_object_detail_modify_form.detail_modify(request)
+                            if check_object is not None:
+                                return HttpResponseRedirect("check_object/show/%s/modify/" % check_object.id)
+                            else:
+                                raise Http404('Invalid Request!')
+
+                        check_object_id = int(check_object_detail_modify_form.data.get('id'))
+                        check_object_object = CheckObject.objects.get(pk=check_object_id)
+                        check_object_detail_modify_form._errors[u'id_number'] = gl.check_object_id_number_error_messages['already_error']
+                        return render_to_response(template_name,
+                                                  {'detail_modify_form': check_object_detail_modify_form,
+                                                   'check_object': check_object_object,
+                                                   'page_title': page_title,
+                                                   },
+                                                  context_instance=RequestContext(request))
+
                 check_object = check_object_detail_modify_form.detail_modify(request)
                 if check_object is not None:
                     return HttpResponseRedirect("check_object/show/%s/modify/" % check_object.id)

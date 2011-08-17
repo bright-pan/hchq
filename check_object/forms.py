@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
-from PIL import Image
+from PIL import Image,ImageDraw,ImageFont
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -433,8 +433,24 @@ class CheckObjectAddForm(forms.Form):
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
+            file_temp_name = file_temp.name.decode('utf-8').replace('\\', '/')
+            font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+            try:
+                img = Image.open(file_temp_name)
+            except IOError:
+                img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+            draw = ImageDraw.Draw(img)
+            draw.rectangle([gl.check_object_id_mark, gl.check_object_image_size], fill=gl.check_object_id_mark_bottom_color)
+            draw.text(gl.check_object_id_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_id_mark_color,font=font)
+            del draw
+            img.save(file_temp_name,"JPEG")
+            
             default_storage.save(file_path, file_temp)
             file_temp.close()
+            del img
             del file_temp
             try:
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
@@ -743,18 +759,7 @@ class CheckObjectDetailModifyForm(forms.Form):
             raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
         if re.match(gl.check_object_id_number_add_re_pattern, id_number_copy) is None:
             raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
-        try:
-            self.role_object = CheckObject.objects.get(id_number=id_number_copy, is_active=True)
-        except ObjectDoesNotExist:
-            return id_number_copy
-        if gl.check_object_init_flag == False:
-            raise forms.ValidationError(gl.check_object_id_number_error_messages['already_error'])
-        else:
-            #print '$$$$$$$$$$$$$$$$$$$$$$$'
-            gl.check_object_init_flag = False
-            return id_number_copy
-    #self.fields['id_number'].widget.attrs['readonly'] = True
-    #return self.cleaned_data['id_number']
+        return id_number_copy
     
     def clean_service_area_name(self):
         try:
@@ -935,7 +940,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         return id_copy
 
     def data_from_object(self, modify_object=None, user=None):
-        gl.check_object_init_flag = True
+#        gl.check_object_init_flag = True
         data = {}
         if modify_object is not None and user is not None:
 
@@ -1039,10 +1044,26 @@ class CheckObjectDetailModifyForm(forms.Form):
                 file_temp = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username)
             except IOError:
                 return None
-            file_path = u'images/photos/%s.jpg' % check_object.id_number
+            file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
+            file_temp_name = file_temp.name.decode('utf-8').replace('\\', '/')
+            font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+            try:
+                img = Image.open(file_temp_name)
+            except IOError:
+                img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+            draw = ImageDraw.Draw(img)
+            draw.rectangle([gl.check_object_id_mark, gl.check_object_image_size], fill=gl.check_object_id_mark_bottom_color)
+            draw.text(gl.check_object_id_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_id_mark_color,font=font)
+            del draw
+            img.save(file_temp_name,"JPEG")
+
             default_storage.save(file_path, file_temp)
             file_temp.close()
+            del img
             del file_temp
             request.session[gl.session_check_object_detail_modify_uploader] = u''
 
@@ -1053,6 +1074,7 @@ class CheckObjectDetailModifyForm(forms.Form):
 
         check_object.is_active =True
         check_object.name=self.cleaned_data['name']
+        check_object.photo=file_path
         check_object.id_number=self.cleaned_data['id_number']
         check_object.service_area_department=self.service_area_department_object
         check_object.is_family=is_family_value
@@ -1742,3 +1764,5 @@ class CheckObjectSearchForm(forms.Form):
         
         return query_set
     
+
+
