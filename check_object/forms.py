@@ -443,8 +443,8 @@ class CheckObjectAddForm(forms.Form):
                     img = img.convert("RGB")
                 img.resize(gl.check_object_image_size,Image.ANTIALIAS)
             draw = ImageDraw.Draw(img)
-            draw.rectangle([gl.check_object_id_mark, gl.check_object_image_size], fill=gl.check_object_id_mark_bottom_color)
-            draw.text(gl.check_object_id_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_id_mark_color,font=font)
+            draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+            draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
             del draw
             img.save(file_temp_name,"JPEG")
             
@@ -1056,8 +1056,8 @@ class CheckObjectDetailModifyForm(forms.Form):
                     img = img.convert("RGB")
                 img.resize(gl.check_object_image_size,Image.ANTIALIAS)
             draw = ImageDraw.Draw(img)
-            draw.rectangle([gl.check_object_id_mark, gl.check_object_image_size], fill=gl.check_object_id_mark_bottom_color)
-            draw.text(gl.check_object_id_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_id_mark_color,font=font)
+            draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+            draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
             del draw
             img.save(file_temp_name,"JPEG")
 
