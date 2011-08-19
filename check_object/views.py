@@ -324,7 +324,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
                         pass
                     else:
                         try:
-                            CheckObject.objects.get(id_number=check_object_detail_modify_form.data.get('id_number'), is_active=True)
+                            CheckObject.objects.get(id_number=check_object_detail_modify_form.data.get('id_number'))
                         except ObjectDoesNotExist:
                             check_object = check_object_detail_modify_form.detail_modify(request)
                             if check_object is not None:
