@@ -433,7 +433,7 @@ class CheckObjectAddForm(forms.Form):
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
-            file_temp_name = file_temp.name.decode('utf-8').replace('\\', '/')
+            file_temp_name = file_temp.name.replace('\\', '/')
             font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
             try:
                 img = Image.open(file_temp_name)
@@ -1046,7 +1046,7 @@ class CheckObjectDetailModifyForm(forms.Form):
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
-            file_temp_name = file_temp.name.decode('utf-8').replace('\\', '/')
+            file_temp_name = file_temp.name.replace('\\', '/')
             font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
             try:
                 img = Image.open(file_temp_name)
@@ -1073,7 +1073,7 @@ class CheckObjectDetailModifyForm(forms.Form):
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
             default_storage.delete(file_path)
-            file_temp_name = file_temp.name.decode('utf-8').replace('\\', '/')
+            file_temp_name = file_temp.name.replace('\\', '/')
             font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
             try:
                 img = Image.open(file_temp_name)

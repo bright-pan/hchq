@@ -72,7 +72,7 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
                 raise Http404('Invalid Request!')
             for chunk in data.chunks():
                 temp_file.write(chunk)
-            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
+            temp_file_name = temp_file.name.replace('\\', '/')
             temp_file.close()
             try:
                 img = Image.open(temp_file_name)
@@ -101,7 +101,7 @@ def check_object_add_camera(request, template_name='my.html', next='/', check_ob
             except IOError:
                 raise Http404('Invalid Request!')
             temp_file.write(request.raw_post_data)
-            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
+            temp_file_name = temp_file.name.replace('\\', '/')
             temp_file.close()
             try:
                 img = Image.open(temp_file_name)
@@ -137,7 +137,7 @@ def check_object_detail_modify_uploader(request, template_name='my.html', next='
                 raise Http404('Invalid Request!')
             for chunk in data.chunks():
                 temp_file.write(chunk)
-            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
+            temp_file_name = temp_file.name.replace('\\', '/')
             temp_file.close()
 
             try:
@@ -170,7 +170,7 @@ def check_object_detail_modify_camera(request, template_name='my.html', next='/'
             except IOError:
                 raise Http404('Invalid Request!')
             temp_file.write(request.raw_post_data)
-            temp_file_name = temp_file.name.decode('utf-8').replace('\\', '/')
+            temp_file_name = temp_file.name.replace('\\', '/')
             temp_file.close()
             try:
                 img = Image.open(temp_file_name)
