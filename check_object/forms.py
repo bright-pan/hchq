@@ -1045,6 +1045,9 @@ class CheckObjectDetailModifyForm(forms.Form):
             except IOError:
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            if self.cleaned_data['id_number'] != check_object.id_number:
+                default_storage.delete(check_object.photo.name)
+
             default_storage.delete(file_path)
             file_temp_name = file_temp.name.replace('\\', '/')
             font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
@@ -1067,31 +1070,37 @@ class CheckObjectDetailModifyForm(forms.Form):
             del file_temp
             request.session[gl.session_check_object_detail_modify_uploader] = u''
         else:
-            try:
-                file_temp = default_storage.open(self.id_object.photo.name)
-            except IOError:
-                return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
-            default_storage.delete(file_path)
-            file_temp_name = file_temp.name.replace('\\', '/')
-            font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
-            try:
-                img = Image.open(file_temp_name)
-            except IOError:
-                img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
-                if img.mode != "RGB":
-                    img = img.convert("RGB")
-                img.resize(gl.check_object_image_size,Image.ANTIALIAS)
-            draw = ImageDraw.Draw(img)
-            draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
-            draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
-            del draw
-            img.save(file_temp_name,"JPEG")
+            if self.cleaned_data['id_number'] != check_object.id_number:
+                default_storage.delete(file_path)
+                try:
+                    file_temp = default_storage.open(check_object.photo.name)
+                except IOError:
+                    return None
+                file_temp_name = file_temp.name.replace('\\', '/')
+                font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+                try:
+                    img = Image.open(file_temp_name)
+                except IOError:
+                    img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                    if img.mode != "RGB":
+                        img = img.convert("RGB")
+                    img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+                draw = ImageDraw.Draw(img)
+                draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+                draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
+                del draw
+                img.save(file_temp_name,"JPEG")
 
-            default_storage.save(file_path, file_temp)
-            file_temp.close()
-            del img
-            del file_temp
+                default_storage.save(file_path, file_temp)
+                                
+                file_temp.close()
+                default_storage.delete(check_object.photo.name)
+
+                del img
+                del file_temp
+            else:
+                pass
 
         if self.cleaned_data['is_family'] == u'is_family':
             is_family_value = True
