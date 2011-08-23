@@ -463,7 +463,13 @@ $(document).ready(function(){
         <fieldset>
           <legend>避孕措施信息</legend>
           <!-- Insert your subtemplate content here -->
-          <br>
+          <script type="text/javascript">
+            var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+            if (!is_chrome)
+            {
+            document.write("<br>");
+            }
+          </script>
           {% if form.ctp_method.errors %}
           <div class="type-select error">
             <strong class="message">{{ form.ctp_method.errors }}</strong>
