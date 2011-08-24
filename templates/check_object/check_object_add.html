@@ -232,7 +232,7 @@ $(document).ready(function(){
 
 {% block main %}
 {% with add_form as form %}
-<form method="get" action="" class="yform full" id="id_form_add">{% csrf_token %}
+<form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
   
     <fieldset>
       <legend>检查对象信息</legend>

@@ -27,8 +27,8 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
     page_title = u'添加检查对象'
     user = get_user(request)
 
-    if request.method == 'GET':
-        post_data = request.GET.copy()
+    if request.method == 'POST':
+        post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', u'')
         if submit_value == u'添加':
             check_object_add_form = CheckObjectAddForm(post_data, request.FILES)
@@ -47,15 +47,15 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
                                           context_instance=RequestContext(request))
 
         else:
-            check_object_add_form = CheckObjectAddForm()
-            check_object_add_form.init_permission(user)
-            return render_to_response(template_name,
-                                      {'add_form': check_object_add_form,
-                                       'page_title': page_title,
-                                       },
-                                      context_instance=RequestContext(request))
+            raise Http404('Invalid Request!')
     else:
-        raise Http404('Invalid Request!')
+        check_object_add_form = CheckObjectAddForm()
+        check_object_add_form.init_permission(user)
+        return render_to_response(template_name,
+                                  {'add_form': check_object_add_form,
+                                   'page_title': page_title,
+                                   },
+                                  context_instance=RequestContext(request))
     
 @csrf_protect
 @login_required
@@ -309,8 +309,8 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
 
     page_title = u'编辑检查对象'
     
-    if request.method == 'GET':
-        post_data = request.GET.copy()
+    if request.method == 'POST':
+        post_data = request.POST.copy()
         submit_value = post_data[u'submit']
         if submit_value == u'修改':
             check_object_detail_modify_form = CheckObjectDetailModifyForm(post_data)

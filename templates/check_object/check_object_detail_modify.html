@@ -226,7 +226,7 @@ $(document).ready(function(){
 
 {% block main %}
   {% with detail_modify_form as form %}
-  <form method="get" action="{% url check_object_detail_modify %}" class="yform full" id="id_form_detail_modify">{% csrf_token %}
+  <form method="post" action="{% url check_object_detail_modify %}" class="yform full" id="id_form_detail_modify">{% csrf_token %}
   
     <fieldset>
       <legend>检查对象信息</legend>

@@ -235,7 +235,7 @@ $(document).ready(function(){
     <div class="subc">
       <!-- Insert your subtemplate content here -->
       {% with detail_add_form as form %}
-      <form method="get" action="{% url check_result_detail_add %}" class="yform full" id="id_form_detail_add">{% csrf_token %}
+      <form method="post" action="{% url check_result_detail_add %}" class="yform full" id="id_form_detail_add">{% csrf_token %}
         <div class="">
           <fieldset>
             <legend>检查结果信息</legend>
