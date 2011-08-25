@@ -169,7 +169,7 @@ check_object_wedding_time_error_messages={'required': _(u'请输入时间！'),
 
 
 check_object_image_size = (208,156)#宽/高
-
+check_object_thumbnail_size = (47, 41)
 #check_object_id_mark_color = (39, 96, 137)
 #check_object_id_mark_bottom_color = (204,223,243)
 check_object_rect_mark = (0,140)#宽/高

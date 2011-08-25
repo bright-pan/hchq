@@ -346,6 +346,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
                 if check_object is not None:
                     return HttpResponseRedirect("check_object/show/%s/modify/" % check_object.id)
                 else:
+                    print '&&&&&&&&&&&&&&&&&&&&'
                     raise Http404('Invalid Request!')
             else:
                 check_object_id = int(check_object_detail_modify_form.data.get('id'))

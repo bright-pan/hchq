@@ -10,6 +10,7 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     id_number = models.CharField(max_length=18, unique=True)
     service_area_department = models.ForeignKey(ServiceAreaDepartment, related_name='check_object')
     photo = models.ImageField(upload_to='images/photos')
+    thumbnail = models.ImageField(upload_to='images/thumbnails')
     is_family = models.BooleanField(default=False)
     address = models.CharField(max_length=128, null=True)
     mate_name = models.CharField(max_length=128)

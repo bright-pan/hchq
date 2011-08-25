@@ -432,7 +432,9 @@ class CheckObjectAddForm(forms.Form):
             except IOError:
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            file_thumbnail_path = file_path.replace('photos', 'thumbnails')
             default_storage.delete(file_path)
+            default_storage.delete(file_thumbnail_path)
             file_temp_name = file_temp.name.replace('\\', '/')
             font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
             try:
@@ -449,6 +451,9 @@ class CheckObjectAddForm(forms.Form):
             img.save(file_temp_name,"JPEG")
             
             default_storage.save(file_path, file_temp)
+            img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+            img.save(file_temp_name + '.thumbnail',"JPEG")
+            default_storage.save(file_thumbnail_path, file_temp)
             file_temp.close()
             del img
             del file_temp
@@ -458,6 +463,7 @@ class CheckObjectAddForm(forms.Form):
 #                print self.cleaned_data['wedding_time'], self.cleaned_data['address']
                 check_object = CheckObject.objects.create(name=self.cleaned_data['name'],
                                                           photo=file_path,
+                                                          thumbnail=file_thumbnail_path,
                                                           id_number=self.cleaned_data['id_number'],
                                                           service_area_department=self.service_area_department_object,
                                                           is_family=is_family_value,
@@ -483,6 +489,7 @@ class CheckObjectAddForm(forms.Form):
             check_object.is_active =True
             check_object.name=self.cleaned_data['name']
             check_object.photo=file_path
+            check_object.thumbnail=file_thumbnail_path
             check_object.service_area_department=self.service_area_department_object
             check_object.is_family=is_family_value
             check_object.mate_name=self.cleaned_data['mate_name']
@@ -491,16 +498,16 @@ class CheckObjectAddForm(forms.Form):
             check_object.ctp_method = self.cleaned_data['ctp_method']
             check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
             check_object.wedding_time = self.cleaned_data['wedding_time']
-            check_object.address = self.cleaned_data['address'],
-            check_object.children_1_name = self.cleaned_data['children_1_name'],
-            check_object.children_1_sex = self.cleaned_data['children_2_sex'],
-            check_object.children_1_id_number = self.cleaned_data['children_1_id_number'],
-            check_object.children_2_name = self.cleaned_data['children_2_name'],
-            check_object.children_2_sex = self.cleaned_data['children_2_sex'],
-            check_object.children_2_id_number = self.cleaned_data['children_2_id_number'],
-            check_object.children_3_name = self.cleaned_data['children_3_name'],
-            check_object.children_3_sex = self.cleaned_data['children_3_sex'],
-            check_object.children_3_id_number = self.cleaned_data['children_3_id_number'],
+            check_object.address = self.cleaned_data['address']
+            check_object.children_1_name = self.cleaned_data['children_1_name']
+            check_object.children_1_sex = self.cleaned_data['children_2_sex']
+            check_object.children_1_id_number = self.cleaned_data['children_1_id_number']
+            check_object.children_2_name = self.cleaned_data['children_2_name']
+            check_object.children_2_sex = self.cleaned_data['children_2_sex']
+            check_object.children_2_id_number = self.cleaned_data['children_2_id_number']
+            check_object.children_3_name = self.cleaned_data['children_3_name']
+            check_object.children_3_sex = self.cleaned_data['children_3_sex']
+            check_object.children_3_id_number = self.cleaned_data['children_3_id_number']
             check_object.creater = user
             check_object.save()
             return check_object
@@ -1045,10 +1052,13 @@ class CheckObjectDetailModifyForm(forms.Form):
             except IOError:
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            file_thumbnail_path = file_path.replace('photos', 'thumbnails')
             if self.cleaned_data['id_number'] != check_object.id_number:
                 default_storage.delete(check_object.photo.name)
+                default_storage.delete(check_object.thumbnail.name)
 
             default_storage.delete(file_path)
+            default_storage.delete(file_thumbnail_path)
             file_temp_name = file_temp.name.replace('\\', '/')
             font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
             try:
@@ -1063,16 +1073,21 @@ class CheckObjectDetailModifyForm(forms.Form):
             draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
             del draw
             img.save(file_temp_name,"JPEG")
-
             default_storage.save(file_path, file_temp)
+            img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+            img.save(file_temp_name + '.thumbnail',"JPEG")
+            default_storage.save(file_thumbnail_path, file_temp)
+
             file_temp.close()
             del img
             del file_temp
             request.session[gl.session_check_object_detail_modify_uploader] = u''
         else:
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            file_thumbnail_path = file_path.replace('photos', 'thumbnails')
             if self.cleaned_data['id_number'] != check_object.id_number:
                 default_storage.delete(file_path)
+                default_storage.delete(file_thumbnail_path)
                 try:
                     file_temp = default_storage.open(check_object.photo.name)
                 except IOError:
@@ -1091,16 +1106,51 @@ class CheckObjectDetailModifyForm(forms.Form):
                 draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
                 del draw
                 img.save(file_temp_name,"JPEG")
-
                 default_storage.save(file_path, file_temp)
+
+                img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+                img.save(file_temp_name + '.thumbnail',"JPEG")
+                default_storage.save(file_thumbnail_path, file_temp)
                                 
                 file_temp.close()
                 default_storage.delete(check_object.photo.name)
+                default_storage.delete(check_object.thumbnail.name)
 
                 del img
                 del file_temp
             else:
-                pass
+                if self.cleaned_data['name'] != check_object.name:
+                    try:
+                        file_temp = default_storage.open(check_object.photo.name)
+                    except IOError:
+                        return None
+                    file_temp_name = file_temp.name.replace('\\', '/')
+                    font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+                    try:
+                        img = Image.open(file_temp_name)
+                    except IOError:
+                        img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                        if img.mode != "RGB":
+                            img = img.convert("RGB")
+                        img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+                    draw = ImageDraw.Draw(img)
+                    draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+                    draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
+                    del draw
+                    img.save(file_temp_name,"JPEG")
+                    default_storage.save(file_path, file_temp)
+
+                    img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+                    img.save(file_temp_name + '.thumbnail',"JPEG")
+                    default_storage.save(file_thumbnail_path, file_temp)
+
+                    file_temp.close()
+
+                    del img
+                    del file_temp
+                else:
+                    pass
+                
 
         if self.cleaned_data['is_family'] == u'is_family':
             is_family_value = True
@@ -1110,6 +1160,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         check_object.is_active =True
         check_object.name=self.cleaned_data['name']
         check_object.photo=file_path
+        check_object.thumbnail=file_thumbnail_path
         check_object.id_number=self.cleaned_data['id_number']
         check_object.service_area_department=self.service_area_department_object
         check_object.is_family=is_family_value
