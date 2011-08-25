@@ -1208,7 +1208,7 @@ class CheckObjectDeleteForm(forms.Form):
         except ObjectDoesNotExist:
             check_project = None
         try:
-            CheckResult.objects.get(check_object=self.id_object, check_project=check_project)
+            CheckResult.objects.filter(check_object=self.id_object, check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             return id_copy
         raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象！')
