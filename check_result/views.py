@@ -45,7 +45,7 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
             except ValueError:
                 raise Http404('Invalid Request!')
             try:
-                result = CheckObject.objects.filter(pk=check_result_id, is_active=True)
+                result = CheckObject.objects.filter(pk=check_result_id)
             except ObjectDoesNotExist:
                 raise Http404('Invalid Request!')
             return certification_report(result, request)
@@ -57,8 +57,9 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
         except ValueError:
             raise Http404('Invalid Request!')
         try:
-            check_object = CheckObject.objects.get(pk=check_result_id, is_active=True)
+            check_object = CheckObject.objects.get(pk=check_result_id)
         except ObjectDoesNotExist:
+            print "***************"
             raise Http404('Invalid Request!')
         results = check_object.check_result.order_by('-check_time')
         

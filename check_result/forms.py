@@ -908,8 +908,9 @@ class CheckResultSearchForm(forms.Form):
         else:
             self.is_fuzzy = False
 
-        query_set = CheckResult.objects.filter(is_latest=True)
-
+        #query_set = CheckResult.objects.filter(is_latest=True)
+        query_set = CheckResult.objects.all()
+        
         query_set = self.query_pregnant(query_set)
         query_set = self.query_ring(query_set)
         query_set = self.query_pregnant_period(query_set)
@@ -933,7 +934,7 @@ class CheckResultSearchForm(forms.Form):
         query_set = self.query_is_family(query_set)
         query_set = self.query_ctp_method_time(query_set)
         query_set = self.query_wedding_time(query_set)
-        
+        query_set.order_by('check_object.id')
         
         
         return query_set
