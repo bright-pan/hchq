@@ -1206,12 +1206,12 @@ class CheckObjectDeleteForm(forms.Form):
         try:
             check_project = CheckProject.objects.get(is_setup=True, is_active=True)
         except ObjectDoesNotExist:
-            check_project = None
-        try:
-            CheckResult.objects.filter(check_object=self.id_object, check_project=check_project)
-        except ObjectDoesNotExist:
+            raise forms.ValidationError(u'系统严重错误，检查项目启动，请联系管理员！')
+        check_result_count = CheckResult.objects.filter(check_object=self.id_object, check_project=check_project).count()
+        if check_result_count >= 1:
+            raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象！')
+        else:
             return id_copy
-        raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象！')
     
     def delete(self):
         if self.id_object is not None:
