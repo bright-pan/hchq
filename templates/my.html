@@ -9,6 +9,25 @@
         <!-- start: skip link navigation -->
         <a class="skip" title="skip link" href="#navigation">Skip to the navigation</a><span class="hideme">.</span>
         <a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span>
+		<script type="text/javascript">
+		  function detectBrowser()
+		  {
+		  var browser=navigator.appName
+		  var b_version=navigator.appVersion
+		  var version=parseFloat(b_version)
+		  if (browser!="Microsoft Internet Explorer")
+		  {
+		  }
+		  else
+		  {
+		  if(version <= 6)
+		  {
+		  document.write("<p style=\"text-align:right; color: red; background: transparent; border: 0\"><strong>请使用IE6以上或者Chrome浏览器(推荐)，谢谢</strong></p>");
+		  }
+		  }
+		  }
+		  detectBrowser();
+		</script>
         <!-- end: skip link navigation -->  <!-- end: skip link navigation -->{% if user.is_authenticated %}你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
 	{% else %}
 	<a href="{% url account_login %}">登入</a> | <a href="/account/login">通知</a> | <a href="/account/login">下载</a>
