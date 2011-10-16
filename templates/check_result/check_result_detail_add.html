@@ -239,56 +239,61 @@ $(document).ready(function(){
         <div class="">
           <fieldset>
             <legend>检查结果信息</legend>
+			<fieldset>
+            <legend>{{ form.pregnant.label_tag }}</legend>
+            <p class="dimmed">{{ form.pregnant.help_text}}</p>
             {% if form.pregnant.errors %}
             <div class="type-select error">
               <strong class="message">{{ form.pregnant.errors }}</strong>
-              {{ form.pregnant.label_tag }}<p class="dimmed">{{ form.pregnant.help_text}}</p>
               {{ form.pregnant }}
             </div>
             {% else %}
             <div class="type-select">
-              {{ form.pregnant.label_tag }}<p class="dimmed">{{ form.pregnant.help_text}}</p>
               {{ form.pregnant }}
             </div>
             {% endif %}
+			</fieldset>
+			<fieldset>
+            <legend>{{ form.ring.label_tag }}</legend>
+			<p class="dimmed">{{ form.ring.help_text}}</p>
             {% if form.ring.errors %}
             <div class="type-select error">
               <strong class="message">{{ form.ring.errors }}</strong>
-              {{ form.ring.label_tag }}<p class="dimmed">{{ form.ring.help_text}}</p>
               {{ form.ring }}
             </div>
             {% else %}
             <div class="type-select">
-              {{ form.ring.label_tag }}<p class="dimmed">{{ form.ring.help_text}}</p>
               {{ form.ring }}
             </div>
             {% endif %}
+			</fieldset>
+			<fieldset>
+            <legend>{{ form.pregnant_period.label_tag }}</legend>
+			<p class="dimmed">{{ form.pregnant_period.help_text}}</p>
             {% if form.pregnant_period.errors %}
             <div class="type-text error">
               <strong class="message">{{ form.pregnant_period.errors }}</strong>
-              {{ form.pregnant_period.label_tag }}<p class="dimmed">{{ form.pregnant_period.help_text}}</p>
               {{ form.pregnant_period }}
             </div>
             {% else %}
             <div class="type-text">
-              {{ form.pregnant_period.label_tag }}<p class="dimmed">{{ form.pregnant_period.help_text}}</p>
               {{ form.pregnant_period }}
             </div>
             {% endif %}
-
+			</fieldset>
+			<fieldset>
+            <legend>{{ form.checker.label_tag }}</legend>
+			<p class="dimmed">{{ form.checker.help_text}}</p>
             {% if form.checker.errors %}
             <div class="type-select error">
               <strong class="message">{{ form.checker.errors }}</strong>
-              {{ form.checker.label_tag }}<p class="dimmed">{{ form.checker.help_text}}</p>
               {{ form.checker }}
             </div>
             {% else %}
             <div class="type-select">
-              {{ form.checker.label_tag }}<p class="dimmed">{{ form.checker.help_text}}</p>
               {{ form.checker }}
             </div>
             {% endif %}
-
           </fieldset>
           {{ form.id }}
           <div class="center">

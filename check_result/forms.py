@@ -50,7 +50,8 @@ class CheckResultDetailAddForm(forms.Form):
 
     pregnant = forms.ChoiceField(
         required=True,
-        label =_(u'孕检'),
+        label =_(u'孕检(*)'),
+        widget=forms.RadioSelect(),
         choices=((u'pregnant', u'有孕'),
                  (u'unpregnant', u'无孕'),
                  ),
@@ -58,7 +59,8 @@ class CheckResultDetailAddForm(forms.Form):
         )
     ring = forms.ChoiceField(
         required=True,
-        label =_(u'环检'),
+        label =_(u'环检(*)'),
+        widget=forms.RadioSelect(),
         choices=((u'ring', u'有环'),
                  (u'unring', u'无环'),
                  ),
@@ -74,7 +76,8 @@ class CheckResultDetailAddForm(forms.Form):
 
     checker = forms.ChoiceField(
         required=True,
-        label =_(u'检查人员'),
+        widget=forms.RadioSelect(),
+        label =_(u'检查人员(*)'),
         help_text=_(u'例如:张三'),
         )
 
