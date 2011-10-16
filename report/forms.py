@@ -25,7 +25,7 @@ class ReportCheckOrNotForm(forms.Form):
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'服务区域'),
+        label=_(u'服务区域(*)'),
         widget=forms.TextInput(attrs={'class':'',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
