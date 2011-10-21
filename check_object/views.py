@@ -251,8 +251,14 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                                                },
                                               context_instance=RequestContext(request))
                 else:
-                    print '$$$$$$$$$$$$$$$$'
-                    raise Http404('Invalid Request!')                
+                    check_object_detail_modify_form.init_from_object(check_object_modify_object, user)
+                    page_title = u'修改检查对象'
+                    return render_to_response(next_template_name,
+                                              {'detail_modify_form': check_object_detail_modify_form,
+                                               'check_object': check_object_modify_object,
+                                               'page_title': page_title,
+                                               },
+                                              context_instance=RequestContext(request))
             else:
                 pass
             check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))

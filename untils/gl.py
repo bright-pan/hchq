@@ -150,7 +150,7 @@ check_object_name_error_messages={'required': _(u'请输入检查对象名称！
                                    }
 check_object_id_number_error_messages={'required': _(u'请输入身份证号码名称！'),
                                        'max_length': _(u'输入的身份证号码名称长度大于18个字符！'),
-                                       'format_error': _(u'身份证号码名称必须是数字、x、X组成！'),
+                                       'format_error': _(u'该字段必须是15位数字或者18位的身份证'),
                                        'form_error': _(u'表单严重错误！'),
                                        'already_error': _(u'身份证号码同名，请输入正确的身份证号码！'),
                                    }
