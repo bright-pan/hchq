@@ -14,7 +14,7 @@
   <li><a href="{% url check_result_list 1 %}">检查结果管理</a></li>
   {% endif %}
   {% if perms.department.cr_report %}
-  <li><a href="{% url report_check_or_not %}">数据统计报表</a></li>
+  <li><a href="{% url report_statistics %}">数据统计报表</a></li>
   {% endif %}
 </ul>
 {% endcache %}
