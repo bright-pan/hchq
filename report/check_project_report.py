@@ -37,7 +37,7 @@ class CheckProjectReport(Report):
             Line(left=0, top=1.6*cm, right=27.7*cm, bottom=1.6*cm, stroke_color=navy),
             Label(text=u"编号", top=1.8*cm, left=0.5*cm),
             Label(text=u"服务区域", top=1.8*cm, left=3.5*cm),
-            Label(text=u"已检人数(有孕)", top=1.8*cm, left=9.5*cm),
+            Label(text=u"已检人数(有孕|特殊)", top=1.8*cm, left=9.5*cm),
             Label(text=u"未检人数", top=1.8*cm, left=14.5*cm),
             Label(text=u"总人数", top=1.8*cm, left=19.5*cm),
             Label(text=u"完成度", top=1.8*cm, left=24.5*cm),
@@ -67,7 +67,8 @@ class CheckProjectReport(Report):
         check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department__service_area=instance)
         check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
         pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
-        return u'%s(%s)' % (check_count, pregnant_count)
+        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+        return u'%s(%s|%s)' % (check_count, pregnant_count, special_count)
 
     def get_not_check_count(self, instance=None):
         if instance is None or self.check_project is None:
@@ -117,25 +118,28 @@ class CheckProjectReport(Report):
         check_result = CheckResult.objects.filter(check_project=self.check_project)
         check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
         pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
+        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name,
-                                                                                                                      check_count,
-                                                                                                                      pregnant_count,
-                                                                                                                      not_check_count,
-                                                                                                                      check_object_count)
+                return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name,
+                                                                                                                         check_count,
+                                                                                                                         pregnant_count,
+                                                                                                                         special_count,
+                                                                                                                         not_check_count,
+                                                                                                                         check_object_count)
             else:
                 complete_radio = 100.00
-        return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name,
-                                                                                                              check_count,
-                                                                                                              pregnant_count,
-                                                                                                              not_check_count,
-                                                                                                              check_object_count,
-                                                                                                              complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name,
+                                                                                                                 check_count,
+                                                                                                                 pregnant_count,
+                                                                                                                 special_count,
+                                                                                                                 not_check_count,
+                                                                                                                 check_object_count,
+                                                                                                                 complete_radio)     
     
 
     def get_complete_radio(self, instance=None):
@@ -173,7 +177,7 @@ class ServiceAreaReport(Report):
             Line(left=0, top=1.6*cm, right=27.7*cm, bottom=1.6*cm, stroke_color=navy),
             Label(text=u"编号", top=1.8*cm, left=0.5*cm),
             Label(text=u"单位名称", top=1.8*cm, left=3.5*cm),
-            Label(text=u"已检人数(有孕)", top=1.8*cm, left=9.5*cm),
+            Label(text=u"已检人数(有孕|特殊)", top=1.8*cm, left=9.5*cm),
             Label(text=u"未检人数", top=1.8*cm, left=14.5*cm),
             Label(text=u"总人数", top=1.8*cm, left=19.5*cm),
             Label(text=u"完成度", top=1.8*cm, left=24.5*cm),
@@ -212,17 +216,18 @@ class ServiceAreaReport(Report):
         check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department__service_area=service_area)
         check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
         pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
+        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, not_check_count, check_object_count)
+                return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count)
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
 
     def get_department_check_count(self, instance=None):
         if instance is None or self.check_project is None:
@@ -230,7 +235,8 @@ class ServiceAreaReport(Report):
         check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department=instance)
         check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
         pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
-        return u'%s(%s)' % (check_count, pregnant_count)
+        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+        return u'%s(%s|%s)' % (check_count, pregnant_count, special_count)
 
     def get_department_not_check_count(self, instance=None):
         if instance is None or self.check_project is None:
@@ -356,17 +362,18 @@ class DepartmentReport(Report):
         check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department=service_area_department).order_by('check_object.id')
         check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
         pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']    
+        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, not_check_count, check_object_count)
+                return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count)
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕)：%s(%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
 
     def get_ctp_value(self, instance=None):
         if instance is not None and gl.check_object_ctp_local.has_key(instance.ctp_method):

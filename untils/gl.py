@@ -219,6 +219,9 @@ check_result_local = {u'pregnant':u'有孕',
                       u'unpregnant':u'无孕',
                       u'ring':u'有环',
                       u'unring':u'无环',
+                      u'special_1':u'生小孩子三个月内',
+                      u'special_2':u'生病住院',
+                      u'special_3':u'其他原因',
                       }
 
 

@@ -21,6 +21,16 @@ urlpatterns = patterns('hchq.check_result.views',
        'check_result_detail_add',
        {'template_name' : 'check_result/check_result_detail_add.html', 'next': 'check_result/add/1', },
        'check_result_detail_add'),
-                        
+
+       (r'special/(?P<check_object_page>\d{1,8})/$',
+       'check_result_special_add',
+       {'template_name' : 'check_result/check_result_special_add.html', 'next_template_name': 'check_result/check_result_special_detail_add.html', 'next_error':'check_result/check_result_detail_add_error.html'},
+       'check_result_special_add'),
+
+       (r'special_detail/$',
+       'check_result_special_detail_add',
+       {'template_name' : 'check_result/check_result_special_detail_add.html', 'next': 'check_result/add/1', },
+       'check_result_special_detail_add'),
+                       
 ) 
 

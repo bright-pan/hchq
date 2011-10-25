@@ -136,6 +136,9 @@ $(document).ready(function(){
 {% cache 500 check_result_add user.username %}
 <div class="nav_hlist">
 <ul>
+  {% if perms.department.role_management %}
+  <li><a href="{% url check_result_special_add 1 %}">特殊检查结果添加</a></li>
+  {% endif %}
   {% if perms.department.cr_add %}
   <li class="active"><strong>检查结果添加</strong></li>
   {% endif %}

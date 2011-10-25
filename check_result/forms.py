@@ -169,6 +169,101 @@ class CheckResultDetailAddForm(forms.Form):
                                    recorder=user,
                                    result=result,)
         return True
+
+
+class CheckResultSpecialAddForm(forms.Form):
+    """
+    检查结果修改表单
+    """
+
+    id_object = None
+
+    id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.check_object_name_error_messages,
+        )
+    
+    def clean_id(self):
+        try:
+            try:
+                id_copy = int(self.data.get('id'))
+            except ValueError:
+                raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+            self.id_object = CheckObject.objects.get(pk=id_copy, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return id_copy
+    
+    def object(self):
+        return self.id_object
+
+class CheckResultSpecialDetailAddForm(forms.Form):
+    """
+    详细检查结果详细修改表单
+    """
+    id_object = None
+
+    special = forms.ChoiceField(
+        required=True,
+        label =_(u'特殊检查原因(*)'),
+        widget=forms.RadioSelect(),
+        choices=((u'special_1', u'生小孩子三个月内'),
+                 (u'special_2', u'生病住院'),
+                 (u'special_3', u'其他原因'),
+                 ),
+        help_text=_(u'生小孩则选生小孩'),
+        )
+
+    id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.check_object_name_error_messages,
+        )
+
+    def clean_id(self):
+        try:
+            try:
+                id_copy = int(self.data.get('id'))
+            except ValueError:
+                raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+            self.id_object = CheckObject.objects.get(pk=id_copy, is_active=True)
+#            print '************************'
+#            print self.id_object.name
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return id_copy
+
+    def init_value(self, user=None, check_object=None):
+        if user is not None and check_object is not None:
+            self.fields['id'].widget.attrs['value'] = check_object.id
+            return True
+        else:
+
+            return False
+        
+    def get_check_project(self):
+        try:
+            check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+        except ObjectDoesNotExist:
+            return None
+        return check_project
+    
+    def special_detail_add(self, user=None):
+        check_object = self.id_object
+        if user is None:
+            return False
+        try:
+            check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+        except ObjectDoesNotExist:
+            return False
+        result = "%s" % (self.cleaned_data['special'])
+
+        CheckResult.objects.filter(check_object=check_object).update(is_latest=False)
+        CheckResult.objects.create(check_object=check_object,
+                                   check_project=check_project,
+                                   checker=user,
+                                   recorder=user,
+                                   result=result,)
+        return True
     
 class CheckResultDeleteForm(forms.Form):
     """

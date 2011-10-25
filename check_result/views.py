@@ -81,6 +81,7 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
     user = get_user(request)
     
     page_title = u'选择检查对象'
+    print "****$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
     
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -164,7 +165,7 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
 
 @csrf_protect
 @login_required
-@permission_required('department.co_add')
+@permission_required('department.cr_add')
 def check_result_detail_add(request, template_name='my.html', next='/', check_result_page='1',):
     """
     检查结果修改视图
@@ -258,3 +259,129 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                                           context_instance=RequestContext(request))
     else:
         raise Http404('Invalid Request!')               
+
+@csrf_protect
+@login_required
+@permission_required('department.role_management')
+def check_result_special_add(request, template_name='my.html', next_template_name='my.html', next_error='my.html', check_object_page='1',):
+    """
+    特殊检查结果添加视图
+    """
+    user = get_user(request)
+ 
+    page_title = u'选择检查对象'
+    
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'特殊检查':
+            try:
+                check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+            except ObjectDoesNotExist:
+                check_project = None
+            if check_project is not None:
+                today = datetime.datetime.now().date()
+                if check_project.start_time <= today and today <= check_project.end_time:
+                
+                    check_result_special_add_form = CheckResultSpecialAddForm(post_data)
+                    if check_result_special_add_form.is_valid():
+                        check_result_special_add_object = check_result_special_add_form.object()
+#                        print check_result_special_add_object
+#                        print check_result_special_add_object.id_number
+                        check_result_special_detail_add_form = CheckResultSpecialDetailAddForm()
+                        check_result_special_detail_add_form.init_value(user, check_result_special_add_object)
+                        page_title = u'添加特殊检查结果'
+                        return render_to_response(next_template_name,
+                                                  {'detail_add_form': check_result_special_detail_add_form,
+                                                   'result': check_result_special_add_object,
+                                                   'page_title': page_title,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                    else:
+                        raise Http404('Invalid Request!')
+                else:
+                    page_title = u'检查受限制'
+                    return render_to_response(next_error,
+                                              {'check_project': check_project,
+                                               'page_title': page_title,
+                                               },
+                                              context_instance=RequestContext(request))
+            else:
+                page_title = u'检查受限制'
+                return render_to_response(next_error,
+                                          {'check_project': check_project,
+                                           'page_title': page_title,
+                                           },
+                                          context_instance=RequestContext(request))
+        else:
+            if submit_value == u'查询':
+                check_object_search_form = CheckObjectSearchForm(post_data)
+                check_result_special_add_form = CheckResultSpecialAddForm()
+                if check_object_search_form.is_valid():
+                    check_object_search_form.data_to_session(request)
+                    check_object_search_form.init_from_session(request)
+                    query_set = check_object_search_form.search()
+                    results_page = pagination_results(check_object_page, query_set, settings.CHECK_OBJECT_PER_PAGE)
+                else:
+                    results_page = None
+                return render_to_response(template_name,
+                                          {'search_form': check_object_search_form,
+                                           'add_form': check_result_special_add_form,
+                                           'page_title': page_title,
+                                           'results_page':results_page,
+                                           },
+                                          context_instance=RequestContext(request))
+
+            else:
+                raise Http404('Invalid Request!')
+    else:
+        check_result_special_add_form = CheckResultSpecialAddForm()
+        check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
+        check_object_search_form.init_from_session(request)
+        if check_object_search_form.is_valid():
+            query_set = check_object_search_form.search()
+            results_page = pagination_results(check_object_page, query_set, settings.CHECK_OBJECT_PER_PAGE)
+        else:
+            results_page = None
+        return render_to_response(template_name,
+                                  {'search_form': check_object_search_form,
+                                   'add_form': check_result_special_add_form,
+                                   'page_title': page_title,
+                                   'results_page':results_page,
+                                   },
+                                  context_instance=RequestContext(request))
+
+@csrf_protect
+@login_required
+@permission_required('department.role_management')
+def check_result_special_detail_add(request, template_name='my.html', next='/', check_result_page='1',):
+    """
+    特殊检查结果添加视图
+    """
+
+    page_title = u'编辑检查结果'
+    user = get_user(request)
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        submit_value = post_data[u'submit']
+        if submit_value == u'确定':
+            check_result_id = int(post_data['id'])
+            check_result_object = CheckObject.objects.get(pk=check_result_id)
+            check_result_special_detail_add_form = CheckResultSpecialDetailAddForm(post_data)
+            check_result_special_detail_add_form.init_value(user, check_result_object)
+            if check_result_special_detail_add_form.is_valid():
+                check_result_special_detail_add_form.special_detail_add(user)
+                return HttpResponseRedirect("check_result/show/%s/add/" % check_result_id)
+            else:
+                return render_to_response(template_name,
+                                          {'special_detail_add_form': check_result_special_detail_add_form,
+                                           'result': check_result_object,
+                                           'page_title': page_title,
+                                           },
+                                          context_instance=RequestContext(request))
+        else:
+            raise Http404('Invalid Request!')
+    else:
+        raise Http404('Invalid Request!')
+
+    
