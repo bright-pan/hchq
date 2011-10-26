@@ -439,6 +439,15 @@ class CheckResultSearchForm(forms.Form):
                  (u'unring', u'无环'),
                  ),
         )
+    special = forms.ChoiceField(
+        required=True,
+        label =_(u'特殊原因'),
+        choices=((u'none', u'未知'),
+                 (u'special_1', u'生小孩子三个月内'),
+                 (u'special_2', u'生病住院'),
+                 (u'special_3', u'其他原因'),
+                 ),
+        )
     pregnant_period = forms.IntegerField(
         required=False,
         label=_(u'怀孕周期'),
@@ -613,6 +622,7 @@ class CheckResultSearchForm(forms.Form):
             request.session[gl.session_check_result_end_time] = u''
 
         request.session[gl.session_check_result_pregnant] = self.cleaned_data['pregnant']
+        request.session[gl.session_check_result_special] = self.cleaned_data['special']
         request.session[gl.session_check_result_ring] = self.cleaned_data['ring']
         request.session[gl.session_check_result_pregnant_period] = self.data['pregnant_period']
         request.session[gl.session_check_result_checker] = self.cleaned_data['checker']
@@ -641,6 +651,7 @@ class CheckResultSearchForm(forms.Form):
         data['is_fuzzy'] = request.session.get(gl.session_check_object_is_fuzzy, False)
         #结果
         data['pregnant'] = request.session.get(gl.session_check_result_pregnant, u'none')
+        data['special'] = request.session.get(gl.session_check_result_special, u'none')
         data['ring'] = request.session.get(gl.session_check_result_ring, u'none')
         data['pregnant_period'] = request.session.get(gl.session_check_result_pregnant_period, u'')
         data['checker'] = request.session.get(gl.session_check_result_checker, u'')
@@ -675,6 +686,7 @@ class CheckResultSearchForm(forms.Form):
             pass
         
         self.fields['pregnant'].widget.attrs['value'] = request.session.get(gl.session_check_result_pregnant, u'none')
+        self.fields['special'].widget.attrs['value'] = request.session.get(gl.session_check_result_special, u'none')
         self.fields['ring'].widget.attrs['value'] = request.session.get(gl.session_check_result_ring, u'none')
         self.fields['pregnant_period'].widget.attrs['value'] = request.session.get(gl.session_check_result_pregnant_period, u'')
         self.fields['checker'].widget.attrs['value'] = request.session.get(gl.session_check_result_checker, u'')
@@ -879,6 +891,17 @@ class CheckResultSearchForm(forms.Form):
         
         return query_set
 
+    def query_special(self, query_set=None):
+        special = self.cleaned_data['special']
+
+        if query_set is None:
+            return query_set
+
+        if special == u'none':
+            pass
+        else:
+            query_set = query_set.filter(result__startswith=special)
+        return query_set
     def query_pregnant(self, query_set=None):
         pregnant = self.cleaned_data['pregnant']
 
@@ -1010,6 +1033,7 @@ class CheckResultSearchForm(forms.Form):
         query_set = CheckResult.objects.all()
         
         query_set = self.query_pregnant(query_set)
+        query_set = self.query_special(query_set)
         query_set = self.query_ring(query_set)
         query_set = self.query_pregnant_period(query_set)
         query_set = self.query_check_project(query_set)

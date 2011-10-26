@@ -145,6 +145,14 @@ class ReportCheckOrNotForm(forms.Form):
             return check_object_service_area_department_has_pregnant_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
         return response
+    def has_special_report(self, request=None):
+        if self.service_area_department_object is None:
+            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
+            return check_object_service_area_has_special_report(query_set, request, self.cleaned_data['check_project'])
+        else:
+            return check_object_service_area_department_has_special_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
+
+        return response
 
     
 class ReportStatisticsForm(forms.Form):
@@ -166,6 +174,16 @@ class ReportStatisticsForm(forms.Form):
         help_text=_(u'包含有孕名单'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_pregnant_info',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+    has_special_info = forms.CharField(
+        required=True,
+        label =_(u'特殊检查名单'),
+        help_text=_(u'包含特殊检查人员'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_special_info',
                                           }, 
                                    check_test=None,
                                    ),
@@ -228,6 +246,10 @@ class ReportStatisticsForm(forms.Form):
             has_pregnant_info = True
         else:
             has_pregnant_info = False
+        if self.cleaned_data['has_special_info'] == u'has_special_info':
+            has_special_info = True
+        else:
+            has_special_info = False
             
         if self.cleaned_data['has_check'] == u'has_check':
             has_check = True
@@ -240,4 +262,4 @@ class ReportStatisticsForm(forms.Form):
             has_not = False
             
         query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-        return check_project_report(query_set, request, has_department_info, has_pregnant_info, has_check, has_not, self.cleaned_data['check_project'])
+        return check_project_report(query_set, request, has_department_info, has_pregnant_info, has_special_info, has_check, has_not, self.cleaned_data['check_project'])

@@ -531,6 +531,23 @@ $(document).ready(function(){
     </div>
     </fieldset>
     </div>
+    <div class="note">
+    <fieldset>
+      <legend>特殊检查原因</legend>
+      {% if form.special.errors %}
+      <div class="type-select error">
+        <strong class="message">{{ form.special.errors }}</strong>
+        {{ form.special.label_tag }}
+        {{ form.special }}
+      </div>
+      {% else %}
+      <div class="type-select">
+        {{ form.special.label_tag }}
+        {{ form.special }}
+      </div>
+      {% endif %}
+    </fieldset>
+    </div>
     <div class="center">
       <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
       <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>

@@ -125,7 +125,7 @@ class CheckProjectReport(Report):
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name,
+                return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name,
                                                                                                                          check_count,
                                                                                                                          pregnant_count,
                                                                                                                          special_count,
@@ -133,7 +133,7 @@ class CheckProjectReport(Report):
                                                                                                                          check_object_count)
             else:
                 complete_radio = 100.00
-        return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name,
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name,
                                                                                                                  check_count,
                                                                                                                  pregnant_count,
                                                                                                                  special_count,
@@ -223,11 +223,11 @@ class ServiceAreaReport(Report):
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count)
+                return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count)
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
 
     def get_department_check_count(self, instance=None):
         if instance is None or self.check_project is None:
@@ -369,11 +369,11 @@ class DepartmentReport(Report):
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count)
+                return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count)
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
 
     def get_ctp_value(self, instance=None):
         if instance is not None and gl.check_object_ctp_local.has_key(instance.ctp_method):
@@ -406,8 +406,8 @@ class CoverReport(Report):
         borders = {'top': Line(stroke_color=red)}
 
 
-def check_project_report(query_set=None, request=None, has_department_info=False, has_pregnant_info=False, has_check=False, has_not=False, check_project_id=None):
-    response = cache.get('check_project_report_%s_%s_%s_%s_%s' % (request.user.id, has_department_info, has_pregnant_info, has_check, has_not))
+def check_project_report(query_set=None, request=None, has_department_info=False, has_pregnant_info=False, has_special_info=False, has_check=False, has_not=False, check_project_id=None):
+    response = cache.get('check_project_report_%s_%s_%s_%s_%s_%s' % (request.user.id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not))
 
     if response is not None:
         return response
@@ -503,7 +503,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                              get_value=lambda text: check_result_report.get_service_area_pregnant_total_count(text, service_area=service_area_object)),
+                              get_value=lambda text: check_result_report.get_service_area_total_count(text, service_area=service_area_object)),
                         ]
                     check_result_report.band_detail.elements = [
                         ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
@@ -528,6 +528,41 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                     pass
             else:
                 pass
+            if has_special_info is True:
+                query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='special').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
+                if query_set_check_result:
+                    check_result_report = CheckResultReport(query_set_check_result)
+                    check_result_report.check_project = check_project
+                    check_result_report.author = request.user.username
+                    check_result_report.title = u'%s - 特殊检查名单' % service_area_object.name
+                    check_result_report.band_page_header.elements += [
+                        Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                              style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                              get_value=lambda text: check_result_report.get_service_area_total_count(text, service_area=service_area_object)),
+                        ]
+                    check_result_report.band_detail.elements = [
+                        ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
+                        ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
+                                    get_value=lambda instance: check_result_report.get_family_value(instance)),
+                        ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),
+                        ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
+                        ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
+                        ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
+                        ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
+                        ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
+                                    get_value=lambda instance: check_result_report.get_result_value(instance)),
+                        ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
+                        ]
+
+                    canvas = check_result_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                else:
+                    pass
+            else:
+                pass            
             if has_check is True or has_not is True:
                 for service_area_department_object in query_set_service_area_department:
                     if has_not is True:
@@ -618,7 +653,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_project_report_%s_%s_%s_%s' % (request.user.id, has_department_info, has_check, has_not), response, 15*60)
+    cache.set('check_project_report_%s_%s_%s_%s_%s_%s' % (request.user.id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not), response, 15*60)
     return response
 
 def check_object_check_service_area_report(query_set=None, request=None, check_project_id=None):
@@ -1048,7 +1083,7 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_object__is_active=True).filter(check_object__service_area_department=service_area_department_object).filter(check_project=check_project, result__startswith='pregnant').order_by('check_object.id')
+                query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant', is_latest=True).order_by('check_object.id')
                 if query_set_check_result_has_pregnant_in_department:
                     check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
                     check_result_report.check_project = check_project
@@ -1121,7 +1156,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_object__is_active=True).filter(check_object__service_area_department=service_area_department_object).filter(check_project=check_project, result__startswith='pregnant').order_by('check_object.id')
+            query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
             if query_set_check_result_has_pregnant_in_department:
                 check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
                 check_result_report.check_project = check_project
@@ -1168,5 +1203,179 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         return response
 
     cache.set('check_object_service_area_department_has_pregnant_report_%s' % query_set[0].id, response, 15*60)
+    return response
+def check_object_service_area_has_special_report(query_set=None, request=None, check_project_id=None):
+    
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
+        
+    if query_set is not None and request is not None and query_set:
+        response = cache.get('check_object_service_area_has_special_report_%s' % query_set[0].id)
+        if response is not None:
+            return response
+        response = HttpResponse(mimetype='application/pdf')
+        if check_project == None:
+            return response
+        
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        query_set_service_area = query_set
+        for service_area_object in query_set_service_area:
+            query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            if query_set_service_area_department:
+                service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.check_project = check_project
+                service_area_report.author = request.user.username
+                service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
+                service_area_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: service_area_report.get_service_area_total_count(text, service_area=service_area_object)),
+                    ]
+                service_area_report.band_detail.elements = [
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=0.5*cm),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=3.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_name(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=9.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_check_count(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=14.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_not_check_count(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=19.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_check_object_count(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=24.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_complete_radio(instance)),
+
+                    ]
+                canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
+            for service_area_department_object in query_set_service_area_department:
+                query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
+                if query_set_check_result_has_special_in_department:
+                    check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
+                    check_result_report.check_project = check_project
+                    check_result_report.author = request.user.username
+                    check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    check_result_report.band_page_header.elements += [
+                        Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                              style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                              get_value=lambda text: check_result_report.get_department_total_count(text, service_area_department=service_area_department_object)),
+                        ]
+                    check_result_report.band_detail.elements = [
+                        ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
+                        ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
+                                    get_value=lambda instance: check_result_report.get_family_value(instance)),
+                        ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),
+                        ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
+                        ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
+                        ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
+                        ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
+                        ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
+                                    get_value=lambda instance: check_result_report.get_result_value(instance)),
+                        ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
+                        ]
+                    canvas = check_result_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                else:
+                    pass
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        cover_report.generate_by(PDFGenerator, canvas=canvas)
+        
+    else:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
+
+    cache.set('check_object_service_area_has_special_report_%s' % query_set[0].id, response, 15*60)
+    return response
+
+def check_object_service_area_department_has_special_report(query_set=None, request=None, check_project_id=None):
+    
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
+
+    if query_set is not None and request is not None and query_set:
+        response = cache.get('check_object_service_area_department_has_special_report_%s' % query_set[0].id)
+        if response is not None:
+            return response
+        response = HttpResponse(mimetype='application/pdf')
+        if check_project == None:
+            return response
+        
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        query_set_service_area_department = query_set
+        for service_area_department_object in query_set_service_area_department:
+            query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
+            if query_set_check_result_has_special_in_department:
+                check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
+                check_result_report.check_project = check_project
+                check_result_report.author = request.user.username
+                check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                check_result_report.band_page_header.elements += [
+                    Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: check_result_report.get_department_total_count(text, service_area_department=service_area_department_object)),
+                    ]
+                check_result_report.band_detail.elements = [
+                    ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
+                    ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
+                                get_value=lambda instance: check_result_report.get_family_value(instance)),
+                    ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),
+                    ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                    ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                    ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
+                    ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
+                    ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                    ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                    ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
+                    ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
+                    ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
+                                get_value=lambda instance: check_result_report.get_result_value(instance)),
+                    ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
+                    ]
+                canvas = check_result_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
+            cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        cover_report.generate_by(PDFGenerator, canvas=canvas)
+        
+    else:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
+
+    cache.set('check_object_service_area_department_has_special_report_%s' % query_set[0].id, response, 15*60)
     return response
 

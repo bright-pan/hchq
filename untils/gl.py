@@ -207,6 +207,7 @@ check_object_ctp_local = {u'method_0':u'未使用',
 #################################################
 
 session_check_result_pregnant = u'session_check_result_pregnant'
+session_check_result_special = u'session_check_result_special'
 session_check_result_ring = u'session_check_result_ring'
 session_check_result_pregnant_period = u'session_check_result_pregnant_period'
 session_check_result_checker = u'session_check_result_checker'
