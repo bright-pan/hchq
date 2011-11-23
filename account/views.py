@@ -105,7 +105,7 @@ def role_add(request, template_name='my.html', next='/', role_page='1'):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             role_add_form = RoleAddForm(post_data)
             if role_add_form.is_valid():
@@ -196,7 +196,7 @@ def role_delete(request, template_name='my.html', next='/', role_page='1',):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             role_delete_form = RoleDeleteForm(post_data)
             if role_delete_form.is_valid():
@@ -288,7 +288,7 @@ def role_modify(request, template_name='my.html', next='/', role_page='1',):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             role_modify_form = RoleModifyForm(post_data)
             if role_modify_form.is_valid():
@@ -456,7 +456,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加关联':
             role_permission_add_form = RolePermissionAddForm(post_data)
             role_permission_add_form.fields['role_permission_name'].choices = choices
@@ -578,7 +578,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除关联':
             role_permission_delete_form = RolePermissionDeleteForm(post_data)
             if role_permission_delete_form.is_valid():
@@ -692,7 +692,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         role_permission_search_form = RolePermissionSearchForm(post_data)
         if role_permission_search_form.is_valid():
             role_permission_search_form.save_to_session(request)
@@ -767,7 +767,7 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             account_add_form = AccountAddForm(post_data)
             if account_add_form.is_valid():
@@ -810,7 +810,7 @@ def account_show(request, template_name='', next='', account_index='1'):
     success = False
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'密码重置':
             try:
                 account_id = int(account_index)
@@ -856,7 +856,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'编辑':
             account_modify_form = AccountModifyForm(post_data)
             if account_modify_form.is_valid():
@@ -928,7 +928,7 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
     page_title = u'编辑系统用户'
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             account_detail_modify_form = AccountDetailModifyForm(post_data)
             if account_detail_modify_form.is_valid():
@@ -963,7 +963,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             account_delete_form = AccountDeleteForm(post_data)
             if account_delete_form.is_valid():

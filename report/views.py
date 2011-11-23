@@ -26,7 +26,7 @@ def report_statistics(request, template_name='my.html', next='/', ):
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'生成项目报表':
             report_statistics_form = ReportStatisticsForm(post_data)
             report_statistics_form.init_check_project()
@@ -61,7 +61,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'已检人员':
             report_check_or_not_form = ReportCheckOrNotForm(post_data)
             report_check_or_not_form.init_check_project()

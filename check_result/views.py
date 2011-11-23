@@ -38,7 +38,7 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'打印证明':
             try:
                 check_result_id = int(check_result_index)
@@ -85,7 +85,7 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'检查':
             try:
                 check_project = CheckProject.objects.get(is_setup=True, is_active=True)
@@ -175,7 +175,7 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'确定':
             check_result_id = int(post_data['id'])
             check_result_object = CheckObject.objects.get(pk=check_result_id)
@@ -208,7 +208,7 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
 
     if request.method == 'GET':
         post_data = request.GET.copy()
-        submit_value = post_data.get(u'submit', u'')
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'查询':
             check_result_search_form = CheckResultSearchForm(post_data)
             check_result_search_form.init_check_project()
@@ -273,7 +273,7 @@ def check_result_special_add(request, template_name='my.html', next_template_nam
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'特殊检查':
             try:
                 check_project = CheckProject.objects.get(is_setup=True, is_active=True)
@@ -363,7 +363,7 @@ def check_result_special_detail_add(request, template_name='my.html', next='/', 
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'确定':
             check_result_id = int(post_data['id'])
             check_result_object = CheckObject.objects.get(pk=check_result_id)
