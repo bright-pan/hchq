@@ -29,7 +29,7 @@ def department_add(request, template_name='my.html', next='/', department_page='
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             department_add_form = DepartmentAddForm(post_data)
             if department_add_form.is_valid():
@@ -150,7 +150,7 @@ def department_modify(request, template_name='my.html', next='/', department_pag
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             department_modify_form = DepartmentModifyForm(post_data)
             if department_modify_form.is_valid():
@@ -247,7 +247,7 @@ def department_delete(request, template_name='my.html', next='/', department_pag
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             department_delete_form = DepartmentDeleteForm(post_data)
             if department_delete_form.is_valid():

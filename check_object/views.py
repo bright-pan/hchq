@@ -29,7 +29,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data.get(u'submit', u'')
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             check_object_add_form = CheckObjectAddForm(post_data, request.FILES)
             if check_object_add_form.is_valid():
@@ -61,9 +61,9 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
 @login_required
 def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
     if request.method == 'POST':
-        if request.FILES.get('photo'):
+        if request.FILES.get('photo', False):
 
-            data = request.FILES['photo']
+            data = request.FILES.get('photo', False)
             if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
                 raise Http404('Invalid Request!')
             try:
@@ -125,9 +125,9 @@ def check_object_add_camera(request, template_name='my.html', next='/', check_ob
 @login_required
 def check_object_detail_modify_uploader(request, template_name='my.html', next='/', check_object_page='1'):
     if request.method == 'POST':
-        if request.FILES.get('photo'):
+        if request.FILES.get('photo', False):
 
-            data = request.FILES['photo']
+            data = request.FILES.get('photo', False)
             
             if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
                 raise Http404('Invalid Request!')
@@ -232,7 +232,7 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'编辑':
             check_object_modify_form = CheckObjectModifyForm(post_data)
             if check_object_modify_form.is_valid():
@@ -317,7 +317,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             check_object_detail_modify_form = CheckObjectDetailModifyForm(post_data)
 
@@ -380,7 +380,7 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             check_object_delete_form = CheckObjectDeleteForm(post_data)
             if check_object_delete_form.is_valid():
@@ -442,7 +442,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
     page_title = u'查询检查对象'
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data.get(u'submit', u'')
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'查询':
             check_object_search_form = CheckObjectSearchForm(post_data)
             if check_object_search_form.is_valid():
@@ -502,7 +502,7 @@ def check_object_invaild(request, template_name='my.html', next='/', check_objec
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data.get(u'submit', u'')
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'查询':
             check_object_search_form = CheckObjectSearchForm(post_data)
             if check_object_search_form.is_valid():

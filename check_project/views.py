@@ -28,7 +28,7 @@ def check_project_add(request, template_name='my.html', next='/', check_project_
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             check_project_add_form = CheckProjectAddForm(post_data)
             if check_project_add_form.is_valid():
@@ -128,7 +128,7 @@ def check_project_show(request, template_name='', next='', check_project_index='
     success = False
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'启用':
             try:
                 check_project_id = int(check_project_index)
@@ -172,7 +172,7 @@ def check_project_modify(request, template_name='my.html', next_template_name='m
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'编辑':
             check_project_modify_form = CheckProjectModifyForm(post_data)
             if check_project_modify_form.is_valid():
@@ -278,7 +278,7 @@ def check_project_detail_modify(request, template_name='my.html', next='/', chec
     page_title = u'编辑检查项目'
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             check_project_detail_modify_form = CheckProjectDetailModifyForm(post_data)
             if check_project_detail_modify_form.is_valid():
@@ -312,7 +312,7 @@ def check_project_delete(request, template_name='my.html', next='/', check_proje
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             check_project_delete_form = CheckProjectDeleteForm(post_data)
             if check_project_delete_form.is_valid():
