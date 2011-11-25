@@ -407,7 +407,7 @@ class CoverReport(Report):
 
 
 def check_project_report(query_set=None, request=None, has_department_info=False, has_pregnant_info=False, has_special_info=False, has_check=False, has_not=False, check_project_id=None):
-    response = cache.get('check_project_report_%s_%s_%s_%s_%s_%s' % (request.user.id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not))
+    response = cache.get('check_project_report_%s_%s_%s_%s_%s_%s_%s' % (request.user.id, check_project_id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not))
 
     if response is not None:
         return response
@@ -653,7 +653,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_project_report_%s_%s_%s_%s_%s_%s' % (request.user.id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not), response, 15*60)
+    cache.set('check_project_report_%s_%s_%s_%s_%s_%s_%s' % (request.user.id, check_project_id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not), response, 15*60)
     return response
 
 def check_object_check_service_area_report(query_set=None, request=None, check_project_id=None):
@@ -672,7 +672,7 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_check_service_area_report_%s' % query_set[0].id)
+        response = cache.get('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -762,7 +762,7 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_check_service_area_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 
 def check_object_check_service_area_department_report(query_set=None, request=None, check_project_id=None):
@@ -780,7 +780,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_check_service_area_department_report_%s' % query_set[0].id)
+        response = cache.get('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -841,7 +841,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_check_service_area_department_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 
 def check_object_not_service_area_report(query_set=None, request=None, check_project_id=None):
@@ -859,7 +859,7 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_not_service_area_report_%s' % query_set[0].id)
+        response = cache.get('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -949,7 +949,7 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_not_service_area_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 
 def check_object_not_service_area_department_report(query_set=None, request=None, check_project_id=None):
@@ -967,7 +967,7 @@ def check_object_not_service_area_department_report(query_set=None, request=None
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_not_service_area_department_report_%s' % query_set[0].id)
+        response = cache.get('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -1028,7 +1028,7 @@ def check_object_not_service_area_department_report(query_set=None, request=None
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_not_service_area_department_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 def check_object_service_area_has_pregnant_report(query_set=None, request=None, check_project_id=None):
     
@@ -1041,7 +1041,7 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_has_pregnant_report_%s' % query_set[0].id)
+        response = cache.get('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -1129,7 +1129,7 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_service_area_has_pregnant_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 
 def check_object_service_area_department_has_pregnant_report(query_set=None, request=None, check_project_id=None):
@@ -1143,7 +1143,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_has_pregnant_report_%s' % query_set[0].id)
+        response = cache.get('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -1202,7 +1202,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_service_area_department_has_pregnant_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 def check_object_service_area_has_special_report(query_set=None, request=None, check_project_id=None):
     
@@ -1215,7 +1215,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_has_special_report_%s' % query_set[0].id)
+        response = cache.get('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -1303,7 +1303,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_service_area_has_special_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 
 def check_object_service_area_department_has_special_report(query_set=None, request=None, check_project_id=None):
@@ -1317,7 +1317,7 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_has_special_report_%s' % query_set[0].id)
+        response = cache.get('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
         if response is not None:
             return response
         response = HttpResponse(mimetype='application/pdf')
@@ -1376,6 +1376,6 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
-    cache.set('check_object_service_area_department_has_special_report_%s' % query_set[0].id, response, 15*60)
+    cache.set('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 
