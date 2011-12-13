@@ -9,10 +9,11 @@ urlpatterns = patterns('hchq.report.views',
         {'template_name' : 'report/report_check_or_not.html', 'next': '/', },
        'report_check_or_not'),
 
-#       (r'statistics/$',
-#       'report_statistics',
+       (r'statistics/$',
+       'report_statistics',
 #        {'template_name' : 'report/report_statistics.html', 'next': '/', },
-#       'report_statistics'),
+        {'template_name' : 'report/report.html', 'next': '/', },
+       'report_statistics'),
 
 ) 
 
