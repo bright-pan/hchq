@@ -1,6 +1,7 @@
 cd e:/work/hchq
 pwd
 status=$(git fetch)
+echo $status
 if [ -z $status];then
     echo u'the source code is clean and don`t update!!!'
 else
