@@ -17,3 +17,4 @@ else
     net stop Apache2.2
     net start Apache2.2
 fi
+cmd /c mysql_backup.bat
