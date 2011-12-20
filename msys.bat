@@ -85,7 +85,7 @@ exit
 
 :startbash
 
-call %COMSPEC% /c %BIN%bash --login -i update.sh
+call %COMSPEC% /c %BIN%bash --login -i e:/work/hchq/update.sh
 :EOF
 
 rem ChangeLog:
