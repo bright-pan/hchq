@@ -61,7 +61,7 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
         except ObjectDoesNotExist:
             print "***************"
             raise Http404('Invalid Request!')
-        results = check_object.check_result.order_by('-check_time')
+        results = check_object.check_result.order_by('-id')
         
 #        print type(results[0]['is_latest'])
     return render_to_response(template_name,
