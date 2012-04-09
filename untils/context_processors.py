@@ -2,7 +2,8 @@
 
 from hchq import settings
 from hchq.check_project.models import *
-from django.db.models import ObjectDoesNotExist, MultipleObjectsReturned
+from django.db.models import ObjectDoesNotExist
+from django.core.exceptions import MultipleObjectsReturned
 
 def hchq(request):
     try:
