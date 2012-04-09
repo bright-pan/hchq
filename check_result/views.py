@@ -81,7 +81,6 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
     user = get_user(request)
     
     page_title = u'选择检查对象'
-    print "****$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
     
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -177,7 +176,7 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
         if submit_value == u'确定':
-            check_result_id = int(post_data['id'])
+            check_result_id = int(post_data.get(u'id', False))
             check_result_object = CheckObject.objects.get(pk=check_result_id)
             check_result_detail_add_form = CheckResultDetailAddForm(post_data)
             check_result_detail_add_form.init_value(user, check_result_object)
@@ -274,7 +273,7 @@ def check_result_special_add(request, template_name='my.html', next_template_nam
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
-        if submit_value == u'特殊检查':
+        if submit_value == u'特殊情况检查':
             try:
                 check_project = CheckProject.objects.get(is_setup=True, is_active=True)
             except ObjectDoesNotExist:
@@ -290,9 +289,9 @@ def check_result_special_add(request, template_name='my.html', next_template_nam
 #                        print check_result_special_add_object.id_number
                         check_result_special_detail_add_form = CheckResultSpecialDetailAddForm()
                         check_result_special_detail_add_form.init_value(user, check_result_special_add_object)
-                        page_title = u'添加特殊检查结果'
+                        page_title = u'添加特殊情况检查结果'
                         return render_to_response(next_template_name,
-                                                  {'detail_add_form': check_result_special_detail_add_form,
+                                                  {'special_detail_add_form': check_result_special_detail_add_form,
                                                    'result': check_result_special_add_object,
                                                    'page_title': page_title,
                                                    },
@@ -359,13 +358,13 @@ def check_result_special_detail_add(request, template_name='my.html', next='/', 
     特殊检查结果添加视图
     """
 
-    page_title = u'编辑检查结果'
+    page_title = u'编辑特殊情况检查结果'
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
         if submit_value == u'确定':
-            check_result_id = int(post_data['id'])
+            check_result_id = int(post_data.get(u'id', False))
             check_result_object = CheckObject.objects.get(pk=check_result_id)
             check_result_special_detail_add_form = CheckResultSpecialDetailAddForm(post_data)
             check_result_special_detail_add_form.init_value(user, check_result_object)
