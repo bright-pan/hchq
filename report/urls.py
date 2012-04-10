@@ -11,8 +11,7 @@ urlpatterns = patterns('hchq.report.views',
 
        (r'statistics/$',
        'report_statistics',
-#        {'template_name' : 'report/report_statistics.html', 'next': '/', },
-        {'template_name' : 'report/report.html', 'next': '/', },
+        {'template_name' : 'report/report_statistics.html', 'next': '/', },
        'report_statistics'),
 
 ) 
