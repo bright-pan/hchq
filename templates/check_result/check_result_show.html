@@ -31,17 +31,28 @@
 {% if check_object %}
 
 {% if success != 'false' %}
-{% if success == 'add' %}
-<script type="text/javascript">
-  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-  if (is_chrome)
-  {
-  document.write("<br><br>")
-  }
-</script>
-<p class="warning">检查对象【{{ check_object.name }} | {{ check_object.id_number }}】的检查结果已成功添加, 详情如下！</p>
-{% else %}
-{% endif %}
+	{% if success == 'add' %}
+		<script type="text/javascript">
+		  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+		  if (is_chrome)
+		  {
+		  document.write("<br><br>")
+		  }
+		</script>
+		<p class="warning">检查对象【{{ check_object.name }} | {{ check_object.id_number }}】的检查结果已成功添加, 详情如下！</p>
+	{% else %}
+		{% if success == 'invalid' %}
+			<script type="text/javascript">
+			  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+			  if (is_chrome)
+			  {
+			  document.write("<br><br>")
+			  }
+			</script>
+			<p class="warning">检查对象【{{ check_object.name }} | {{ check_object.id_number }}】的检查结果已成功失效, 详情如下！</p>
+		{% else %}
+		{% endif %}
+	{% endif %}
 {% else %}
 {% endif %}
 
@@ -106,6 +117,12 @@
           {% if perms.department.cr_report %}
           <form method="post" action=".">{% csrf_token %}
             <input type="submit" name="submit" value="打印证明" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+          </form>
+          {% endif %}
+          <br>
+          {% if perms.department.role_management %}
+          <form method="post" action=".">{% csrf_token %}
+            <input type="submit" name="submit" value="检查结果失效" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
           </form>
           {% endif %}
         </div>

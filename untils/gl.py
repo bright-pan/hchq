@@ -216,13 +216,18 @@ session_check_result_check_project = u'session_check_result_check_project'
 session_check_result_start_time = u'session_check_result_start_time'
 session_check_result_end_time = u'session_check_result_end_time'
 
-check_result_local = {u'pregnant':u'有孕',
+check_result_local = {u'None':u'',
+                      u'pregnant':u'有孕',
                       u'unpregnant':u'无孕',
                       u'ring':u'有环',
                       u'unring':u'无环',
                       u'special_1':u'生小孩子三个月内',
                       u'special_2':u'生病住院',
                       u'special_3':u'其他原因',
+                      u'special_4':u'单位担保',
+                      u'special_5':u'医学手术证明',
+                      u'special_6':u'外地环孕检证明',
                       }
 
+check_result_pregnant_number_re_pattern = ur'^[0-50]+$'
 

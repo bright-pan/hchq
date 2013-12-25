@@ -66,6 +66,14 @@ class CheckResultDetailAddForm(forms.Form):
                  ),
         help_text=_(u'例如:有环选有环'),
         )
+    special = forms.ChoiceField(
+        required=False,
+        label =_(u'特殊检查'),
+        widget=forms.RadioSelect(),
+        choices=((u'special_4', u'单位担保'),
+                 ),
+        help_text=_(u'例如:担保则选择'),
+        )
     pregnant_period = forms.IntegerField(
         required=False,
         label=_(u'怀孕周期'),
@@ -104,37 +112,49 @@ class CheckResultDetailAddForm(forms.Form):
             
             choices = ()
             if user.is_superuser is False:
-                service_area = user.get_profile().service_area_department.service_area
-                query_set = UserProfile.objects.filter(service_area_department__service_area=service_area,
-                                                       is_checker=True,
-                                                       user__is_active=True,
-                                                       user__is_superuser=False,
-                                                       user__is_staff=False)
+                if user.has_perm('department.unlocal'):
+                    service_area = user.get_profile().service_area_department.service_area
+                    query_set = UserProfile.objects.filter(service_area_department__service_area=service_area,
+                                                           is_checker=True,
+                                                           user__is_active=True,
+                                                           user__is_superuser=False,
+                                                           user__is_staff=False)
+                else:
+                    query_set = UserProfile.objects.filter(is_checker=True,
+                                                           user__is_active=True,
+                                                           user__is_superuser=False,
+                                                           user__is_staff=False,
+                                                           user__username=user.username)
             else:
                 query_set = UserProfile.objects.filter(is_checker=True,
                                                        user__is_active=True,
                                                        user__is_superuser=False,
                                                        user__is_staff=False)
-                                
+
             size = query_set.count()
             for query in query_set:
                 choices += (str(query.user.pk), query.user.username),
                 
             self.fields['checker'].choices = choices
             self.fields['checker'].widget.attrs['size'] = size
-            
+
             self.fields['pregnant'].choices = ((u'pregnant', u'有孕'),
                                               (u'unpregnant', u'无孕'),
                                               )
-            self.fields['pregnant'].widget.attrs['size'] = u'2'
+            self.fields['pregnant'].widget.attrs['size'] = u'4'
+
             self.fields['ring'].choices = ((u'ring', u'有环'),
                                            (u'unring', u'无环'),
                                            )
             self.fields['ring'].widget.attrs['size'] = u'2'
+
+            self.fields['special'].choices = ((u'special_4', u'单位担保'),
+                                           )
+            self.fields['special'].widget.attrs['size'] = u'4'
+
             self.fields['id'].widget.attrs['value'] = check_object.id
             return True
         else:
-
             return False
         
     def get_check_project(self):
@@ -160,9 +180,17 @@ class CheckResultDetailAddForm(forms.Form):
             checker = User.objects.get(pk=checker_id)
         except ObjectDoesNotExist:
             return False
-        result = "%s %s %s" % (self.cleaned_data['pregnant'],self.cleaned_data['ring'],self.cleaned_data['pregnant_period'])
 
-        CheckResult.objects.filter(check_object=check_object).update(is_latest=False)
+        result = u''
+        result += self.cleaned_data['pregnant'] + u' '
+        result += self.cleaned_data['ring'] + u' '
+        
+        if self.cleaned_data['pregnant_period'] is not None:
+            result += u'%s' % self.cleaned_data['pregnant_period']
+        if self.cleaned_data['special']:
+            result += u' ' + self.cleaned_data['special']
+
+        CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
         CheckResult.objects.create(check_object=check_object,
                                    check_project=check_project,
                                    checker=checker,
@@ -210,6 +238,9 @@ class CheckResultSpecialDetailAddForm(forms.Form):
         choices=((u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
                  (u'special_3', u'其他原因'),
+                 (u'special_4', u'单位担保'),
+                 (u'special_5', u'医学手术证明'),
+                 (u'special_6', u'外地环孕检证明'),
                  ),
         help_text=_(u'生小孩则选生小孩'),
         )
@@ -446,6 +477,9 @@ class CheckResultSearchForm(forms.Form):
                  (u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
                  (u'special_3', u'其他原因'),
+                 (u'special_4', u'单位担保'),
+                 (u'special_5', u'医学手术证明'),
+                 (u'special_6', u'外地环孕检证明'),
                  ),
         )
     pregnant_period = forms.IntegerField(
@@ -900,7 +934,7 @@ class CheckResultSearchForm(forms.Form):
         if special == u'none':
             pass
         else:
-            query_set = query_set.filter(result__startswith=special)
+            query_set = query_set.filter(result__contains=special)
         return query_set
     def query_pregnant(self, query_set=None):
         pregnant = self.cleaned_data['pregnant']
@@ -942,13 +976,19 @@ class CheckResultSearchForm(forms.Form):
     def query_check_project(self, query_set=None):
         try:
             check_project_id = int(self.cleaned_data['check_project'])
+            try:
+                check_project = CheckProject.objects.get(pk=check_project_id)
+            except ObjectDoesNotExist:
+                try:
+                    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+                except ObjectDoesNotExist:
+                    pass
         except ValueError:
-            return query_set
-        try:
-            check_project = CheckProject.objects.get(pk=check_project_id)
-        except ObjectDoesNotExist:
-            return query_set
-        
+            try:
+                check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+            except ObjectDoesNotExist:
+                pass
+
         if query_set is None:
             return query_set
 

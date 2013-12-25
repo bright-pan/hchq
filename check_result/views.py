@@ -30,12 +30,11 @@ def check_result_detail_modify_uploader(request, template_name='my.html', next='
 @csrf_protect
 @login_required
 @user_passes_test(lambda u: (u.has_perm('department.cr_list') or u.has_perm('department.cr_add')))
-def check_result_show(request, template_name='', next='', check_result_index='1', success=u'false'):
+def check_result_show(request, template_name='', next='', next_error='my.html', check_result_index='1', success=u'false'):
     """
     检查结果详细信息显示。
     """
     page_title=u'检查结果详情'
-
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -50,7 +49,41 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
                 raise Http404('Invalid Request!')
             return certification_report(result, request)
         else:
-            raise Http404('Invalid Request!')
+            if submit_value == u'检查结果失效':
+                try:
+                    check_result_id = int(check_result_index)
+                except ValueError:
+                    raise Http404('Invalid Request!')
+                try:
+                    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+                except ObjectDoesNotExist:
+                    check_project = None
+                if check_project is not None:
+                    today = datetime.datetime.now().date()
+                    if check_project.start_time <= today and today <= check_project.end_time:
+                        try:
+                            check_object = CheckObject.objects.get(pk=check_result_id)
+                        except ObjectDoesNotExist:
+                            raise Http404('Invalid Request!')                   
+                        CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
+                        results = CheckResult.objects.filter(check_object=check_object).order_by('-id')
+                        success = u'invalid'
+                    else:
+                        page_title = u'失效受限制'
+                        return render_to_response(next_error,
+                                                  {'check_project': check_project,
+                                                   'page_title': page_title,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    page_title = u'失效受限制'
+                    return render_to_response(next_error,
+                                              {'check_project': check_project,
+                                               'page_title': page_title,
+                                               },
+                                              context_instance=RequestContext(request))
+            else: 
+                raise Http404('Invalid Request!')
     else:
         try:
             check_result_id = int(check_result_index)
@@ -61,6 +94,7 @@ def check_result_show(request, template_name='', next='', check_result_index='1'
         except ObjectDoesNotExist:
             print "***************"
             raise Http404('Invalid Request!')
+
         results = check_object.check_result.order_by('-id')
         
 #        print type(results[0]['is_latest'])

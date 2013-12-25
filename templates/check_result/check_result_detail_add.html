@@ -285,6 +285,22 @@ $(document).ready(function(){
             </div>
             {% endif %}
 			</fieldset>
+			{% if not perms.department.unlocal %}
+				<fieldset>
+	            <legend>{{ form.special.label_tag }}</legend>
+	            <p class="dimmed">{{ form.special.help_text}}</p>
+	            {% if form.special.errors %}
+	            <div class="type-select error">
+	              <strong class="message">{{ form.special.errors }}</strong>
+	              {{ form.special }}
+	            </div>
+	            {% else %}
+	            <div class="type-select">
+	              {{ form.special }}
+	            </div>
+	            {% endif %}
+				</fieldset>
+  			{% endif %}		
 			<fieldset>
             <legend>{{ form.checker.label_tag }}</legend>
 			<p class="dimmed">{{ form.checker.help_text}}</p>
