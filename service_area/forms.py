@@ -5,11 +5,11 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.service_area.models import ServiceAreaDepartment
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from service_area.models import ServiceAreaDepartment
 
-from hchq.untils import gl
+from untils import gl
 import re
 
 class ServiceAreaAddForm(forms.Form):
@@ -343,9 +343,9 @@ class ServiceAreaDepartmentDeleteForm(forms.Form):
             try:
                 self.service_area_department_id_copy = int(self.data.get('service_area_department_id'))
             except ValueError:
-                raise forms.ValidationError(gl.service_area_department_name_error_messages['form_error'])
+                raise forms.ValidationError(gl.department_name_error_messages['form_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.service_area_department_name_error_messages['form_error'])
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
         return self.service_area_department_id_copy
 
     def service_area_department_delete(self, service_area=None):

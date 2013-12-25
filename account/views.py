@@ -10,11 +10,11 @@ from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
 
-from hchq.account.forms import *
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
-from hchq import settings
-from hchq.report.user_report import user_report
+from account.forms import *
+from untils.my_paginator import pagination_results
+from untils import gl
+import settings
+from report.user_report import user_report
 # Create your views here.
 def my_layout_test(request, template_name = 'my.html'):
     return render_to_response(template_name, context_instance=RequestContext(request))

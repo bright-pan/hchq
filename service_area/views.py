@@ -10,12 +10,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.service_area.forms import *
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
-from hchq import settings
+from service_area.forms import *
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from untils.my_paginator import pagination_results
+from untils import gl
+import settings
 
 
 @csrf_protect

@@ -10,12 +10,12 @@ from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from PIL import Image
-from hchq.check_object.forms import *
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
-from hchq import settings
-from hchq.report.check_object_report import *
+import Image
+from check_object.forms import *
+from untils.my_paginator import pagination_results
+from untils import gl
+import settings
+from report.check_object_report import *
 # Create your views here.
 @csrf_protect
 @login_required

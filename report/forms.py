@@ -3,16 +3,17 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
-from PIL import Image
+import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import *
-from hchq import settings
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from check_project.models import CheckProject
+from check_object.models import *
+from .check_project_report import *
+import settings
 import re
 import datetime
 
@@ -50,7 +51,7 @@ class ReportCheckOrNotForm(forms.Form):
 
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -89,7 +90,7 @@ class ReportCheckOrNotForm(forms.Form):
 
     def clean_check_project(self):
         try:
-           check_project_copy = self.data.get('check_project')
+            check_project_copy = self.data.get('check_project')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         try:
@@ -127,8 +128,6 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return check_object_check_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-        return response
-
     def not_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
@@ -136,7 +135,6 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return check_object_not_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-        return response
     def has_pregnant_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
@@ -144,7 +142,6 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return check_object_service_area_department_has_pregnant_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-        return response
     def has_special_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
@@ -152,9 +149,6 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return check_object_service_area_department_has_special_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-        return response
-
-    
 class ReportStatisticsForm(forms.Form):
 
     has_department_info = forms.CharField(
@@ -216,7 +210,7 @@ class ReportStatisticsForm(forms.Form):
         )
     def clean_check_project(self):
         try:
-           check_project_copy = self.data.get('check_project')
+            check_project_copy = self.data.get('check_project')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         try:

@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.check_project.models import CheckProject
-from hchq.untils import gl
+from check_project.models import CheckProject
+from untils import gl
 import re
 
 class CheckProjectAddForm(forms.Form):

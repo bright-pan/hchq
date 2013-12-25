@@ -4,11 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
 
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.account.models import UserProfile
-from hchq import settings
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from account.models import UserProfile
+import settings
 import re
 
 
@@ -102,14 +102,14 @@ class ModifyPasswordForm(forms.Form):
         help_text=_(u'请重新输入密码，例如：123456, pa123456'),
         error_messages = gl.account_password_error_messages,
         )
-    def clean_password_new(self):
+    def clean_password_old(self):
         try:
             password_old_copy = self.data.get('password_old')
             if re.match(gl.account_password_re_pattern, password_old_copy ) is None:
                 raise forms.ValidationError(gl.account_password_error_messages['format_error'])
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.account_password_error_messages['password_form_error'])
-        return password_new_copy
+        return password_old_copy
     
     def clean_password_new(self):
         try:
@@ -573,7 +573,7 @@ class AccountAddForm(forms.Form):
         return role_name_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -762,7 +762,7 @@ class AccountDetailModifyForm(forms.Form):
         return role_name_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -971,7 +971,7 @@ class AccountSearchForm(forms.Form):
 
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
         if re.match(gl.service_area_name_search_re_pattern, service_area_name_copy) is None:

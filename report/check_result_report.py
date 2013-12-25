@@ -13,14 +13,14 @@ from reportlab.lib.colors import navy, yellow, red
 from geraldo.generators import PDFGenerator
 from django.http import HttpResponse
 
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import CheckObject
-from hchq.check_result.models import CheckResult
+from check_project.models import CheckProject
+from check_object.models import CheckObject
+from check_result.models import CheckResult
 
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line, Image
 
-from hchq.untils import gl
+from untils import gl
     
 class CheckResultReport(Report):
     title = u'检查结果报表'
