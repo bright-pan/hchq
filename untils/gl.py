@@ -188,6 +188,7 @@ session_check_object_mate_service_area_name = u'session_check_object_mate_servic
 session_check_object_mate_department_name = u'session_check_object_mate_department_name'
 session_check_object_is_fuzzy = u'session_check_object_is_fuzzy'
 session_check_object_ctp_method = u'session_check_object_ctp_method'
+session_check_object_del_reason = u'session_check_object_del_reason'
 session_check_object_ctp_method_time = u'session_check_object_ctp_method_time'
 session_check_object_wedding_time = u'session_check_object_wedding_time'
 session_check_object_modify_start_time = u'session_check_object_modify_start_time'
@@ -201,6 +202,12 @@ check_object_ctp_local = {u'method_0':u'未使用',
                           u'method_2':u'避孕药方式',
                           u'method_3':u'其他方式',
                       }
+
+check_object_del_reason = {u'del_reason_1':u'离婚删除',
+                          u'del_reason_2':u'调离删除',
+                          u'del_reason_3':u'超龄删除',
+                          u'del_reason_4':u'因病致绝育删除',
+                          }
 #check_object_init_flag = False
 ################################################
 

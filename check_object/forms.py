@@ -249,7 +249,7 @@ class CheckObjectAddForm(forms.Form):
         
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -304,7 +304,7 @@ class CheckObjectAddForm(forms.Form):
 
     def clean_mate_service_area_name(self):
         try:
-           mate_service_area_name_copy = self.data.get('mate_service_area_name')
+            mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -772,7 +772,7 @@ class CheckObjectDetailModifyForm(forms.Form):
     
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -1195,7 +1195,16 @@ class CheckObjectDeleteForm(forms.Form):
         widget=forms.HiddenInput(),
         error_messages = gl.check_object_name_error_messages,
         )
-    
+    del_reason = forms.ChoiceField(
+        required=True,
+        label =_(u'删除原因'),
+        choices=((u'del_reason_1',u'离婚删除'),
+                 (u'del_reason_2',u'调离删除'),
+                 (u'del_reason_3',u'超龄删除'),
+                 (u'del_reason_4',u'因病致绝育删除'),
+                 ),
+        help_text=_(u'例如：上环选避孕环方式'),
+        )
     def clean_id(self):
         try:
             try:
@@ -1218,6 +1227,7 @@ class CheckObjectDeleteForm(forms.Form):
     def delete(self):
         if self.id_object is not None:
             self.id_object.is_active = False
+            self.id_object.del_reason = self.data.get('del_reason')
             self.id_object.save()
             return True
         else:
@@ -1356,6 +1366,17 @@ class CheckObjectSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    del_reason = forms.ChoiceField(
+        required=True,
+        label =_(u'删除原因'),
+        choices=((u'none', u'未知'),
+                 (u'del_reason_1',u'离婚删除'),
+                 (u'del_reason_2',u'调离删除'),
+                 (u'del_reason_3',u'超龄删除'),
+                 (u'del_reason_4',u'因病致绝育删除'),
+                 ),
+        help_text=_(u'例如：上环选避孕环方式'),
+        )
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -1412,7 +1433,7 @@ class CheckObjectSearchForm(forms.Form):
         return id_number_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -1450,7 +1471,7 @@ class CheckObjectSearchForm(forms.Form):
 
     def clean_mate_service_area_name(self):
         try:
-           mate_service_area_name_copy = self.data.get('mate_service_area_name')
+            mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -1501,6 +1522,7 @@ class CheckObjectSearchForm(forms.Form):
         request.session[gl.session_check_object_mate_service_area_name] = self.cleaned_data['mate_service_area_name']
         request.session[gl.session_check_object_mate_department_name] = self.cleaned_data['mate_department_name']
         request.session[gl.session_check_object_ctp_method] = self.cleaned_data['ctp_method']
+        request.session[gl.session_check_object_del_reason] = self.cleaned_data['del_reason']
         if self.cleaned_data['ctp_method_time'] is not None:
             request.session[gl.session_check_object_ctp_method_time] = self.cleaned_data['ctp_method_time'].isoformat()
         else:
@@ -1545,6 +1567,7 @@ class CheckObjectSearchForm(forms.Form):
         data['mate_service_area_name'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         data['mate_department_name'] = request.session.get(gl.session_check_object_mate_department_name, u'')
         data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'none')
+        data['del_reason'] = request.session.get(gl.session_check_object_del_reason, u'none')
         data['ctp_method_time'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         data['wedding_time'] = request.session.get(gl.session_check_object_wedding_time, u'')
         data['modify_start_time'] = request.session.get(gl.session_check_object_modify_start_time, u'')
@@ -1569,6 +1592,7 @@ class CheckObjectSearchForm(forms.Form):
         self.fields['mate_service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         self.fields['mate_department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_department_name, u'')
         self.fields['ctp_method'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method, u'none')
+        self.fields['del_reason'].widget.attrs['value'] = request.session.get(gl.session_check_object_del_reason, u'none')
         self.fields['ctp_method_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         self.fields['wedding_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_wedding_time, u'')
         self.fields['modify_start_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_modify_start_time, u'')
@@ -1747,6 +1771,19 @@ class CheckObjectSearchForm(forms.Form):
             query_set = query_set.filter(ctp_method=ctp_method)
             
         return query_set
+
+    def query_del_reason(self, query_set=None):
+        del_reason = self.cleaned_data['del_reason']
+
+        if query_set is None:
+            return query_set
+        
+        if del_reason == u'none':
+            pass
+        else:
+            query_set = query_set.filter(del_reason=del_reason)
+            
+        return query_set
     
     def query_ctp_method_time(self, query_set=None):
         ctp_method_time = self.cleaned_data['ctp_method_time']
@@ -1844,6 +1881,7 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_mate_service_area_name(query_set)
         query_set = self.query_mate_department_name(query_set)
         query_set = self.query_ctp_method(query_set)
+        query_set = self.query_del_reason(query_set)
         query_set = self.query_is_family(query_set)
         query_set = self.query_ctp_method_time(query_set)
         query_set = self.query_wedding_time(query_set)

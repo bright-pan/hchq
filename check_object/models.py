@@ -20,6 +20,7 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     ctp_method = models.CharField(max_length=10, null=True)
     ctp_method_time = models.DateField(null=True)
     creater = models.ForeignKey(User)
+    del_reason = models.CharField(max_length=128, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
