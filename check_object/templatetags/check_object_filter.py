@@ -14,3 +14,13 @@ def ctp_local(value):
         return u'%s' % gl.check_object_ctp_local[value]
     else:
         return u''
+
+
+@register.filter
+@stringfilter
+def del_reason_local(value):
+    if gl.check_object_del_reason.has_key(value):
+        return u'%s' % gl.check_object_del_reason[value]
+    else:
+        return u''
+    

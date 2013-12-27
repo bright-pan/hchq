@@ -236,5 +236,5 @@ check_result_local = {u'None':u'',
                       u'special_6':u'外地环孕检证明',
                       }
 
-check_result_pregnant_number_re_pattern = ur'^[0-50]+$'
+check_result_pregnant_number_re_pattern = ur'(^[\d]{2}$)|(^[\d]{1}$)'
 

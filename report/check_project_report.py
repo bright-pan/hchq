@@ -1483,37 +1483,37 @@ def check_object_service_area_report(query_set=None, request=None, check_project
                 pass
             for service_area_department_object in query_set_service_area_department:
                 print query_set_service_area_department
-                query_set_check_result_in_department = qs_check_object.filter(check_object__service_area_department=service_area_department_object).order_by('check_object.id')
-                if query_set_check_result_in_department:
-                    check_result_report = CheckResultReport(query_set_check_result_in_department)
-                    check_result_report.check_project = check_project
-                    check_result_report.qs_check_object = qs_check_object
-                    check_result_report.qs_check_result = qs_check_result   
-                    check_result_report.author = request.user.username
-                    check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
-                    check_result_report.band_page_header.elements += [
-                        Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+                query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
+                if query_set_check_object_in_department:
+                    department_report = DepartmentReport(query_set_check_object_in_department)
+                    department_report.check_project = check_project
+                    department_report.qs_check_object = qs_check_object
+                    department_report.qs_check_result = qs_check_result
+                    department_report.author = request.user.username
+                    department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.band_page_header.elements += [
+                        Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                              get_value=lambda text: check_result_report.get_department_total_count(text, service_area_department=service_area_department_object)),
+                              get_value=lambda text: department_report.get_department_total_count(text, service_area_department=service_area_department_object)),
                         ]
-                    check_result_report.band_detail.elements = [
-                        ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
-                        ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
-                                    get_value=lambda instance: check_result_report.get_family_value(instance)),
-                        ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),
-                        ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
-                        ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
-                        ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
-                        ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-                        ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-                        ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
-                        ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
-                        ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
-                        ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
-                                    get_value=lambda instance: check_result_report.get_result_value(instance)),
-                        ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
+                    department_report.band_detail.elements = [
+                        ObjectValue(attribute_name='id', top=0.3*cm, left=0.5*cm),
+                        ObjectValue(attribute_name='name', top=0.1*cm, left=2*cm),
+                        ObjectValue(attribute_name='id_number', top=0.5*cm, left=2*cm),
+                        ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='mate_name', top=0.1*cm, left=12*cm),
+                        ObjectValue(attribute_name='mate_id_number', top=0.5*cm, left=12*cm),
+                        ObjectValue(attribute_name='mate_service_area_department.service_area.name', top=0.1*cm, left=16.2*cm),
+                        ObjectValue(attribute_name='mate_service_area_department.department.name', top=0.5*cm, left=16.2*cm),
+                        ObjectValue(attribute_name='is_family', top=0.1*cm, left=22*cm,
+                                    get_value=lambda instance: instance.is_family and u'是' or u'否'),
+                        ObjectValue(attribute_name='wedding_time', top=0.5*cm, left=22*cm),
+                        ObjectValue(attribute_name='ctp_method', top=0.1*cm, left=25*cm,
+                                    get_value=lambda instance: department_report.get_ctp_value(instance)),
+                        ObjectValue(attribute_name='ctp_method_time', top=0.5*cm, left=25*cm),
                         ]
-                    canvas = check_result_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                    canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
                 else:
                     pass
         cover_report = CoverReport(query_set)
@@ -1535,7 +1535,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
     return response
 
 def check_object_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    
+    print check_project_id
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1566,37 +1566,37 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
-            query_set_check_result_in_department = qs_check_object.filter(check_object__service_area_department=service_area_department_object).order_by('check_object.id')
-            if query_set_check_result_in_department:
-                check_result_report = CheckResultReport(query_set_check_result_in_department)
-                check_result_report.check_project = check_project
-                check_result_report.qs_check_object = qs_check_object
-                check_result_report.qs_check_result = qs_check_result                
-                check_result_report.author = request.user.username
-                check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
-                check_result_report.band_page_header.elements += [
-                    Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
+            query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
+            if query_set_check_object_in_department:
+                department_report = DepartmentReport(query_set_check_object_in_department)
+                department_report.check_project = check_project
+                department_report.qs_check_object = qs_check_object
+                department_report.qs_check_result = qs_check_result
+                department_report.author = request.user.username
+                department_report.title = u'%s - %s - 总检查人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
-                          get_value=lambda text: check_result_report.get_department_total_count(text, service_area_department=service_area_department_object)),
+                          get_value=lambda text: department_report.get_department_total_count(text, service_area_department=service_area_department_object)),
                     ]
-                check_result_report.band_detail.elements = [
-                    ObjectValue(attribute_name='check_object.id', top=0.3*cm, left=0.5*cm),
-                    ObjectValue(attribute_name='check_object.name', top=0.1*cm, left=2*cm,
-                                get_value=lambda instance: check_result_report.get_family_value(instance)),
-                    ObjectValue(attribute_name='check_object.id_number', top=0.5*cm, left=2*cm),
-                    ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
-                    ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
-                    ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
-                    ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-                    ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-                    ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
-                    ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
-                    ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
-                    ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
-                                get_value=lambda instance: check_result_report.get_result_value(instance)),
-                    ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
+                department_report.band_detail.elements = [
+                    ObjectValue(attribute_name='id', top=0.3*cm, left=0.5*cm),
+                    ObjectValue(attribute_name='name', top=0.1*cm, left=2*cm),
+                    ObjectValue(attribute_name='id_number', top=0.5*cm, left=2*cm),
+                    ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                    ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                    ObjectValue(attribute_name='mate_name', top=0.1*cm, left=12*cm),
+                    ObjectValue(attribute_name='mate_id_number', top=0.5*cm, left=12*cm),
+                    ObjectValue(attribute_name='mate_service_area_department.service_area.name', top=0.1*cm, left=16.2*cm),
+                    ObjectValue(attribute_name='mate_service_area_department.department.name', top=0.5*cm, left=16.2*cm),
+                    ObjectValue(attribute_name='is_family', top=0.1*cm, left=22*cm,
+                                get_value=lambda instance: instance.is_family and u'是' or u'否'),
+                    ObjectValue(attribute_name='wedding_time', top=0.5*cm, left=22*cm),
+                    ObjectValue(attribute_name='ctp_method', top=0.1*cm, left=25*cm,
+                                get_value=lambda instance: department_report.get_ctp_value(instance)),
+                    ObjectValue(attribute_name='ctp_method_time', top=0.5*cm, left=25*cm),
                     ]
-                canvas = check_result_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
             else:
                 pass
             cover_report = CoverReport(query_set)

@@ -1198,9 +1198,9 @@ class CheckObjectDeleteForm(forms.Form):
     del_reason = forms.ChoiceField(
         required=True,
         label =_(u'删除原因'),
-        choices=((u'del_reason_1',u'离婚删除'),
+        choices=((u'del_reason_3',u'超龄删除'),
+                 (u'del_reason_1',u'离婚删除'),
                  (u'del_reason_2',u'调离删除'),
-                 (u'del_reason_3',u'超龄删除'),
                  (u'del_reason_4',u'因病致绝育删除'),
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
@@ -1217,8 +1217,8 @@ class CheckObjectDeleteForm(forms.Form):
         try:
             check_project = CheckProject.objects.get(is_setup=True, is_active=True)
         except ObjectDoesNotExist:
-            raise forms.ValidationError(u'系统严重错误，检查项目启动，请联系管理员！')
-        check_result_count = CheckResult.objects.filter(check_object=self.id_object, check_project=check_project).count()
+            raise forms.ValidationError(u'系统严重错误，检查项目未启动，请联系管理员！')
+        check_result_count = CheckResult.objects.filter(check_object=self.id_object, check_project=check_project, is_latest=True).count()
         if check_result_count >= 1:
             raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象！')
         else:
@@ -1845,7 +1845,7 @@ class CheckObjectSearchForm(forms.Form):
             self.is_fuzzy = False
 
         query_set = CheckObject.objects.filter(is_active=True)
-        
+
         query_set = self.query_name(query_set)
         query_set = self.query_id_number(query_set)
         query_set = self.query_mate_name(query_set)

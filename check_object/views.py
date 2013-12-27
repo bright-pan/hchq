@@ -441,6 +441,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
     """
     page_title = u'查询检查对象'
     if request.method == 'POST':
+
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
         if submit_value == u'查询':
