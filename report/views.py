@@ -114,7 +114,20 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                        },
                                                       context_instance=RequestContext(request))
                     else:
-                        raise Http404('Invalid Request!')                
+                        if submit_value == u'总检查人员':
+                            report_check_or_not_form = ReportCheckOrNotForm(post_data)
+                            report_check_or_not_form.init_check_project()
+                            report_check_or_not_form.init_permission(user)
+                            if report_check_or_not_form.is_valid():
+                                return report_check_or_not_form.has_total_report(request)
+                            else:
+                                return render_to_response(template_name,
+                                                          {'report_form': report_check_or_not_form,
+                                                           'page_title': page_title,
+                                                           },
+                                                          context_instance=RequestContext(request))
+                        else:
+                            raise Http404('Invalid Request!')                   
     else:
         report_check_or_not_form = ReportCheckOrNotForm()
         report_check_or_not_form.init_check_project()
