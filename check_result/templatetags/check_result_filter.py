@@ -14,10 +14,12 @@ def local(value):
     print value_list
     for i in value_list:
         if gl.check_result_local.has_key(i):
-            if i == value_list[-1]:
-                value += gl.check_result_local[i]
-            else:
-                value += gl.check_result_local[i] + u'|'
+            key_value = gl.check_result_local[i]
+            if key_value:
+                if i == value_list[-1]:
+                    value += key_value
+                else:
+                    value += key_value + u'|'
         else:
             if i == value_list[-1]:
                 if re.match(gl.check_result_pregnant_number_re_pattern, i):

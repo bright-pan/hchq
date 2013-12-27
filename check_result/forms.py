@@ -1069,14 +1069,14 @@ class CheckResultSearchForm(forms.Form):
         else:
             self.is_fuzzy = False
 
-        #query_set = CheckResult.objects.filter(is_latest=True)
-        query_set = CheckResult.objects.all()
+        query_set = CheckResult.objects.filter(is_latest=True)
+        #query_set = CheckResult.objects.all()
         
+        query_set = self.query_check_project(query_set)        
         query_set = self.query_pregnant(query_set)
         query_set = self.query_special(query_set)
         query_set = self.query_ring(query_set)
         query_set = self.query_pregnant_period(query_set)
-        query_set = self.query_check_project(query_set)
         query_set = self.query_checker(query_set)
         query_set = self.query_recorder(query_set)
         query_set = self.query_start_time(query_set)
