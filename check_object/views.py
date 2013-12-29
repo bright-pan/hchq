@@ -10,12 +10,12 @@ from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-import Image
-from check_object.forms import *
-from untils.my_paginator import pagination_results
-from untils import gl
-import settings
-from report.check_object_report import *
+from PIL import Image
+from hchq.check_object.forms import *
+from hchq.untils.my_paginator import pagination_results
+from hchq.untils import gl
+from hchq import settings
+from hchq.report.check_object_report import *
 # Create your views here.
 @csrf_protect
 @login_required
@@ -352,7 +352,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
                 if check_object is not None:
                     return HttpResponseRedirect("check_object/show/%s/modify/" % check_object.id)
                 else:
-                    print '&&&&&&&&&&&&&&&&&&&&'
+                    #print '&&&&&&&&&&&&&&&&&&&&'
                     raise Http404('Invalid Request!')
             else:
                 check_object_id = int(check_object_detail_modify_form.data.get('id'))

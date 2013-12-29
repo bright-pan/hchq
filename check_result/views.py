@@ -10,14 +10,14 @@ from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-import Image
-from check_result.forms import *
-from check_object.forms import *
-from untils.my_paginator import pagination_results
-from untils import gl
-import settings
-from report.check_result_report import check_result_report
-from report.certification_report import certification_report
+from PIL import Image
+from hchq.check_result.forms import *
+from hchq.check_object.forms import *
+from hchq.untils.my_paginator import pagination_results
+from hchq.untils import gl
+from hchq import settings
+from hchq.report.check_result_report import check_result_report
+from hchq.report.certification_report import certification_report
 import datetime
 # Create your views here.
 def check_result_modify(request, template_name='my.html', next='/', check_result_page='1'):
@@ -92,7 +92,7 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
         try:
             check_object = CheckObject.objects.get(pk=check_result_id)
         except ObjectDoesNotExist:
-            print "***************"
+            #print "***************"
             raise Http404('Invalid Request!')
 
         results = check_object.check_result.order_by('-id')

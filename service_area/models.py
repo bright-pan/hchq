@@ -1,7 +1,7 @@
 #coding=utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from department.models import Department
+from hchq.department.models import Department
 import caching.base
 # Create your models here.
 

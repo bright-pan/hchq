@@ -13,15 +13,15 @@ from reportlab.lib.colors import navy, yellow, red
 from geraldo.generators import PDFGenerator
 from django.http import HttpResponse
 
-from check_project.models import CheckProject
-from check_object.models import CheckObject
-from check_result.models import CheckResult
-from check_result.templatetags import check_result_filter
+from hchq.check_project.models import CheckProject
+from hchq.check_object.models import CheckObject
+from hchq.check_result.models import CheckResult
+from hchq.check_result.templatetags import check_result_filter
 
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line, Image
 
-from untils import gl
+from hchq.untils import gl
     
 class CheckResultReport(Report):
     title = u'检查结果报表'
@@ -116,7 +116,7 @@ class CheckResultReport(Report):
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
-            print complete_radio, check_count, check_object_count
+            #print complete_radio, check_count, check_object_count
         else:
             not_check_count = 0
             if check_object_count == 0:

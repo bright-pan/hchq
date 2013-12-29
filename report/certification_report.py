@@ -14,7 +14,7 @@ from django.http import HttpResponse
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line, Image
 
-from untils import gl
+from hchq.untils import gl
 def get_result_value(instance=None):
     if instance is None:
         return u''

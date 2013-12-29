@@ -10,11 +10,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from department.forms import DepartmentAddForm, DepartmentModifyForm, DepartmentDeleteForm, DepartmentSearchForm
-from department.models import Department
-from untils.my_paginator import pagination_results
-from untils import gl
-import settings
+from hchq.department.forms import DepartmentAddForm, DepartmentModifyForm, DepartmentDeleteForm, DepartmentSearchForm
+from hchq.department.models import Department
+from hchq.untils.my_paginator import pagination_results
+from hchq.untils import gl
+from hchq import settings
 
 
 @csrf_protect

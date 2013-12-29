@@ -2,7 +2,7 @@
 
 from django import template
 from django.template.defaultfilters import stringfilter
-from untils import gl
+from hchq.untils import gl
 import re
 register = template.Library()
 
@@ -11,7 +11,7 @@ register = template.Library()
 def local(value):
     value_list = value.split()
     value = u''
-    print value_list
+    #print value_list
     for i in value_list:
         if gl.check_result_local.has_key(i):
             key_value = gl.check_result_local[i]

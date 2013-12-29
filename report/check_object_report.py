@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line
 
-from untils import gl
+from hchq.untils import gl
 def get_ctp_value(instance=None):
     if instance is not None and gl.check_object_ctp_local.has_key(instance.ctp_method):
         return u'%s' % gl.check_object_ctp_local[instance.ctp_method]

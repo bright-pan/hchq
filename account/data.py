@@ -4,12 +4,12 @@ from django.contrib.auth.models import *
 from hchq.service_area.models import *
 from hchq.department.models import *
 from hchq.check_object.models import *
-import Image
+from PIL import Image
 from django.core.files.storage import default_storage
-import settings
-from untils import gl
+from hchq import settings
+from hchq.untils import gl
 from django.db.models import ObjectDoesNotExist
-from account.models import *
+from hchq.account.models import *
 
 conn = pymssql.connect(host='192.168.0.167',user='sa',password='',database='HCHQ')
 cur = conn.cursor()

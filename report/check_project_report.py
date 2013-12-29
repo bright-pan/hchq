@@ -16,14 +16,14 @@ from django.db.models import Avg, Max, Min, Count
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line
 
-from check_project.models import CheckProject
-from check_object.models import CheckObject
-from check_result.models import CheckResult
-from service_area.models import *
-from report.check_result_report import CheckResultReport
+from hchq.check_project.models import CheckProject
+from hchq.check_object.models import CheckObject
+from hchq.check_result.models import CheckResult
+from hchq.service_area.models import *
+from hchq.report.check_result_report import CheckResultReport
 from django.db.models import ObjectDoesNotExist
 
-from untils import gl
+from hchq.untils import gl
 
 class CheckProjectReport(Report):
     title = u'江西省会昌县环孕检统计报表'
@@ -1482,7 +1482,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                print query_set_service_area_department
+                #print query_set_service_area_department
                 query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
                 if query_set_check_object_in_department:
                     department_report = DepartmentReport(query_set_check_object_in_department)
@@ -1535,7 +1535,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
     return response
 
 def check_object_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    print check_project_id
+    #print check_project_id
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)

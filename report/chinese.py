@@ -3,7 +3,7 @@
 #这个文件是在啄木鸟上抄袭的
 import os
 #cur_dir = os.path.dirname(os.path.abspath(__file__))
-import settings
+from hchq import settings
 import reportlab.rl_config
 reportlab.rl_config.warnOnMissingFontGlyphs = 0
 import reportlab.pdfbase.pdfmetrics

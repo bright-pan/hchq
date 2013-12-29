@@ -3,17 +3,16 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
-import Image
+from PIL import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from untils import gl
-from service_area.models import ServiceArea, ServiceAreaDepartment
-from department.models import Department
-from check_project.models import CheckProject
-from check_object.models import *
-from .check_project_report import *
-import settings
+from hchq.untils import gl
+from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
+from hchq.department.models import Department
+from hchq.check_project.models import CheckProject
+from hchq.check_object.models import *
+from hchq import settings
 import re
 import datetime
 

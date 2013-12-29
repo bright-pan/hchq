@@ -2,7 +2,7 @@
 
 from django import template
 from django.template.defaultfilters import stringfilter
-from untils import gl
+from hchq.untils import gl
 
 register = template.Library()
 
@@ -23,4 +23,3 @@ def del_reason_local(value):
         return u'%s' % gl.check_object_del_reason[value]
     else:
         return u''
-    

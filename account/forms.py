@@ -4,11 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
 
-from untils import gl
-from service_area.models import ServiceArea, ServiceAreaDepartment
-from department.models import Department
-from account.models import UserProfile
-import settings
+from hchq.untils import gl
+from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
+from hchq.department.models import Department
+from hchq.account.models import UserProfile
+from hchq import settings
 import re
 
 
@@ -868,11 +868,11 @@ class AccountDeleteForm(forms.Form):
             except ValueError:
 
                 raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-            print id_copy
+            #print id_copy
             self.id_object = User.objects.get(pk=id_copy, is_active=True, is_superuser=False, is_staff=False)
             
         except ObjectDoesNotExist:
-            print "$$$$$$$$$$$$$$$$$"
+            #print "$$$$$$$$$$$$$$$$$"
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
         return id_copy
 
