@@ -1,71 +1,9 @@
 {% extends "my_layout.html" %}
 
 {% block site_wrapper %}
-<div class="page_margins">
-  <div class="page">
-    <div id="header">
-      {% block topnav %}
-      <div id="topnav">
-        <!-- start: skip link navigation -->
-        <a class="skip" title="skip link" href="#navigation">Skip to the navigation</a><span class="hideme">.</span>
-        <a class="skip" title="skip link" href="#content">Skip to the content</a><span class="hideme">.</span>
-		<script type="text/javascript">
-		  function detectBrowser()
-		  {
-		  var browser=navigator.appName
-		  var b_version=navigator.appVersion
-		  var version=parseFloat(b_version)
-		  if (browser!="Microsoft Internet Explorer")
-		  {
-		  }
-		  else
-		  {
-		  if(version < 5)
-		  {
-		  document.write("<p style=\"text-align:right; color: red; background: transparent; border: 0\"><strong>请使用IE6以上或者Chrome浏览器(推荐)，谢谢</strong></p>");
-		  }
-		  }
-		  }
-		  detectBrowser();
-		</script>
-        <!-- end: skip link navigation -->  <!-- end: skip link navigation -->{% if user.is_authenticated %}你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
-	{% else %}
-	<a href="{% url account_login %}">登入</a> | <a href="/account/login">通知</a> | <a href="/account/login">下载</a>
-	{% endif %}
-
-      </div>
-      {% endblock %}
-      <div id="vbox">
-        <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
-      </div>
-      <div id="header_describe">
-        {% block header_describe %}
-        {% endblock %}
-      </div>
-    </div>
-    {% block nav %}
-    {% endblock %}
-    
-    {% block teaser %}
-    {% endblock %}
-    
-    <div id="main">
-      <div id="center">
 	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,124,0" width="100%" height="500">  
-	  <param name="movie" value="{{ MEDIA_URL }}/flash/hchq.swf" />
-	  <param name="wmode" value="transparent" />
-	  <embed src="{{ MEDIA_URL }}/flash/hchq.swf" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="100%" height="500"></embed>
+		<param name="movie" value="{{ MEDIA_URL }}/flash/hchq.swf" />
+		<param name="wmode" value="transparent" />
+ 		<embed src="{{ MEDIA_URL }}/flash/hchq.swf" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="100%" height="500"></embed>
 	</object>
-        <!-- IE Column Clearing -->
-      </div>
-      <div id="ie_clearing"> &#160; </div>
-    </div>
-  </div>
-  <!-- begin: #footer -->
-  <div id="footer">
-    <p>©2010-{% now "Y" %} 江西省会昌县人口与计划生育委员会</p>
-    <img  src="{{ MEDIA_URL }}images/django_site.gif"/>
-  </div>
-</div>
-</div>
 {% endblock %}

@@ -1,107 +1,18 @@
 {% extends "base.html" %}
 
-{% block site_wrapper %}
-  <div class="page_margins">
-    <div class="page">
-      <div id="header">
-        <div id="topnav">
-        {% block topnav %}
-				<script type="text/javascript">
-		  function detectBrowser()
-		  {
-		  var browser=navigator.appName
-		  var b_version=navigator.appVersion
-		  var version=parseFloat(b_version)
-		  if (browser!="Microsoft Internet Explorer")
-		  {
-		  }
-		  else
-		  {
-		  if(version < 7)
-		  {
-		  document.write("<p style=\"text-align:right; color: red; background: transparent; border: 0\"><strong>请使用IE6以上或者Chrome浏览器(推荐)，谢谢</strong></p>");
-		  }
-		  }
-		  }
-		  detectBrowser();
-		</script>
-
-        你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
-        {% endblock %}
-        </div>
-        {% load cache %}
-        {% cache 500 header %}
-        <div id="vbox">
-        <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
-        </div>
-        {% endcache %}
-        {% load cache %}
-        {% cache 500 check_project_nav %}
-        <div id="header_describe">
-          {% if check_project != None %}
-          <div style="text-align:right; color: #2E6E9E; background: transparent; border: 0">
-            <p>
-              <strong>{{ check_project.name }}</strong>
-              <strong>{{ check_project.start_time|date:"Y-m-d" }}</strong> - 
-              <strong>{{ check_project.end_time|date:"Y-m-d" }}</strong> | 
-              <strong>今天日期 {% now "Y-m-d" %}</strong>
-            </p>
-          </div>
-          {% else %}
-          <div style="text-align:right; color: #2E6E9E; background: transparent; border: 0">
-            <p>
-              <strong>尚未启用项目</strong> | 
-              <strong>今天日期 {% now "Y-m-d" %}</strong>
-            </p>
-          </div>
-          {% endif %}
-
-          
-          {% block header_describe %}
-          
-          {% endblock %}
-        </div>
-        {% endcache %}
-      </div>
-      <div id="nav">
-        <!-- skiplink anchor: navigation -->
-        <a id="navigation" name="navigation"></a>
-        <div class="hlist">
-          <!-- main navigation: horizontal list -->
-          {% block nav %}{% endblock %}
-        </div>
-      </div>
-      {% block teaser %}
-
-      {% endblock %}
-      <div id="main">
-        {% block main %}
-        <div id="col1">
-          <div id="col1_content" class="clearfix">
-            <!-- add your content here -->
-            {% block col1_content %}
-            {% endblock %}
-          </div>
-        </div>
-        <div id="col3">
-          <div id="col3_content" class="clearfix">
-            <!-- add your content here -->
-            {% block col3_content %}
-            {% endblock %}
-          </div>            
-          <!-- IE Column Clearing -->
-          <div id="ie_clearing"> &#160; </div>
-        </div>
-        {% endblock %}
-      </div>
-      <!-- begin: #footer -->
-      {% load cache %}
-      {% cache 500 footer %}
-      <div id="footer">
-        <p>©2010-{% now "Y" %} 江西省会昌县人口与计划生育委员会</p>
-        <img  src="{{ MEDIA_URL }}images/django_site.gif"/>
-      </div>
-      {% endcache %}
-    </div>
-  </div>
+{% block topnav %}
+	{% if user.is_authenticated %}
+	<li><a href="{% url account_person_management %}">你好，<span class="label label-info">{{ user.username }}</span></a></li>
+	<li><a href="{% url account_logout %}"><span class="label label-danger">退出</span></a></li>
+	{% else %}
+	<li><a href="{% url account_login %}"><span class="label label-primary">登入</span></a></li>
+	{% endif %}
+	<li><a href="#">通知</a></li>
+	<li><a href="#">下载</a></li>
+{% endblock %} 
+{% block site_wrapper %} 
+{% block main %}
+<div class="span3">{% block col1_content %} {% endblock %}</div>
+<div class="span9" role="main">{% block col3_content %} {% endblock %}</div>
+{% endblock %}
 {% endblock %}
