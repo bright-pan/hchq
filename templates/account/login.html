@@ -10,25 +10,20 @@
 	<li><a href="#">通知</a></li>
 	<li><a href="#">下载</a></li> 
 {% endblock %}
-
-{% block header_describe %}{% endblock %}
-{% block nav %}{% endblock %}
-{% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
-{% block col3_content %}
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc note">
-      <!-- Insert your subtemplate content here -->
-      <h3>系统用户登入</h3>
-      {% include 'account/login_form.html' %}
-    </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
+	
+{% block site_wrapper %}
+<div class="row">
+	<div class="col-md-4"></div>
+	<div class="col-md-4">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">系统用户登入</h3>
+			</div>
+			<div class="panel-body">{% include 'account/login_form.html' %}
+			</div>
+		</div>
+	</div>
 </div>
+
 {% endblock %}
 

@@ -335,7 +335,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'妻子姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -353,7 +353,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'服务区域'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -362,7 +362,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -383,7 +383,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=64,
         required=False,
         label=_(u'丈夫姓名'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -401,7 +401,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'服务区域'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -410,7 +410,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -447,7 +447,7 @@ class CheckResultSearchForm(forms.Form):
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
-        widget=forms.CheckboxInput(attrs={'class':'',
+        widget=forms.CheckboxInput(attrs={'class':'form-control',
                                           'value':'is_fuzzy',
                                           }, 
                                    check_test=None,

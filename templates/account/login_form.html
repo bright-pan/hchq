@@ -1,33 +1,39 @@
-<form method="post" action="" class="yform full">{% csrf_token %}
+<form method="post" action="">{% csrf_token %}
   <fieldset>
     <legend>请输入用户名和密码</legend>
     {% if form.username.errors %}
-    <div class="type-text error">
-      <strong class="message">{{ form.username.errors }}</strong>
-      {{ form.username.label_tag }}<p class="dimmed">{{ form.username.help_text}}</p>
+    <div class="form-group has-error">
+      <span class="help-block">{{ form.username.errors }}</span>
+      <label class="control-label">{{ form.username.label}}</label>
       {{ form.username }}
+      <span class="help-block">{{ form.username.help_text}}</span>
     </div>
     {% else %}
-    <div class="type-text">
-      {{ form.username.label_tag }}<p class="dimmed">{{ form.username.help_text}}</p>
+    <div class="form-group">
+      <label class="control-label">{{ form.username.label }}</label>
       {{ form.username }}
+      <span class="help-block">{{ form.username.help_text}}</span>
     </div>
     {% endif %}
     {% if form.password.errors %}
-    <div class="type-text error">
-      <strong class="message">{{ form.password.errors }}</strong>
-      {{ form.password.label_tag }}<p class="dimmed">{{ form.password.help_text}}</p>
+    <div class="form-group has-error">
+      <span class="help-block">{{ form.password.errors }}</span>
+      <label class="control-label">{{ form.password.label }}</label>
       {{ form.password }}
+      <span class="help-block">{{ form.password.help_text}}</span>
     </div>
     {% else %}
-    <div class="type-text">
-      {{ form.password.label_tag }}<p class="dimmed">{{ form.password.help_text}}</p>
+    <div class="form-group">
+      <label class="control-label">{{ form.password.label }}</label>
       {{ form.password }}
+      <span class="help-block">{{ form.password.help_text}}</span>
     </div>
     {% endif %}
     <div class="center">
-      <input type="submit" value="登入" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+        <button type="submit" class="btn btn-primary btn-lg">登入</button>
+  		<button type="reset" class="btn btn-default btn-lg">重置</button>
+<!--        <input type="submit" value="登入" class="btn btn-primary btn-lg"/>
+      <input type="reset" value="重置" class="btn btn-default btn-lg"/> -->
     </div>
   </fieldset>
 </form>

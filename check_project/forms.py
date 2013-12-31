@@ -21,7 +21,7 @@ class CheckProjectAddForm(forms.Form):
         max_length=64,
         required=True, 
         label=_(u'检查项目名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -251,7 +251,7 @@ class CheckProjectSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'检查项目名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -262,7 +262,7 @@ class CheckProjectSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'',
+        widget=forms.CheckboxInput(attrs={'class':'form-control',
                                           'value':'fuzzy_search',
                                           }, 
                                    check_test=None,

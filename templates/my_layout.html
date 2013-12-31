@@ -10,9 +10,23 @@
 	<li><a href="#">通知</a></li>
 	<li><a href="#">下载</a></li>
 {% endblock %} 
-{% block site_wrapper %} 
-{% block main %}
-<div class="span3">{% block col1_content %} {% endblock %}</div>
-<div class="span9" role="main">{% block col3_content %} {% endblock %}</div>
-{% endblock %}
+{% block check_project_info %}
+	{% if user.is_authenticated %}
+		<div class="alert alert-info">
+			{% load cache %} {% cache 500 check_project_nav %} 
+			{% if check_project != None %} 
+			<strong>{{ check_project.name }}</strong> <strong>{{ check_project.start_time|date:"Y-m-d" }}</strong> - <strong>{{ check_project.end_time|date:"Y-m-d" }}</strong> | <strong>今天日期 {% now "Y-m-d" %}</strong> 
+			{% else %} <strong>尚未启用项目</strong> | <strong>今天日期  {% now "Y-m-d" %}</strong> 
+			{% endif %} 
+			{% endcache %}
+			{% block header_describe %} {% endblock %}
+		</div>
+	{% else %}
+	{% endif %}
+{% endblock %} 
+{% block site_wrapper %}
+<div class="row">
+	<div class="col-md-3">{% block col1_content %} {% endblock %}</div>
+	<div class="col-md-9">{% block col3_content %} {% endblock %}</div>
+</div>
 {% endblock %}

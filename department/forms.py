@@ -20,7 +20,7 @@ class DepartmentAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'单位部门名称'), 
-        widget=forms.Textarea(attrs={'class':'',
+        widget=forms.Textarea(attrs={'class':'form-control',
                                      'size':'30',
                                      'rows':'3',
                                      }
@@ -68,7 +68,7 @@ class DepartmentModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'新单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -173,7 +173,7 @@ class DepartmentSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -184,7 +184,7 @@ class DepartmentSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'',
+        widget=forms.CheckboxInput(attrs={'class':'form-control',
                                           'value':'fuzzy_search',
                                           }, 
                                    check_test=None,

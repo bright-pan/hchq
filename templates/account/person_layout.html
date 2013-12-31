@@ -1,9 +1,5 @@
 {% extends "my_layout.html" %}
 
-
-
-{% block header_describe %}{% endblock %}
-
 {% block nav %}
 {% load cache %}
 {% cache 500 person_layout user.username %}
@@ -50,7 +46,3 @@
 </ul>
 {% endcache %}
 {% endblock %}
-
-{% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
-{% block col3_content %}{% endblock %}

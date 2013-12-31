@@ -21,7 +21,7 @@ class ServiceAreaAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'服务区域名称'), 
-        widget=forms.Textarea(attrs={'class':'',
+        widget=forms.Textarea(attrs={'class':'form-control',
                                      'size':'30',
                                      'rows':'3',
                                      }
@@ -69,7 +69,7 @@ class ServiceAreaModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'新服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -172,7 +172,7 @@ class ServiceAreaSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -181,7 +181,7 @@ class ServiceAreaSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'',
+        widget=forms.CheckboxInput(attrs={'class':'form-control',
                                           'value':'fuzzy_search',}, check_test=None),
         )
     
@@ -230,7 +230,7 @@ class ServiceAreaDepartmentAddForm(forms.Form):
     service_area_department_name = forms.MultipleChoiceField(
         required=True,
         label=_(u'单位部门名称'), 
-        widget=forms.SelectMultiple( attrs={'class':'',
+        widget=forms.SelectMultiple( attrs={'class':'form-control',
                                            'size':'30',},
                                     ), 
         help_text=_(u'帮助：按住键盘Ctrl键为多选！'),
@@ -272,7 +272,7 @@ class ServiceAreaDepartmentSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -283,7 +283,7 @@ class ServiceAreaDepartmentSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'',
+        widget=forms.CheckboxInput(attrs={'class':'form-control',
                                           'value':'fuzzy_search',
                                           }, 
                                    check_test=None,
