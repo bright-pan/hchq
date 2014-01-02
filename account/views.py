@@ -27,16 +27,18 @@ def login(request, template_name = 'account/login.html', next='/'):
     login_form = None
     if request.method == 'POST':
         post_data = request.POST.copy()
+        print post_data
         login_form = LoginForm(post_data)
         if login_form.is_valid():
             from django.contrib.auth import login
             login(request, login_form.get_user())
             return HttpResponseRedirect(next)
         else:
-            return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
+            pass
     else:
         login_form = LoginForm()
-        return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
+    
+    return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
 
 def exit(request, template_name = 'my.html', next = '/'):
     from django.contrib.auth import logout
@@ -61,31 +63,26 @@ def person_password_modify(request, template_name = '', next = '/'):
                 return HttpResponseRedirect(next)
             else:
                 fault = True
-                return render_to_response(template_name,
-                                          {'form': modify_password_form,
-                                           'fault': fault,
-                                           'page_title': page_title},
-                                          context_instance=RequestContext(request))
+                pass
         else:
-            return render_to_response(template_name,
-                                      {'form': modify_password_form,
-                                       'fault': fault,
-                                       'page_title': page_title},
-                                      context_instance=RequestContext(request))
+            pass
     else:
         modify_password_form = ModifyPasswordForm()
-        return render_to_response(template_name,
-                                  {'form': modify_password_form,
-                                   'fault': fault,
-                                   'page_title': page_title},
-                                  context_instance=RequestContext(request))        
+
+    return render_to_response(template_name,
+                              {'form': modify_password_form,
+                               'fault': fault,
+                               'page_title': page_title},
+                              context_instance=RequestContext(request))        
 
 
 @login_required
 def person_management(request, template_name = 'my.html', next = '/'):
     
     page_title = u'个人信息'
-    return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))    
+    return render_to_response(template_name, 
+                              {'page_title': page_title},
+                              context_instance=RequestContext(request))    
 
 @csrf_protect
 @login_required

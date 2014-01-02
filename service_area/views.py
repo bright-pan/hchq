@@ -30,7 +30,9 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
 
     if request.method == 'POST':
         post_data = request.POST.copy()
+        print post_data
         submit_value = post_data.get(u'submit', False)
+        print submit_value
         if submit_value == u'添加':
             service_area_add_form = ServiceAreaAddForm(post_data)
             if service_area_add_form.is_valid():

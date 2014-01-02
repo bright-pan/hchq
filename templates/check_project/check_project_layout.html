@@ -1,12 +1,9 @@
 {% extends "my_layout.html" %}
 
-
-{% block header_describe %}{% endblock %}
-
 {% block nav %}
 {% load cache %}
 {% cache 500 check_project_layout user.username %}
-<ul>
+<ul class="nav nav-tabs">
   <li><a href="{% url account_person_management %}">个人管理</a></li>
   {% if perms.department.sd_management %}
   <li><a href="{% url service_area_list 1 %}">服务区域管理</a></li>
@@ -16,7 +13,7 @@
   <li><a href="{% url account_role_list 1 %}">角色权限管理</a></li>
   {% endif %}
   {% if perms.department.role_management %}
-  <li class="active"><strong>检查项目管理</strong></li>
+  <li class="active"><a href="{% url check_project_list 1 %}">检查项目管理</a></li>
   {% endif %}
   {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
   <li><a href="{% url account_list 1 %}">系统用户管理</a></li>
@@ -49,7 +46,3 @@
 </ul>
 {% endcache %}
 {% endblock %}
-
-{% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
-{% block col3_content %}{% endblock %}

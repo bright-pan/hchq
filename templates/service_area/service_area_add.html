@@ -1,101 +1,39 @@
 {% extends "service_area/service_area_layout.html" %}
-{% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
 {% block col1_content %}
 {% load cache %}
-
 {% cache 500 service_area_add user.username %}
-<h6 class="vlist">服务区域管理</h6>
-<ul class="vlist">
+<ul class="nav nav-pills nav-stacked">
   <li><a href="{% url service_area_list 1 %}">服务区域查询</a></li>
-  <li class="active"><strong>服务区域添加</strong></li>
+  <li class="active"><a href="{% url service_area_add 1 %}">服务区域添加</a></li>
   <li><a href="{% url service_area_modify 1 %}">服务区域修改</a></li>
   <li><a href="{% url service_area_delete 1 %}">服务区域删除</a></li>
-  
 </ul>
 {% endcache %}
 {% endblock %}
+
 {% block col3_content %}
-<h3>服务区域添加</h3>
-<hr>
-<div class="important">
-  <div class="subcolumns">
-    <div class="c66l">
-      <div class="subc">
-        <!-- Insert your subtemplate content here -->
-        {% with search_form as form %}
-        <form method="post" action="#" class="yform full">{% csrf_token %}
-          <fieldset>
-            <legend>服务区域查询参数</legend>
-            {% if form.service_area_name.errors %}
-            <div class="type-text error">
-              <strong class="message">{{ form.service_area_name.errors }}</strong>
-              {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-              {{ form.service_area_name }}
-            </div>
-            {% else %}
-            <div class="type-text">
-              {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text }}</p>
-              {{ form.service_area_name }}
-            </div>
-            {% endif %}
-            {% if form.is_fuzzy.errors %}
-            <div class="type-text error">
-              <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-              {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-              {{ form.is_fuzzy }}
-            </div>
-            {% else %}
-            <div class="type-check">
-              {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-              {{ form.is_fuzzy }}
-            </div>
-            {% endif %}
-            <div class="center">
-              <input type="submit" name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
-            </div>
-          </fieldset>
-        </form>
-        {% endwith %}
-
-
-      </div>
-    </div>
-    <div class="c33r">
-      <div class="subc">
-        <!-- Insert your subtemplate content here -->
-        <form method="post" action="" class="yform full">{% csrf_token %}
-          <fieldset>
-            <legend>请输入服务区域名称</legend>
-            {% with add_form as form %}
-            {% if form.service_area_name.errors %}
-            <div class="type-text error">
-              <strong class="message">{{ form.service_area_name.errors }}</strong>
-              {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-              {{ form.service_area_name }}
-            </div>
-            {% else %}
-            <div class="type-text">
-              {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-              {{ form.service_area_name }}
-            </div>
-            {% endif %}
-            {% endwith %}
-            <div class="center">
-              <input type="submit" name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
-            </div>
-          </fieldset>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-<hr>
-<div class="note">
-  {% include 'service_area/service_area_table_add.html' %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">服务区域添加</h3>
+			</div>
+			<div class="panel-body">
+				<div class="col-md-6">
+				{% with search_form as form %}
+				{% include 'service_area/service_area_search_form.html' %} 
+				{% endwith %}
+				</div>
+				<div class="col-md-6">
+				{% with add_form as form %}
+				{% include 'service_area/service_area_add_form.html' %}
+				{% endwith %}
+				</div>
+			</div>
+			{% include 'service_area/service_area_table_add.html' %}
+		</div>
+	</div>
 </div>
 {% endblock %}
 

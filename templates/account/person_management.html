@@ -1,89 +1,83 @@
 {% extends "account/person_layout.html" %}
 
-{% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
-
 {% block col1_content %}
-{% load cache %}
-{% cache 500 person_management user.username %}
-<h6 class="vlist">个人管理</h6>
-<ul class="vlist">
-  <li class="active"><strong>个人资料</strong></li>
-  {% if user.username != '003' %}
-  <li><a href="{% url account_person_password_modify %}">密码修改</a></li>
-  {% endif %}
-</ul>
-{% endcache %}
+	{% load cache %}
+	{% cache 500 person_management user.username %}
+	<ul class="nav nav-pills nav-stacked">
+	  <li class="active"><a href="{% url account_person_management %}">个人资料</a></li>
+	  {% if user.username != '003' %}
+	  <li><a href="{% url account_person_password_modify %}">密码修改</a></li>
+	  {% endif %}
+	</ul>
+	{% endcache %}
 {% endblock %}
-
 {% block col3_content %}
 {% if user %}
-<h3>你好,{{ user.username }},欢迎使用本系统！</h3>
-<hr>
-{% if user.is_superuser %}
-<p class="important">你是超级管理员，没有基本的用户资料！</p>
-{% else %}
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc note">
-      <table border="0" cellpadding="0" cellspacing="0" class="full">
-        <caption>
-          个人资料
-        </caption>
-        <thead>
-          <tr><th scope="col" colspan="2">{{ user.username }}</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row" class="sub">个人名称</th>
-            <td class="odd">{{ user.username }}</td>
-          </tr>
-          <tr>
-            <th scope="row" class="sub">服务区域</th>
-            <td class="even">{{ user.get_profile.service_area_department.service_area.name }}</td>
-          </tr>
-          <tr>
-            <th scope="row" class="sub">单位部门</th>
-            <td class="odd">{{ user.get_profile.service_area_department.department.name }}</td>
-          </tr>
-          <tr>
-            <th scope="row" class="sub">角色权限</th>
-            <td class="even">{{ user.groups.get.name }}</td>
-          </tr>
-          <tr>
-            <th scope="row" class="sub">检查人员</th>
-            <td class="odd">{% if result.is_checker %}是{% else %}否{% endif %}</td>
-          </tr>
-          <tr>
-            <th scope="row" class="sub">登入时间</th>
-            <td class="even">{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
-          </tr>
-          <tr>
-            <th scope="row" class="sub">创建时间</th>
-            <td class="odd">{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="c33r">
-    <div class="subc important">
-      <!-- Insert your subtemplate content here -->
-      <h3>角色权限列表</h3>
-      <hr>
-      <hl>
-      {% for perm in user.groups.get.permissions.all %}
-      <li>{{ perm.name }}</li>
-      {% empty %}
-      <p class="warning">该用户没有任何权限！</p>
-      {% endfor %}
-      <hl>
-    </div>
-  </div>
-</div>
-{% endif %}
-{% else %}
-<p class="warning">对不起，该用户不存在！</p>
-{% endif %}
-{% endblock %}
 
+<div class="row">
+	<div class="col-md-9">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">你好,{{ user.username }},欢迎使用本系统！</h3>
+			</div>
+			<div class="panel-body">
+				{% if user.is_superuser %}
+				<p class="lead">你是超级管理员，没有基本的用户资料！</p>
+				{% else %}
+				<table class="table">
+					<caption>个人资料</caption>
+					<tbody>
+						<tr class="{% cycle 'success' 'active' as rowcolors %}">
+							<th>个人名称</th>
+							<td>{{ user.username }}</td>
+						</tr>
+						<tr class="{% cycle rowcolors %}">
+							<th>服务区域</th>
+							<td>{{ user.get_profile.service_area_department.service_area.name }}</td>
+						</tr>
+						<tr class="{% cycle rowcolors %}">
+							<th>单位部门</th>
+							<td>{{ user.get_profile.service_area_department.department.name }}</td>
+						</tr>
+						<tr class="{% cycle rowcolors %}">
+							<th>角色权限</th>
+							<td>{{ user.groups.get.name }}</td>
+						</tr>
+						<tr class="{% cycle rowcolors %}">
+							<th>检查人员</th>
+							<td>{% if result.is_checker %}是{% else %}否{% endif %}</td>
+						</tr>
+						<tr class="{% cycle rowcolors %}">
+							<th>登入时间</th>
+							<td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
+						</tr>
+						<tr class="{% cycle rowcolors %}">
+							<th>创建时间</th>
+							<td>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
+						</tr>
+					</tbody>
+				</table>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-3">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">角色权限列表</h3>
+			</div>
+			<div class="panel-body">
+				<hl class="list-group"> {% for perm in user.groups.get.permissions.all %}
+				<li class="list-group-item">{{ perm.name }}</li>
+				{% empty %}
+				<p class="lead">该用户没有任何权限！</p>
+				{% endfor %} <hl>
+			</div>
+		</div>
+	</div>
+</div>
+{% else %}
+<p class="lead">对不起，该用户不存在！</p>
+{% endif %} 
+{% endblock %}

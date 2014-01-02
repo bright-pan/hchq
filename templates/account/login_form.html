@@ -1,39 +1,29 @@
 <form method="post" action="">{% csrf_token %}
   <fieldset>
     <legend>请输入用户名和密码</legend>
-    {% if form.username.errors %}
-    <div class="form-group has-error">
-      <span class="help-block">{{ form.username.errors }}</span>
+    <div class="form-group {% if form.username.errors %} has-error {% endif %}">
       <label class="control-label">{{ form.username.label}}</label>
       {{ form.username }}
-      <span class="help-block">{{ form.username.help_text}}</span>
+      {% if form.username.errors %}
+	  		{% for error in form.username.errors %}
+	         <span class="help-block badge">{{ error }}</span>
+	        {% endfor %}
+	  {% else %}
+	  <span class="help-block">{{ form.username.help_text}}</span>
+	  {% endif %}
+
     </div>
-    {% else %}
-    <div class="form-group">
-      <label class="control-label">{{ form.username.label }}</label>
-      {{ form.username }}
-      <span class="help-block">{{ form.username.help_text}}</span>
-    </div>
-    {% endif %}
-    {% if form.password.errors %}
-    <div class="form-group has-error">
-      <span class="help-block">{{ form.password.errors }}</span>
+    <div class="form-group {% if form.password.errors %} has-error {% endif %}">
       <label class="control-label">{{ form.password.label }}</label>
       {{ form.password }}
+      {% if form.password.errors %}
+		{% for error in form.password.errors %}
+         <span class="help-block badge">{{ error }}</span>
+        {% endfor %}
+      {% else %}
       <span class="help-block">{{ form.password.help_text}}</span>
+      {% endif %}
     </div>
-    {% else %}
-    <div class="form-group">
-      <label class="control-label">{{ form.password.label }}</label>
-      {{ form.password }}
-      <span class="help-block">{{ form.password.help_text}}</span>
-    </div>
-    {% endif %}
-    <div class="center">
-        <button type="submit" class="btn btn-primary btn-lg">登入</button>
-  		<button type="reset" class="btn btn-default btn-lg">重置</button>
-<!--        <input type="submit" value="登入" class="btn btn-primary btn-lg"/>
-      <input type="reset" value="重置" class="btn btn-default btn-lg"/> -->
-    </div>
+	<button type="submit" value="登入" name="submit"class="btn btn-primary btn-lg btn-block">登入</button>
   </fieldset>
 </form>

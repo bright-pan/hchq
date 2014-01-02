@@ -1,15 +1,12 @@
 {% extends "my_layout.html" %}
-{% load cache %}
-
-{% block header_describe %}{% endblock %}
 
 {% block nav %}
 {% load cache %}
 {% cache 500 service_area_layout user.username %}
-<ul>
+<ul class="nav nav-tabs">
   <li><a href="{% url account_person_management %}">个人管理</a></li>
   {% if perms.department.sd_management %}
-  <li class="active"><strong>服务区域管理</strong></li>
+  <li class="active"><a href="{% url service_area_list 1 %}">服务区域管理</a></li>
   <li><a href="{% url department_list 1 %}">单位部门管理</a></li>
   {% endif %}
   {% if perms.department.role_management %}
@@ -49,7 +46,3 @@
   </ul>
 {% endcache %}
 {% endblock %}
-
-{% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
-{% block col3_content %}{% endblock %}

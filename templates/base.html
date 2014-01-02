@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="keywords" content="{{ meta_keywords }}" />
 <meta name="description" content="{{ meta_description }}" />
-<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+<link rel="shortcut icon" href="{{ MEDIA_URL }}images/logo_32.png">
 
 <title>{% block title %} {% if page_title %} {{ page_title }} -
 	{% endif %} {{ site_name }} {% endblock %}</title>
@@ -15,10 +15,6 @@
 <!-- Bootstrap theme -->
 <link href="{{ MEDIA_URL }}dist/css/bootstrap-theme.min.css"
 	rel="stylesheet">
-
-<!-- Custom styles for this template -->
-<link href="theme.css" rel="stylesheet">
-
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
       <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
@@ -72,6 +68,7 @@ body {
 		{% block check_project_info %}{% endblock %}
 		{% block nav %}{% endblock %} 
 		{% block site_wrapper %}{% endblock %}
+		<hr>
 		{% load cache %} {% cache 500 footer %}
 		<div class="row">
 			<div class="col-md-12">
