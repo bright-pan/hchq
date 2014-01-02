@@ -1,27 +1,19 @@
 {% extends "service_area/service_area_layout.html" %}
 
-{% block site_wrapper %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">服务区域添加</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-6">
-                        {% with search_form as form %}
-                            {% include 'service_area/service_area_search_form.html' %}
-                        {% endwith %}
-                    </div>
-                    <div class="col-md-6">
-                        {% with add_form as form %}
-                            {% include 'service_area/service_area_add_form.html' %}
-                        {% endwith %}
-                    </div>
-                </div>
-                {% include 'service_area/service_area_table_add.html' %}
-            </div>
-        </div>
-    </div>
+{% block panel_heading %}
+    <h3 class="panel-title">服务区域添加</h3>
 {% endblock %}
 
+{% block panel_body %}
+    <div class="col-md-6">
+        {% with search_form as form %}
+            {% include 'service_area/service_area_search_form.html' %}
+        {% endwith %}
+    </div>
+    <div class="col-md-6">
+        {% with add_form as form %}
+            {% include 'service_area/service_area_add_form.html' %}
+        {% endwith %}
+    </div>
+    {% include 'service_area/service_area_table_add.html' %}
+{% endblock %}

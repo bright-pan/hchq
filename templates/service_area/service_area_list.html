@@ -1,20 +1,14 @@
 {% extends "service_area/service_area_layout.html" %}
 
-{% block site_wrapper %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">服务区域查询</h3>
-                </div>
-                <div class="panel-body">
-                    {% with search_form as form %}
-                        {% include 'service_area/service_area_search_form.html' %}
-                    {% endwith %}
-                </div>
-                {% include 'service_area/service_area_table_list.html' %}
-            </div>
-        </div>
-    </div>
+{% block panel_heading %}
+    <h3 class="panel-title">服务区域查询</h3>
 {% endblock %}
 
+{% block panel_body %}
+    <div class="col-md-12">
+        {% with search_form as form %}
+            {% include 'service_area/service_area_search_form.html' %}
+        {% endwith %}
+    </div>
+    {% include 'service_area/service_area_table_list.html' %}
+{% endblock %}
