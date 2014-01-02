@@ -25,3 +25,5 @@ static/images/thumbnails/null
 .settings/*
 .project
 .pydevproject
+
+.idea/*
