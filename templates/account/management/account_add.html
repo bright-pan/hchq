@@ -1,127 +1,115 @@
 {% extends "account/management/account_layout.html" %}
-{% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
-{% block col1_content %}
-{% load cache %}
+{% block site_wrapper %}
+    <h3>系统用户添加</h3>
+    <hr>
+    <div class="subcolumns">
+        <div class="c66l">
+            <div class="subc note">
+                <!-- Insert your subtemplate content here -->
+                <form method="post" action="" class="yform full">{% csrf_token %}
+                    <fieldset>
+                        <legend>请输入系统用户参数</legend>
+                        {% with add_form as form %}
+                            {% if form.name.errors %}
+                                <div class="type-text error">
+                                    <strong class="message">{{ form.name.errors }}</strong>
 
-{% cache 500 account_add user.username %}
+                                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text }}</p>
+                                    {{ form.name }}
+                                </div>
+                            {% else %}
+                                <div class="type-text">
+                                    {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text }}</p>
+                                    {{ form.name }}
+                                </div>
+                            {% endif %}
+                            {% if form.service_area_name.errors %}
+                                <div class="type-text error">
+                                    <strong class="message">{{ form.service_area_name.errors }}</strong>
 
-<h6 class="vlist">系统用户管理</h6>
-<ul class="vlist">
-  {% if perms.department.account_list %}
-  <li><a href="{% url account_list 1 %}">系统用户查询</a></li>
-  {% endif %}
-  {% if perms.department.account_add %}
-  <li class="active"><strong>系统用户添加</strong></li>
-  {% endif %}
-  {% if perms.department.account_modify %}
-  <li><a href="{% url account_modify 1 %}">系统用户修改</a></li>
-  {% endif %}
-  {% if perms.department.account_delete %}
-  <li><a href="{% url account_delete 1 %}">系统用户删除</a></li>
-  {% endif %}
-</ul>
-{% endcache %}
-{% endblock %}
-{% block col3_content %}
-<h3>系统用户添加</h3>
-<hr>
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc note">
-      <!-- Insert your subtemplate content here -->
-      <form method="post" action="" class="yform full">{% csrf_token %}
-        <fieldset>
-          <legend>请输入系统用户参数</legend>
-          {% with add_form as form %}
-          {% if form.name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.name.errors }}</strong>
-            {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-            {{ form.name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.name.label_tag }}<p class="dimmed">{{ form.name.help_text}}</p>
-            {{ form.name }}
-          </div>
-          {% endif %}
-          {% if form.service_area_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.service_area_name.errors }}</strong>
-            {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-            {{ form.service_area_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.service_area_name.label_tag }}<p class="dimmed">{{ form.service_area_name.help_text}}</p>
-            {{ form.service_area_name }}
-          </div>
-          {% endif %}
-          {% if form.department_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.department_name.errors }}</strong>
-            {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
-            {{ form.department_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.department_name.label_tag }}<p class="dimmed">{{ form.department_name.help_text}}</p>
-            {{ form.department_name }}
-          </div>
-          {% endif %}
-          {% if form.role_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.role_name.errors }}</strong>
-            {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text}}</p>
-            {{ form.role_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text}}</p>
-            {{ form.role_name }}
-          </div>
-          {% endif %}
-          {% if form.is_checker.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.is_checker.errors }}</strong>
-            {{ form.is_checker.label_tag }}<p class="dimmed">{{ form.is_checker.help_text}}</p>
-            {{ form.is_checker }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.is_checker.label_tag }}<p class="dimmed">{{ form.is_checker.help_text}}</p>
-            {{ form.is_checker }}
-          </div>
-          {% endif %}
-          {% if form.contact.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.contact.errors }}</strong>
-            {{ form.contact.label_tag }}<p class="dimmed">{{ form.contact.help_text}}</p>
-            {{ form.contact }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.contact.label_tag }}<p class="dimmed">{{ form.contact.help_text}}</p>
-            {{ form.contact }}
-          </div>
-          {% endif %}
+                                    {{ form.service_area_name.label_tag }}<p
+                                            class="dimmed">{{ form.service_area_name.help_text }}</p>
+                                    {{ form.service_area_name }}
+                                </div>
+                            {% else %}
+                                <div class="type-text">
+                                    {{ form.service_area_name.label_tag }}<p
+                                            class="dimmed">{{ form.service_area_name.help_text }}</p>
+                                    {{ form.service_area_name }}
+                                </div>
+                            {% endif %}
+                            {% if form.department_name.errors %}
+                                <div class="type-text error">
+                                    <strong class="message">{{ form.department_name.errors }}</strong>
 
-          {% endwith %}
-          <div class="center">
-            <input type="submit" name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
-          </div>
-        </fieldset>
-      </form>
+                                    {{ form.department_name.label_tag }}<p
+                                            class="dimmed">{{ form.department_name.help_text }}</p>
+                                    {{ form.department_name }}
+                                </div>
+                            {% else %}
+                                <div class="type-text">
+                                    {{ form.department_name.label_tag }}<p
+                                            class="dimmed">{{ form.department_name.help_text }}</p>
+                                    {{ form.department_name }}
+                                </div>
+                            {% endif %}
+                            {% if form.role_name.errors %}
+                                <div class="type-text error">
+                                    <strong class="message">{{ form.role_name.errors }}</strong>
+
+                                    {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text }}</p>
+                                    {{ form.role_name }}
+                                </div>
+                            {% else %}
+                                <div class="type-text">
+                                    {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text }}</p>
+                                    {{ form.role_name }}
+                                </div>
+                            {% endif %}
+                            {% if form.is_checker.errors %}
+                                <div class="type-check error">
+                                    <strong class="message">{{ form.is_checker.errors }}</strong>
+
+                                    {{ form.is_checker.label_tag }}<p class="dimmed">{{ form.is_checker.help_text }}</p>
+                                    {{ form.is_checker }}
+                                </div>
+                            {% else %}
+                                <div class="type-check">
+                                    {{ form.is_checker.label_tag }}<p class="dimmed">{{ form.is_checker.help_text }}</p>
+                                    {{ form.is_checker }}
+                                </div>
+                            {% endif %}
+                            {% if form.contact.errors %}
+                                <div class="type-text error">
+                                    <strong class="message">{{ form.contact.errors }}</strong>
+
+                                    {{ form.contact.label_tag }}<p class="dimmed">{{ form.contact.help_text }}</p>
+                                    {{ form.contact }}
+                                </div>
+                            {% else %}
+                                <div class="type-text">
+                                    {{ form.contact.label_tag }}<p class="dimmed">{{ form.contact.help_text }}</p>
+                                    {{ form.contact }}
+                                </div>
+                            {% endif %}
+
+                        {% endwith %}
+                        <div class="center">
+                            <input type="submit" name="submit" value="添加"
+                                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                            <input type="reset" value="重置"
+                                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="c33r">
+            <div class="subc">
+                <!-- Insert your subtemplate content here -->
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-</div>
 {% endblock %}
 

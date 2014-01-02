@@ -1,55 +1,62 @@
 {% load check_result_filter %}
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>检查结果</caption>
-  <thead>
-    <tr><th scope="col" colspan="7">检查结果查询(共{{ results_page.paginator.count}}项)</th></tr>
-  </thead>
-  <tbody>
+    <caption>检查结果</caption>
+    <thead>
     <tr>
-      <th scope="col">照片</th>
-      <th scope="col">妻子姓名<br>身份证号</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">丈夫姓名<br>身份证号</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">检查人员<br>检查项目</th>
-      <th scope="col">检查结果<br>检查时间</th>
+        <th scope="col" colspan="7">检查结果查询(共{{ results_page.paginator.count }}项)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="col">照片</th>
+        <th scope="col">妻子姓名<br>身份证号</th>
+        <th scope="col">服务区域<br>单位部门</th>
+        <th scope="col">丈夫姓名<br>身份证号</th>
+        <th scope="col">服务区域<br>单位部门</th>
+        <th scope="col">检查人员<br>检查项目</th>
+        <th scope="col">检查结果<br>检查时间</th>
     </tr>
     {% for result in results_page.object_list %}
-    <tr>
-      <td><a href="{{ result.get_absolute_url }}"><img src="{{ result.check_object.thumbnail.url }}" width="47" height="41"/></a></td>
-      <td>{% if result.check_object.is_family %}{{ result.check_object.name }}(家属){% else %}{{ result.check_object.name }}{% endif %}<br><a href="{{ result.get_absolute_url }}">{{ result.check_object.id_number }}</a></td>
-      <td>{{ result.check_object.service_area_department.service_area.name }}<br>{{ result.check_object.service_area_department.department.name }}</td>
-      <td>{{ result.check_object.mate_name }}<br>{{ result.check_object.mate_id_number }}</td>
-      <td>{{ result.check_object.mate_service_area_department.service_area.name }}<br>{{ result.check_object.mate_service_area_department.department.name }}</td>
-      <td>{{ result.checker.username }}<br>{{ result.check_project.name }}</td>
-      <td>{{ result.result|local }}<br>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
+        <tr>
+            <td><a href="{{ result.get_absolute_url }}"><img src="{{ result.check_object.thumbnail.url }}" width="47"
+                                                             height="41"/></a></td>
+            <td>{% if result.check_object.is_family %}{{ result.check_object.name }}(家属){% else %}
+                {{ result.check_object.name }}{% endif %}<br><a
+                    href="{{ result.get_absolute_url }}">{{ result.check_object.id_number }}</a></td>
+            <td>{{ result.check_object.service_area_department.service_area.name }}
+            <br>{{ result.check_object.service_area_department.department.name }}</td>
+            <td>{{ result.check_object.mate_name }}<br>{{ result.check_object.mate_id_number }}</td>
+            <td>{{ result.check_object.mate_service_area_department.service_area.name }}
+            <br>{{ result.check_object.mate_service_area_department.department.name }}</td>
+            <td>{{ result.checker.username }}<br>{{ result.check_project.name }}</td>
+            <td>{{ result.result|local }}<br>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
 
-    </tr>
+        </tr>
     {% empty %}
-    <p class="warning">没有检查结果可以查询！</p>
+        <p class="warning">没有检查结果可以查询！</p>
     {% endfor %}
-  </tbody>
+    </tbody>
 </table>
 <div class="pagination">
-  {% if results_page.has_previous %}
-  <span>
+    {% if results_page.has_previous %}
+        <span>
     <a href="{% url check_result_list results_page.previous_page_number %}">上一页</a>
   </span>
-  {% else %}
-  <span class="disable">
+    {% else %}
+        <span class="disable">
     上一页
   </span>
-  {% endif %}
-  <span class="current">
+    {% endif %}
+    <span class="current">
     第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
   </span>
-  {% if results_page.has_next %}
-  <span>
+    {% if results_page.has_next %}
+        <span>
     <a href="{% url check_result_list results_page.next_page_number %}">下一页</a>
   </span>
-  {% else %}
-  <span class="disable">
+    {% else %}
+        <span class="disable">
     下一页
-  </span>          
-  {% endif %}
+  </span>
+    {% endif %}
 </div>

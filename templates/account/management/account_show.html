@@ -1,102 +1,80 @@
 {% extends "account/management/account_layout.html" %}
-{% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
-{% block col1_content %}
-{% load cache %}
-{% cache 500 account_show user.username %}
-<h6 class="vlist">系统用户管理</h6>
-<ul class="vlist">
-  {% if perms.department.account_list %}
-  <li><a href="{% url account_list 1 %}">系统用户查询</a></li>
-  {% endif %}
-  {% if perms.department.account_add %}
-  <li><a href="{% url account_add 1 %}">系统用户添加</a></li>
-  {% endif %}
-  {% if perms.department.account_modify %}
-  <li><a href="{% url account_modify 1 %}">系统用户修改</a></li>
-  {% endif %}
-  {% if perms.department.account_delete %}
-  <li><a href="{% url account_delete 1 %}">系统用户删除</a></li>
-  {% endif %}
-  {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
-  <li class="active"><strong>系统用户详情</strong></li>
-  {% endif %}
-</ul>
-{% endcache %}
-{% endblock %}
-{% block col3_content %}
-<!-- Insert your subtemplate content here -->
-<h3>系统用户详情</h3>
-<hr>
-{% if success %}
-<p class="important">系统用户【{{ result.user.username }}】密码已成功重置！</p>
-{% else %}
-{% endif %}
+{% block site_wrapper %}
+    <!-- Insert your subtemplate content here -->
+    <h3>系统用户详情</h3>
+    <hr>
+    {% if success %}
+        <p class="important">系统用户【{{ result.user.username }}】密码已成功重置！</p>
+    {% else %}
+    {% endif %}
 
 
-{% if result %}
-<div class="note">
-  <table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>
-      系统用户
-    </caption>
-    <thead>
-      <tr><th scope="col" colspan="2">{{ result.user.username }}</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row" class="sub">用户名称</th>
-        <td class="odd">{{ result.user.username }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">服务区域</th>
-        <td class="even">{{ result.service_area_department.service_area.name }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">单位部门</th>
-        <td class="odd">{{ result.service_area_department.department.name }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">角色权限</th>
-        <td class="even">{{ result.user.groups.get.name }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">检查人员</th>
-        <td class="odd">{% if result.is_checker %}是{% else %}否{% endif %}</td>
-        
-      </tr>
-      <tr>
-        <th scope="row" class="sub">联系方式</th>
-        <td class="odd">{{ result.contact }}</td>
-        
-      </tr>
+    {% if result %}
+        <div class="note">
+            <table border="0" cellpadding="0" cellspacing="0" class="full">
+                <caption>
+                    系统用户
+                </caption>
+                <thead>
+                <tr>
+                    <th scope="col" colspan="2">{{ result.user.username }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" class="sub">用户名称</th>
+                    <td class="odd">{{ result.user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="sub">服务区域</th>
+                    <td class="even">{{ result.service_area_department.service_area.name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="sub">单位部门</th>
+                    <td class="odd">{{ result.service_area_department.department.name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="sub">角色权限</th>
+                    <td class="even">{{ result.user.groups.get.name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="sub">检查人员</th>
+                    <td class="odd">{% if result.is_checker %}是{% else %}否{% endif %}</td>
 
-      <tr>
-        <th scope="row" class="sub">登入时间</th>
-        <td class="even">{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
-      </tr>
-      <tr>
-        <th scope="row" class="sub">创建时间</th>
-        <td class="odd">{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
-      </tr>
-      {% if perms.department.account_modify %}
-      <tr>
-        <th scope="row" class="sub">密码重置</th>
-        <td class="even">{% if success %}
-          已经重置{% else %}
-          <form method="post" action=".">{% csrf_token %}
-            <input type="submit" name="submit" value="密码重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-          </form>
-          {% endif %}
-        </td>
-      </tr>
-      {% endif %}
-    </tbody>
-  </table>
-</div>
-{% else %}
-<p class="warning">对不起，该服务区不存在！</p>
-{% endif %}
+                </tr>
+                <tr>
+                    <th scope="row" class="sub">联系方式</th>
+                    <td class="odd">{{ result.contact }}</td>
+
+                </tr>
+
+                <tr>
+                    <th scope="row" class="sub">登入时间</th>
+                    <td class="even">{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="sub">创建时间</th>
+                    <td class="odd">{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+                {% if perms.department.account_modify %}
+                    <tr>
+                        <th scope="row" class="sub">密码重置</th>
+                        <td class="even">{% if success %}
+                            已经重置{% else %}
+                            <form method="post" action=".">{% csrf_token %}
+                                <input type="submit" name="submit" value="密码重置"
+                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                            </form>
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="warning">对不起，该服务区不存在！</p>
+    {% endif %}
 {% endblock %}
 

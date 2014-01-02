@@ -1,46 +1,49 @@
 <table class="table">
-  <caption>服务区域</caption>
-  <thead>
-    <tr><th colspan="7">服务区域查询(共{{ results_page.paginator.count}}项)</th></tr>
-  </thead>
-  <tbody>
+    <caption>服务区域</caption>
+    <thead>
     <tr>
-      <th>编号</th>
-      <th>名称</th>
-      <th>创建者</th>
-      <th>创建时间<br>更新时间</th>
-      <th>查询关联单位</th>
-      <th>添加关联单位</th>
-      <th>删除关联单位</th>
+        <th colspan="7">服务区域查询(共{{ results_page.paginator.count }}项)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th>编号</th>
+        <th>名称</th>
+        <th>创建者</th>
+        <th>创建时间<br>更新时间</th>
+        <th>查询关联单位</th>
+        <th>添加关联单位</th>
+        <th>删除关联单位</th>
     </tr>
     {% for result in results_page.object_list %}
-    <tr class="{% cycle 'success' 'active' %}">
-      <th>{{ result.id }}</th>
-      <td ><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
-      <td>{{ result.creater }}</td>
-      <td>{{ result.created_at|date:"Y-m-d H:i:s"}}<br>{{ result.updated_at|date:"Y-m-d H:i:s"}}</td>
-      <td>
-        <a href="{% url service_area_department_list result.id '1' %}">查询关联单位</a>
-      </td>
-      <td>
-        <a href="{% url service_area_department_add result.id '1' %}">添加关联单位</a>
-      </td>
-      <td>
-        <a href="{% url service_area_department_delete result.id '1' %}">删除关联单位</a>
-      </td>
-    </tr>
+        <tr class="{% cycle 'success' 'active' %}">
+            <th>{{ result.id }}</th>
+            <td><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
+            <td>{{ result.creater }}</td>
+            <td>{{ result.created_at|date:"Y-m-d H:i:s" }}<br>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
+            <td>
+                <a href="{% url service_area_department_list result.id '1' %}">查询关联单位</a>
+            </td>
+            <td>
+                <a href="{% url service_area_department_add result.id '1' %}">添加关联单位</a>
+            </td>
+            <td>
+                <a href="{% url service_area_department_delete result.id '1' %}">删除关联单位</a>
+            </td>
+        </tr>
     {% empty %}
-    <p class="warning">没有服务区域可以查询！</p>
+        <p class="warning">没有服务区域可以查询！</p>
     {% endfor %}
-  </tbody>
+    </tbody>
 </table>
 
 <ul class="pagination">
-  <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
-    <a href="{% url service_area_list results_page.previous_page_number %}">上一页</a>
-  </li>
-  <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span class="sr-only">(current)</span></a></li>
-  <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
-    <a href="{% url service_area_list results_page.next_page_number %}">下一页</a>
-  </li>
+    <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+        <a href="{% url service_area_list results_page.previous_page_number %}">上一页</a>
+    </li>
+    <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+            class="sr-only">(current)</span></a></li>
+    <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+        <a href="{% url service_area_list results_page.next_page_number %}">下一页</a>
+    </li>
 </ul>

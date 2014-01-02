@@ -18,3 +18,27 @@
 10. 配置项目settings、apache目录中的文件以及http.conf
 11. 导入hchq数据库数据
 12. 测试安装成功与否。
+
+
+
+
+数据库更新：
+
+备份数据库和图片
+
+ALTER TABLE check_object ADD COLUMN del_reason varchar(128);
+
+
+C:\BitNami\djangostack-1.6.1-0\hchq>python manage.py shell
+Python 2.7.6 (default, Nov 10 2013, 19:24:18) [MSC v.1500 32 bit (Intel)] on win
+32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+
+>>> from check_object.models import CheckObject
+>>> a = CheckObject.objects.filter(is_active=False)
+>>> a.count()
+933
+>>> a.update(del_reason=u'del_reason_3')
+933L
+>>>

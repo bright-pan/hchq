@@ -1,124 +1,125 @@
 {% extends "check_project/check_project_layout.html" %}
-{% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
-{% block col1_content %}
-{% load cache %}
+{% block site_wrapper %}
+    <h3>检查项目添加</h3>
+    <hr>
+    <div class="important">
+        <div class="subcolumns">
+            <div class="c66l">
+                <div class="subc">
+                    <!-- Insert your subtemplate content here -->
+                    {% with search_form as form %}
+                        <form method="post" action="." class="yform full">{% csrf_token %}
+                            <fieldset>
+                                <legend>检查项目查询参数</legend>
+                                {% if form.check_project_name.errors %}
+                                    <div class="type-text error">
+                                        <strong class="message">{{ form.check_project_name.errors }}</strong>
 
-{% cache 500 check_project_add user.username %}
-<h6 class="vlist">检查项目管理</h6>
-<ul class="vlist">
-  <li><a href="{% url check_project_list 1 %}">检查项目查询</a></li>
-  <li class="active"><strong>检查项目添加</strong></li>
-  <li><a href="{% url check_project_modify 1 %}">检查项目修改</a></li>
-  <li><a href="{% url check_project_delete 1 %}">检查项目删除</a></li>
-  
-</ul>
-{% endcache %}
-{% endblock %}
-{% block col3_content %}
-<h3>检查项目添加</h3>
-<hr>
-<div class="important">
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-      {% with search_form as form %}
-      <form method="post" action="." class="yform full">{% csrf_token %}
-        <fieldset>
-          <legend>检查项目查询参数</legend>
-          {% if form.check_project_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.check_project_name.errors }}</strong>
-            {{ form.check_project_name.label_tag }}<p class="dimmed">{{ form.check_project_name.help_text}}</p>
-            {{ form.check_project_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.check_project_name.label_tag }}<p class="dimmed">{{ form.check_project_name.help_text}}</p>
-            {{ form.check_project_name }}
-          </div>
-          {% endif %}
-          {% if form.is_fuzzy.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
-            {{ form.is_fuzzy }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
-            {{ form.is_fuzzy }}
-          </div>
-          {% endif %}
-          <div class="center">
-            <input type="submit" name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
-          </div>
-        </fieldset>
-      </form>
-      {% endwith %}
+                                        {{ form.check_project_name.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_name.help_text }}</p>
+                                        {{ form.check_project_name }}
+                                    </div>
+                                {% else %}
+                                    <div class="type-text">
+                                        {{ form.check_project_name.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_name.help_text }}</p>
+                                        {{ form.check_project_name }}
+                                    </div>
+                                {% endif %}
+                                {% if form.is_fuzzy.errors %}
+                                    <div class="type-text error">
+                                        <strong class="message">{{ form.is_fuzzy.errors }}</strong>
+
+                                        {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
+                                        {{ form.is_fuzzy }}
+                                    </div>
+                                {% else %}
+                                    <div class="type-check">
+                                        {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
+                                        {{ form.is_fuzzy }}
+                                    </div>
+                                {% endif %}
+                                <div class="center">
+                                    <input type="submit" name="submit" value="查询"
+                                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                                    <input type="reset" value="重置"
+                                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                                </div>
+                            </fieldset>
+                        </form>
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="c33r">
+                <div class="subc">
+                    <!-- Insert your subtemplate content here -->
+                    <form method="post" action="" class="yform full">{% csrf_token %}
+                        <fieldset>
+                            <legend>请输入检查项目名称</legend>
+                            {% with add_form as form %}
+                                {% if form.check_project_name.errors %}
+                                    <div class="type-text error">
+                                        <strong class="message">{{ form.check_project_name.errors }}</strong>
+
+                                        {{ form.check_project_name.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_name.help_text }}</p>
+                                        {{ form.check_project_name }}
+                                    </div>
+                                {% else %}
+                                    <div class="type-text">
+                                        {{ form.check_project_name.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_name.help_text }}</p>
+                                        {{ form.check_project_name }}
+                                    </div>
+                                {% endif %}
+                                {% if form.check_project_start_time.errors %}
+                                    <div class="type-text error">
+                                        <strong class="message">{{ form.check_project_start_time.errors }}</strong>
+
+                                        {{ form.check_project_start_time.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_start_time.help_text }}</p>
+                                        {{ form.check_project_start_time }}
+                                    </div>
+                                {% else %}
+                                    <div class="type-text">
+                                        {{ form.check_project_start_time.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_start_time.help_text }}</p>
+                                        {{ form.check_project_start_time }}
+                                    </div>
+                                {% endif %}
+                                {% if form.check_project_end_time.errors %}
+                                    <div class="type-text error">
+                                        <strong class="message">{{ form.check_project_end_time.errors }}</strong>
+
+                                        {{ form.check_project_end_time.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_end_time.help_text }}</p>
+                                        {{ form.check_project_end_time }}
+                                    </div>
+                                {% else %}
+                                    <div class="type-text">
+                                        {{ form.check_project_end_time.label_tag }}<p
+                                                class="dimmed">{{ form.check_project_end_time.help_text }}</p>
+                                        {{ form.check_project_end_time }}
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            <div class="center">
+                                <input type="submit" name="submit" value="添加"
+                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                                <input type="reset" value="重置"
+                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-      <form method="post" action="" class="yform full">{% csrf_token %}
-        <fieldset>
-          <legend>请输入检查项目名称</legend>
-          {% with add_form as form %}
-          {% if form.check_project_name.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.check_project_name.errors }}</strong>
-            {{ form.check_project_name.label_tag }}<p class="dimmed">{{ form.check_project_name.help_text}}</p>
-            {{ form.check_project_name }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.check_project_name.label_tag }}<p class="dimmed">{{ form.check_project_name.help_text}}</p>
-            {{ form.check_project_name }}
-          </div>
-          {% endif %}
-          {% if form.check_project_start_time.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.check_project_start_time.errors }}</strong>
-            {{ form.check_project_start_time.label_tag }}<p class="dimmed">{{ form.check_project_start_time.help_text}}</p>
-            {{ form.check_project_start_time }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.check_project_start_time.label_tag }}<p class="dimmed">{{ form.check_project_start_time.help_text}}</p>
-            {{ form.check_project_start_time }}
-          </div>
-          {% endif %}
-          {% if form.check_project_end_time.errors %}
-          <div class="type-text error">
-            <strong class="message">{{ form.check_project_end_time.errors }}</strong>
-            {{ form.check_project_end_time.label_tag }}<p class="dimmed">{{ form.check_project_end_time.help_text}}</p>
-            {{ form.check_project_end_time }}
-          </div>
-          {% else %}
-          <div class="type-text">
-            {{ form.check_project_end_time.label_tag }}<p class="dimmed">{{ form.check_project_end_time.help_text}}</p>
-            {{ form.check_project_end_time }}
-          </div>
-          {% endif %}
-          {% endwith %}
-          <div class="center">
-            <input type="submit" name="submit" value="添加" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
-          </div>
-        </fieldset>
-      </form>
+    <hr>
+    <div class="note">
+        {% include 'check_project/check_project_table_add.html' %}
     </div>
-  </div>
-</div>
-</div>
-<hr>
-<div class="note">
-{% include 'check_project/check_project_table_add.html' %}
-</div>
 
 {% endblock %}
 

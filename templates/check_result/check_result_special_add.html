@@ -1,427 +1,409 @@
 {% extends "check_result/check_result_layout.html" %}
-{% block header_describe %}{% endblock %}
+
 {% load cache %}
 {% cache 500 check_result_special_add_media %}
-{% block media %}
-<link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
+    {% block media %}
+        <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
                 $.getJSON("{% url service_area_name_ajax %}",
-                          {
-                          },
-                          function(data) {
-                                  $("#id_service_area_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 200,
+                        {
+                        },
+                        function (data) {
+                            $("#id_service_area_name").autocomplete(data, {
+                                minChars: 0,
+                                max: 200,
 //                                                          autoFill: true,
 //                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
-                                  $("#id_mate_service_area_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
-
-                          });
-                       var service_area_name_old = '';
-                       $("#id_department_name").focus(function() {
-
-                                var service_area_name = $("#id_service_area_name").val();
-                                if (service_area_name != '' && service_area_name != service_area_name_old)
-                                {
-//                                        alert('********');
-                                        service_area_name_old = service_area_name;
-                                        $("#id_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                                                  matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
+                                matchContains: true,
+                                scrollHeight: 220,
+                                formatItem: function (data, i, total) {
+                                    // don't show the current month in the list of values (for whatever reason)
+                                    //if ( data[0] == months[new Date().getMonth()] )
+                                    //return false;
+                                    return data[0];
                                 }
-                                
-                        });
-                        var mate_service_area_name_old = '';
-                        $("#id_mate_department_name").focus(function() {
-
-                                var mate_service_area_name = $("#id_mate_service_area_name").val();
-                                if (mate_service_area_name != '' && mate_service_area_name != mate_service_area_name_old)
-                                {
-//                                        alert('********');
-                                        mate_service_area_name_old = mate_service_area_name;
-                                        $("#id_mate_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_mate_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_mate_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 200,
+                            });
+                            $("#id_mate_service_area_name").autocomplete(data, {
+                                minChars: 0,
+                                max: 200,
 //                                                          autoFill: true,
 //                                                          mustMatch: true,
-                                                                                  matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
+                                matchContains: true,
+                                scrollHeight: 220,
+                                formatItem: function (data, i, total) {
+                                    // don't show the current month in the list of values (for whatever reason)
+                                    //if ( data[0] == months[new Date().getMonth()] )
+                                    //return false;
+                                    return data[0];
                                 }
-                                
+                            });
+
                         });
+                var service_area_name_old = '';
+                $("#id_department_name").focus(function () {
+
+                    var service_area_name = $("#id_service_area_name").val();
+                    if (service_area_name != '' && service_area_name != service_area_name_old) {
+//                                        alert('********');
+                        service_area_name_old = service_area_name;
+                        $("#id_department_name").unautocomplete();
+                        $.getJSON("{% url department_name_ajax %}",
+                                {
+                                    service_area_name: $("#id_service_area_name").val()
+                                },
+                                function (data) {
+                                    $("#id_department_name").autocomplete(data, {
+                                        minChars: 0,
+                                        max: 200,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                        matchContains: true,
+                                        scrollHeight: 220,
+                                        formatItem: function (data, i, total) {
+                                            // don't show the current month in the list of values (for whatever reason)
+                                            //if ( data[0] == months[new Date().getMonth()] )
+                                            //return false;
+                                            return data[0];
+                                        }
+                                    });
+
+                                });
+
+                    }
+
+                });
+                var mate_service_area_name_old = '';
+                $("#id_mate_department_name").focus(function () {
+
+                    var mate_service_area_name = $("#id_mate_service_area_name").val();
+                    if (mate_service_area_name != '' && mate_service_area_name != mate_service_area_name_old) {
+//                                        alert('********');
+                        mate_service_area_name_old = mate_service_area_name;
+                        $("#id_mate_department_name").unautocomplete();
+                        $.getJSON("{% url department_name_ajax %}",
+                                {
+                                    service_area_name: $("#id_mate_service_area_name").val()
+                                },
+                                function (data) {
+                                    $("#id_mate_department_name").autocomplete(data, {
+                                        minChars: 0,
+                                        max: 200,
+//                                                          autoFill: true,
+//                                                          mustMatch: true,
+                                        matchContains: true,
+                                        scrollHeight: 220,
+                                        formatItem: function (data, i, total) {
+                                            // don't show the current month in the list of values (for whatever reason)
+                                            //if ( data[0] == months[new Date().getMonth()] )
+                                            //return false;
+                                            return data[0];
+                                        }
+                                    });
+
+                                });
+
+                    }
+
+                });
                 $("#search_dialog").dialog({ autoOpen: false,
-                                        modal:true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
-                                          bgiframe:true,
+                    modal: true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
+                    bgiframe: true,
 //                                          height: 400,
-                                          width:800
+                    width: 800
 //                                        buttons: [
 //                                                {id:"uploader",text:"上传文件"},
 //                                                {text:"确定",click:function(){$(this).dialog("close")}}
 //                                                ]
-                                        });
+                });
 
-                $("#open_search_dialog").click(function(){
-                                $("#search_dialog").dialog("open");
-                                return false;
-                        });
+                $("#open_search_dialog").click(function () {
+                    $("#search_dialog").dialog("open");
+                    return false;
+                });
 
-        });
-</script>
-{% endblock %}
+            });
+        </script>
+    {% endblock %}
 {% endcache %}
-{% block teaser %}
-{% load cache %}
-{% cache 500 check_result_special_add user.username %}
-<div class="nav_hlist">
-<ul>
-  {% if perms.department.role_management %}
-  <li class="active"><strong>特殊检查结果添加</strong></li>
-  {% endif %}
-  {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  {% endif %}
-
-  {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
-  {% endif %}
-</ul>
-</div>
-{% endcache %}
-{% endblock %}
 
 {% block main %}
-<button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">检查对象查询条件</button>
-<div id="search_dialog" style="display:none;" title="查询参数">
-  {% with search_form as form %}
-  <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
-    <div class="note">
-      <fieldset>
-        <legend>检查对象信息</legend>
+    <button id="open_search_dialog" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+        检查对象查询条件
+    </button>
+    <div id="search_dialog" style="display:none;" title="查询参数">
+    {% with search_form as form %}
+        <form method="post" action="" class="yform full" id="id_form_add">{% csrf_token %}
+        <div class="note">
+            <fieldset>
+                <legend>检查对象信息</legend>
+                <div class="subcolumns">
+                    <div class="c75l">
+                        <div class="subc">
+                            <!-- Insert your subtemplate content here -->
+                            <div class="subcolumns">
+                                <div class="c50l">
+                                    <div class="subc">
+                                        <!-- Insert your subtemplate content here -->
+                                        {% if form.name.errors %}
+                                            <div class="type-text error">
+                                                <strong class="message">{{ form.name.errors }}</strong>
+                                                {{ form.name.label_tag }}
+                                                {{ form.name }}
+                                            </div>
+                                        {% else %}
+                                            <div class="type-text">
+                                                {{ form.name.label_tag }}
+                                                {{ form.name }}
+                                            </div>
+                                        {% endif %}
+                                        {% if form.service_area_name.errors %}
+                                            <div class="type-text error">
+                                                <strong class="message">{{ form.service_area_name.errors }}</strong>
+                                                {{ form.service_area_name.label_tag }}
+                                                {{ form.service_area_name }}
+                                            </div>
+                                        {% else %}
+                                            <div class="type-text">
+                                                {{ form.service_area_name.label_tag }}
+                                                {{ form.service_area_name }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="c50r">
+                                    <div class="subc">
+                                        <!-- Insert your subtemplate content here -->
+                                        {% if form.id_number.errors %}
+                                            <div class="type-text error">
+                                                <strong class="message">{{ form.id_number.errors }}</strong>
+                                                {{ form.id_number.label_tag }}
+                                                {{ form.id_number }}
+                                            </div>
+                                        {% else %}
+                                            <div class="type-text">
+                                                {{ form.id_number.label_tag }}
+                                                {{ form.id_number }}
+                                            </div>
+                                        {% endif %}
+                                        {% if form.department_name.errors %}
+                                            <div class="type-text error">
+                                                <strong class="message">{{ form.department_name.errors }}</strong>
+                                                {{ form.department_name.label_tag }}
+                                                {{ form.department_name }}
+                                            </div>
+                                        {% else %}
+                                            <div class="type-text">
+                                                {{ form.department_name.label_tag }}
+                                                {{ form.department_name }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="c25r">
+                        <div class="subc">
+                            <!-- Insert your subtemplate content here -->
+                            {% if form.wedding_time.errors %}
+                                <div class="type-text error">
+                                    <strong class="message">{{ form.wedding_time.errors }}</strong>
+                                    {{ form.wedding_time.label_tag }}
+                                    {{ form.wedding_time }}
+                                </div>
+                            {% else %}
+                                <div class="type-text">
+                                    {{ form.wedding_time.label_tag }}
+                                    {{ form.wedding_time }}
+                                </div>
+                            {% endif %}
+                            <div class="subcolumns">
+                                <div class="c50l">
+                                    <div class="subc">
+                                        {% if form.is_family.errors %}
+                                            <div class="type-select error">
+                                                <strong class="message">{{ form.is_family.errors }}</strong>
+                                                {{ form.is_family.label_tag }}
+                                                {{ form.is_family }}
+                                            </div>
+                                        {% else %}
+                                            <div class="type-select">
+                                                {{ form.is_family.label_tag }}
+                                                {{ form.is_family }}
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                                <div class="c50r">
+                                    <div class="subc">
+                                        {% if form.is_fuzzy.errors %}
+                                            <div class="type-check error">
+                                                <strong class="message">{{ form.is_fuzzy.errors }}</strong>
+                                                {{ form.is_fuzzy.label_tag }}
+                                                {{ form.is_fuzzy }}
+                                            </div>
+                                        {% else %}
+                                            <div class="type-check">
+                                                {{ form.is_fuzzy.label_tag }}
+                                                {{ form.is_fuzzy }}
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
         <div class="subcolumns">
-          <div class="c75l">
-            <div class="subc">
-              <!-- Insert your subtemplate content here -->
-              <div class="subcolumns">
-                <div class="c50l">
-                  <div class="subc">
+            <div class="c75l">
+                <div class="subc note">
                     <!-- Insert your subtemplate content here -->
-                    {% if form.name.errors %}
-                    <div class="type-text error">
-                      <strong class="message">{{ form.name.errors }}</strong>
-                      {{ form.name.label_tag }}
-                      {{ form.name }}
-                    </div>
-                    {% else %}
-                    <div class="type-text">
-                      {{ form.name.label_tag }}
-                      {{ form.name }}
-                    </div>
-                    {% endif %}
-                    {% if form.service_area_name.errors %}
-                    <div class="type-text error">
-                      <strong class="message">{{ form.service_area_name.errors }}</strong>
-                      {{ form.service_area_name.label_tag }}
-                      {{ form.service_area_name }}
-                    </div>
-                    {% else %}
-                    <div class="type-text">
-                      {{ form.service_area_name.label_tag }}
-                      {{ form.service_area_name }}
-                    </div>
-                    {% endif %}
-                  </div>
+                    <fieldset>
+                        <legend>对象配偶信息</legend>
+                        <div class="subcolumns">
+                            <div class="c50l">
+                                <div class="subc">
+                                    <!-- Insert your subtemplate content here -->
+                                    {% if form.mate_name.errors %}
+                                        <div class="type-text error">
+                                            <strong class="message">{{ form.mate_name.errors }}</strong>
+                                            {{ form.mate_name.label_tag }}
+                                            {{ form.mate_name }}
+                                        </div>
+                                    {% else %}
+                                        <div class="type-text">
+                                            {{ form.mate_name.label_tag }}
+                                            {{ form.mate_name }}
+                                        </div>
+                                    {% endif %}
+                                    {% if form.mate_service_area_name.errors %}
+                                        <div class="type-text error">
+                                            <strong class="message">{{ form.mate_service_area_name.errors }}</strong>
+                                            {{ form.mate_service_area_name.label_tag }}
+                                            {{ form.mate_service_area_name }}
+                                        </div>
+                                    {% else %}
+                                        <div class="type-text">
+                                            {{ form.mate_service_area_name.label_tag }}
+                                            {{ form.mate_service_area_name }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="c50r">
+                                <div class="subc">
+                                    <!-- Insert your subtemplate content here -->
+                                    {% if form.mate_id_number.errors %}
+                                        <div class="type-text error">
+                                            <strong class="message">{{ form.mate_id_number.errors }}</strong>
+                                            {{ form.mate_id_number.label_tag }}
+                                            {{ form.mate_id_number }}
+                                        </div>
+                                    {% else %}
+                                        <div class="type-text">
+                                            {{ form.mate_id_number.label_tag }}
+                                            {{ form.mate_id_number }}
+                                        </div>
+                                    {% endif %}
+                                    {% if form.mate_department_name.errors %}
+                                        <div class="type-text error">
+                                            <strong class="message">{{ form.mate_department_name.errors }}</strong>
+                                            {{ form.mate_department_name.label_tag }}
+                                            {{ form.mate_department_name }}
+                                        </div>
+                                    {% else %}
+                                        <div class="type-text">
+                                            {{ form.mate_department_name.label_tag }}
+                                            {{ form.mate_department_name }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
-                <div class="c50r">
-                  <div class="subc">
+            </div>
+            <div class="c25r">
+                <div class="subc note">
                     <!-- Insert your subtemplate content here -->
-                    {% if form.id_number.errors %}
-                    <div class="type-text error">
-                      <strong class="message">{{ form.id_number.errors }}</strong>
-                      {{ form.id_number.label_tag }}
-                      {{ form.id_number }}
-                    </div>
-                    {% else %}
-                    <div class="type-text">
-                      {{ form.id_number.label_tag }}
-                      {{ form.id_number }}
-                    </div>
-                    {% endif %}
-                    {% if form.department_name.errors %}
-                    <div class="type-text error">
-                      <strong class="message">{{ form.department_name.errors }}</strong>
-                      {{ form.department_name.label_tag }}
-                      {{ form.department_name }}
-                    </div>
-                    {% else %}
-                    <div class="type-text">
-                      {{ form.department_name.label_tag }}
-                      {{ form.department_name }}
-                    </div>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>          
-            </div>          
-          </div>         
-          <div class="c25r">
-            <div class="subc">
-              <!-- Insert your subtemplate content here -->
-              {% if form.wedding_time.errors %}
-              <div class="type-text error">
-                <strong class="message">{{ form.wedding_time.errors }}</strong>
-                {{ form.wedding_time.label_tag }}
-                {{ form.wedding_time }}
-              </div>
-              {% else %}
-              <div class="type-text">
-                {{ form.wedding_time.label_tag }}
-                {{ form.wedding_time }}
-              </div>
-              {% endif %}
-              <div class="subcolumns">
-                <div class="c50l">
-                  <div class="subc">
-                    {% if form.is_family.errors %}
-                    <div class="type-select error">
-                      <strong class="message">{{ form.is_family.errors }}</strong>
-                      {{ form.is_family.label_tag }}
-                      {{ form.is_family }}
-                    </div>
-                    {% else %}
-                    <div class="type-select">
-                      {{ form.is_family.label_tag }}
-                      {{ form.is_family }}
-                    </div>
-                    {% endif %}
+                    <fieldset>
+                        <legend>避孕措施信息</legend>
+                        <!-- Insert your subtemplate content here -->
+                        <script type="text/javascript">
+                            var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+                            if (!is_chrome) {
+                                document.write("<br>");
+                            }
+                        </script>
 
-                  </div>
-                </div>
-                <div class="c50r">
-                  <div class="subc">
-                    {% if form.is_fuzzy.errors %}
-                    <div class="type-check error">
-                      <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-                      {{ form.is_fuzzy.label_tag }}
-                      {{ form.is_fuzzy }}
-                    </div>
-                    {% else %}
-                    <div class="type-check">
-                      {{ form.is_fuzzy.label_tag }}
-                      {{ form.is_fuzzy }}
-                    </div>
-                    {% endif %}
+                        {% if form.ctp_method.errors %}
+                            <div class="type-select error">
+                                <strong class="message">{{ form.ctp_method.errors }}</strong>
+                                {{ form.ctp_method.label_tag }}
+                                {{ form.ctp_method }}
+                            </div>
+                        {% else %}
+                            <div class="type-select">
+                                {{ form.ctp_method.label_tag }}
+                                {{ form.ctp_method }}
+                            </div>
+                        {% endif %}
+                        {% if form.ctp_method_time.errors %}
+                            <div class="type-text error">
+                                <strong class="message">{{ form.ctp_method_time.errors }}</strong>
+                                {{ form.ctp_method_time.label_tag }}
+                                {{ form.ctp_method_time }}
+                            </div>
+                        {% else %}
+                            <div class="type-text">
+                                {{ form.ctp_method_time.label_tag }}
+                                {{ form.ctp_method_time }}
+                            </div>
+                        {% endif %}
+                    </fieldset>
 
-                  </div>
                 </div>
-              </div>
-            </div>          
-          </div>         
-        </div>       
-      </fieldset>
-    </div>   
+            </div>
+        </div>
+        <div class="center">
+
+            <input type="submit" name="submit" value="查询"
+                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+            <input type="reset" value="重置"
+                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+            <span id="id_submit_error"></span>
+        </div>
+        </form>
+    {% endwith %}
+    </div>
+    <hr>
+    {% with modify_form as form %}
+        {% for error in form.id.errors %}
+            <p class="warning">{{ error }}</p>
+        {% empty %}
+        {% endfor %}
+
+        {% include 'check_result/check_result_table_special_add.html' %}
+
+    {% endwith %}
     <div class="subcolumns">
-      <div class="c75l">
-        <div class="subc note">
-          <!-- Insert your subtemplate content here -->
-          <fieldset>
-            <legend>对象配偶信息</legend>
-            <div class="subcolumns">
-              <div class="c50l">
-                <div class="subc">
-                  <!-- Insert your subtemplate content here -->
-                  {% if form.mate_name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.mate_name.errors }}</strong>
-                    {{ form.mate_name.label_tag }}
-                    {{ form.mate_name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.mate_name.label_tag }}
-                    {{ form.mate_name }}
-                  </div>
-                  {% endif %}
-                  {% if form.mate_service_area_name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.mate_service_area_name.errors }}</strong>
-                    {{ form.mate_service_area_name.label_tag }}
-                    {{ form.mate_service_area_name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.mate_service_area_name.label_tag }}
-                    {{ form.mate_service_area_name }}
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-              <div class="c50r">
-                <div class="subc">
-                  <!-- Insert your subtemplate content here -->
-                  {% if form.mate_id_number.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.mate_id_number.errors }}</strong>
-                    {{ form.mate_id_number.label_tag }}
-                    {{ form.mate_id_number }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.mate_id_number.label_tag }}
-                    {{ form.mate_id_number }}
-                  </div>
-                  {% endif %}
-                  {% if form.mate_department_name.errors %}
-                  <div class="type-text error">
-                    <strong class="message">{{ form.mate_department_name.errors }}</strong>
-                    {{ form.mate_department_name.label_tag }}
-                    {{ form.mate_department_name }}
-                  </div>
-                  {% else %}
-                  <div class="type-text">
-                    {{ form.mate_department_name.label_tag }}
-                    {{ form.mate_department_name }}
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-            </div>          
-          </fieldset>        
-        </div>          
-      </div>         
-      <div class="c25r">
-        <div class="subc note">
-          <!-- Insert your subtemplate content here -->
-          <fieldset>
-            <legend>避孕措施信息</legend>
-            <!-- Insert your subtemplate content here -->
-            <script type="text/javascript">
-              var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-              if (!is_chrome)
-              {
-              document.write("<br>");
-              }
-            </script>
-
-            {% if form.ctp_method.errors %}
-            <div class="type-select error">
-              <strong class="message">{{ form.ctp_method.errors }}</strong>
-              {{ form.ctp_method.label_tag }}
-              {{ form.ctp_method }}
+        <div class="c66l">
+            <div class="subc">
+                <!-- Insert your subtemplate content here -->
             </div>
-            {% else %}
-            <div class="type-select">
-              {{ form.ctp_method.label_tag }}
-              {{ form.ctp_method }}
+        </div>
+        <div class="c33r">
+            <div class="subc">
+                <!-- Insert your subtemplate content here -->
             </div>
-            {% endif %}
-            {% if form.ctp_method_time.errors %}
-            <div class="type-text error">
-              <strong class="message">{{ form.ctp_method_time.errors }}</strong>
-              {{ form.ctp_method_time.label_tag }}
-              {{ form.ctp_method_time }}
-            </div>
-            {% else %}
-            <div class="type-text">
-              {{ form.ctp_method_time.label_tag }}
-              {{ form.ctp_method_time }}
-            </div>
-            {% endif %}
-          </fieldset>
-          
-        </div>          
-      </div>         
-    </div>          
-    <div class="center">
-
-      <input type="submit"  name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <span id="id_submit_error"></span>
+        </div>
     </div>
-  </form>
-  {% endwith %}
-</div>
-<hr>
-{% with modify_form as form %}
-{% for error in form.id.errors %}
-<p class="warning">{{ error }}</p>
-{% empty %}
-{% endfor %}
-
-{% include 'check_result/check_result_table_special_add.html' %}
-
-{% endwith %}
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-</div>
 {% endblock %}

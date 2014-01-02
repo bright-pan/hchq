@@ -1,44 +1,46 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>权限</caption>
-  <thead>
-    <tr><th scope="col" colspan="2">【{{ role_name }}】关联权限预览(共{{ results_page.paginator.count}}项)</th></tr>
-  </thead>
-
-  <tbody>
+    <caption>权限</caption>
+    <thead>
     <tr>
-      <th scope="col">编号</th>
-      <th scope="col">名称</th>
+        <th scope="col" colspan="2">【{{ role_name }}】关联权限预览(共{{ results_page.paginator.count }}项)</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <th scope="col">编号</th>
+        <th scope="col">名称</th>
     </tr>
     {% for result in results_page.object_list %}
-    <tr>
-      <th scope="row" class="sub">{{ result.id }}</th>
-      <td class="{% cycle 'odd' 'even' %}">{{ result.name }}</td>
-    </tr>
+        <tr>
+            <th scope="row" class="sub">{{ result.id }}</th>
+            <td class="{% cycle 'odd' 'even' %}">{{ result.name }}</td>
+        </tr>
     {% empty %}
-    <p class="warning">【{{ role_name }}】没有权限相关联！</p>
+        <p class="warning">【{{ role_name }}】没有权限相关联！</p>
     {% endfor %}
-  </tbody>
+    </tbody>
 </table>
 <div class="pagination">
-  {% if results_page.has_previous %}
-  <span>
+    {% if results_page.has_previous %}
+        <span>
     <a href="{% url account_role_permission_add role_index results_page.previous_page_number %}">上一页</a>
   </span>
-  {% else %}
-  <span class="disable">
+    {% else %}
+        <span class="disable">
     上一页
   </span>
-  {% endif %}
-  <span class="current">
+    {% endif %}
+    <span class="current">
     第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
   </span>
-  {% if results_page.has_next %}
-  <span>
+    {% if results_page.has_next %}
+        <span>
     <a href="{% url account_role_permission_add role_index results_page.next_page_number %}">下一页</a>
   </span>
-  {% else %}
-  <span class="disable">
+    {% else %}
+        <span class="disable">
     下一页
-  </span>          
-  {% endif %}
+  </span>
+    {% endif %}
 </div>

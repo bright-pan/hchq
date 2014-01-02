@@ -1,28 +1,29 @@
 {% extends "my_layout.html" %}
 
 {% block topnav %}
-	{% if user.is_authenticated %}
-		<li><a href="{% url account_person_management %}">你好，<span class="label label-info">{{ user.username }}</span></a></li>
-		<li><a href="{% url account_logout %}"><span class="label label-danger">退出</span></a></li>
-	{% else %}
-	<li><a href="{% url hchq_index %}"><span class="label label-info">系统首页</span></a></li>		
-	{% endif %}
-	<li><a href="#">通知</a></li>
-	<li><a href="#">下载</a></li> 
+    {% if user.is_authenticated %}
+        <li><a href="{% url account_person_management %}">你好，<span
+                class="label label-info">{{ user.username }}</span></a></li>
+        <li><a href="{% url account_logout %}"><span class="label label-danger">退出</span></a></li>
+    {% else %}
+        <li><a href="{% url hchq_index %}"><span class="label label-info">系统首页</span></a></li>
+    {% endif %}
+    <li><a href="#">通知</a></li>
+    <li><a href="#">下载</a></li>
 {% endblock %}
 
 {% block site_wrapper %}
-<div class="row">
-	<div class="col-md-4"></div>
-	<div class="col-md-4">
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<h3 class="panel-title">系统用户登入</h3>
-			</div>
-			<div class="panel-body">{% include 'account/login_form.html' %}
-			</div>
-		</div>
-	</div>
-</div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">系统用户登入</h3>
+                </div>
+                <div class="panel-body">{% include 'account/login_form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

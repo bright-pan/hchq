@@ -1,58 +1,64 @@
 <table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>系统用户</caption>
-  <thead>
-    <tr><th scope="col" colspan="7">系统用户编辑(共{{ results_page.paginator.count}}项)</th></tr>
-  </thead>
-  <tbody>
+    <caption>系统用户</caption>
+    <thead>
     <tr>
-      <th scope="col">编号</th>
-      <th scope="col">用户名称</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">角色权限</th>
-      <th scope="col">检查人员</th>
-      <th scope="col">登入时间<br>创建时间</th>
-      <th scope="col">编辑命令</th>
+        <th scope="col" colspan="7">系统用户编辑(共{{ results_page.paginator.count }}项)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="col">编号</th>
+        <th scope="col">用户名称</th>
+        <th scope="col">服务区域<br>单位部门</th>
+        <th scope="col">角色权限</th>
+        <th scope="col">检查人员</th>
+        <th scope="col">登入时间<br>创建时间</th>
+        <th scope="col">编辑命令</th>
     </tr>
     {% for result in results_page.object_list %}
-    <tr>
-      <th scope="row" class="sub">{{ result.id }}</th>
-      <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.user.username }}</a></td>
-      <td class="{% cycle 'odd' 'even' %}">{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
-      <td class="{% cycle 'odd' 'even' %}">{{ result.user.groups.get.name }}</td>
-      <td class="{% cycle 'odd' 'even' %}">{% if result.is_checker %}是{% else %}否{% endif %}</td>
-      <td class="{% cycle 'odd' 'even' %}">{{ result.user.last_login|date:"Y-m-d H:i:s" }}<br>{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
-      <td class="{% cycle 'odd' 'even' %}">
-        <form method="post" action=".">{% csrf_token %}
-          <input type="hidden" name="id" value="{{ result.user.id }}" />
-          <input type="submit" name="submit" value="编辑" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-        </form>
-      </td>
-    </tr>
+        <tr>
+            <th scope="row" class="sub">{{ result.id }}</th>
+            <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.user.username }}</a>
+            </td>
+            <td class="{% cycle 'odd' 'even' %}">{{ result.service_area_department.service_area.name }}
+            <br>{{ result.service_area_department.department.name }}</td>
+            <td class="{% cycle 'odd' 'even' %}">{{ result.user.groups.get.name }}</td>
+            <td class="{% cycle 'odd' 'even' %}">{% if result.is_checker %}是{% else %}否{% endif %}</td>
+            <td class="{% cycle 'odd' 'even' %}">{{ result.user.last_login|date:"Y-m-d H:i:s" }}
+            <br>{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
+            <td class="{% cycle 'odd' 'even' %}">
+                <form method="post" action=".">{% csrf_token %}
+                    <input type="hidden" name="id" value="{{ result.user.id }}"/>
+                    <input type="submit" name="submit" value="编辑"
+                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                </form>
+            </td>
+        </tr>
     {% empty %}
-    <p class="warning">没有系统用户可以编辑！</p>
+        <p class="warning">没有系统用户可以编辑！</p>
     {% endfor %}
-  </tbody>
+    </tbody>
 </table>
 <div class="pagination">
-  {% if results_page.has_previous %}
-  <span>
+    {% if results_page.has_previous %}
+        <span>
     <a href="{% url account_modify results_page.previous_page_number %}">上一页</a>
   </span>
-  {% else %}
-  <span class="disable">
+    {% else %}
+        <span class="disable">
     上一页
   </span>
-  {% endif %}
-  <span class="current">
+    {% endif %}
+    <span class="current">
     第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
   </span>
-  {% if results_page.has_next %}
-  <span>
+    {% if results_page.has_next %}
+        <span>
     <a href="{% url account_modify results_page.next_page_number %}">下一页</a>
   </span>
-  {% else %}
-  <span class="disable">
+    {% else %}
+        <span class="disable">
     下一页
-  </span>          
-  {% endif %}
+  </span>
+    {% endif %}
 </div>

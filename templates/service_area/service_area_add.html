@@ -1,39 +1,27 @@
 {% extends "service_area/service_area_layout.html" %}
 
-{% block col1_content %}
-{% load cache %}
-{% cache 500 service_area_add user.username %}
-<ul class="nav nav-pills nav-stacked">
-  <li><a href="{% url service_area_list 1 %}">服务区域查询</a></li>
-  <li class="active"><a href="{% url service_area_add 1 %}">服务区域添加</a></li>
-  <li><a href="{% url service_area_modify 1 %}">服务区域修改</a></li>
-  <li><a href="{% url service_area_delete 1 %}">服务区域删除</a></li>
-</ul>
-{% endcache %}
-{% endblock %}
-
-{% block col3_content %}
-<div class="row">
-	<div class="col-md-12">
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<h3 class="panel-title">服务区域添加</h3>
-			</div>
-			<div class="panel-body">
-				<div class="col-md-6">
-				{% with search_form as form %}
-				{% include 'service_area/service_area_search_form.html' %} 
-				{% endwith %}
-				</div>
-				<div class="col-md-6">
-				{% with add_form as form %}
-				{% include 'service_area/service_area_add_form.html' %}
-				{% endwith %}
-				</div>
-			</div>
-			{% include 'service_area/service_area_table_add.html' %}
-		</div>
-	</div>
-</div>
+{% block site_wrapper %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">服务区域添加</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        {% with search_form as form %}
+                            {% include 'service_area/service_area_search_form.html' %}
+                        {% endwith %}
+                    </div>
+                    <div class="col-md-6">
+                        {% with add_form as form %}
+                            {% include 'service_area/service_area_add_form.html' %}
+                        {% endwith %}
+                    </div>
+                </div>
+                {% include 'service_area/service_area_table_add.html' %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

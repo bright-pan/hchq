@@ -1,82 +1,70 @@
 {% extends "account/role/role_layout.html" %}
-{% block header_describe %}{% endblock %}
-{% block teaser %}{% endblock %}
 
-{% block col1_content %}
-{% load cache %}
+{% block site_wrapper %}
+    <h3>角色删除</h3>
+    <hr>
+    <div class="important">
+        {% with search_form as form %}
+            <form method="post" action="#" class="yform full">{% csrf_token %}
+                <fieldset>
+                    <legend>角色查询参数</legend>
+                    {% if form.role_name.errors %}
+                        <div class="type-text error">
+                            <strong class="message">{{ form.role_name.errors }}</strong>
 
-{% cache 500 role_delete user.username %}
-<h6 class="vlist">角色权限管理</h6>
-<ul class="vlist">
-  <li><a href="{% url account_role_list 1 %}">角色查询</a></li>
-  <li><a href="{% url account_role_add 1 %}">角色添加</a></li>
-  <li><a href="{% url account_role_modify 1 %}">角色修改</a></li>
-  <li class="active"><strong>角色删除</strong></li>
-  
-</ul>
-{% endcache %}
-{% endblock %}
-{% block col3_content %}
-<h3>角色删除</h3>
-<hr>
-<div class="important">
-{% with search_form as form %}
-<form method="post" action="#" class="yform full">{% csrf_token %}
-  <fieldset>
-    <legend>角色查询参数</legend>
-    {% if form.role_name.errors %}
-    <div class="type-text error">
-      <strong class="message">{{ form.role_name.errors }}</strong>
-      {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text}}</p>
-      {{ form.role_name }}
+                            {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text }}</p>
+                            {{ form.role_name }}
+                        </div>
+                    {% else %}
+                        <div class="type-text">
+                            {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text }}</p>
+                            {{ form.role_name }}
+                        </div>
+                    {% endif %}
+                    {% if form.is_fuzzy.errors %}
+                        <div class="type-text error">
+                            <strong class="message">{{ form.is_fuzzy.errors }}</strong>
+
+                            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
+                            {{ form.is_fuzzy }}
+                        </div>
+                    {% else %}
+                        <div class="type-check">
+                            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
+                            {{ form.is_fuzzy }}
+                        </div>
+                    {% endif %}
+                    <div class="center">
+                        <input type="submit" name="submit" value="查询"
+                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                        <input type="reset" value="重置"
+                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                    </div>
+                </fieldset>
+            </form>
+        {% endwith %}
     </div>
-    {% else %}
-    <div class="type-text">
-      {{ form.role_name.label_tag }}<p class="dimmed">{{ form.role_name.help_text}}</p>
-      {{ form.role_name }}
+    <hr>
+    {% with delete_form as form %}
+        {% for error in form.role_id.errors %}
+            <p class="warning">{{ error }}</p>
+        {% empty %}
+        {% endfor %}
+        <div class="note">
+            {% include 'account/role/role_table_delete.html' %}
+        </div>
+    {% endwith %}
+    <div class="subcolumns">
+        <div class="c66l">
+            <div class="subc">
+                <!-- Insert your subtemplate content here -->
+            </div>
+        </div>
+        <div class="c33r">
+            <div class="subc">
+                <!-- Insert your subtemplate content here -->
+            </div>
+        </div>
     </div>
-    {% endif %}
-    {% if form.is_fuzzy.errors %}
-    <div class="type-text error">
-      <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
-      {{ form.is_fuzzy }}
-    </div>
-    {% else %}
-    <div class="type-check">
-      {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text}}</p>
-      {{ form.is_fuzzy }}
-    </div>
-    {% endif %}
-    <div class="center">
-      <input type="submit" name="submit" value="查询" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-      <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>      
-    </div>
-  </fieldset>
-</form>
-{% endwith %}
-</div>
-<hr>
-{% with delete_form as form %}
-{% for error in form.role_id.errors %}
-<p class="warning">{{ error }}</p>
-{% empty %}
-{% endfor %}
-<div class="note">
-{% include 'account/role/role_table_delete.html' %}
-</div>
-{% endwith %}
-<div class="subcolumns">
-  <div class="c66l">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-  <div class="c33r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-    </div>
-  </div>
-</div>
 {% endblock %}
 
