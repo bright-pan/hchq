@@ -5,10 +5,8 @@
 {% endblock %}
 
 {% block panel_body %}
-    <div class="col-md-12">
         {% with search_form as form %}
             {% include 'service_area/service_area_search_form.html' %}
         {% endwith %}
-    </div>
     {% include 'service_area/service_area_table_list.html' %}
 {% endblock %}

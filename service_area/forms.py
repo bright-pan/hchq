@@ -283,7 +283,7 @@ class ServiceAreaDepartmentSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'fuzzy_search',
                                           }, 
                                    check_test=None,

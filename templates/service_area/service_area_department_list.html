@@ -1,72 +1,12 @@
 {% extends "service_area/service_area_layout.html" %}
 
-{% block site_wrapper %}
-    <h3>【{{ service_area_name }}】关联单位部门列表</h3>
-    <hr>
-    <div class="important">
-        {% with search_form as form %}
-            <form method="post" action="#" class="yform full">{% csrf_token %}
-                <fieldset>
-                    <legend>【{{ service_area_name }}】单位部门查询</legend>
-                    {% if form.service_area_department_name.errors %}
-                        <div class="type-text error">
-                            <strong class="message">{{ form.service_area_department_name.errors }}</strong>
-
-                            {{ form.service_area_department_name.label_tag }}<p
-                                    class="dimmed">{{ form.service_area_department_name.help_text }}</p>
-                            {{ form.service_area_department_name }}
-                        </div>
-                    {% else %}
-                        <div class="type-text">
-                            {{ form.service_area_department_name.label_tag }}<p
-                                    class="dimmed">{{ form.service_area_department_name.help_text }}</p>
-                            {{ form.service_area_department_name }}
-                        </div>
-                    {% endif %}
-                    {% if form.is_fuzzy.errors %}
-                        <div class="type-text error">
-                            <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-
-                            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-                            {{ form.is_fuzzy }}
-                        </div>
-                    {% else %}
-                        <div class="type-check">
-                            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-                            {{ form.is_fuzzy }}
-                        </div>
-                    {% endif %}
-                    <div class="center">
-                        <input type="submit" name="submit" value="查询"
-                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                        <input type="reset" value="重置"
-                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                    </div>
-                </fieldset>
-            </form>
-        {% endwith %}
-    </div>
-    <hr>
-    {% with delete_form as form %}
-        {% for error in form.service_area_department_id.errors %}
-            <p class="warning">{{ error }}</p>
-        {% empty %}
-        {% endfor %}
-        <div class="note">
-            {% include 'service_area/service_area_department_table_list.html' %}
-        </div>
-    {% endwith %}
-    <div class="subcolumns">
-        <div class="c66l">
-            <div class="subc">
-                <!-- Insert your subtemplate content here -->
-            </div>
-        </div>
-        <div class="c33r">
-            <div class="subc">
-                <!-- Insert your subtemplate content here -->
-            </div>
-        </div>
-    </div>
+{% block panel_heading %}
+    <h3 class="panel-title">{{ service_area_name }} 关联单位部门列表</h3>
 {% endblock %}
 
+{% block panel_body %}
+        {% with search_form as form %}
+            {% include 'service_area/service_area_department_search_form.html' %}
+        {% endwith %}
+     {% include 'service_area/service_area_department_table_list.html' %}
+{% endblock %}
