@@ -22,7 +22,7 @@ class DepartmentAddForm(forms.Form):
         label=_(u'单位部门名称'), 
         widget=forms.Textarea(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'3',
+                                     'rows':'1',
                                      }
                               ), 
         help_text=_(u'例如：县委/政法委，公安局，...'),
@@ -184,7 +184,7 @@ class DepartmentSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'fuzzy_search',
                                           }, 
                                    check_test=None,

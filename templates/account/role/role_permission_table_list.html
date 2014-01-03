@@ -1,46 +1,33 @@
-<table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>权限</caption>
+<table class="table">
     <thead>
     <tr>
-        <th scope="col" colspan="2">【{{ role_name }}】关联的权限预览(共{{ results_page.paginator.count }}项)</th>
+        <th colspan="2">{{ role_name }} 关联的权限预览(共{{ results_page.paginator.count }}项)</th>
     </tr>
     </thead>
 
     <tbody>
     <tr>
-        <th scope="col">编号</th>
-        <th scope="col">名称</th>
+        <th>编号</th>
+        <th>名称</th>
     </tr>
     {% for result in results_page.object_list %}
         <tr>
-            <th scope="row" class="sub">{{ result.id }}</th>
-            <td class="{% cycle 'odd' 'even' %}">{{ result.name }}</td>
+            <th>{{ result.id }}</th>
+            <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
         </tr>
     {% empty %}
-        <p class="warning">【{{ role_name }}】没有关联的权限！</p>
+        <p class="lead">{{ role_name }} 没有关联的权限！</p>
     {% endfor %}
     </tbody>
 </table>
-<div class="pagination">
-    {% if results_page.has_previous %}
-        <span>
-    <a href="{% url account_role_permission_list role_index results_page.previous_page_number %}">上一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    上一页
-  </span>
-    {% endif %}
-    <span class="current">
-    第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
-  </span>
-    {% if results_page.has_next %}
-        <span>
-    <a href="{% url account_role_permission_list role_index results_page.next_page_number %}">下一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    下一页
-  </span>
-    {% endif %}
-</div>
+
+<ul class="pagination">
+    <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+        <a href="{% url account_role_permission_list role_index results_page.previous_page_number %}">上一页</a>
+    </li>
+    <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+            class="sr-only">(current)</span></a></li>
+    <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+        <a href="{% url account_role_permission_list role_index results_page.next_page_number %}">下一页</a>
+    </li>
+</ul>

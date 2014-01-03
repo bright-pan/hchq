@@ -1,57 +1,45 @@
-<table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>部门单位</caption>
+<table class="table">
     <thead>
     <tr>
-        <th scope="col" colspan="3">部门单位修改(共{{ results_page.paginator.count }}项)</th>
+        <th colspan="3">部门单位名称修改(共{{ results_page.paginator.count }}项)</th>
     </tr>
     </thead>
 
     <tbody>
     <tr>
-        <th scope="col">编号</th>
-        <th scope="col">名称</th>
-        <th scope="col">修改数据及命令</th>
+        <th>编号</th>
+        <th>名称</th>
+        <th>修改数据及命令</th>
     </tr>
     {% for result in results_page.object_list %}
         <tr>
-            <th scope="row" class="sub">{{ result.id }}</th>
-            <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}<a></td>
-            <td class="{% cycle 'odd' 'even' %}">
-                <form method="post" action="#">{% csrf_token %}
-                    <label for="id_department_name">新部门单位名称</label>:
-                    <input name="department_name" maxlength="128" id="id_department_name" type="text" class="" size="30"
-                           value="{{ result.name }}"/>
-                    <input type="hidden" name="department_id" value="{{ result.id }}"/>
-                    <input type="submit" name="submit" value="修改"
-                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+            <th>{{ result.id }}</th>
+            <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
+            <td>
+                <form method="post" action="#" class="form-inline">{% csrf_token %}
+                    <div class="form-group">
+                        <input name="department_name" maxlength="128" id="id_department_name" type="text"
+                               class="form-control"
+                               size="30" value="{{ result.name }}"/>
+                    </div>
+                    <input type="hidden" name="department_name_id" value="{{ result.id }}"/>
+                    <button type="submit" value="修改" name="submit" class="btn btn-primary">修改</button>
                 </form>
             </td>
         </tr>
     {% empty %}
-        <p class="warning">没有部门单位可以修改！</p>
+        <p class="lead">没有部门单位可以修改！</p>
     {% endfor %}
     </tbody>
 </table>
-<div class="pagination">
-    {% if results_page.has_previous %}
-        <span>
-    <a href="{% url department_modify results_page.previous_page_number %}">上一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    上一页
-  </span>
-    {% endif %}
-    <span class="current">
-    第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
-  </span>
-    {% if results_page.has_next %}
-        <span>
-    <a href="{% url department_modify results_page.next_page_number %}">下一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    下一页
-  </span>
-    {% endif %}
-</div>
+
+<ul class="pagination">
+    <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+        <a href="{% url department_modify results_page.previous_page_number %}">上一页</a>
+    </li>
+    <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+            class="sr-only">(current)</span></a></li>
+    <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+        <a href="{% url department_modify results_page.next_page_number %}">下一页</a>
+    </li>
+</ul>

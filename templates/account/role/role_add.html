@@ -1,96 +1,19 @@
 {% extends "account/role/role_layout.html" %}
 
-{% block site_wrapper %}
-    <h3>角色添加</h3>
-    <hr>
-    <div class="important">
-        <div class="subcolumns">
-            <div class="c66l">
-                <div class="subc">
-                    <!-- Insert your subtemplate content here -->
-                    {% with search_form as form %}
-                        <form method="post" action="#" class="yform full">{% csrf_token %}
-                            <fieldset>
-                                <legend>角色查询参数</legend>
-                                {% if form.role_name.errors %}
-                                    <div class="type-text error">
-                                        <strong class="message">{{ form.role_name.errors }}</strong>
-
-                                        {{ form.role_name.label_tag }}<p
-                                                class="dimmed">{{ form.role_name.help_text }}</p>
-                                        {{ form.role_name }}
-                                    </div>
-                                {% else %}
-                                    <div class="type-text">
-                                        {{ form.role_name.label_tag }}<p
-                                                class="dimmed">{{ form.role_name.help_text }}</p>
-                                        {{ form.role_name }}
-                                    </div>
-                                {% endif %}
-                                {% if form.is_fuzzy.errors %}
-                                    <div class="type-text error">
-                                        <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-
-                                        {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-                                        {{ form.is_fuzzy }}
-                                    </div>
-                                {% else %}
-                                    <div class="type-check">
-                                        {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-                                        {{ form.is_fuzzy }}
-                                    </div>
-                                {% endif %}
-                                <div class="center">
-                                    <input type="submit" name="submit" value="查询"
-                                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                                    <input type="reset" value="重置"
-                                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                                </div>
-                            </fieldset>
-                        </form>
-                    {% endwith %}
-
-
-                </div>
-            </div>
-            <div class="c33r">
-                <div class="subc">
-                    <!-- Insert your subtemplate content here -->
-                    <form method="post" action="" class="yform full">{% csrf_token %}
-                        <fieldset>
-                            <legend>请输入角色名称</legend>
-                            {% with add_form as form %}
-                                {% if form.role_name.errors %}
-                                    <div class="type-text error">
-                                        <strong class="message">{{ form.role_name.errors }}</strong>
-
-                                        {{ form.role_name.label_tag }}<p
-                                                class="dimmed">{{ form.role_name.help_text }}</p>
-                                        {{ form.role_name }}
-                                    </div>
-                                {% else %}
-                                    <div class="type-text">
-                                        {{ form.role_name.label_tag }}<p
-                                                class="dimmed">{{ form.role_name.help_text }}</p>
-                                        {{ form.role_name }}
-                                    </div>
-                                {% endif %}
-                            {% endwith %}
-                            <div class="center">
-                                <input type="submit" name="submit" value="添加"
-                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                                <input type="reset" value="重置"
-                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div class="note">
-        {% include 'account/role/role_table_add.html' %}
-    </div>
+{% block panel_heading %}
+    <h3 class="panel-title">角色添加</h3>
 {% endblock %}
 
+{% block panel_body %}
+    <div class="col-md-6">
+        {% with search_form as form %}
+            {% include 'account/role/role_search_form.html' %}
+        {% endwith %}
+    </div>
+    <div class="col-md-6">
+        {% with add_form as form %}
+            {% include 'account/role/role_add_form.html' %}
+        {% endwith %}
+    </div>
+    {% include 'account/role/role_table_list.html' %}
+{% endblock %}

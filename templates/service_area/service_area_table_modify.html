@@ -17,7 +17,7 @@
             <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
             <td>
                 <form method="post" action="#" class="form-inline">{% csrf_token %}
-                    <div class="form-group {% if form.service_area_name.errors %} has-error {% endif %}">
+                    <div class="form-group">
                         <input name="service_area_name" maxlength="128" id="id_service_area_name" type="text"
                                class="form-control"
                                size="30" value="{{ result.name }}"/>

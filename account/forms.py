@@ -168,7 +168,7 @@ class RoleSearchForm(forms.Form):
         required=True,
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
         label =_(u'模糊查询'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'fuzzy_search',}, check_test=None),
         )
     
@@ -220,7 +220,7 @@ class RoleAddForm(forms.Form):
         label=_(u'角色名称'), 
         widget=forms.Textarea(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'3',
+                                     'rows':'1',
                                      }
                               ), 
         help_text=_(u'例如：技术人员，区域主任/检查人员...'),
@@ -348,7 +348,7 @@ class RolePermissionAddForm(forms.Form):
         required=True,
         label=_(u'权限名称'), 
         widget=forms.SelectMultiple( attrs={'class':'form-control',
-                                           'size':'30',},
+                                           'size':'15',},
                                     ), 
         help_text=_(u'帮助：按住键盘Ctrl键为多选！'),
         error_messages = gl.permission_name_error_messages,
@@ -399,7 +399,7 @@ class RolePermissionSearchForm(forms.Form):
         required=True,
         label =_(u'模糊查询'),
         help_text=_(u'例如：打勾代表进行模糊搜索！'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'fuzzy_search',
                                           }, 
                                    check_test=None,

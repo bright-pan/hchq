@@ -342,11 +342,11 @@ def department_list(request, template_name='my.html', next='/', department_page=
     单位部门查询视图
     """
     page_title = u'查询单位部门'
-
     if request.method == 'POST':
         post_data = request.POST.copy()
         department_search_form = DepartmentSearchForm(post_data)
         if department_search_form.is_valid():
+
             department_search_form.save_to_session(request)
             if department_search_form.is_null() is False:
                 if department_search_form.fuzzy_search() is False:

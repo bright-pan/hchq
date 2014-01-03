@@ -1,0 +1,31 @@
+<form method="post" action="#">{% csrf_token %}
+    <fieldset>
+        <legend>单位部门查询参数</legend>
+        <div class="col-md-6">
+            <div class="form-group {% if form.department_name.errors %} has-error {% endif %}">
+                <label class="control-label">{{ form.department_name.label }}</label>
+                {{ form.department_name }}
+                {% if form.department_name.errors %}
+                    {% for error in form.department_name.errors %}
+                        <span class="help-block badge">{{ error }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="help-block">{{ form.department_name.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="checkbox {% if form.is_fuzzy.errors %} has-error {% endif %}">
+                <label>{{ form.is_fuzzy }}{{ form.is_fuzzy.label }}</label>
+                {% if form.is_fuzzy.errors %}
+                    {% for error in form.password.errors %}
+                        <span class="help-block badge">{{ error }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="help-block">{{ form.is_fuzzy.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <button type="submit" value="查询" name="submit" class="btn btn-primary btn-lg btn-block">查询</button>
+    </fieldset>
+</form>

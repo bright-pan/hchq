@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block panel_body %}
-        {% with search_form as form %}
-            {% include 'service_area/service_area_department_search_form.html' %}
-        {% endwith %}
-     {% include 'service_area/service_area_department_table_list.html' %}
+    {% with search_form as form %}
+    {% include 'service_area/service_area_department_search_form.html' %}
+    {% endwith %}
+    {% include 'service_area/service_area_department_table_list.html' %}
 {% endblock %}
