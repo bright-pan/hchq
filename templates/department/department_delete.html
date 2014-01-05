@@ -5,9 +5,16 @@
 {% endblock %}
 
 {% block panel_body %}
-        {% with search_form as form %}
-            {% include 'department/department_search_form.html' %}
-        {% endwith %}
-            {% include 'department/department_table_delete.html' %}
+    {% with search_form as form %}
+        {% include 'department/department_search_form.html' %}
+    {% endwith %}
+    {% with delete_form as form %}
+        {% for error in form.department_id.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'department/department_table_delete.html' %}
+    {% endwith %}
 {% endblock %}
 

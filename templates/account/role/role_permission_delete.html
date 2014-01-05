@@ -8,5 +8,12 @@
     {% with search_form as form %}
     {% include 'account/role/role_permission_search_form.html' %}
     {% endwith %}
-    {% include 'account/role/role_permission_table_delete.html' %}
+    {% with delete_form as form %}
+        {% for error in form.role_permission_id.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'account/role/role_permission_table_delete.html' %}
+    {% endwith %}
 {% endblock %}

@@ -1,64 +1,41 @@
 {% extends "check_project/check_project_layout.html" %}
 
-{% block site_wrapper %}
-    <h3>检查项目编辑</h3>
-    <hr>
-    <div class="subcolumns">
-        <div class="c66l">
-            <div class="subc note">
-                <!-- Insert your subtemplate content here -->
-                <form method="post" action="{% url check_project_detail_modify %}" class="yform full">{% csrf_token %}
-                    <fieldset>
-                        <legend>检查项目【{{ check_project_name }}】编辑</legend>
-                        {% with detail_modify_form as form %}
-                            {% if form.check_project_start_time.errors %}
-                                <div class="type-text error">
-                                    <strong class="message">{{ form.check_project_start_time.errors }}</strong>
-
-                                    {{ form.check_project_start_time.label_tag }}<p
-                                            class="dimmed">{{ form.check_project_start_time.help_text }}</p>
-                                    {{ form.check_project_start_time }}
-                                </div>
-                            {% else %}
-                                <div class="type-text">
-                                    {{ form.check_project_start_time.label_tag }}<p
-                                            class="dimmed">{{ form.check_project_start_time.help_text }}</p>
-                                    {{ form.check_project_start_time }}
-                                </div>
-                            {% endif %}
-                            {% if form.check_project_end_time.errors %}
-                                <div class="type-text error">
-                                    <strong class="message">{{ form.check_project_end_time.errors }}</strong>
-
-                                    {{ form.check_project_end_time.label_tag }}<p
-                                            class="dimmed">{{ form.check_project_end_time.help_text }}</p>
-                                    {{ form.check_project_end_time }}
-                                </div>
-                            {% else %}
-                                <div class="type-text">
-                                    {{ form.check_project_end_time.label_tag }}<p
-                                            class="dimmed">{{ form.check_project_end_time.help_text }}</p>
-                                    {{ form.check_project_end_time }}
-                                </div>
-                            {% endif %}
-                            {{ form.check_project_id }}
-                        {% endwith %}
-
-                        <div class="center">
-                            <input type="submit" name="submit" value="修改"
-                                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                            <input type="reset" value="重置"
-                                   class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-        <div class="c33r">
-            <div class="subc">
-                <!-- Insert your subtemplate content here -->
-            </div>
-        </div>
-    </div>
+{% block panel_heading %}
+    <h3 class="panel-title">检查项目详细编辑</h3>
+{% endblock %}
+<p class="form-control-static">email@example.com</p>
+{% block panel_body %}
+    {% with detail_modify_form as form %}
+        <form class="table">{% csrf_token %}
+            <fieldset>
+                <legend>检查项目 {{ check_project_name }} 编辑</legend>
+                <div class="form-group {% if form.check_project_start_time.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.check_project_start_time.label }}</label>
+                    {{ form.check_project_start_time }}
+                    {% if form.check_project_start_time.errors %}
+                        {% for error in form.check_project_start_time.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.check_project_start_time.help_text }}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group {% if form.check_project_end_time.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.check_project_end_time.label }}</label>
+                    {{ form.check_project_end_time }}
+                    {% if form.check_project_end_time.errors %}
+                        {% for error in form.check_project_end_time.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.check_project_end_time.help_text }}</span>
+                    {% endif %}
+                </div>
+                {{ form.check_project_id }}
+                <button type="submit" value="修改" name="submit" class="btn btn-primary">修改</button>
+                </div>
+            </fieldset>
+        </form>
+    {% endwith %}
 {% endblock %}
 

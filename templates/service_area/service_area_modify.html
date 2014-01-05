@@ -5,8 +5,15 @@
 {% endblock %}
 
 {% block panel_body %}
-        {% with search_form as form %}
-            {% include 'service_area/service_area_search_form.html' %}
-        {% endwith %}
-    {% include 'service_area/service_area_table_modify.html' %}
+    {% with search_form as form %}
+        {% include 'service_area/service_area_search_form.html' %}
+    {% endwith %}
+    {% with modify_form as form %}
+        {% for error in form.service_area_name.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'service_area/service_area_table_modify.html' %}
+    {% endwith %}
 {% endblock %}

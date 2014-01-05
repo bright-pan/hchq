@@ -256,7 +256,8 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
             if service_area_delete_form.is_valid():
                 service_area_delete_form.service_area_delete()
             else:
-                pass
+                print service_area_delete_form["service_area_id"].errors
+
             data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
                     'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
                     }        
@@ -299,6 +300,7 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
             results_page = pagination_results(service_area_page, query_set, settings.SERVICE_AREA_PER_PAGE)
         else:
             results_page = None
+        print "asdfasdsadf"
         return render_to_response(template_name,
                                   {'search_form': service_area_search_form,
                                    'delete_form': service_area_delete_form,

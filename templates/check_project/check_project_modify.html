@@ -1,72 +1,19 @@
 {% extends "check_project/check_project_layout.html" %}
 
-{% block site_wrapper %}
-    <h3>检查项目修改</h3>
-    <hr>
-    <div class="important">
-        {% with search_form as form %}
-            <form method="post" action="." class="yform full">{% csrf_token %}
-                <fieldset>
-                    <legend>检查项目查询参数</legend>
-                    {% if form.check_project_name.errors %}
-                        <div class="type-text error">
-                            <strong class="message">{{ form.check_project_name.errors }}</strong>
-
-                            {{ form.check_project_name.label_tag }}<p
-                                    class="dimmed">{{ form.check_project_name.help_text }}</p>
-                            {{ form.check_project_name }}
-                        </div>
-                    {% else %}
-                        <div class="type-text">
-                            {{ form.check_project_name.label_tag }}<p
-                                    class="dimmed">{{ form.check_project_name.help_text }}</p>
-                            {{ form.check_project_name }}
-                        </div>
-                    {% endif %}
-                    {% if form.is_fuzzy.errors %}
-                        <div class="type-text error">
-                            <strong class="message">{{ form.is_fuzzy.errors }}</strong>
-
-                            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-                            {{ form.is_fuzzy }}
-                        </div>
-                    {% else %}
-                        <div class="type-check">
-                            {{ form.is_fuzzy.label_tag }}<p class="dimmed">{{ form.is_fuzzy.help_text }}</p>
-                            {{ form.is_fuzzy }}
-                        </div>
-                    {% endif %}
-                    <div class="center">
-                        <input type="submit" name="submit" value="查询"
-                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                        <input type="reset" value="重置"
-                               class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-                    </div>
-                </fieldset>
-            </form>
-        {% endwith %}
-    </div>
-    <hr>
-    {% with modify_form as form %}
-        {% for error in form.check_project_name.errors %}
-            <p class="warning">{{ error }}</p>
-        {% empty %}
-        {% endfor %}
-        <div class="note">
-            {% include 'check_project/check_project_table_modify.html' %}
-        </div>
-    {% endwith %}
-    <div class="subcolumns">
-        <div class="c66l">
-            <div class="subc">
-                <!-- Insert your subtemplate content here -->
-            </div>
-        </div>
-        <div class="c33r">
-            <div class="subc">
-                <!-- Insert your subtemplate content here -->
-            </div>
-        </div>
-    </div>
+{% block panel_heading %}
+    <h3 class="panel-title">检查项目修改</h3>
 {% endblock %}
 
+{% block panel_body %}
+    {% with search_form as form %}
+        {% include 'check_project/check_project_search_form.html' %}
+    {% endwith %}
+    {% with modify_form as form %}
+        {% for error in form.check_project_name.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'check_project/check_project_table_modify.html' %}
+    {% endwith %}
+{% endblock %}

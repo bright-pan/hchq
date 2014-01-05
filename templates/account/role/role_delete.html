@@ -5,8 +5,15 @@
 {% endblock %}
 
 {% block panel_body %}
-        {% with search_form as form %}
-            {% include 'account/role/role_search_form.html' %}
-        {% endwith %}
-    {% include 'account/role/role_table_delete.html' %}
+    {% with search_form as form %}
+        {% include 'account/role/role_search_form.html' %}
+    {% endwith %}
+    {% with delete_form as form %}
+        {% for error in form.role_id.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'account/role/role_table_delete.html' %}
+    {% endwith %}
 {% endblock %}

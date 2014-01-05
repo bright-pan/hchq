@@ -70,3 +70,20 @@
     </div>
 {% endblock %}
 
+{% block panel_heading %}
+    <h3 class="panel-title">检查项目删除</h3>
+{% endblock %}
+
+{% block panel_body %}
+    {% with search_form as form %}
+        {% include 'check_project/check_project_search_form.html' %}
+    {% endwith %}
+    {% with delete_form as form %}
+        {% for error in form.check_project_id.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'check_project/check_project_table_delete.html' %}
+    {% endwith %}
+{% endblock %}

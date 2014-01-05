@@ -6,7 +6,14 @@
 
 {% block panel_body %}
     {% with search_form as form %}
-    {% include 'service_area/service_area_department_search_form.html' %}
+        {% include 'service_area/service_area_department_search_form.html' %}
     {% endwith %}
-    {% include 'service_area/service_area_department_table_delete.html' %}
+    {% with delete_form as form %}
+        {% for error in form.service_area_department_id.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'service_area/service_area_department_table_delete.html' %}
+    {% endwith %}
 {% endblock %}

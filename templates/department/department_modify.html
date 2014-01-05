@@ -5,8 +5,15 @@
 {% endblock %}
 
 {% block panel_body %}
-        {% with search_form as form %}
-            {% include 'department/department_search_form.html' %}
-        {% endwith %}
-    {% include 'department/department_table_modify.html' %}
+    {% with search_form as form %}
+        {% include 'department/department_search_form.html' %}
+    {% endwith %}
+    {% with modify_form as form %}
+        {% for error in form.department_name.errors %}
+            <p></p>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+        {% endfor %}
+        {% include 'department/department_table_modify.html' %}
+    {% endwith %}
 {% endblock %}
