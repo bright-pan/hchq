@@ -2,7 +2,7 @@
 
 {% block topnav %}
     {% if user.is_authenticated %}
-        <li><a href="{% url account_person_management %}">你好，{{ user.username }}</span></a></li>
+        <li><a href="{% url account_person_management %}">你好，{{ user.username }}</a></li>
         <li><a href="{% url account_logout %}">退出</a></li>
     {% else %}
         <li><a href="{% url account_login %}">登入</a></li>
@@ -11,17 +11,17 @@
     <li><a href="#">下载</a></li>
 {% endblock %}
 {% block check_project_info %}
-    {% if user.is_authenticated %}
+    <div class="text-right">
+        {% if user.is_authenticated %}
             {% load cache %} {% cache 500 check_project_nav %}
             {% if check_project != None %}
-            <span class="label label-default">{{ check_project.name }} {{ check_project.start_time|date:"Y-m-d" }} - {{ check_project.end_time|date:"Y-m-d" }} | 今天日期 {% now "Y-m-d" %}</span>
+                <span class="label label-default">{{ check_project.name }} {{ check_project.start_time|date:"Y-m-d" }} - {{ check_project.end_time|date:"Y-m-d" }} | 今天日期 {% now "Y-m-d" %}</span>
             {% else %}
                 <span class="label label-default">尚未启用项目 | 今天日期 {% now "Y-m-d" %}</span>
             {% endif %}
         {% endcache %}
-
-    {% else %}
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block nav %}

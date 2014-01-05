@@ -51,7 +51,6 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% block topnav %}{% endblock %}
                     </ul>
-                    {% block check_project_info %}{% endblock %}
                 </div>
 
                 <!--/.nav-collapse -->
@@ -62,8 +61,10 @@
 
     <div class="container theme-showcase">
         <!-- Main jumbotron for a primary marketing message or call to action -->
+        {% block check_project_info %}{% endblock %}
+
         {% block nav %}{% endblock %}
-        <p></p>
+
         {% block site_wrapper %}{% endblock %}
         <hr>
         {% load cache %} {% cache 500 footer %}

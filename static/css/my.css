@@ -1,11 +1,16 @@
 /* Body and structure
 -------------------------------------------------- */
-
 body {
     position: relative;
     padding-top: 105px;
-}
 
+    margin: 0;
+    font-family: Arial, Helvetica;
+    font-size: 12px;
+    line-height: 18px;
+    color: #333333;
+    background-color: #ffffff;
+}
 /* Code in headings */
 h3 code {
     font-size: 14px;

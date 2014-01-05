@@ -6,10 +6,10 @@
 
 {% block panel_body %}
     {% if user %}
-        <div class="col-md-9">
-            {% if user.is_superuser %}
-                <p class="lead">你是超级管理员，没有基本的用户资料！</p>
-            {% else %}
+        {% if user.is_superuser %}
+            <p class="lead">你是超级管理员，没有基本的用户资料！</p>
+        {% else %}
+            <div class="col-md-9">
                 <table class="table table-bordered table-striped table-hover">
                     <tbody>
                     <tr>
@@ -42,17 +42,16 @@
                     </tr>
                     </tbody>
                 </table>
-            {% endif %}
-        </div>
-        <div class="col-md-3">
-            <hl> {% for perm in user.groups.get.permissions.all %}
-                <li>{{ perm.name }}</li>
-            {% empty %}
-                <p class="label label-danger">该用户没有任何权限！</p>
-            {% endfor %}
-            </hl>
-        </div>
-
+            </div>
+            <div class="col-md-3">
+                <hl> {% for perm in user.groups.get.permissions.all %}
+                    <li>{{ perm.name }}</li>
+                {% empty %}
+                    <p class="label label-danger">该用户没有任何权限！</p>
+                {% endfor %}
+                </hl>
+            </div>
+        {% endif %}
     {% else %}
         <p class="lead">对不起，该用户不存在！</p>
     {% endif %}
