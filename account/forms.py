@@ -940,10 +940,11 @@ class AccountSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：未知代表所有人员'),
         )
+    is_checker.widget.attrs['class'] = 'form-control'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_fuzzy',
                                           }, 
                                    check_test=None,

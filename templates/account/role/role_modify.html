@@ -10,9 +10,10 @@
     {% endwith %}
     {% with modify_form as form %}
         {% for error in form.role_name.errors %}
-            <p></p>
+            <br>
             <div class="alert alert-danger"><p>{{ error }}</p></div>
         {% empty %}
+            <br>
         {% endfor %}
         {% include 'account/role/role_table_modify.html' %}
     {% endwith %}

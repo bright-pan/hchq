@@ -5,15 +5,18 @@
 {% endblock %}
 
 {% block panel_body %}
-    <div class="col-md-6">
-        {% with search_form as form %}
-            {% include 'service_area/service_area_search_form.html' %}
-        {% endwith %}
+    <div class="row">
+        <div class="col-md-6">
+            {% with search_form as form %}
+                {% include 'service_area/service_area_search_form.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-md-6">
+            {% with add_form as form %}
+                {% include 'service_area/service_area_add_form.html' %}
+            {% endwith %}
+        </div>
     </div>
-    <div class="col-md-6">
-        {% with add_form as form %}
-            {% include 'service_area/service_area_add_form.html' %}
-        {% endwith %}
-    </div>
+    <br>
     {% include 'service_area/service_area_table_list.html' %}
 {% endblock %}

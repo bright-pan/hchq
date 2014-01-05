@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block panel_body %}
-        {% with search_form as form %}
-            {% include 'account/role/role_search_form.html' %}
-        {% endwith %}
+    {% with search_form as form %}
+        {% include 'account/role/role_search_form.html' %}
+    {% endwith %}
+    <br>
     {% include 'account/role/role_table_list.html' %}
 {% endblock %}

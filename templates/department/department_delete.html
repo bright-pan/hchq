@@ -10,9 +10,10 @@
     {% endwith %}
     {% with delete_form as form %}
         {% for error in form.department_id.errors %}
-            <p></p>
+            <br>
             <div class="alert alert-danger"><p>{{ error }}</p></div>
         {% empty %}
+            <br>
         {% endfor %}
         {% include 'department/department_table_delete.html' %}
     {% endwith %}

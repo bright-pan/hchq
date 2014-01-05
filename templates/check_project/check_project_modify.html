@@ -10,9 +10,10 @@
     {% endwith %}
     {% with modify_form as form %}
         {% for error in form.check_project_name.errors %}
-            <p></p>
+            <br>
             <div class="alert alert-danger"><p>{{ error }}</p></div>
         {% empty %}
+            <br>
         {% endfor %}
         {% include 'check_project/check_project_table_modify.html' %}
     {% endwith %}

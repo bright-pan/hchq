@@ -10,34 +10,33 @@
             {% if user.is_superuser %}
                 <p class="lead">你是超级管理员，没有基本的用户资料！</p>
             {% else %}
-                <table class="table table-condensed">
-                    <caption>个人资料</caption>
+                <table class="table table-bordered table-striped table-hover">
                     <tbody>
-                    <tr class="{% cycle 'info' 'active' as rowcolors %}">
+                    <tr>
                         <th>个人名称</th>
                         <td>{{ user.username }}</td>
                     </tr>
-                    <tr class="{% cycle rowcolors %}">
+                    <tr>
                         <th>服务区域</th>
                         <td>{{ user.get_profile.service_area_department.service_area.name }}</td>
                     </tr>
-                    <tr class="{% cycle rowcolors %}">
+                    <tr>
                         <th>单位部门</th>
                         <td>{{ user.get_profile.service_area_department.department.name }}</td>
                     </tr>
-                    <tr class="{% cycle rowcolors %}">
+                    <tr>
                         <th>角色权限</th>
                         <td>{{ user.groups.get.name }}</td>
                     </tr>
-                    <tr class="{% cycle rowcolors %}">
+                    <tr>
                         <th>检查人员</th>
                         <td>{% if result.is_checker %}是{% else %}否{% endif %}</td>
                     </tr>
-                    <tr class="{% cycle rowcolors %}">
+                    <tr>
                         <th>登入时间</th>
                         <td>{{ user.last_login|date:"Y-m-d H:i:s" }}</td>
                     </tr>
-                    <tr class="{% cycle rowcolors %}">
+                    <tr>
                         <th>创建时间</th>
                         <td>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
                     </tr>

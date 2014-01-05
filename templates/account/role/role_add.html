@@ -5,15 +5,18 @@
 {% endblock %}
 
 {% block panel_body %}
-    <div class="col-md-6">
-        {% with search_form as form %}
-            {% include 'account/role/role_search_form.html' %}
-        {% endwith %}
+    <div class="row">
+        <div class="col-md-6">
+            {% with search_form as form %}
+                {% include 'account/role/role_search_form.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-md-6">
+            {% with add_form as form %}
+                {% include 'account/role/role_add_form.html' %}
+            {% endwith %}
+        </div>
     </div>
-    <div class="col-md-6">
-        {% with add_form as form %}
-            {% include 'account/role/role_add_form.html' %}
-        {% endwith %}
-    </div>
+    <br>
     {% include 'account/role/role_table_list.html' %}
 {% endblock %}

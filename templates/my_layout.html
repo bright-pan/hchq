@@ -2,11 +2,10 @@
 
 {% block topnav %}
     {% if user.is_authenticated %}
-        <li><a href="{% url account_person_management %}">你好，<span
-                class="label label-info">{{ user.username }}</span></a></li>
-        <li><a href="{% url account_logout %}"><span class="label label-danger">退出</span></a></li>
+        <li><a href="{% url account_person_management %}">你好，{{ user.username }}</span></a></li>
+        <li><a href="{% url account_logout %}">退出</a></li>
     {% else %}
-        <li><a href="{% url account_login %}"><span class="label label-primary">登入</span></a></li>
+        <li><a href="{% url account_login %}">登入</a></li>
     {% endif %}
     <li><a href="#">通知</a></li>
     <li><a href="#">下载</a></li>
@@ -31,7 +30,7 @@
     {% cache 500 person_layout user.username %}
         <div class="btn-group">
             <div class="btn-group">
-                <button type="button" class="btn btn-danger dropdown-toggle"
+                <button type="button" class="btn btn-default dropdown-toggle"
                         data-toggle="dropdown">
                     个人管理<span class="caret"></span>
                 </button>
@@ -44,7 +43,7 @@
             </div>
             {% if perms.department.sd_management %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         服务区域管理<span class="caret"></span>
                     </button>
@@ -56,7 +55,7 @@
                     </ul>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         单位部门管理<span class="caret"></span>
                     </button>
@@ -70,7 +69,7 @@
             {% endif %}
             {% if perms.department.role_management %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         角色权限管理<span class="caret"></span>
                     </button>
@@ -84,7 +83,7 @@
             {% endif %}
             {% if perms.department.role_management %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         检查项目管理<span class="caret"></span>
                     </button>
@@ -98,7 +97,7 @@
             {% endif %}
             {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         系统用户管理<span class="caret"></span>
                     </button>
@@ -121,7 +120,7 @@
             <!-- <a type="button" class="btn btn-info">进入系统</a> -->
             {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         检查人员管理<span class="caret"></span>
                     </button>
@@ -146,7 +145,7 @@
             {% endif %}
             {% if perms.department.cr_list or perms.department.cr_add %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         检查结果管理<span class="caret"></span>
                     </button>
@@ -166,7 +165,7 @@
             {% endif %}
             {% if perms.department.cr_report %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle"
+                    <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
                         数据报表统计<span class="caret"></span>
                     </button>

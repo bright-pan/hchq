@@ -1,0 +1,95 @@
+<form method="post" action="#">{% csrf_token %}
+    <fieldset>
+        <legend>系统用户查询参数</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group {% if form.name.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.name.label }}</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        {% for error in form.name.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.name.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group {% if form.service_area_name.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.service_area_name.label }}</label>
+                    {{ form.service_area_name }}
+                    {% if form.service_area_name.errors %}
+                        {% for error in form.service_area_name.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.service_area_name.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group {% if form.department_name.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.department_name.label }}</label>
+                    {{ form.department_name }}
+                    {% if form.department_name.errors %}
+                        {% for error in form.department_name.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.department_name.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group {% if form.role_name.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.role_name.label }}</label>
+                    {{ form.role_name }}
+                    {% if form.role_name.errors %}
+                        {% for error in form.role_name.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.role_name.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+
+                <div class="form-group {% if form.is_checker.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.is_checker.label }}</label>
+                    {{ form.is_checker }}
+                    {% if form.is_checker.errors %}
+                        {% for error in form.is_checker.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.is_checker.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="checkbox {% if form.is_fuzzy.errors %} has-error {% endif %}">
+                    <label>{{ form.is_fuzzy }}{{ form.is_fuzzy.label }}</label>
+                    {% if form.is_fuzzy.errors %}
+                        {% for error in form.password.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.is_fuzzy.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" value="查询" name="submit" class="btn btn-primary btn-lg btn-block">查询</button>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" value="导出用户报表" name="submit" class="btn btn-primary btn-lg btn-block">导出用户报表</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

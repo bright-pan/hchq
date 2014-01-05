@@ -15,19 +15,13 @@
     <!-- Bootstrap theme -->
     <link href="{{ MEDIA_URL }}dist/css/bootstrap-theme.min.css"
           rel="stylesheet">
+    <link href="{{ MEDIA_URL }}css/my.css"
+          rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
       <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-    <style id="holderjs-style" type="text/css"></style>
-
-    <style>
-        body {
-            font-family: "ff-tisa-web-pro-1", "ff-tisa-web-pro-2", "Lucida Grande", "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
-            padding-top: 105px;
-        }
-    </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -40,28 +34,30 @@
 <body style="">
 {% block body %}
     <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top " role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse"
-                        data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span> <span
-                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                        class="icon-bar"></span>
-                </button>
-                {% load cache %} {% cache 500 header %}
-                <h1><img src="{{ MEDIA_URL }}images/logo_64.png"/><span
-                        class="label label-success">{{ site_name }} BETA</span></h1> {% endcache %}
-            </div>
-            <div class="navbar-collapse collapse navbar-right">
-                <ul class="nav navbar-nav navbar-right">
-                    {% block topnav %}{% endblock %}
-                </ul>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span> <span
+                            class="icon-bar"></span> <span class="icon-bar"></span> <span
+                            class="icon-bar"></span>
+                    </button>
+                    {% load cache %} {% cache 500 header %}
+                    <h1><img src="{{ MEDIA_URL }}images/logo_64.png"/>{{ site_name }}</h1> {% endcache %}
+                </div>
+                <div class="navbar-collapse collapse navbar-right">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% block topnav %}{% endblock %}
+                    </ul>
                     {% block check_project_info %}{% endblock %}
-            </div>
+                </div>
 
-            <!--/.nav-collapse -->
+                <!--/.nav-collapse -->
+            </div>
         </div>
+
     </div>
 
     <div class="container theme-showcase">
