@@ -9,13 +9,117 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 from hchq.account.forms import *
 from hchq.untils.my_paginator import pagination_results
 from hchq.untils import gl
 from hchq import settings
 from hchq.report.user_report import user_report
+
+from hchq.check_project.models import CheckProject
+from hchq.check_object.models import CheckObject
+from hchq.check_result.models import CheckResult
+
 # Create your views here.
+import pygal
+from pygal.style import LightGreenStyle
+
+
+class MyConfig(pygal.Config):
+    width=1024
+    height=768
+    x_label_rotation=90
+    human_readable = True
+    style=LightGreenStyle
+    truncate_label=100
+    human_readable=True
+    legend_box_size=18
+
+def get_service_area_statistics():
+    service_area_statistics = {}
+    check_project = CheckProject.objects.get(is_setup=True)
+    check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                              check_project.end_time.month,
+                                              check_project.end_time.day,
+                                              23, 59, 59)
+    qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                               updated_at__lt=check_project_endtime)
+    qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
+    qs_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
+
+    service_area_statistics["qs_check_object"] = qs_check_object.count()
+    service_area_statistics["qs_check_result"] = qs_check_result.count()
+    service_area_statistics['check_project_name'] = check_project.name
+    service_area_name_list = []
+    check_object_count_list = []
+    check_count_list = []
+    pregnant_count_list = []
+    special_count_list = []
+
+    for service_area_object in qs_service_area:
+        service_area_name_list.append(service_area_object.name)
+        check_object_count = qs_check_object.filter(service_area_department__service_area=service_area_object).count()
+        check_object_count_list.append(check_object_count)
+        check_result = qs_check_result.filter(check_object__service_area_department__service_area=service_area_object)
+        check_count = check_result.count()
+        check_count_list.append(check_count)
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        pregnant_count_list.append(pregnant_count)
+        special_count = check_result.filter(result__contains='special').count()
+        special_count_list.append(special_count)
+    service_area_statistics["service_area_name"] = service_area_name_list
+    service_area_statistics["check_object_count"] = check_object_count_list
+    service_area_statistics["check_count"] = check_count_list
+    service_area_statistics["pregnant_count"] = pregnant_count_list
+    service_area_statistics["special_count"] = special_count_list
+    print service_area_statistics
+    return service_area_statistics
+
+@cache_page(60*60)
+def get_bar_chart(request, template_name = 'account/login.html', next='/'):
+    service_area_statistics = cache.get('service_area_statistics')
+    if service_area_statistics is None:
+        service_area_statistics = get_service_area_statistics()
+        cache.set('service_area_statistics', service_area_statistics, 1)
+    my_config = MyConfig()
+    bar_chart = pygal.Bar(my_config)
+    bar_chart.title = u'%s-各服务区域统计' % service_area_statistics.get('check_project_name',u'无检查项目')
+    bar_chart.x_labels = service_area_statistics["service_area_name"]
+    bar_chart.add(u"总人数", service_area_statistics["check_object_count"])
+    bar_chart.add(u'已检人数', service_area_statistics["check_count"])
+    return HttpResponse(bar_chart.render(), content_type='image/svg+xml')
+
+@cache_page(60*60)
+def get_pie_chart(request, template_name = 'account/login.html', next='/'):
+    service_area_statistics = cache.get('service_area_statistics')
+    if service_area_statistics is None:
+        service_area_statistics = get_service_area_statistics()
+        cache.set('service_area_statistics', service_area_statistics, 1)
+    my_config = MyConfig()
+    pie_chart = pygal.Pie(my_config)
+    pie_chart.title = u'%s-总完成度' % service_area_statistics.get('check_project_name',u'无检查项目')
+    pie_chart.add(u'已检人员', service_area_statistics.get('qs_check_result',0)*1.0/service_area_statistics.get('qs_check_object',1))
+    pie_chart.add(u'未检人员', (service_area_statistics.get('qs_check_object',0) - service_area_statistics.get('qs_check_result',0))*1.0/service_area_statistics.get('qs_check_object',1))
+    return HttpResponse(pie_chart.render(), content_type='image/svg+xml')
+
+@cache_page(60*60)
+def get_dot_chart(request, template_name = 'account/login.html', next='/'):
+    service_area_statistics = cache.get('service_area_statistics')
+    if service_area_statistics is None:
+        service_area_statistics = get_service_area_statistics()
+        cache.set('service_area_statistics', service_area_statistics, 1)
+    my_config = MyConfig()
+    dot_chart = pygal.Dot(my_config)
+    dot_chart.title = u'%s-各类人数统计' % service_area_statistics.get('check_project_name',u'无检查项目')
+    dot_chart.x_labels = service_area_statistics["service_area_name"]
+    dot_chart.add(u"总人数", service_area_statistics["check_object_count"])
+    dot_chart.add(u'已检人数', service_area_statistics["check_count"])
+    dot_chart.add(u'有孕人数', service_area_statistics["pregnant_count"])
+    dot_chart.add(u'特检人数', service_area_statistics["special_count"])
+    return HttpResponse(dot_chart.render(), content_type='image/svg+xml')
+
 def my_layout_test(request, template_name = 'my.html'):
     return render_to_response(template_name, context_instance=RequestContext(request))
 

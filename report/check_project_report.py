@@ -635,7 +635,9 @@ def check_project_report(query_set=None, request=None, has_department_info=False
     return response
 
 def check_object_check_service_area_report(query_set=None, request=None, check_project_id=None):
-
+    response = cache.get('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -652,9 +654,7 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -748,7 +748,9 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
     return response
 
 def check_object_check_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -765,9 +767,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -831,7 +831,9 @@ def check_object_check_service_area_department_report(query_set=None, request=No
     return response
 
 def check_object_not_service_area_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -849,13 +851,9 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
-        
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
@@ -949,7 +947,9 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
     return response
 
 def check_object_not_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -966,9 +966,7 @@ def check_object_not_service_area_department_report(query_set=None, request=None
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1034,7 +1032,9 @@ def check_object_not_service_area_department_report(query_set=None, request=None
     cache.set('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 def check_object_service_area_has_pregnant_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1051,9 +1051,6 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1147,7 +1144,9 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
     return response
 
 def check_object_service_area_department_has_pregnant_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1164,9 +1163,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1229,7 +1226,9 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
     cache.set('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 def check_object_service_area_has_special_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1246,9 +1245,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1342,7 +1339,9 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
     return response
 
 def check_object_service_area_department_has_special_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1359,9 +1358,7 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1425,7 +1422,9 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
     return response
 
 def check_object_service_area_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1438,9 +1437,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1536,6 +1533,9 @@ def check_object_service_area_report(query_set=None, request=None, check_project
 
 def check_object_service_area_department_report(query_set=None, request=None, check_project_id=None):
     #print check_project_id
+    response = cache.get('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1552,9 +1552,7 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1611,7 +1609,7 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
+        cover_report.generate_by(PDFGenerator, filename=cover_report.titl)
         return response
 
     cache.set('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)

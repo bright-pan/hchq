@@ -9,10 +9,19 @@ urlpatterns = patterns('hchq.account.views',
 #      (r'^account/logout$', logout, {'template_name' : 'account/logout.html'}),
 #      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
 #      (r'^account/login$', login, {'template_name' : 'account/login.html'}),
-                        
+       (r'get_bar_chart/',
+       'get_bar_chart',
+        {'template_name' : 'index.html', 'next': '/account/person_management', },
+       'get_bar_chart'),
+       (r'get_pie_chart/',
+       'get_pie_chart',
+        {'template_name' : 'index.html', 'next': '/account/person_management', },
+       'get_pie_chart'),
+       (r'get_dot_chart/',
+       'get_dot_chart',
+        {'template_name' : 'index.html', 'next': '/account/person_management', },
+       'get_dot_chart'),
 )
-
-
 urlpatterns += patterns('hchq.account.views',
 
       (r'role_add/(?P<role_page>\d{1,4})/$',
@@ -59,7 +68,6 @@ urlpatterns += patterns('hchq.account.views',
        'role_name_ajax',
         {'template_name' : 'account/role/role_permission_list.html', 'next': '/account/person_management', },
        'role_name_ajax'),
-
 )
 
 urlpatterns += patterns('hchq.account.views',

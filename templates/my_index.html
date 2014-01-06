@@ -2,6 +2,7 @@
 
 {% block check_project_info %}
 {% endblock %}
+
 {% block nav %}
 {% endblock %}
 
@@ -23,17 +24,17 @@
         <div class="carousel-inner">
             <div class="item active">
                 <p class="text-center">
-                    <img alt="" src="{{ MEDIA_URL }}images/logo/1.png">
+                    <embed src="{% url get_bar_chart %}" type="image/svg+xml" width="800" height="600" />
                 </p>
             </div>
             <div class="item">
                 <p class="text-center">
-                    <img alt="" src="{{ MEDIA_URL }}images/logo/2.png">
+                    <embed src="{% url get_pie_chart %}" type="image/svg+xml" width="800" height="600" />
                 </p>
             </div>
             <div class="item">
                 <p class="text-center">
-                    <img alt="" src="{{ MEDIA_URL }}images/logo/3.png">
+                    <embed src="{% url get_dot_chart %}" type="image/svg+xml" width="800" height="600" />
                 </p>
             </div>
         </div>
