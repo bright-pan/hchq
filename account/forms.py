@@ -538,7 +538,7 @@ class AccountAddForm(forms.Form):
     is_checker = forms.CharField(
         required=True,
         label =_(u'检查人员'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_checker',
                                           }, 
                                    check_test=None,
@@ -736,7 +736,7 @@ class AccountDetailModifyForm(forms.Form):
     is_checker = forms.CharField(
         required=True,
         label =_(u'检查人员'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_checker',
                                           }, 
                                    check_test=None,

@@ -74,7 +74,7 @@
                 <div class="checkbox {% if form.is_fuzzy.errors %} has-error {% endif %}">
                     <label>{{ form.is_fuzzy }}{{ form.is_fuzzy.label }}</label>
                     {% if form.is_fuzzy.errors %}
-                        {% for error in form.password.errors %}
+                        {% for error in form.is_fuzzy.errors %}
                             <span class="help-block badge">{{ error }}</span>
                         {% endfor %}
                     {% else %}

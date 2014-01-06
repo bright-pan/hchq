@@ -3,37 +3,42 @@
 {% block panel_heading %}
     <h3 class="panel-title">检查项目详细编辑</h3>
 {% endblock %}
-<p class="form-control-static">email@example.com</p>
+
 {% block panel_body %}
     {% with detail_modify_form as form %}
         <form class="table">{% csrf_token %}
             <fieldset>
                 <legend>检查项目 {{ check_project_name }} 编辑</legend>
-                <div class="form-group {% if form.check_project_start_time.errors %} has-error {% endif %}">
-                    <label class="control-label">{{ form.check_project_start_time.label }}</label>
-                    {{ form.check_project_start_time }}
-                    {% if form.check_project_start_time.errors %}
-                        {% for error in form.check_project_start_time.errors %}
-                            <span class="help-block badge">{{ error }}</span>
-                        {% endfor %}
-                    {% else %}
-                        <span class="help-block">{{ form.check_project_start_time.help_text }}</span>
-                    {% endif %}
-                </div>
-                <div class="form-group {% if form.check_project_end_time.errors %} has-error {% endif %}">
-                    <label class="control-label">{{ form.check_project_end_time.label }}</label>
-                    {{ form.check_project_end_time }}
-                    {% if form.check_project_end_time.errors %}
-                        {% for error in form.check_project_end_time.errors %}
-                            <span class="help-block badge">{{ error }}</span>
-                        {% endfor %}
-                    {% else %}
-                        <span class="help-block">{{ form.check_project_end_time.help_text }}</span>
-                    {% endif %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group {% if form.check_project_start_time.errors %} has-error {% endif %}">
+                            <label class="control-label">{{ form.check_project_start_time.label }}</label>
+                            {{ form.check_project_start_time }}
+                            {% if form.check_project_start_time.errors %}
+                                {% for error in form.check_project_start_time.errors %}
+                                    <span class="help-block badge">{{ error }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="help-block">{{ form.check_project_start_time.help_text }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group {% if form.check_project_end_time.errors %} has-error {% endif %}">
+                            <label class="control-label">{{ form.check_project_end_time.label }}</label>
+                            {{ form.check_project_end_time }}
+                            {% if form.check_project_end_time.errors %}
+                                {% for error in form.check_project_end_time.errors %}
+                                    <span class="help-block badge">{{ error }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="help-block">{{ form.check_project_end_time.help_text }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
                 {{ form.check_project_id }}
-                <button type="submit" value="修改" name="submit" class="btn btn-primary">修改</button>
-                </div>
+                <button type="submit" value="修改" name="submit" class="btn btn-primary btn-block">修改</button>
             </fieldset>
         </form>
     {% endwith %}

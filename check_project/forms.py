@@ -35,6 +35,7 @@ class CheckProjectAddForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_start_time.widget.attrs['class'] = 'form-control'
     check_project_end_time = forms.DateField(
         required=True,
         label=_(u'结束时间'),
@@ -42,6 +43,7 @@ class CheckProjectAddForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_end_time.widget.attrs['class'] = 'form-control'
     def clean_check_project_name(self):
         try:
             self.check_project_name_copy = self.data.get('check_project_name')
@@ -147,6 +149,7 @@ class CheckProjectDetailModifyForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_start_time.widget.attrs['class'] = 'form-control'
     check_project_end_time = forms.DateField(
         required=True,
         label=_(u'结束时间'),
@@ -154,6 +157,7 @@ class CheckProjectDetailModifyForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_end_time.widget.attrs['class'] = 'form-control'
     check_project_id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.check_project_name_error_messages,

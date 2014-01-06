@@ -1,70 +1,64 @@
 {% extends "account/management/account_layout.html" %}
 
-{% block site_wrapper %}
-    <!-- Insert your subtemplate content here -->
-    <h3>系统用户详情</h3>
-    <hr>
+{% block panel_heading %}
+    <h3 class="panel-title">系统用户详情</h3>
+{% endblock %}
+
+{% block panel_body %}
     {% if success %}
-        <p class="important">系统用户【{{ result.user.username }}】密码已成功重置！</p>
+        <div class="alert alert-danger"><p>系统用户 {{ result.user.username }} 密码已成功重置！</p></div>
     {% else %}
     {% endif %}
-
-
     {% if result %}
-        <div class="note">
-            <table border="0" cellpadding="0" cellspacing="0" class="full">
-                <caption>
-                    系统用户
-                </caption>
+            <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
-                    <th scope="col" colspan="2">{{ result.user.username }}</th>
+                    <th colspan="2">{{ result.user.username }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row" class="sub">用户名称</th>
-                    <td class="odd">{{ result.user.username }}</td>
+                    <th>用户名称</th>
+                    <td>{{ result.user.username }}</td>
                 </tr>
                 <tr>
-                    <th scope="row" class="sub">服务区域</th>
-                    <td class="even">{{ result.service_area_department.service_area.name }}</td>
+                    <th>服务区域</th>
+                    <td>{{ result.service_area_department.service_area.name }}</td>
                 </tr>
                 <tr>
-                    <th scope="row" class="sub">单位部门</th>
-                    <td class="odd">{{ result.service_area_department.department.name }}</td>
+                    <th>单位部门</th>
+                    <td>{{ result.service_area_department.department.name }}</td>
                 </tr>
                 <tr>
-                    <th scope="row" class="sub">角色权限</th>
-                    <td class="even">{{ result.user.groups.get.name }}</td>
+                    <th>角色权限</th>
+                    <td>{{ result.user.groups.get.name }}</td>
                 </tr>
                 <tr>
-                    <th scope="row" class="sub">检查人员</th>
-                    <td class="odd">{% if result.is_checker %}是{% else %}否{% endif %}</td>
+                    <th>检查人员</th>
+                    <td>{% if result.is_checker %}是{% else %}否{% endif %}</td>
 
                 </tr>
                 <tr>
-                    <th scope="row" class="sub">联系方式</th>
-                    <td class="odd">{{ result.contact }}</td>
+                    <th>联系方式</th>
+                    <td>{{ result.contact }}</td>
 
                 </tr>
 
                 <tr>
-                    <th scope="row" class="sub">登入时间</th>
-                    <td class="even">{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
+                    <th>登入时间</th>
+                    <td>{{ result.user.last_login|date:"Y-m-d H:i:s" }}</td>
                 </tr>
                 <tr>
-                    <th scope="row" class="sub">创建时间</th>
-                    <td class="odd">{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
+                    <th>创建时间</th>
+                    <td>{{ result.user.date_joined|date:"Y-m-d H:i:s" }}</td>
                 </tr>
                 {% if perms.department.account_modify %}
                     <tr>
-                        <th scope="row" class="sub">密码重置</th>
-                        <td class="even">{% if success %}
+                        <th>密码重置</th>
+                        <td>{% if success %}
                             已经重置{% else %}
                             <form method="post" action=".">{% csrf_token %}
-                                <input type="submit" name="submit" value="密码重置"
-                                       class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                                <button type="submit" value="密码重置" name="submit" class="btn btn-primary">密码重置</button>
                             </form>
                         {% endif %}
                         </td>
@@ -72,9 +66,7 @@
                 {% endif %}
                 </tbody>
             </table>
-        </div>
     {% else %}
-        <p class="warning">对不起，该服务区不存在！</p>
+        <p class="lead">对不起，该服务区不存在！</p>
     {% endif %}
 {% endblock %}
-
