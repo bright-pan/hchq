@@ -405,22 +405,15 @@ def department_name_ajax(request, template_name='my.html', next='/'):
     if request.is_ajax():
         result = []
         if request.method == 'GET':
-
             if request.GET.has_key('service_area_name'):
                 service_area_name = request.GET['service_area_name']
-#                print '***********************'
-#                print type(service_area_name)
+                query_set = Department.objects.filter(is_active=True)
                 if service_area_name == u'':
-#                    print '******************8'
                     pass
                 else:    
-                    query_set = Department.objects.filter(is_active=True,
-                                                          department_to_service_area__service_area__name=service_area_name,
-                                                          department_to_service_area__is_active=True).order_by('name')
-                    result = [ x.name for x in query_set]
-#                    print '$$$$$$$$$$$$$'
-#                    print result
-
+                    query_set = query_set.filter(department_to_service_area__service_area__name=service_area_name,
+                                                 department_to_service_area__is_active=True).order_by('name')
+                result = [ x.name for x in query_set]
             else:
                 pass
         else:

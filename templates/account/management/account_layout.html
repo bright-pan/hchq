@@ -1,85 +1,63 @@
 {% extends "my_layout.html" %}
 {% load cache %}
 {% cache 500 account_layout_media %}
-    {% block media %}
-        <link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css"/>
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $.getJSON("{% url role_name_ajax %}",
-                        {
-                        },
-                        function (data) {
-                            $("#id_role_name").autocomplete(data, {
-                                minChars: 0,
-                                max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                matchContains: true,
-                                scrollHeight: 220,
-                                formatItem: function (data, i, total) {
-                                    // don't show the current month in the list of values (for whatever reason)
-                                    //if ( data[0] == months[new Date().getMonth()] )
-                                    //return false;
-                                    return data[0];
-                                }
-                            });
-
+    {% block css_media %}
+        <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
+    {% endblock %}
+    {% block js_media %}
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
+        <script>
+            $(function () {
+                $("#id_service_area_name").click(function () {
+                    $.getJSON("{% url service_area_name_ajax %}", function
+                            (json) {
+                        $("#id_service_area_name").autocomplete({
+                            minLength: 0,
+                            source: json,
+                            focus: function (event, ui) {
+                                $("#id_service_area_name").val(ui.item.value);
+                                return false;
+                            },
+                            select: function (event, ui) {
+                                $("#id_service_area_name").val(ui.item.value);
+                                return false;
+                            }
                         });
-                $.getJSON("{% url service_area_name_ajax %}",
-                        {
-                        },
-                        function (data) {
-                            $("#id_service_area_name").autocomplete(data, {
-                                minChars: 0,
-                                max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                matchContains: true,
-                                scrollHeight: 220,
-                                formatItem: function (data, i, total) {
-                                    // don't show the current month in the list of values (for whatever reason)
-                                    //if ( data[0] == months[new Date().getMonth()] )
-                                    //return false;
-                                    return data[0];
-                                }
-                            });
-
-                        });
-                service_area_name_old = '';
-                $("#id_department_name").focus(function () {
-
-                    service_area_name = $("#id_service_area_name").val();
-                    if (service_area_name != '' && service_area_name != service_area_name_old) {
-//                                        alert('********');
-                        service_area_name_old = service_area_name;
-                        $("#id_department_name").unautocomplete();
-                        $.getJSON("{% url department_name_ajax %}",
-                                {
-                                    service_area_name: $("#id_service_area_name").val()
-                                },
-                                function (data) {
-                                    $("#id_department_name").autocomplete(data, {
-                                        minChars: 0,
-                                        max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                        matchContains: true,
-                                        scrollHeight: 220,
-                                        formatItem: function (data, i, total) {
-                                            // don't show the current month in the list of values (for whatever reason)
-                                            //if ( data[0] == months[new Date().getMonth()] )
-                                            //return false;
-                                            return data[0];
-                                        }
-                                    });
-
-                                });
-
-                    }
-
+                    });
                 });
-
+                $("#id_department_name").click(function () {
+                    $.getJSON("{% url department_name_ajax %}",
+                            {service_area_name: $("#id_service_area_name").val()}, function (json) {
+                                $("#id_department_name").autocomplete({
+                                    minLength: 0,
+                                    source: json,
+                                    focus: function (event, ui) {
+                                        $("#id_department_name").val(ui.item.value);
+                                        return false;
+                                    },
+                                    select: function (event, ui) {
+                                        $("#id_department_name").val(ui.item.value);
+                                        return false;
+                                    }
+                                });
+                            });
+                });
+                $("#id_role_name").click(function () {
+                    $.getJSON("{% url role_name_ajax %}", function (json) {
+                        $("#id_role_name").autocomplete({
+                            minLength: 0,
+                            source: json,
+                            focus: function (event, ui) {
+                                $("#id_role_name").val(ui.item.value);
+                                return false;
+                            },
+                            select: function (event, ui) {
+                                $("#id_role_name").val(ui.item.value);
+                                return false;
+                            }
+                        });
+                    });
+                });
             });
         </script>
     {% endblock %}
