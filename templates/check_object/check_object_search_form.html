@@ -1,0 +1,243 @@
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">检查对象查询条件</button>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">检查对象查询条件</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="#">{% csrf_token %}
+                    <fieldset>
+                    <legend>检查对象查询参数</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.name.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    {% for error in form.name.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.name.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.service_area_name.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.service_area_name.label }}</label>
+                                {{ form.service_area_name }}
+                                {% if form.service_area_name.errors %}
+                                    {% for error in form.service_area_name.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.service_area_name.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.department_name.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.department_name.label }}</label>
+                                {{ form.department_name }}
+                                {% if form.department_name.errors %}
+                                    {% for error in form.department_name.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.department_name.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.id_number.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.id_number.label }}</label>
+                                {{ form.id_number }}
+                                {% if form.id_number.errors %}
+                                    {% for error in form.id_number.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.id_number.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.is_family.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.is_family.label }}</label>
+                                {{ form.is_family }}
+                                {% if form.is_family.errors %}
+                                    {% for error in form.is_family.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.is_family.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="checkbox {% if form.is_fuzzy.errors %} has-error {% endif %}">
+                                <label>{{ form.is_fuzzy }}{{ form.is_fuzzy.label }}</label>
+                                {% if form.is_fuzzy.errors %}
+                                    {% for error in form.is_fuzzy.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.is_fuzzy.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.mate_name.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.mate_name.label }}</label>
+                                {{ form.mate_name }}
+                                {% if form.mate_name.errors %}
+                                    {% for error in form.mate_name.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.mate_name.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.mate_service_area_name.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.mate_service_area_name.label }}</label>
+                                {{ form.mate_service_area_name }}
+                                {% if form.mate_service_area_name.errors %}
+                                    {% for error in form.mate_service_area_name.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.mate_service_area_name.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.mate_department_name.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.mate_department_name.label }}</label>
+                                {{ form.mate_department_name }}
+                                {% if form.mate_department_name.errors %}
+                                    {% for error in form.mate_department_name.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.mate_department_name.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.mate_id_number.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.mate_id_number.label }}</label>
+                                {{ form.mate_id_number }}
+                                {% if form.mate_id_number.errors %}
+                                    {% for error in form.mate_id_number.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.mate_id_number.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.wedding_time.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.wedding_time.label }}</label>
+                                {{ form.wedding_time }}
+                                {% if form.wedding_time.errors %}
+                                    {% for error in form.wedding_time.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.wedding_time.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.ctp_method.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.ctp_method.label }}</label>
+                                {{ form.ctp_method }}
+                                {% if form.ctp_method.errors %}
+                                    {% for error in form.ctp_method.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.ctp_method.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.ctp_method_time.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.ctp_method_time.label }}</label>
+                                {{ form.ctp_method_time }}
+                                {% if form.ctp_method_time.errors %}
+                                    {% for error in form.ctp_method_time.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.ctp_method_time.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.modify_start_time.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.modify_start_time.label }}</label>
+                                {{ form.modify_start_time }}
+                                {% if form.modify_start_time.errors %}
+                                    {% for error in form.modify_start_time.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.modify_start_time.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group {% if form.modify_end_time.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.modify_end_time.label }}</label>
+                                {{ form.modify_end_time }}
+                                {% if form.modify_end_time.errors %}
+                                    {% for error in form.modify_end_time.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.modify_end_time.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" value="查询" name="submit" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">查询</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" value="打印检查对象报表" name="submit" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">打印检查对象报表</button>
+                        </div>
+                    </div>
+                    </fieldset>
+                </form>
+
+            </div>
+            {% comment %}<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>{% endcomment %}
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+

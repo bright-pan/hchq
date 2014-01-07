@@ -47,6 +47,7 @@ class CheckObjectAddForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
@@ -71,7 +72,7 @@ class CheckObjectAddForm(forms.Form):
         required=True,
         label =_(u'家属'),
         help_text=_(u'例如：对象没有单位则打勾'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
                                           }, 
                                    check_test=None,
@@ -95,6 +96,7 @@ class CheckObjectAddForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=True,
@@ -126,6 +128,7 @@ class CheckObjectAddForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -133,6 +136,7 @@ class CheckObjectAddForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -140,6 +144,7 @@ class CheckObjectAddForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    wedding_time.widget.attrs['class'] = 'form-control'
     address = forms.CharField(
         max_length=128,
         required=False,
@@ -570,6 +575,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
@@ -594,7 +600,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         required=True,
         label =_(u'家属'),
         help_text=_(u'例如：对象没有单位则打勾'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
                                           }, 
                                    check_test=None,
@@ -618,6 +624,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=True,
@@ -649,6 +656,7 @@ class CheckObjectDetailModifyForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -656,6 +664,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -663,6 +672,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    wedding_time.widget.attrs['class'] = 'form-control'
     address = forms.CharField(
         max_length=128,
         required=False,
@@ -1284,6 +1294,7 @@ class CheckObjectSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=False,
@@ -1313,7 +1324,7 @@ class CheckObjectSearchForm(forms.Form):
                  (u'false', u'否'),
                  ),
         )
-
+    is_family.widget.attrs['class'] = 'form-control'
     mate_name = forms.CharField(
         max_length=64,
         required=False,
@@ -1332,6 +1343,7 @@ class CheckObjectSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=False,
@@ -1364,6 +1376,7 @@ class CheckObjectSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
     del_reason = forms.ChoiceField(
         required=True,
         label =_(u'删除原因'),
@@ -1375,6 +1388,7 @@ class CheckObjectSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    del_reason.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -1382,6 +1396,7 @@ class CheckObjectSearchForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -1389,23 +1404,25 @@ class CheckObjectSearchForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    wedding_time.widget.attrs['class'] = 'form-control'
     modify_start_time = forms.DateField(
         required=False,
         label=_(u'修改开始时间'),
         help_text=_(u'例如：2010-10-25'),
         input_formats = ('%Y-%m-%d',)
         )
+    modify_start_time.widget.attrs['class'] = 'form-control'
     modify_end_time  = forms.DateField(
         required=False,
         label=_(u'修改结束时间'),
         help_text=_(u'例如：2010-10-25'),
         input_formats = ('%Y-%m-%d',)
         )
-
+    modify_end_time.widget.attrs['class'] = 'form-control'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_fuzzy',
                                           }, 
                                    check_test=None,
