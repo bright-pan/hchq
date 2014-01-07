@@ -7,7 +7,7 @@ from hchq import settings
 
 urlpatterns = patterns('hchq.account.views',
     # Example:
-    (r'^$', 'my_layout_test', {'template_name' : 'my.html'}, 'hchq_index'),
+    (r'^$', 'my_layout_test', {'template_name' : 'my_index.html'}, 'hchq_index'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

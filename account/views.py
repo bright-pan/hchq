@@ -32,57 +32,55 @@ class MyConfig(pygal.Config):
     height=768
     x_label_rotation=90
     human_readable = True
-    style=LightGreenStyle
     truncate_label=100
-    human_readable=True
+    margin = 60
     legend_box_size=18
+    style=LightGreenStyle
 
 def get_service_area_statistics():
-    service_area_statistics = {}
-    check_project = CheckProject.objects.get(is_setup=True)
-    check_project_endtime = datetime.datetime(check_project.end_time.year,
-                                              check_project.end_time.month,
-                                              check_project.end_time.day,
-                                              23, 59, 59)
-    qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                               updated_at__lt=check_project_endtime)
-    qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
-    qs_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
+    service_area_statistics = cache.get('service_area_statistics')
+    if service_area_statistics is None:
+        service_area_statistics = {}
+        check_project = CheckProject.objects.get(is_setup=True)
+        check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                  check_project.end_time.month,
+                                                  check_project.end_time.day,
+                                                  23, 59, 59)
+        qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                   updated_at__lt=check_project_endtime)
+        qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
+        qs_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
 
-    service_area_statistics["qs_check_object"] = qs_check_object.count()
-    service_area_statistics["qs_check_result"] = qs_check_result.count()
-    service_area_statistics['check_project_name'] = check_project.name
-    service_area_name_list = []
-    check_object_count_list = []
-    check_count_list = []
-    pregnant_count_list = []
-    special_count_list = []
-
-    for service_area_object in qs_service_area:
-        service_area_name_list.append(service_area_object.name)
-        check_object_count = qs_check_object.filter(service_area_department__service_area=service_area_object).count()
-        check_object_count_list.append(check_object_count)
-        check_result = qs_check_result.filter(check_object__service_area_department__service_area=service_area_object)
-        check_count = check_result.count()
-        check_count_list.append(check_count)
-        pregnant_count = check_result.filter(result__startswith='pregnant').count()
-        pregnant_count_list.append(pregnant_count)
-        special_count = check_result.filter(result__contains='special').count()
-        special_count_list.append(special_count)
-    service_area_statistics["service_area_name"] = service_area_name_list
-    service_area_statistics["check_object_count"] = check_object_count_list
-    service_area_statistics["check_count"] = check_count_list
-    service_area_statistics["pregnant_count"] = pregnant_count_list
-    service_area_statistics["special_count"] = special_count_list
-    print service_area_statistics
+        service_area_statistics["qs_check_object"] = qs_check_object.count()
+        service_area_statistics["qs_check_result"] = qs_check_result.count()
+        service_area_statistics['check_project_name'] = check_project.name
+        service_area_name_list = []
+        check_object_count_list = []
+        check_count_list = []
+        pregnant_count_list = []
+        special_count_list = []
+        for service_area_object in qs_service_area:
+            service_area_name_list.append(service_area_object.name)
+            check_object_count = qs_check_object.filter(service_area_department__service_area=service_area_object).count()
+            check_object_count_list.append(check_object_count)
+            check_result = qs_check_result.filter(check_object__service_area_department__service_area=service_area_object)
+            check_count = check_result.count()
+            check_count_list.append(check_count)
+            pregnant_count = check_result.filter(result__startswith='pregnant').count()
+            pregnant_count_list.append(pregnant_count)
+            special_count = check_result.filter(result__contains='special').count()
+            special_count_list.append(special_count)
+        service_area_statistics["service_area_name"] = service_area_name_list
+        service_area_statistics["check_object_count"] = check_object_count_list
+        service_area_statistics["check_count"] = check_count_list
+        service_area_statistics["pregnant_count"] = pregnant_count_list
+        service_area_statistics["special_count"] = special_count_list
+        cache.set('service_area_statistics', service_area_statistics, 2*60*60)
     return service_area_statistics
 
 @cache_page(60*60)
 def get_bar_chart(request, template_name = 'account/login.html', next='/'):
-    service_area_statistics = cache.get('service_area_statistics')
-    if service_area_statistics is None:
-        service_area_statistics = get_service_area_statistics()
-        cache.set('service_area_statistics', service_area_statistics, 1)
+    service_area_statistics = get_service_area_statistics()
     my_config = MyConfig()
     bar_chart = pygal.Bar(my_config)
     bar_chart.title = u'%s-各服务区域统计' % service_area_statistics.get('check_project_name',u'无检查项目')
@@ -93,10 +91,7 @@ def get_bar_chart(request, template_name = 'account/login.html', next='/'):
 
 @cache_page(60*60)
 def get_pie_chart(request, template_name = 'account/login.html', next='/'):
-    service_area_statistics = cache.get('service_area_statistics')
-    if service_area_statistics is None:
-        service_area_statistics = get_service_area_statistics()
-        cache.set('service_area_statistics', service_area_statistics, 1)
+    service_area_statistics = get_service_area_statistics()
     my_config = MyConfig()
     pie_chart = pygal.Pie(my_config)
     pie_chart.title = u'%s-总完成度' % service_area_statistics.get('check_project_name',u'无检查项目')
@@ -106,10 +101,7 @@ def get_pie_chart(request, template_name = 'account/login.html', next='/'):
 
 @cache_page(60*60)
 def get_dot_chart(request, template_name = 'account/login.html', next='/'):
-    service_area_statistics = cache.get('service_area_statistics')
-    if service_area_statistics is None:
-        service_area_statistics = get_service_area_statistics()
-        cache.set('service_area_statistics', service_area_statistics, 1)
+    service_area_statistics = get_service_area_statistics()
     my_config = MyConfig()
     dot_chart = pygal.Dot(my_config)
     dot_chart.title = u'%s-各类人数统计' % service_area_statistics.get('check_project_name',u'无检查项目')
