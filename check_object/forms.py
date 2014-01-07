@@ -60,7 +60,7 @@ class CheckObjectAddForm(forms.Form):
     department_name = forms.CharField(
         max_length=128,
         required=True, 
-        label=_(u'单位部门(*)'), 
+        label=_(u'单位部门(*)'),
         widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
@@ -159,7 +159,7 @@ class CheckObjectAddForm(forms.Form):
     children_1_name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'姓名'), 
+        label=_(u'孩子1姓名'),
         widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
@@ -173,17 +173,18 @@ class CheckObjectAddForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_1_sex.widget.attrs['class'] = 'form-control'
     children_1_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_1_id_number.widget.attrs['class'] = 'form-control'
     children_2_name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'姓名'), 
+        label=_(u'孩子2姓名'),
         widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
@@ -197,17 +198,18 @@ class CheckObjectAddForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_2_sex.widget.attrs['class'] = 'form-control'
     children_2_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_2_id_number.widget.attrs['class'] = 'form-control'
     children_3_name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'姓名'), 
+        label=_(u'孩子3姓名'),
         widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
@@ -221,13 +223,14 @@ class CheckObjectAddForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_3_sex.widget.attrs['class'] = 'form-control'
     children_3_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_3_id_number.widget.attrs['class'] = 'form-control'
     def clean_name(self):
         try:
             name_copy = self.data.get('name')

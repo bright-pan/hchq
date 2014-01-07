@@ -1,64 +1,62 @@
 {% extends "my_layout.html" %}
-{% load cache %}
-{% cache 500 account_layout_media %}
-    {% block css_media %}
-        <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
-    {% endblock %}
-    {% block js_media %}
-        <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
-        <script>
-            $(function () {
-                $("#id_service_area_name").click(function () {
-                    $.getJSON("{% url service_area_name_ajax %}", function
-                            (json) {
-                        $("#id_service_area_name").autocomplete({
-                            minLength: 0,
-                            source: json,
-                            focus: function (event, ui) {
-                                $("#id_service_area_name").val(ui.item.value);
-                                return false;
-                            },
-                            select: function (event, ui) {
-                                $("#id_service_area_name").val(ui.item.value);
-                                return false;
-                            }
-                        });
-                    });
-                });
-                $("#id_department_name").click(function () {
-                    $.getJSON("{% url department_name_ajax %}",
-                            {service_area_name: $("#id_service_area_name").val()}, function (json) {
-                                $("#id_department_name").autocomplete({
-                                    minLength: 0,
-                                    source: json,
-                                    focus: function (event, ui) {
-                                        $("#id_department_name").val(ui.item.value);
-                                        return false;
-                                    },
-                                    select: function (event, ui) {
-                                        $("#id_department_name").val(ui.item.value);
-                                        return false;
-                                    }
-                                });
-                            });
-                });
-                $("#id_role_name").click(function () {
-                    $.getJSON("{% url role_name_ajax %}", function (json) {
-                        $("#id_role_name").autocomplete({
-                            minLength: 0,
-                            source: json,
-                            focus: function (event, ui) {
-                                $("#id_role_name").val(ui.item.value);
-                                return false;
-                            },
-                            select: function (event, ui) {
-                                $("#id_role_name").val(ui.item.value);
-                                return false;
-                            }
-                        });
+
+{% block css_media %}
+    <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block js_media %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
+    <script>
+        $(function () {
+            $("#id_service_area_name").click(function () {
+                $.getJSON("{% url service_area_name_ajax %}", function
+                        (json) {
+                    $("#id_service_area_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        }
                     });
                 });
             });
-        </script>
-    {% endblock %}
-{% endcache %}
+            $("#id_department_name").click(function () {
+                $.getJSON("{% url department_name_ajax %}",
+                        {service_area_name: $("#id_service_area_name").val()}, function (json) {
+                            $("#id_department_name").autocomplete({
+                                minLength: 0,
+                                source: json,
+                                focus: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                },
+                                select: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                }
+                            });
+                        });
+            });
+            $("#id_role_name").click(function () {
+                $.getJSON("{% url role_name_ajax %}", function (json) {
+                    $("#id_role_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_role_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_role_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

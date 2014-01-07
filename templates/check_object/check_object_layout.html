@@ -1,1 +1,167 @@
 {% extends "my_layout.html" %}
+
+{% block css_media %}
+    <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block js_media %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jpegcam/webcam.js"></script>
+
+    <script>
+        $(function () {
+            $("#id_service_area_name").click(function () {
+                $.getJSON("{% url service_area_name_ajax %}", function
+                        (json) {
+                    $("#id_service_area_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
+            $("#id_department_name").click(function () {
+                $.getJSON("{% url department_name_ajax %}",
+                        {service_area_name: $("#id_service_area_name").val()}, function (json) {
+                            $("#id_department_name").autocomplete({
+                                minLength: 0,
+                                source: json,
+                                focus: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                },
+                                select: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                }
+                            });
+                        });
+            });
+            $("#id_mate_service_area_name").click(function () {
+                $.getJSON("{% url service_area_name_ajax %}", function
+                        (json) {
+                    $("#id_mate_service_area_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_mate_service_area_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_mate_service_area_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
+            $("#id_mate_department_name").click(function () {
+                $.getJSON("{% url department_name_ajax %}",
+                        {service_area_name: $("#id_mate_service_area_name").val()}, function (json) {
+                            $("#id_mate_department_name").autocomplete({
+                                minLength: 0,
+                                source: json,
+                                focus: function (event, ui) {
+                                    $("#id_mate_department_name").val(ui.item.value);
+                                    return false;
+                                },
+                                select: function (event, ui) {
+                                    $("#id_mate_department_name").val(ui.item.value);
+                                    return false;
+                                }
+                            });
+                        });
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            var photo_ready = false;
+
+            webcam.set_swf_url("{{ MEDIA_URL }}js/jpegcam/webcam.swf");
+            webcam.set_quality(90); // JPEG quality (1 - 100)
+            webcam.set_shutter_sound(true, "{{ MEDIA_URL }}js/jpegcam/shutter.mp3"); // play shutter click sound
+            webcam.set_api_url("{% url check_object_add_camera %}");
+            $("#camera_dialog").html(webcam.get_html(320, 240));
+            webcam.set_hook('onComplete', function my_completion_handler(response) {
+                // extract URL out of PHP output
+                photo_ready = true;
+                $("#id_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                // reset camera for another shot
+                webcam.reset();
+            });
+
+
+            $("#camera_dialog").dialog({ autoOpen: false,
+                modal: true,//linux测试无法打开上传界面！windows则好着呢，当部署的时候应该释放这个选项。
+                bgiframe: true,
+                width: 346,
+                buttons: [
+
+                    {text: "拍照", click: function () {
+                        webcam.freeze();
+                    }},
+                    {text: "重拍", click: function () {
+                        webcam.reset();
+                    }},
+                    {text: "上传照片", click: function () {
+                        webcam.upload();
+                    }},
+                    {text: "配置", click: function () {
+                        webcam.configure();
+                    }}
+                ]
+            });
+
+
+            $("#open_camera_dialog").click(function () {
+
+                $("#camera_dialog").dialog("open");
+                return false;
+            });
+
+            var csrf_token = $("#csrf_token >div >input").attr("value");
+            new AjaxUpload("id_my_uploader", {
+                action: "{% url check_object_add_uploader %}",
+                name: "photo",
+                data: {
+                    csrfmiddlewaretoken: csrf_token
+                },
+                onSubmit: function (file, ext) {
+                    if (ext && /^(jpg|png|jpeg|gif)$/.test(ext)) {
+                        /* Setting data */
+                        $("#id_uploader_msg").text("正在上传文件：" + file);
+                        this.disable();
+                    } else {
+                        // extension is not allowed
+                        $("#id_uploader_msg").text("请上传jpg|png|jpeg|gif格式的文件");
+                        // cancel upload
+                        return false;
+                    }
+                },
+                onComplete: function (file) {
+                    photo_ready = true;
+                    $("#id_uploader_msg").text("已成功上传文件：" + file);
+                    $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                    $("#id_uploader_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                    this.enable();
+                }
+            });
+            $("#id_check_object_form_add").submit(function () {
+                if (photo_ready == true) {
+                    return true;
+                }
+                else {
+                    $("#id_check_object_add_submit_error").text("请先上传照片或者拍照！").show().fadeOut(5000);
+                    return false;
+                }
+            });
+        });
+    </script>
+{% endblock %}
