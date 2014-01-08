@@ -212,7 +212,7 @@
         <div class="nav_hlist">
             <ul>
                 {% if perms.department.co_list %}
-                    <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
+                    <li><a href="{% url check_object_invalid 1 %}">已删对象查询</a></li>
                 {% endif %}
                 {% if perms.department.co_delete %}
                     <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>

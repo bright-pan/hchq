@@ -703,13 +703,14 @@ class CheckObjectDetailModifyForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_1_sex.widget.attrs['class'] = 'form-control'
     children_1_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_1_id_number.widget.attrs['class'] = 'form-control'
     children_2_name = forms.CharField(
         max_length=64,
         required=False, 
@@ -727,13 +728,14 @@ class CheckObjectDetailModifyForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_2_sex.widget.attrs['class'] = 'form-control'
     children_2_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_2_id_number.widget.attrs['class'] = 'form-control'
     children_3_name = forms.CharField(
         max_length=64,
         required=False, 
@@ -751,14 +753,14 @@ class CheckObjectDetailModifyForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_3_sex.widget.attrs['class'] = 'form-control'
     children_3_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
-
+    children_3_id_number.widget.attrs['class'] = 'form-control'
     id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.check_object_name_error_messages,
@@ -1216,6 +1218,7 @@ class CheckObjectDeleteForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    del_reason.widget.attrs['class'] = 'form-control'
     def clean_id(self):
         try:
             try:
@@ -1231,7 +1234,7 @@ class CheckObjectDeleteForm(forms.Form):
             raise forms.ValidationError(u'系统严重错误，检查项目未启动，请联系管理员！')
         check_result_count = CheckResult.objects.filter(check_object=self.id_object, check_project=check_project, is_latest=True).count()
         if check_result_count >= 1:
-            raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象！')
+            raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象，如果确实需要删除，请先失效本次检查结果，然后在删除')
         else:
             return id_copy
     
@@ -1381,7 +1384,7 @@ class CheckObjectSearchForm(forms.Form):
         )
     ctp_method.widget.attrs['class'] = 'form-control'
     del_reason = forms.ChoiceField(
-        required=True,
+        required=False,
         label =_(u'删除原因'),
         choices=((u'none', u'未知'),
                  (u'del_reason_1',u'离婚删除'),
@@ -1863,7 +1866,6 @@ class CheckObjectSearchForm(forms.Form):
             self.is_fuzzy = False
 
         query_set = CheckObject.objects.filter(is_active=True)
-
         query_set = self.query_name(query_set)
         query_set = self.query_id_number(query_set)
         query_set = self.query_mate_name(query_set)
@@ -1878,7 +1880,7 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_wedding_time(query_set)
         query_set = self.query_modify_start_time(query_set)
         query_set = self.query_modify_end_time(query_set)
-        
+
         return query_set
 
     def unsearch(self):
@@ -1905,7 +1907,7 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_wedding_time(query_set)
         query_set = self.query_modify_start_time(query_set)
         query_set = self.query_modify_end_time(query_set)
-        
+
         return query_set
     
 

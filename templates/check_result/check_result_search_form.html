@@ -1,11 +1,11 @@
-<button class="btn btn-primary" data-toggle="modal" data-target="#myModal">检查对象查询条件</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#myModal">检查结果查询条件</button>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">检查对象查询条件</h4>
+                <h4 class="modal-title" id="myModalLabel">检查结果查询条件</h4>
             </div>
             <div class="modal-body">
                 <form method="post" action="#">{% csrf_token %}
@@ -190,42 +190,137 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group {% if form.modify_start_time.errors %} has-error {% endif %}">
-                                <label class="control-label">{{ form.modify_start_time.label }}</label>
-                                {{ form.modify_start_time }}
-                                {% if form.modify_start_time.errors %}
-                                    {% for error in form.modify_start_time.errors %}
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.pregnant.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.pregnant.label }}</label>
+                                {{ form.pregnant }}
+                                {% if form.pregnant.errors %}
+                                    {% for error in form.pregnant.errors %}
                                         <span class="help-block badge">{{ error }}</span>
                                     {% endfor %}
                                 {% else %}
-                                    <span class="help-block">{{ form.modify_start_time.help_text }}</span>
+                                    <span class="help-block">{{ form.pregnant.help_text }}</span>
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group {% if form.modify_end_time.errors %} has-error {% endif %}">
-                                <label class="control-label">{{ form.modify_end_time.label }}</label>
-                                {{ form.modify_end_time }}
-                                {% if form.modify_end_time.errors %}
-                                    {% for error in form.modify_end_time.errors %}
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.ring.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.ring.label }}</label>
+                                {{ form.ring }}
+                                {% if form.ring.errors %}
+                                    {% for error in form.ring.errors %}
                                         <span class="help-block badge">{{ error }}</span>
                                     {% endfor %}
                                 {% else %}
-                                    <span class="help-block">{{ form.modify_end_time.help_text }}</span>
+                                    <span class="help-block">{{ form.ring.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.pregnant_period.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.pregnant_period.label }}</label>
+                                {{ form.pregnant_period }}
+                                {% if form.pregnant_period.errors %}
+                                    {% for error in form.pregnant_period.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.pregnant_period.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.check_project.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.check_project.label }}</label>
+                                {{ form.check_project }}
+                                {% if form.check_project.errors %}
+                                    {% for error in form.check_project.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.check_project.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.checker.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.checker.label }}</label>
+                                {{ form.checker }}
+                                {% if form.checker.errors %}
+                                    {% for error in form.checker.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.checker.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.recorder.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.recorder.label }}</label>
+                                {{ form.recorder }}
+                                {% if form.recorder.errors %}
+                                    {% for error in form.recorder.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.recorder.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.start_time.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.start_time.label }}</label>
+                                {{ form.start_time }}
+                                {% if form.start_time.errors %}
+                                    {% for error in form.start_time.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.start_time.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.end_time.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.end_time.label }}</label>
+                                {{ form.end_time }}
+                                {% if form.end_time.errors %}
+                                    {% for error in form.end_time.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.end_time.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.special.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.special.label }}</label>
+                                {{ form.special }}
+                                {% if form.special.errors %}
+                                    {% for error in form.special.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.special.help_text }}</span>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="hidden" name="del_reason" value="none" />
                             <button type="submit" value="查询" name="submit" class="btn btn-primary btn-lg btn-block">查询</button>
                         </div>
                         <div class="col-md-6">
                             {% if perms.department.cr_report %}
-                            <button type="submit" value="打印检查对象报表" name="submit" class="btn btn-primary btn-lg btn-block">打印检查对象报表</button>
+                            <button type="submit" value="打印检查结果报表" name="submit" class="btn btn-primary btn-lg btn-block">打印检查结果报表</button>
                             {% endif %}
                         </div>
                     </div>

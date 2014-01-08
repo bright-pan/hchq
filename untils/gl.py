@@ -224,6 +224,7 @@ session_check_result_start_time = u'session_check_result_start_time'
 session_check_result_end_time = u'session_check_result_end_time'
 
 check_result_local = {u'None':u'',
+                      u'invalid':u'本次失效',
                       u'pregnant':u'有孕',
                       u'unpregnant':u'无孕',
                       u'ring':u'有环',

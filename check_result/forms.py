@@ -349,6 +349,7 @@ class CheckResultSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=False,
@@ -378,7 +379,7 @@ class CheckResultSearchForm(forms.Form):
                  (u'false', u'否'),
                  ),
         )
-
+    is_family.widget.attrs['class'] = 'form-control'
     mate_name = forms.CharField(
         max_length=64,
         required=False,
@@ -397,6 +398,7 @@ class CheckResultSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=False,
@@ -429,6 +431,7 @@ class CheckResultSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -436,6 +439,7 @@ class CheckResultSearchForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -443,11 +447,11 @@ class CheckResultSearchForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
-
+    wedding_time.widget.attrs['class'] = 'form-control'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_fuzzy',
                                           }, 
                                    check_test=None,
@@ -462,6 +466,7 @@ class CheckResultSearchForm(forms.Form):
                  (u'unpregnant', u'无孕'),
                  ),
         )
+    pregnant.widget.attrs['class'] = 'form-control'
     ring = forms.ChoiceField(
         required=True,
         label =_(u'环检'),
@@ -470,6 +475,7 @@ class CheckResultSearchForm(forms.Form):
                  (u'unring', u'无环'),
                  ),
         )
+    ring.widget.attrs['class'] = 'form-control'
     special = forms.ChoiceField(
         required=True,
         label =_(u'特殊原因'),
@@ -482,6 +488,7 @@ class CheckResultSearchForm(forms.Form):
                  (u'special_6', u'外地环孕检证明'),
                  ),
         )
+    special.widget.attrs['class'] = 'form-control'
     pregnant_period = forms.IntegerField(
         required=False,
         label=_(u'怀孕周期'),
@@ -489,34 +496,38 @@ class CheckResultSearchForm(forms.Form):
         max_value=50,
         min_value=1,
         )
-
+    pregnant_period.widget.attrs['class'] = 'form-control'
     checker = forms.CharField(
         required=False,
         max_length=10,
         label =_(u'检查人员'),
         )
+    checker.widget.attrs['class'] = 'form-control'
     recorder = forms.CharField(
         required=False,
         max_length=10,
         label =_(u'记录人员'),
         )
+    recorder.widget.attrs['class'] = 'form-control'
     check_project = forms.ChoiceField(
         required=True,
         label =_(u'检查项目'),
         )
+    check_project.widget.attrs['class'] = 'form-control'
     start_time = forms.DateField(
         required=False,
         label=_(u'开始时间'),
         help_text=_(u'例如：2010-10-25'),
         input_formats = ('%Y-%m-%d',)
         )
+    start_time.widget.attrs['class'] = 'form-control'
     end_time  = forms.DateField(
         required=False,
         label=_(u'结束时间'),
         help_text=_(u'例如：2010-10-25'),
         input_formats = ('%Y-%m-%d',)
         )
-
+    end_time.widget.attrs['class'] = 'form-control'
 
     def clean_name(self):
         try:

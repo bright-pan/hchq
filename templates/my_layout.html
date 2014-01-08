@@ -122,7 +122,7 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle"
                             data-toggle="dropdown">
-                        检查人员管理<span class="caret"></span>
+                        检查对象管理<span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         {% if perms.department.co_list %}
@@ -138,7 +138,7 @@
                             <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
                         {% endif %}
                         {% if perms.department.co_list %}
-                            <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
+                            <li><a href="{% url check_object_invalid 1 %}">已删对象查询</a></li>
                         {% endif %}
                     </ul>
                 </div>

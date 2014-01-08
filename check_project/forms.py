@@ -6,6 +6,7 @@ from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
 from hchq.check_project.models import CheckProject
+from hchq.check_result.models import CheckResult
 from hchq.untils import gl
 import re
 
@@ -231,6 +232,11 @@ class CheckProjectDeleteForm(forms.Form):
             except ValueError:
                 raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
             self.check_project_id_object = CheckProject.objects.get(pk=self.check_project_id_copy)
+            check_result_count = CheckResult.objects.filter(check_project=self.check_project_id_object, is_latest=True).count()
+            if check_result_count >= 1:
+                raise forms.ValidationError(u'该检查项目已有有效的检查结果，无法删除该对象，如果确实需要删除，请先失效所有检查结果，然后在删除')
+            else:
+                pass
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         return self.check_project_id_copy

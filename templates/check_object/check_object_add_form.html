@@ -368,12 +368,15 @@
         <h4 class="modal-title" id="myCameraModalLabel">拍照上传</h4>
       </div>
       <div class="modal-body">
-
-        <img class="thumbnail" id="id_camera_check_object_photo" src="{{ MEDIA_URL }}images/photo.jpg"/>
+            <div id="id_camera_frame" style="display:none;" title="拍照上传">
+            </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button id="id_camera_freeze" type="button" class="btn btn-primary">拍照</button>
+          <button id="id_camera_reset" type="button" class="btn btn-primary">重拍</button>
+          <button id="id_camera_upload" type="button" class="btn btn-primary">上传照片</button>
+          <button id="id_camera_configure" type="button" class="btn btn-primary">配置</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

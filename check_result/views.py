@@ -35,6 +35,8 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
     检查结果详细信息显示。
     """
     page_title=u'检查结果详情'
+    check_object = None
+    results = None
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -58,30 +60,29 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
                     check_project = CheckProject.objects.get(is_setup=True, is_active=True)
                 except ObjectDoesNotExist:
                     check_project = None
+                try:
+                    check_object = CheckObject.objects.get(pk=check_result_id)
+                except ObjectDoesNotExist:
+                    raise Http404('Invalid Request!')
                 if check_project is not None:
                     today = datetime.datetime.now().date()
                     if check_project.start_time <= today and today <= check_project.end_time:
-                        try:
-                            check_object = CheckObject.objects.get(pk=check_result_id)
-                        except ObjectDoesNotExist:
-                            raise Http404('Invalid Request!')                   
-                        CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
-                        results = CheckResult.objects.filter(check_object=check_object).order_by('-id')
-                        success = u'invalid'
+                        qs_check_result = CheckResult.objects.filter(check_object=check_object, check_project=check_project, is_latest=True)
+                        if qs_check_result:
+                            check_result_object = qs_check_result[0]
+                            check_result_object.result = check_result_object.result + u" invalid"
+                            check_result_object.save()
+                            qs_check_result.update(is_latest=False)
+                            success = u'invalid_success'
+                        else:
+                            success = u'invalid_already'
                     else:
                         page_title = u'失效受限制'
-                        return render_to_response(next_error,
-                                                  {'check_project': check_project,
-                                                   'page_title': page_title,
-                                                   },
-                                                  context_instance=RequestContext(request))
+                        success = u'invalid_time_error'
                 else:
                     page_title = u'失效受限制'
-                    return render_to_response(next_error,
-                                              {'check_project': check_project,
-                                               'page_title': page_title,
-                                               },
-                                              context_instance=RequestContext(request))
+                    success = u'invalid_project_error'
+                results = CheckResult.objects.filter(check_object=check_object).order_by('-id')
             else: 
                 raise Http404('Invalid Request!')
     else:
@@ -96,12 +97,13 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
             raise Http404('Invalid Request!')
 
         results = check_object.check_result.order_by('-id')
-        
+
 #        print type(results[0]['is_latest'])
     return render_to_response(template_name,
                               {'results': results,
                                'check_object': check_object,
                                'success': success,
+                               'page_title':page_title
                                },
                               context_instance=RequestContext(request))
 
@@ -239,8 +241,8 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
     """
     page_title = u'查询检查结果'
 
-    if request.method == 'GET':
-        post_data = request.GET.copy()
+    if request.method == 'POST':
+        post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
         if submit_value == u'查询':
             check_result_search_form = CheckResultSearchForm(post_data)
@@ -275,23 +277,21 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                                                'results_page': results_page,
                                                },
                                               context_instance=RequestContext(request))
-            else:
-                check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
-                check_result_search_form.init_check_project()
-                check_result_search_form.init_from_session(request)
-                if check_result_search_form.is_valid():
-                    query_set = check_result_search_form.search()
-                    results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
-                else:
-                    results_page = None
-                return render_to_response(template_name,
-                                          {'search_form': check_result_search_form,
-                                           'page_title': page_title,
-                                           'results_page': results_page,
-                                           },
-                                          context_instance=RequestContext(request))
     else:
-        raise Http404('Invalid Request!')               
+        check_result_search_form = CheckResultSearchForm(CheckResultSearchForm().data_from_session(request))
+        check_result_search_form.init_check_project()
+        check_result_search_form.init_from_session(request)
+        if check_result_search_form.is_valid():
+            query_set = check_result_search_form.search()
+            results_page = pagination_results(check_result_page, query_set, settings.CHECK_RESULT_PER_PAGE)
+        else:
+            results_page = None
+        return render_to_response(template_name,
+                                  {'search_form': check_result_search_form,
+                                   'page_title': page_title,
+                                   'results_page': results_page,
+                                   },
+                                  context_instance=RequestContext(request))
 
 @csrf_protect
 @login_required

@@ -1,11 +1,11 @@
-<button class="btn btn-primary" data-toggle="modal" data-target="#myModal">检查对象查询条件</button>
+<button class="btn btn-primary" data-toggle="modal" data-target="#myModal">已删对象查询条件</button>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">检查对象查询条件</h4>
+                <h4 class="modal-title" id="myModalLabel">已删对象查询条件</h4>
             </div>
             <div class="modal-body">
                 <form method="post" action="#">{% csrf_token %}
@@ -135,7 +135,7 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group {% if form.mate_id_number.errors %} has-error {% endif %}">
                                 <label class="control-label">{{ form.mate_id_number.label }}</label>
                                 {{ form.mate_id_number }}
@@ -148,7 +148,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <div class="form-group {% if form.wedding_time.errors %} has-error {% endif %}">
                                 <label class="control-label">{{ form.wedding_time.label }}</label>
                                 {{ form.wedding_time }}
@@ -191,7 +191,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group {% if form.modify_start_time.errors %} has-error {% endif %}">
                                 <label class="control-label">{{ form.modify_start_time.label }}</label>
                                 {{ form.modify_start_time }}
@@ -204,7 +204,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group {% if form.modify_end_time.errors %} has-error {% endif %}">
                                 <label class="control-label">{{ form.modify_end_time.label }}</label>
                                 {{ form.modify_end_time }}
@@ -217,16 +217,26 @@
                                 {% endif %}
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group {% if form.del_reason.errors %} has-error {% endif %}">
+                                <label class="control-label">{{ form.del_reason.label }}</label>
+                                {{ form.del_reason }}
+                                {% if form.del_reason.errors %}
+                                    {% for error in form.del_reason.errors %}
+                                        <span class="help-block badge">{{ error }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="help-block">{{ form.del_reason.help_text }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="hidden" name="del_reason" value="none" />
                             <button type="submit" value="查询" name="submit" class="btn btn-primary btn-lg btn-block">查询</button>
                         </div>
                         <div class="col-md-6">
-                            {% if perms.department.cr_report %}
-                            <button type="submit" value="打印检查对象报表" name="submit" class="btn btn-primary btn-lg btn-block">打印检查对象报表</button>
-                            {% endif %}
+                            <button type="submit" value="打印已删对象报表" name="submit" class="btn btn-primary btn-lg btn-block">打印已删对象报表</button>
                         </div>
                     </div>
                     </fieldset>

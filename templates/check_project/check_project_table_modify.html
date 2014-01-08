@@ -21,7 +21,7 @@
             <br>{{ result.end_time|date:"Y-m-d" }}</td>
             <td>{% if result.is_setup %} 启用{% else %}未启用{% endif %}</td>
             <td>
-                <form method="post" action=".">{% csrf_token %}
+                <form method="post" action="#">{% csrf_token %}
                     <input type="hidden" name="check_project_id" value="{{ result.id }}"/>
                     <button type="submit" value="编辑" name="submit" class="btn btn-primary">编辑</button>
                 </form>

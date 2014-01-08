@@ -270,6 +270,8 @@ class RoleDeleteForm(forms.Form):
             except ValueError:
                 raise forms.ValidationError(gl.role_name_error_messages['form_error'])
             self.role_id_object = Group.objects.get(pk=self.role_id_copy)
+            if User.objects.filter(groups=self.role_id_object).count() >= 1:
+                raise forms.ValidationError(u"已有用户使用该角色，无法删除！")
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.role_name_error_messages['form_error'])
         return self.role_id_copy

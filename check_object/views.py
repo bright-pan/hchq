@@ -495,7 +495,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
 @csrf_protect
 @login_required
 @permission_required('department.co_list')
-def check_object_invaild(request, template_name='my.html', next='/', check_object_page='1',):
+def check_object_invalid(request, template_name='my.html', next='/', check_object_page='1',):
     """
     已删对象查询视图
     """

@@ -6,7 +6,7 @@
 
 {% block panel_body %}
     {% with detail_modify_form as form %}
-        <form class="table">{% csrf_token %}
+        <form method="post" action="{% url account_detail_modify %}">{% csrf_token %}
             <fieldset>
                 <legend>{{ account_name }} 编辑</legend>
                 <div class="row">

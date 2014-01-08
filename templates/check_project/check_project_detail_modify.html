@@ -6,7 +6,7 @@
 
 {% block panel_body %}
     {% with detail_modify_form as form %}
-        <form class="table">{% csrf_token %}
+        <form method="post" action="{% url check_project_detail_modify %}">{% csrf_token %}
             <fieldset>
                 <legend>检查项目 {{ check_project_name }} 编辑</legend>
                 <div class="row">
