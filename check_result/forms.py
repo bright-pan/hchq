@@ -51,29 +51,32 @@ class CheckResultDetailAddForm(forms.Form):
     pregnant = forms.ChoiceField(
         required=True,
         label =_(u'孕检(*)'),
-        widget=forms.RadioSelect(),
-        choices=((u'pregnant', u'有孕'),
+        choices=((u'none', u'请选择'),
+                 (u'pregnant', u'有孕'),
                  (u'unpregnant', u'无孕'),
                  ),
         help_text=_(u'例如:有孕选有孕'),
         )
+    pregnant.widget.attrs['class'] = 'form-control'
     ring = forms.ChoiceField(
         required=True,
         label =_(u'环检(*)'),
-        widget=forms.RadioSelect(),
-        choices=((u'ring', u'有环'),
+        choices=((u'none', u'请选择'),
+                 (u'ring', u'有环'),
                  (u'unring', u'无环'),
                  ),
         help_text=_(u'例如:有环选有环'),
         )
+    ring.widget.attrs['class'] = 'form-control'
     special = forms.ChoiceField(
-        required=False,
+        required=True,
         label =_(u'特殊检查'),
-        widget=forms.RadioSelect(),
-        choices=((u'special_4', u'单位担保'),
+        choices=((u'none', u'请选择'),
+                 (u'special_4', u'单位担保'),
                  ),
         help_text=_(u'例如:担保则选择'),
         )
+    special.widget.attrs['class'] = 'form-control'
     pregnant_period = forms.IntegerField(
         required=False,
         label=_(u'怀孕周期'),
@@ -81,14 +84,13 @@ class CheckResultDetailAddForm(forms.Form):
         max_value=50,
         min_value=1,
         )
-
+    pregnant_period.widget.attrs['class'] = 'form-control'
     checker = forms.ChoiceField(
         required=True,
-        widget=forms.RadioSelect(),
         label =_(u'检查人员(*)'),
         help_text=_(u'例如:张三'),
         )
-
+    checker.widget.attrs['class'] = 'form-control'
     id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.check_object_name_error_messages,
@@ -106,11 +108,34 @@ class CheckResultDetailAddForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return id_copy
+    def clean_pregnant(self):
+        data_copy = self.data.get('pregnant', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
+
+    def clean_ring(self):
+        data_copy = self.data.get('ring', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
+
+    def clean_special(self):
+        data_copy = self.data.get('special', u'none')
+        if data_copy == u'none':
+            data_copy = ''
+        return data_copy
+
+    def clean_checker(self):
+        data_copy = self.data.get('checker', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
 
     def init_value(self, user=None, check_object=None):
         if user is not None and check_object is not None:
             
-            choices = ()
+            choices = (('none', u'请选择'),)
             if user.is_superuser is False:
                 if user.has_perm('department.unlocal'):
                     service_area = user.get_profile().service_area_department.service_area
@@ -136,21 +161,21 @@ class CheckResultDetailAddForm(forms.Form):
                 choices += (str(query.user.pk), query.user.username),
                 
             self.fields['checker'].choices = choices
-            self.fields['checker'].widget.attrs['size'] = size
+            # self.fields['checker'].widget.attrs['size'] = size
 
-            self.fields['pregnant'].choices = ((u'pregnant', u'有孕'),
-                                              (u'unpregnant', u'无孕'),
-                                              )
-            self.fields['pregnant'].widget.attrs['size'] = u'4'
-
-            self.fields['ring'].choices = ((u'ring', u'有环'),
-                                           (u'unring', u'无环'),
-                                           )
-            self.fields['ring'].widget.attrs['size'] = u'2'
-
-            self.fields['special'].choices = ((u'special_4', u'单位担保'),
-                                           )
-            self.fields['special'].widget.attrs['size'] = u'4'
+            # self.fields['pregnant'].choices = ((u'pregnant', u'有孕'),
+            #                                   (u'unpregnant', u'无孕'),
+            #                                   )
+            # self.fields['pregnant'].widget.attrs['size'] = u'4'
+            #
+            # self.fields['ring'].choices = ((u'ring', u'有环'),
+            #                                (u'unring', u'无环'),
+            #                                )
+            # self.fields['ring'].widget.attrs['size'] = u'2'
+            #
+            # self.fields['special'].choices = ((u'special_4', u'单位担保'),
+            #                                )
+            # self.fields['special'].widget.attrs['size'] = u'4'
 
             self.fields['id'].widget.attrs['value'] = check_object.id
             return True
