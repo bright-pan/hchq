@@ -106,7 +106,7 @@
                         <th>微机录入人员</th>
                     </tr>
                     {% for result in results %}
-                        <tr {% if result.is_latest %}class="odd"{% endif %}>
+                        <tr {% if result.is_latest %}class="success"{% endif %}>
                             <td>{{ forloop.counter }}</td>
                             {% if result.is_latest %}
                                 <td>{{ result.check_project.name }}</td>

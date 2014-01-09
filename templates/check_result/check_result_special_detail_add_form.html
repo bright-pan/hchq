@@ -1,0 +1,18 @@
+<form method="post" action="{% url check_result_special_detail_add %}">{% csrf_token %}
+    <fieldset>
+        <legend>特殊检查结果信息</legend>
+        <div class="form-group {% if form.special.errors %} has-error {% endif %}">
+            <label class="control-label">{{ form.special.label }}</label>
+            {{ form.special }}
+            {% if form.special.errors %}
+                {% for error in form.special.errors %}
+                    <span class="help-block badge">{{ error }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="help-block">{{ form.special.help_text }}</span>
+            {% endif %}
+        </div>
+        {{ form.id }}
+        <button type="submit" value="确定" name="submit" class="btn btn-primary btn-block">确定</button>
+    </fieldset>
+</form>

@@ -259,8 +259,8 @@ class CheckResultSpecialDetailAddForm(forms.Form):
     special = forms.ChoiceField(
         required=True,
         label =_(u'特殊检查原因(*)'),
-        widget=forms.RadioSelect(),
-        choices=((u'special_1', u'生小孩子三个月内'),
+        choices=((u'none', u'请选择'),
+                (u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
                  (u'special_3', u'其他原因'),
                  (u'special_4', u'单位担保'),
@@ -269,6 +269,7 @@ class CheckResultSpecialDetailAddForm(forms.Form):
                  ),
         help_text=_(u'生小孩则选生小孩'),
         )
+    special.widget.attrs['class'] = 'form-control'
 
     id = forms.CharField(
         widget=forms.HiddenInput(),
@@ -287,13 +288,17 @@ class CheckResultSpecialDetailAddForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return id_copy
+    def clean_special(self):
+        data_copy = self.data.get('special', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
 
     def init_value(self, user=None, check_object=None):
         if user is not None and check_object is not None:
             self.fields['id'].widget.attrs['value'] = check_object.id
             return True
         else:
-
             return False
         
     def get_check_project(self):

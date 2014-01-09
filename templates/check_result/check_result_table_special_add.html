@@ -1,25 +1,25 @@
 {% load check_object_filter %}
-<table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>检查对象</caption>
+
+<table class="table table-bordered table-striped table-hover">
     <thead>
     <tr>
-        <th scope="col" colspan="8">可供检查的检查对象(共{{ results_page.paginator.count }}项)</th>
+        <th colspan="8">检查对象<span class="badge">{{ results_page.paginator.count }}</span></th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <th scope="col">照片</th>
-        <th scope="col">妻子姓名<br>身份证号</th>
-        <th scope="col">服务区域<br>单位部门</th>
-        <th scope="col">丈夫姓名<br>身份证号</th>
-        <th scope="col">服务区域<br>单位部门</th>
-        <th scope="col">是否家属<br>结婚时间</th>
+        <th>照片</th>
+        <th>妻子姓名<br>身份证号</th>
+        <th>服务区域<br>单位部门</th>
+        <th>丈夫姓名<br>身份证号</th>
+        <th>服务区域<br>单位部门</th>
+        <th>是否家属<br>结婚时间</th>
         <!-- <th scope="col">避孕措施<br>实施时间</th> -->
-        <th scope="col">检查命令</th>
+        <th>检查命令</th>
     </tr>
     {% for result in results_page.object_list %}
         <tr>
-            <td><a href="{{ result.get_absolute_url }}"><img src="{{ result.thumbnail.url }}" width="47"
+            <td><a class="thumbnail" href="{{ result.get_absolute_url }}"><img src="{{ result.thumbnail.url }}" width="47"
                                                              height="41"/></a></td>
             <td>{{ result.name }}<br><a href="{% url check_result_show result.id 'false' %}">{{ result.id_number }}</a>
             </td>
@@ -37,36 +37,23 @@
             <td>
                 <form method="post" action=".">{% csrf_token %}
                     <input type="hidden" name="id" value="{{ result.id }}"/>
-                    <input type="submit" name="submit" value="特殊情况检查"
-                           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
+                    <button type="submit" value="特殊情况检查" name="submit" class="btn btn-primary">特殊情况检查</button>
                 </form>
             </td>
         </tr>
     {% empty %}
-        <p class="warning">没有检查对象可以检查！</p>
+        <p class="lead">没有检查对象可以检查！</p>
     {% endfor %}
     </tbody>
 </table>
-<div class="pagination">
-    {% if results_page.has_previous %}
-        <span>
-    <a href="{% url check_result_special_add results_page.previous_page_number %}">上一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    上一页
-  </span>
-    {% endif %}
-    <span class="current">
-    第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
-  </span>
-    {% if results_page.has_next %}
-        <span>
-    <a href="{% url check_result_special_add results_page.next_page_number %}">下一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    下一页
-  </span>
-    {% endif %}
-</div>
+
+<ul class="pagination">
+    <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+        <a href="{% url check_result_special_add results_page.previous_page_number %}">上一页</a>
+    </li>
+    <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+            class="sr-only">(current)</span></a></li>
+    <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+        <a href="{% url check_result_special_add results_page.next_page_number %}">下一页</a>
+    </li>
+</ul>
