@@ -22,7 +22,9 @@
             <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
         </tr>
     {% empty %}
-        <p class="lead">没有单位部门可以查询！</p>
+        <div class="alert alert-danger">
+            <p>没有单位部门可以查询！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

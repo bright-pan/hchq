@@ -16,7 +16,9 @@
             <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
         </tr>
     {% empty %}
-        <p class="lead">{{ role_name }} 没有关联的权限！</p>
+        <div class="alert alert-danger">
+            <p>{{ role_name }} 没有关联的权限！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

@@ -29,7 +29,9 @@
             <!-- <td>{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td> -->
         </tr>
     {% empty %}
-        <p class="lead">没有检查对象可以查询！</p>
+        <div class="alert alert-danger">
+            <p>没有检查对象可以查询！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

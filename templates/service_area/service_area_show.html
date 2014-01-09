@@ -40,6 +40,8 @@
             </tbody>
         </table>
     {% else %}
-        <p class="lead">对不起，该服务区不存在！</p>
+        <div class="alert alert-danger">
+            <p>对不起，该服务区不存在！</p>
+        </div>
     {% endif %}
 {% endblock %}

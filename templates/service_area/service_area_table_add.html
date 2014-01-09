@@ -15,7 +15,9 @@
             <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
         </tr>
     {% empty %}
-        <p class="warning">没有服务区域可以查询！</p>
+        <div class="alert alert-danger">
+            <p>没有服务区域可以查询！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

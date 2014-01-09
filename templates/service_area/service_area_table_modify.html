@@ -28,7 +28,9 @@
             </td>
         </tr>
     {% empty %}
-        <p class="lead">没有服务区域可以修改！</p>
+        <div class="alert alert-danger">
+            <p>没有服务区域可以修改！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

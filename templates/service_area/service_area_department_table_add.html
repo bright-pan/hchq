@@ -17,7 +17,9 @@
             <td class="{% cycle 'odd' 'even' %}"><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
         </tr>
     {% empty %}
-        <p class="warning">【{{ service_area_name }}】没有单位部门相关联！</p>
+        <div class="alert alert-danger">
+            <p>{{ service_area_name }} 没有单位部门相关联！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

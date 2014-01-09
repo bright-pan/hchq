@@ -22,7 +22,9 @@
             </td>
         </tr>
     {% empty %}
-        <p class="lead">{{ role_name }} 没有关联的单位部门！！</p>
+        <div class="alert alert-danger">
+            <p>{{ role_name }} 没有关联的单位部门！！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

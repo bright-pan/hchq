@@ -27,7 +27,9 @@
             </td>
         </tr>
     {% empty %}
-        <p class="lead">没有检查项目可以删除！</p>
+        <div class="alert alert-danger">
+            <p>没有检查项目可以删除！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

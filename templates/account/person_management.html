@@ -1,14 +1,19 @@
 {% extends "account/person_layout.html" %}
 
 {% block panel_heading %}
-    <h3 class="panel-title">你好,{{ user.username }},欢迎使用本系统！</h3>
+    <h3 class="panel-title">个人资料</h3>
 {% endblock %}
 
 {% block panel_body %}
     {% if user %}
         {% if user.is_superuser %}
-            <p class="lead">你是超级管理员，没有基本的用户资料！</p>
+            <div class="alert alert-info">
+                <p>你是超级管理员，没有基本的用户资料！</p>
+            </div>
         {% else %}
+            <div class="alert alert-info">
+                <p>你好,{{ user.username }},欢迎使用本系统！</p>
+            </div>
             <div class="col-md-9">
                 <table class="table table-bordered table-striped table-hover">
                     <tbody>
@@ -47,12 +52,16 @@
                 <hl> {% for perm in user.groups.get.permissions.all %}
                     <li>{{ perm.name }}</li>
                 {% empty %}
-                    <p class="label label-danger">该用户没有任何权限！</p>
+                    <div class="alert alert-danger">
+                        <p>该用户没有任何权限！</p>
+                    </div>
                 {% endfor %}
                 </hl>
             </div>
         {% endif %}
     {% else %}
-        <p class="lead">对不起，该用户不存在！</p>
+        <div class="alert alert-danger">
+            <p>对不起，该用户不存在！</p>
+        </div>
     {% endif %}
 {% endblock %}

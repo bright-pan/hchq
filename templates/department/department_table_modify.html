@@ -28,7 +28,9 @@
             </td>
         </tr>
     {% empty %}
-        <p class="lead">没有部门单位可以修改！</p>
+        <div class="alert alert-danger">
+            <p>没有部门单位可以修改！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

@@ -32,7 +32,9 @@
 
         </tr>
     {% empty %}
-        <p class="lead">没有检查结果可以查询！</p>
+        <div class="alert alert-danger">
+            <p>没有检查结果可以查询！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

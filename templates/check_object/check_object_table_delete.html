@@ -47,7 +47,9 @@
             {% endwith %}
         </tr>
     {% empty %}
-        <p class="lead">没有检查对象可以删除！</p>
+        <div class="alert alert-danger">
+            <p>没有检查对象可以删除！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>

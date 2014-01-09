@@ -33,7 +33,9 @@
             </td>
         </tr>
     {% empty %}
-        <p class="lead">没有系统用户可以编辑！</p>
+        <div class="alert alert-danger">
+            <p>没有系统用户可以编辑！</p>
+        </div>
     {% endfor %}
     </tbody>
 </table>
