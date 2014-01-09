@@ -33,7 +33,7 @@ class LoginForm(forms.Form):
         label=_(u'用户密码'), 
         widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     
@@ -81,7 +81,7 @@ class ModifyPasswordForm(forms.Form):
         label=_(u'旧密码'), 
         widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     password_new = forms.CharField(
@@ -90,7 +90,7 @@ class ModifyPasswordForm(forms.Form):
         label=_(u'新密码'), 
         widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     password_confirm = forms.CharField(
@@ -99,7 +99,7 @@ class ModifyPasswordForm(forms.Form):
         label=_(u'确认新密码'), 
         widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'请重新输入密码，例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     def clean_password_old(self):

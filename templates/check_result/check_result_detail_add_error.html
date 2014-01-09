@@ -1,13 +1,17 @@
 {% extends "check_result/check_result_layout.html" %}
 
-{% block main %}
-    <h3>检查受限制</h3>
-    <hr>
-    {% if check_project == None %}
-        <p class="warning">没有检查项目可供检查使用，请联系管理员或者检查项目还未激活启用！</p>
-    {% else %}
-        <p class="warning">检查时间不满足检查项目所提供的时间！<br>{{ check_project.name }}<br>{{ check_project.start_time|date:"Y-m-d" }}
-            - {{ check_project.end_time|date:"Y-m-d" }}</p>
-    {% endif %}
+{% block panel_heading %}
+    <h3 class="panel-title">检查受限制</h3>
 {% endblock %}
 
+{% block panel_body %}
+    <div class="alert alert-danger">
+
+        {% if check_project == None %}
+            <p>没有检查项目可供检查使用，请联系管理员或者检查项目还未激活启用！</p>
+        {% else %}
+            <p>检查时间不满足检查项目所提供的时间！<br>{{ check_project.name }}<br>{{ check_project.start_time|date:"Y-m-d" }}
+                - {{ check_project.end_time|date:"Y-m-d" }}</p>
+        {% endif %}
+    </div>
+{% endblock %}
