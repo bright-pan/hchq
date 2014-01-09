@@ -62,7 +62,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
-        if submit_value == u'已检人员':
+        if submit_value == u'已检对象':
             report_check_or_not_form = ReportCheckOrNotForm(post_data)
             report_check_or_not_form.init_check_project()
             report_check_or_not_form.init_permission(user)
@@ -75,7 +75,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                            },
                                           context_instance=RequestContext(request))
         else:
-            if submit_value == u'未检人员':
+            if submit_value == u'未检对象':
                 report_check_or_not_form = ReportCheckOrNotForm(post_data)
                 report_check_or_not_form.init_check_project()
                 report_check_or_not_form.init_permission(user)
@@ -88,7 +88,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                },
                                               context_instance=RequestContext(request))
             else:
-                if submit_value == u'有孕人员':
+                if submit_value == u'有孕对象':
                     report_check_or_not_form = ReportCheckOrNotForm(post_data)
                     report_check_or_not_form.init_check_project()
                     report_check_or_not_form.init_permission(user)
@@ -101,7 +101,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                },
                                               context_instance=RequestContext(request))
                 else:
-                    if submit_value == u'特殊检查人员':
+                    if submit_value == u'特殊检查对象':
                         report_check_or_not_form = ReportCheckOrNotForm(post_data)
                         report_check_or_not_form.init_check_project()
                         report_check_or_not_form.init_permission(user)
@@ -114,7 +114,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                        },
                                                       context_instance=RequestContext(request))
                     else:
-                        if submit_value == u'总检查人员':
+                        if submit_value == u'总检查对象':
                             report_check_or_not_form = ReportCheckOrNotForm(post_data)
                             report_check_or_not_form.init_check_project()
                             report_check_or_not_form.init_permission(user)

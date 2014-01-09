@@ -95,8 +95,8 @@ def get_pie_chart(request, template_name = 'account/login.html', next='/'):
     my_config = MyConfig()
     pie_chart = pygal.Pie(my_config)
     pie_chart.title = u'%s-总完成度' % service_area_statistics.get('check_project_name',u'无检查项目')
-    pie_chart.add(u'已检人员', service_area_statistics.get('qs_check_result',0)*1.0/service_area_statistics.get('qs_check_object',1))
-    pie_chart.add(u'未检人员', (service_area_statistics.get('qs_check_object',0) - service_area_statistics.get('qs_check_result',0))*1.0/service_area_statistics.get('qs_check_object',1))
+    pie_chart.add(u'已检对象', service_area_statistics.get('qs_check_result',0)*1.0/service_area_statistics.get('qs_check_object',1))
+    pie_chart.add(u'未检对象', (service_area_statistics.get('qs_check_object',0) - service_area_statistics.get('qs_check_result',0))*1.0/service_area_statistics.get('qs_check_object',1))
     return HttpResponse(pie_chart.render(), content_type='image/svg+xml')
 
 @cache_page(60*60)

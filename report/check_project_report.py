@@ -467,7 +467,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                     check_result_report.qs_check_object = qs_check_object
                     check_result_report.qs_check_result = qs_check_result
                     check_result_report.author = request.user.username
-                    check_result_report.title = u'%s - 有孕人员名单' % service_area_object.name
+                    check_result_report.title = u'%s - 有孕对象名单' % service_area_object.name
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -547,7 +547,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                             department_report.qs_check_result = qs_check_result
                             department_report.check_project = check_project
                             department_report.author = request.user.username
-                            department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.title = u'%s - %s - 未检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                             department_report.band_page_header.elements += [
                                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -586,7 +586,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                             department_report.qs_check_result = qs_check_result
                             department_report.check_project = check_project
                             department_report.author = request.user.username
-                            department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                             department_report.band_page_header.elements += [
                                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -703,7 +703,7 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
                     department_report.qs_check_object = qs_check_object
                     department_report.qs_check_result = qs_check_result
                     department_report.author = request.user.username
-                    department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     department_report.band_page_header.elements += [
                         Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -786,7 +786,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
                 department_report.qs_check_object = qs_check_object
                 department_report.qs_check_result = qs_check_result                
                 department_report.author = request.user.username
-                department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -902,7 +902,7 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
                     department_report.qs_check_object = qs_check_object
                     department_report.qs_check_result = qs_check_result
                     department_report.author = request.user.username
-                    department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.title = u'%s - %s - 未检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     department_report.band_page_header.elements += [
                         Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -988,7 +988,7 @@ def check_object_not_service_area_department_report(query_set=None, request=None
                 department_report.qs_check_object = qs_check_object
                 department_report.qs_check_result = qs_check_result
                 department_report.author = request.user.username
-                department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.title = u'%s - %s - 未检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1099,7 +1099,7 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
                     check_result_report.qs_check_object = qs_check_object
                     check_result_report.qs_check_result = qs_check_result
                     check_result_report.author = request.user.username
-                    check_result_report.title = u'%s-%s-有孕人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    check_result_report.title = u'%s-%s-有孕对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1182,7 +1182,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
                 check_result_report.qs_check_object = qs_check_object
                 check_result_report.qs_check_result = qs_check_result                
                 check_result_report.author = request.user.username
-                check_result_report.title = u'%s-%s-有孕人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                check_result_report.title = u'%s-%s-有孕对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 check_result_report.band_page_header.elements += [
                     Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1294,7 +1294,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
                     check_result_report.qs_check_object = qs_check_object
                     check_result_report.qs_check_result = qs_check_result   
                     check_result_report.author = request.user.username
-                    check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    check_result_report.title = u'%s-%s-特殊检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1377,7 +1377,7 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
                 check_result_report.qs_check_object = qs_check_object
                 check_result_report.qs_check_result = qs_check_result                
                 check_result_report.author = request.user.username
-                check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                check_result_report.title = u'%s-%s-特殊检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 check_result_report.band_page_header.elements += [
                     Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1487,7 +1487,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
                     department_report.qs_check_object = qs_check_object
                     department_report.qs_check_result = qs_check_result
                     department_report.author = request.user.username
-                    department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.title = u'%s - %s - 总检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     department_report.band_page_header.elements += [
                         Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1571,7 +1571,7 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
                 department_report.qs_check_object = qs_check_object
                 department_report.qs_check_result = qs_check_result
                 department_report.author = request.user.username
-                department_report.title = u'%s - %s - 总检查人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.title = u'%s - %s - 总检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1609,7 +1609,7 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=cover_report.titl)
+        cover_report.generate_by(PDFGenerator, filename=response)
         return response
 
     cache.set('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)

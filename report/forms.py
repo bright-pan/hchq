@@ -47,7 +47,7 @@ class ReportCheckOrNotForm(forms.Form):
         label =_(u'检查项目(*)'),
         help_text=_(u'选择一个合适的检查项目'),
         )
-
+    check_project.widget.attrs['class'] = 'form-control'
     def clean_service_area_name(self):
         try:
             service_area_name_copy = self.data.get('service_area_name')
@@ -161,7 +161,7 @@ class ReportStatisticsForm(forms.Form):
         required=True,
         label =_(u'单位数据统计'),
         help_text=_(u'进行单位统计'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_department_info',
                                           }, 
                                    check_test=None,
@@ -170,9 +170,9 @@ class ReportStatisticsForm(forms.Form):
 
     has_pregnant_info = forms.CharField(
         required=True,
-        label =_(u'有孕人员名单'),
+        label =_(u'有孕对象名单'),
         help_text=_(u'包含有孕名单'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_pregnant_info',
                                           }, 
                                    check_test=None,
@@ -180,9 +180,9 @@ class ReportStatisticsForm(forms.Form):
         )
     has_special_info = forms.CharField(
         required=True,
-        label =_(u'特殊检查名单'),
-        help_text=_(u'包含特殊检查人员'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        label =_(u'特殊检查对象名单'),
+        help_text=_(u'包含特殊检查对象'),
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_special_info',
                                           }, 
                                    check_test=None,
@@ -193,7 +193,7 @@ class ReportStatisticsForm(forms.Form):
         required=True,
         label =_(u'已检对象名单'),
         help_text=_(u'包含已检名单'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_check',
                                           }, 
                                    check_test=None,
@@ -203,7 +203,7 @@ class ReportStatisticsForm(forms.Form):
         required=True,
         label =_(u'未检对象名单'),
         help_text=_(u'包含未检名单'),
-        widget=forms.CheckboxInput(attrs={'class':'form-control',
+        widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_not',
                                           }, 
                                    check_test=None,
@@ -214,6 +214,7 @@ class ReportStatisticsForm(forms.Form):
         label =_(u'检查项目(*)'),
         help_text=_(u'选择一个合适的检查项目'),
         )
+    check_project.widget.attrs['class'] = 'form-control'
     def clean_check_project(self):
         try:
             check_project_copy = self.data.get('check_project')
