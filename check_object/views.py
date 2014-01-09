@@ -280,7 +280,23 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                 else:
                     results_page = None
             else:
-                raise Http404('Invalid Request!')                
+                if submit_value == u'打印检查对象报表':
+                    check_object_search_form = CheckObjectSearchForm(post_data)
+                    if check_object_search_form.is_valid():
+                        check_object_search_form.data_to_session(request)
+                        check_object_search_form.init_from_session(request)
+                        query_set = check_object_search_form.search()
+                        return check_object_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': check_object_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')
         return render_to_response(template_name,
                                   {'search_form': check_object_search_form,
                                    'modify_form': check_object_modify_form,
@@ -406,7 +422,23 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
                 else:
                     results_page = None
             else:
-                raise Http404('Invalid Request!')                
+                if submit_value == u'打印检查对象报表':
+                    check_object_search_form = CheckObjectSearchForm(post_data)
+                    if check_object_search_form.is_valid():
+                        check_object_search_form.data_to_session(request)
+                        check_object_search_form.init_from_session(request)
+                        query_set = check_object_search_form.search()
+                        return check_object_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': check_object_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')
         return render_to_response(template_name,
                                   {'search_form': check_object_search_form,
                                    'delete_form': check_object_delete_form,

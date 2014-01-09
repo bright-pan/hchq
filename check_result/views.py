@@ -18,6 +18,7 @@ from hchq.untils import gl
 from hchq import settings
 from hchq.report.check_result_report import check_result_report
 from hchq.report.certification_report import certification_report
+from hchq.report.check_object_report import *
 import datetime
 # Create your views here.
 def check_result_modify(request, template_name='my.html', next='/', check_result_page='1'):
@@ -40,30 +41,27 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
+        try:
+            check_result_id = int(check_result_index)
+        except ValueError:
+            raise Http404('Invalid Request!')
+        try:
+            check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+        except ObjectDoesNotExist:
+            check_project = None
+        try:
+            check_object = CheckObject.objects.get(pk=check_result_id)
+        except ObjectDoesNotExist:
+            raise Http404('Invalid Request!')
         if submit_value == u'打印证明':
-            try:
-                check_result_id = int(check_result_index)
-            except ValueError:
-                raise Http404('Invalid Request!')
-            try:
-                result = CheckObject.objects.filter(pk=check_result_id)
-            except ObjectDoesNotExist:
-                raise Http404('Invalid Request!')
-            return certification_report(result, request)
+            qs_check_result = CheckResult.objects.filter(check_object=check_object, check_project=check_project, is_latest=True)
+            if qs_check_result:
+                return certification_report([check_object], request)
+            else:
+                success = u'invalid_result_error'
+            results = CheckResult.objects.filter(check_object=check_object).order_by('-id')
         else:
             if submit_value == u'检查结果失效':
-                try:
-                    check_result_id = int(check_result_index)
-                except ValueError:
-                    raise Http404('Invalid Request!')
-                try:
-                    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-                except ObjectDoesNotExist:
-                    check_project = None
-                try:
-                    check_object = CheckObject.objects.get(pk=check_result_id)
-                except ObjectDoesNotExist:
-                    raise Http404('Invalid Request!')
                 if check_project is not None:
                     today = datetime.datetime.now().date()
                     if check_project.start_time <= today and today <= check_project.end_time:
@@ -77,10 +75,10 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
                         else:
                             success = u'invalid_already'
                     else:
-                        page_title = u'失效受限制'
+                        page_title = u'受限制'
                         success = u'invalid_time_error'
                 else:
-                    page_title = u'失效受限制'
+                    page_title = u'受限制'
                     success = u'invalid_project_error'
                 results = CheckResult.objects.filter(check_object=check_object).order_by('-id')
             else: 
@@ -180,7 +178,23 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
                                           context_instance=RequestContext(request))
 
             else:
-                raise Http404('Invalid Request!')
+                if submit_value == u'打印检查对象报表':
+                    check_object_search_form = CheckObjectSearchForm(post_data)
+                    if check_object_search_form.is_valid():
+                        check_object_search_form.data_to_session(request)
+                        check_object_search_form.init_from_session(request)
+                        query_set = check_object_search_form.search()
+                        return check_object_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': check_object_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')
     else:
         check_result_add_form = CheckResultAddForm()
         check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
@@ -366,7 +380,23 @@ def check_result_special_add(request, template_name='my.html', next_template_nam
                                           context_instance=RequestContext(request))
 
             else:
-                raise Http404('Invalid Request!')
+                if submit_value == u'打印检查对象报表':
+                    check_object_search_form = CheckObjectSearchForm(post_data)
+                    if check_object_search_form.is_valid():
+                        check_object_search_form.data_to_session(request)
+                        check_object_search_form.init_from_session(request)
+                        query_set = check_object_search_form.search()
+                        return check_object_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': check_object_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')
     else:
         check_result_special_add_form = CheckResultSpecialAddForm()
         check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
