@@ -21,9 +21,8 @@ class ServiceAreaAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'服务区域名称'), 
-        widget=forms.Textarea(attrs={'class':'form-control',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'1',
                                      }
                               ), 
         help_text=_(u'例如：周田，周田乡/西江镇...'),

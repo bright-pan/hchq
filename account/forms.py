@@ -33,7 +33,7 @@ class LoginForm(forms.Form):
         label=_(u'用户密码'), 
         widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'比如：可以用字母与数字相结合'),
+        help_text=_(u'例如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     
@@ -218,9 +218,8 @@ class RoleAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'角色名称'), 
-        widget=forms.Textarea(attrs={'class':'form-control',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'1',
                                      }
                               ), 
         help_text=_(u'例如：技术人员，区域主任/检查人员...'),

@@ -20,9 +20,8 @@ class DepartmentAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'单位部门名称'), 
-        widget=forms.Textarea(attrs={'class':'form-control',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'1',
                                      }
                               ), 
         help_text=_(u'例如：县委/政法委，公安局，...'),

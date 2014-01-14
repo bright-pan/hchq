@@ -1,6 +1,5 @@
 <form method="post" action="">{% csrf_token %}
     <fieldset>
-        <legend>请输入用户名和密码</legend>
         <div class="form-group {% if form.username.errors %} has-error {% endif %}">
             <label class="control-label">{{ form.username.label }}</label>
             {{ form.username }}
