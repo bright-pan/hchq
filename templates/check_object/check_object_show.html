@@ -90,6 +90,12 @@
                         <th>创建时间</th>
                         <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
                     </tr>
+                    {% if not result.is_active %}
+                        <tr>
+                            <th>删除原因</th>
+                            <td>{{ result.del_reason|del_reason_local }}</td>
+                        </tr>
+                    {% endif %}
                     <tr>
                         <th>更新时间</th>
                         <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
