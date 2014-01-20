@@ -12,20 +12,20 @@ from django.contrib.auth.models import *
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 
-from hchq.account.forms import *
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from account.forms import *
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
-from hchq.report.user_report import user_report
+from report.user_report import user_report
 
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import CheckObject
-from hchq.check_result.models import CheckResult
+from check_project.models import CheckProject
+from check_object.models import CheckObject
+from check_result.models import CheckResult
 
 # Create your views here.
 import pygal
 from pygal.style import LightGreenStyle
-
+import datetime
 
 class MyConfig(pygal.Config):
     width=1024

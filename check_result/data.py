@@ -6,15 +6,15 @@ import pymssql
 import datetime
 import re
 from django.contrib.auth.models import *
-from hchq.service_area.models import *
-from hchq.department.models import *
-from hchq.check_object.models import *
-from hchq.check_project.models import *
-from hchq.check_result.models import *
+from service_area.models import *
+from department.models import *
+from check_object.models import *
+from check_project.models import *
+from check_result.models import *
 from PIL import Image
 from django.core.files.storage import default_storage
 from hchq import settings
-from hchq.untils import gl
+from untils import gl
 from django.db.models import ObjectDoesNotExist
 
 conn = pymssql.connect(host='192.168.0.167',user='sa',password='',database='HCHQ')

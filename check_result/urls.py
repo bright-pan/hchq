@@ -1,6 +1,6 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('hchq.check_result.views',
+urlpatterns = patterns('check_result.views',
 
        (r'show/(?P<check_result_index>\d{1,8})/(?P<success>\w+)/$',
        'check_result_show',

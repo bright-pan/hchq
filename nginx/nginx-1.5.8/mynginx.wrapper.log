@@ -1,0 +1,51 @@
+2014-01-20 12:58:38 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 12:58:39 - Started 5560
+2014-01-20 13:00:02 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 13:00:02 - Started 4424
+2014-01-20 13:17:19 - Stopping nginx
+2014-01-20 13:17:19 - Started 5216
+2014-01-20 13:17:19 - WaitForProcessToExit 4424+5216
+2014-01-20 13:29:07 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 -c E:\work\hchq\nginx\my.conf 
+2014-01-20 13:29:11 - Started 1028
+2014-01-20 13:30:22 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 -c E:\work\hchq\nginx\my.conf 
+2014-01-20 13:30:22 - Started 4796
+2014-01-20 13:31:32 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 -c E:\work\hchq\nginx\my.conf 
+2014-01-20 13:31:32 - Started 4972
+2014-01-20 13:34:56 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -c E:\work\hchq\nginx\my.conf 
+2014-01-20 13:34:56 - Started 3416
+2014-01-20 13:35:32 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -c E:\work\hchq\nginx\my.conf 
+2014-01-20 13:35:32 - Started 4140
+2014-01-20 13:36:28 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 13:36:28 - Started 3684
+2014-01-20 13:36:56 - Stopping nginx
+2014-01-20 13:36:56 - Started 2108
+2014-01-20 13:36:56 - WaitForProcessToExit 3684+2108
+2014-01-20 13:36:56 - Finished nginx
+2014-01-20 13:37:17 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 13:37:17 - Started 1736
+2014-01-20 13:37:27 - Stopping nginx
+2014-01-20 13:37:27 - Started 4008
+2014-01-20 13:37:27 - WaitForProcessToExit 1736+4008
+2014-01-20 13:37:27 - Finished nginx
+2014-01-20 13:38:29 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 13:38:29 - Started 1160
+2014-01-20 13:38:37 - Stopping nginx
+2014-01-20 13:38:38 - Started 4876
+2014-01-20 13:38:38 - WaitForProcessToExit 1160+4876
+2014-01-20 13:38:38 - Finished nginx
+2014-01-20 13:38:46 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 13:38:46 - Started 4132
+2014-01-20 13:38:50 - Stopping nginx
+2014-01-20 13:38:50 - Started 3416
+2014-01-20 13:38:50 - WaitForProcessToExit 4132+3416
+2014-01-20 13:38:50 - Finished nginx
+2014-01-20 13:39:35 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 
+2014-01-20 13:39:36 - Started 4664
+2014-01-20 13:39:38 - Stopping nginx
+2014-01-20 13:39:39 - Started 1972
+2014-01-20 13:39:39 - WaitForProcessToExit 4664+1972
+2014-01-20 13:39:39 - Finished nginx
+2014-01-20 13:40:25 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe  -p E:\work\hchq\nginx\nginx-1.5.8 -c E:\work\hchq\nginx\my.conf 
+2014-01-20 13:40:25 - Started 5048
+2014-01-20 13:41:20 - Starting E:\work\hchq\nginx\nginx-1.5.8\nginx.exe   
+2014-01-20 13:41:21 - Started 1116

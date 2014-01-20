@@ -7,16 +7,16 @@ from PIL import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import *
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from check_project.models import CheckProject
+from check_object.models import *
 from hchq import settings
 import re
 import datetime
 
-from hchq.report.check_project_report import *
+from report.check_project_report import *
 
 class ReportCheckOrNotForm(forms.Form):
     

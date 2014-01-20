@@ -6,6 +6,6 @@ project = os.path.dirname(apache_configuration)
 workspace = os.path.dirname(project)
 sys.path.append(workspace) 
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'hchq.apache.settings_production'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'apache.settings_production'
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()

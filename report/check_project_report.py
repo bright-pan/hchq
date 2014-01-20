@@ -16,14 +16,14 @@ from django.db.models import Avg, Max, Min, Count
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line
 
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import CheckObject
-from hchq.check_result.models import CheckResult
-from hchq.service_area.models import *
-from hchq.report.check_result_report import CheckResultReport
+from check_project.models import CheckProject
+from check_object.models import CheckObject
+from check_result.models import CheckResult
+from service_area.models import *
+from report.check_result_report import CheckResultReport
 from django.db.models import ObjectDoesNotExist
 
-from hchq.untils import gl
+from untils import gl
 
 class CheckProjectReport(Report):
     title = u'江西省会昌县环孕检统计报表'

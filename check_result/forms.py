@@ -7,11 +7,11 @@ from PIL import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from hchq.untils import gl
-from hchq.account.models import UserProfile
-from hchq.check_object.models import *
-from hchq.check_result.models import CheckResult
-from hchq.check_project.models import CheckProject
+from untils import gl
+from account.models import UserProfile
+from check_object.models import *
+from check_result.models import CheckResult
+from check_project.models import CheckProject
 from hchq import settings
 import re
 import datetime

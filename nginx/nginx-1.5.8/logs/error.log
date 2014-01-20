@@ -1,0 +1,13 @@
+2014/01/20 12:58:39 [emerg] 5560#2552: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2014/01/20 12:59:23 [emerg] 5476#6048: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2014/01/20 12:59:43 [emerg] 956#5752: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2014/01/20 13:17:19 [notice] 5216#3532: signal process started
+2014/01/20 13:29:12 [emerg] 1028#1284: CreateFile() "E:\work\hchq\nginx\my.conf" failed (2: The system cannot find the file specified)
+2014/01/20 13:30:22 [emerg] 4796#1420: CreateFile() "E:\work\hchq\nginx\mime.types" failed (2: The system cannot find the file specified) in E:\work\hchq\nginx\my.conf:18
+2014/01/20 13:31:32 [emerg] 4972#4080: CreateFile() "E:\work\hchq\nginx\mime.types" failed (2: The system cannot find the file specified) in E:\work\hchq\nginx\my.conf:18
+2014/01/20 13:36:56 [notice] 2108#1484: signal process started
+2014/01/20 13:37:27 [notice] 4008#1420: signal process started
+2014/01/20 13:38:38 [notice] 4876#2472: signal process started
+2014/01/20 13:38:50 [notice] 3416#3184: signal process started
+2014/01/20 13:39:39 [notice] 1972#4904: signal process started
+2014/01/20 13:40:25 [emerg] 5048#4076: CreateFile() "E:\work\hchq\nginx\mime.types" failed (2: The system cannot find the file specified) in E:\work\hchq\nginx\my.conf:18

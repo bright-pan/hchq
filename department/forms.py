@@ -5,10 +5,10 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.department.models import Department
-from hchq.check_object.models import CheckObject
-from hchq.service_area.models import ServiceAreaDepartment
-from hchq.untils import gl
+from department.models import Department
+from check_object.models import CheckObject
+from service_area.models import ServiceAreaDepartment
+from untils import gl
 import re
 
 class DepartmentAddForm(forms.Form):

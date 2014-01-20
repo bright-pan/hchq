@@ -1,6 +1,6 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('hchq.check_object.views',
+urlpatterns = patterns('check_object.views',
 
        (r'add/(?P<check_object_page>\d{1,8})/$',
        'check_object_add',

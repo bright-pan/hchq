@@ -1,7 +1,7 @@
 #coding=utf-8
 import datetime
 from hchq import settings
-from hchq.check_project.models import *
+from check_project.models import *
 from django.db.models import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 

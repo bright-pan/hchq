@@ -1,7 +1,7 @@
 #coding=utf-8
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('hchq.service_area.views',
+urlpatterns = patterns('service_area.views',
 
       (r'add/(?P<service_area_page>\d{1,4})/$',
        'service_area_add',

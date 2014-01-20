@@ -1,0 +1,1 @@
+nginx: [emerg] CreateFile() "E:\work\hchq\nginx\mime.types" failed (2: The system cannot find the file specified) in E:\work\hchq\nginx\my.conf:18

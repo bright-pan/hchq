@@ -5,11 +5,11 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.service_area.models import ServiceAreaDepartment
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from service_area.models import ServiceAreaDepartment
 
-from hchq.untils import gl
+from untils import gl
 import re
 
 class ServiceAreaAddForm(forms.Form):

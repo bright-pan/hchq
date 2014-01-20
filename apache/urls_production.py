@@ -1,11 +1,11 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 from hchq import settings
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('hchq.account.views',
+urlpatterns = patterns('account.views',
     # Example:
     (r'^$', 'my_layout_test', {'template_name' : 'my_index.html'}, 'hchq_index'),
 
@@ -18,43 +18,43 @@ urlpatterns = patterns('hchq.account.views',
 
 urlpatterns += patterns('',
 
-      (r'^account/', include('hchq.account.urls')),
+      (r'^account/', include('account.urls')),
                         
 )
 
 urlpatterns += patterns('',
 
-      (r'^service_area/', include('hchq.service_area.urls')),
+      (r'^service_area/', include('service_area.urls')),
                         
 )
 
 urlpatterns += patterns('',
 
-      (r'^department/', include('hchq.department.urls')),
+      (r'^department/', include('department.urls')),
                         
 )
 
 urlpatterns += patterns('',
 
-      (r'^check_project/', include('hchq.check_project.urls')),
+      (r'^check_project/', include('check_project.urls')),
                         
 )
 
 urlpatterns += patterns('',
 
-      (r'^check_object/', include('hchq.check_object.urls')),
+      (r'^check_object/', include('check_object.urls')),
                         
 )
 
 urlpatterns += patterns('',
 
-      (r'^check_result/', include('hchq.check_result.urls')),
+      (r'^check_result/', include('check_result.urls')),
                         
 )
 
 urlpatterns += patterns('',
 
-      (r'^report/', include('hchq.report.urls')),
+      (r'^report/', include('report.urls')),
                         
 )
 

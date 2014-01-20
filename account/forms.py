@@ -4,10 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
 
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.account.models import UserProfile
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from account.models import UserProfile
 from hchq import settings
 import re
 

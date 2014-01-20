@@ -9,10 +9,10 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.check_project.models import CheckProject
-from hchq.service_area.models import ServiceArea
-from hchq.report.forms import *
-from hchq.report.check_project_report import check_project_report
+from check_project.models import CheckProject
+from service_area.models import ServiceArea
+from report.forms import *
+from report.check_project_report import check_project_report
 
 @csrf_protect
 @login_required
