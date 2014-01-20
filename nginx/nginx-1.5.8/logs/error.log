@@ -11,3 +11,35 @@
 2014/01/20 13:38:50 [notice] 3416#3184: signal process started
 2014/01/20 13:39:39 [notice] 1972#4904: signal process started
 2014/01/20 13:40:25 [emerg] 5048#4076: CreateFile() "E:\work\hchq\nginx\mime.types" failed (2: The system cannot find the file specified) in E:\work\hchq\nginx\my.conf:18
+2014/01/20 20:07:00 [error] 3064#6984: *1 CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "127.0.0.1"
+2014/01/20 20:13:34 [notice] 6756#6940: signal process started
+2014/01/20 20:14:56 [error] 6440#5944: *9 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /account/get_bar_chart/ HTTP/1.1", upstream: "http://[::1]:8088/account/get_bar_chart/", host: "127.0.0.1:8080", referrer: "http://127.0.0.1:8080/"
+2014/01/20 20:17:04 [notice] 5508#7068: signal process started
+2014/01/20 20:20:53 [error] 5708#6912: *2 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /account/person_management/ HTTP/1.1", upstream: "http://[::1]:8088/account/person_management/", host: "127.0.0.1:8080", referrer: "http://127.0.0.1:8080/"
+2014/01/20 20:23:32 [notice] 4180#5308: signal process started
+2014/01/20 20:24:01 [notice] 4332#7112: signal process started
+2014/01/20 20:26:10 [error] 6260#148: *6 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://[::1]:8088/", host: "127.0.0.1", referrer: "http://127.0.0.1/"
+2014/01/20 20:26:12 [notice] 2256#5584: signal process started
+2014/01/20 20:26:59 [notice] 6588#6452: signal process started
+2014/01/20 20:28:13 [error] 6032#6448: *1 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://[::1]:8088/", host: "localhost"
+2014/01/20 20:29:53 [error] 6032#6448: *1 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "POST /account/login/ HTTP/1.1", upstream: "http://[::1]:8088/account/login/", host: "localhost", referrer: "http://localhost/account/login/"
+2014/01/20 20:49:37 [notice] 6152#2556: signal process started
+2014/01/20 20:52:35 [notice] 4876#3416: signal process started
+2014/01/20 21:08:18 [notice] 2104#3096: signal process started
+2014/01/20 21:46:53 [notice] 4388#4340: signal process started
+2014/01/20 21:56:05 [emerg] 5684#4324: invalid parameter "on" in E:\work\hchq\nginx\nginx-1.5.8/conf/nginx.conf:41
+2014/01/20 22:01:17 [emerg] 1016#1084: invalid number of arguments in "proxy_redirect" directive in E:\work\hchq\nginx\nginx-1.5.8/conf/nginx.conf:41
+2014/01/20 22:06:22 [emerg] 3460#3720: invalid number of arguments in "proxy_redirect" directive in E:\work\hchq\nginx\nginx-1.5.8/conf/nginx.conf:41
+2014/01/20 23:11:41 [notice] 1356#5488: signal process started
+2014/01/20 23:17:09 [notice] 3160#5012: signal process started
+2014/01/20 23:18:30 [notice] 5144#2752: signal process started
+2014/01/20 23:18:31 [error] 3380#1012: *247 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1:8001"
+2014/01/20 23:20:57 [error] 1736#4812: *259 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "localhost"
+2014/01/20 23:21:01 [error] 3380#1012: *267 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1:8001"
+2014/01/20 23:21:12 [notice] 2448#392: signal process started
+2014/01/20 23:27:45 [notice] 5204#5152: signal process started
+2014/01/20 23:51:52 [notice] 720#5176: signal process started
+2014/01/20 23:53:51 [notice] 2272#3668: signal process started
+2014/01/21 00:41:10 [notice] 6004#3112: signal process started
+2014/01/21 00:42:30 [notice] 2452#5792: signal process started
+2014/01/21 00:42:30 [error] 2452#5792: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)

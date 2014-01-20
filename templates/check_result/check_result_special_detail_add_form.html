@@ -1,6 +1,6 @@
 <form method="post" action="{% url check_result_special_detail_add %}">{% csrf_token %}
     <fieldset>
-        <legend>特殊检查结果信息</legend>
+        <legend>特殊检查结果</legend>
         <div class="form-group {% if form.special.errors %} has-error {% endif %}">
             <label class="control-label">{{ form.special.label }}</label>
             {{ form.special }}

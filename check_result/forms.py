@@ -69,7 +69,7 @@ class CheckResultDetailAddForm(forms.Form):
         )
     ring.widget.attrs['class'] = 'form-control'
     special = forms.ChoiceField(
-        required=True,
+        required=False,
         label =_(u'特殊检查'),
         choices=((u'none', u'请选择'),
                  (u'special_4', u'单位担保'),
@@ -134,7 +134,6 @@ class CheckResultDetailAddForm(forms.Form):
 
     def init_value(self, user=None, check_object=None):
         if user is not None and check_object is not None:
-            
             choices = (('none', u'请选择'),)
             if user.is_superuser is False:
                 if user.has_perm('department.unlocal'):

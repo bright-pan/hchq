@@ -115,6 +115,7 @@ def get_dot_chart(request, template_name = 'account/login.html', next='/'):
 def my_layout_test(request, template_name = 'my.html'):
     return render_to_response(template_name, context_instance=RequestContext(request))
 
+
 @csrf_protect
 @never_cache
 def login(request, template_name = 'account/login.html', next='/'):
@@ -123,11 +124,12 @@ def login(request, template_name = 'account/login.html', next='/'):
     login_form = None
     if request.method == 'POST':
         post_data = request.POST.copy()
-        print post_data
+        #print(request.META['HTTP_ORIGIN'] + next)
         login_form = LoginForm(post_data)
         if login_form.is_valid():
             from django.contrib.auth import login
             login(request, login_form.get_user())
+            #return HttpResponseRedirect(request.META['HTTP_ORIGIN'] + next)
             return HttpResponseRedirect(next)
         else:
             pass

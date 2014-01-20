@@ -1,2 +1,0 @@
-nginx: [alert] could not open error log file: CreateFile() "logs/error.log" failed (3: The system cannot find the path specified)
-2014/01/20 13:41:21 [emerg] 1116#2224: CreateFile() "C:\windows\system32/conf/nginx.conf" failed (3: The system cannot find the path specified)

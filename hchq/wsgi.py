@@ -13,7 +13,9 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-import os
+import os,sys
+root = os.path.join(os.path.dirname(__file__), '..')
+sys.path.insert(0, root)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hchq.settings")
 

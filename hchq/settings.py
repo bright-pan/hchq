@@ -4,9 +4,7 @@
 import os
 # hack to accommodate Windows
 CURRENT_PATH = os.path.join(os.path.dirname(__file__), '..').replace('\\', '/')
-print(CURRENT_PATH)
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+#print(CURRENT_PATH)
 
 SITE_NAME = '江西省会昌县环情孕情管理系统'
 META_KEYWORDS = '环孕检, 计生服务站, 计生委, 检查结果, 检查对象, 检查项目'
@@ -53,12 +51,12 @@ USE_I18N = True
 USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
+USE_TZ = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(CURRENT_PATH, 'static/').replace('\\', '/')
-print(MEDIA_ROOT)
+#print(MEDIA_ROOT)
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
@@ -116,7 +114,7 @@ WSGI_APPLICATION = 'hchq.wsgi.application'
 
 import os
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\','/'),)
-print(TEMPLATE_DIRS)
+#print(TEMPLATE_DIRS)
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
@@ -135,9 +133,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
+    #'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    #'django.contrib.admindocs',
 
     # local app
     'untils',
@@ -222,3 +220,14 @@ CHECK_RESULT_PER_PAGE = 12
 
 ACCOUNT_DEFAULT_EMAIL = u'loststriker@gmail.com'
 ACCOUNT_DEFAULT_PASSWORD = u'123456'
+
+DEBUG = TEMPLATE_DEBUG = True
+
+#DEBUG = TEMPLATE_DEBUG = False
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True                 # Whether a user's session cookie expires when the Web browser is closed.
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'hchq2011django'
+EMAIL_HOST_USER = 'hchq.django@gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
