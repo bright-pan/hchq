@@ -43,3 +43,31 @@
 2014/01/21 00:41:10 [notice] 6004#3112: signal process started
 2014/01/21 00:42:30 [notice] 2452#5792: signal process started
 2014/01/21 00:42:30 [error] 2452#5792: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 09:00:26 [emerg] 2580#2584: bind() to 0.0.0.0:80 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2014/01/21 10:04:12 [notice] 5780#5740: signal process started
+2014/01/21 10:04:23 [notice] 5356#1968: signal process started
+2014/01/21 10:04:23 [error] 5356#1968: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:04:49 [notice] 5372#5416: signal process started
+2014/01/21 10:04:49 [error] 5372#5416: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:05:06 [notice] 2560#5584: signal process started
+2014/01/21 10:05:57 [notice] 2456#2112: signal process started
+2014/01/21 10:10:22 [notice] 5860#1172: signal process started
+2014/01/21 10:10:22 [error] 5860#1172: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:10:41 [notice] 5524#3352: signal process started
+2014/01/21 10:11:51 [notice] 4516#6060: signal process started
+2014/01/21 10:12:11 [notice] 5560#1500: signal process started
+2014/01/21 10:12:11 [error] 5560#1500: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:12:29 [notice] 5700#2144: signal process started
+2014/01/21 10:12:49 [notice] 5464#3936: signal process started
+2014/01/21 10:12:49 [error] 5464#3936: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:13:29 [notice] 6436#6440: signal process started
+2014/01/21 10:14:06 [notice] 6804#6808: signal process started
+2014/01/21 10:14:06 [error] 6804#6808: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:14:08 [notice] 6820#6824: signal process started
+2014/01/21 10:14:08 [error] 6820#6824: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:14:09 [notice] 6836#6840: signal process started
+2014/01/21 10:14:09 [error] 6836#6840: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:14:12 [notice] 6852#6856: signal process started
+2014/01/21 10:14:12 [error] 6852#6856: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2014/01/21 10:15:04 [notice] 7056#7060: signal process started
+2014/01/21 10:15:04 [error] 7056#7060: CreateFile() "E:\work\hchq\nginx\nginx-1.5.8/logs/nginx.pid" failed (2: The system cannot find the file specified)

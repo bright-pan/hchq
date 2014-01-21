@@ -30,13 +30,8 @@
             {% with delete_form as form %}
                 <form method="post" action="#">{% csrf_token %}
                     <td>
-                        <div class="form-group {% if form.del_reason.errors %} has-error {% endif %}">
+                        <div class="form-group">
                             {{ form.del_reason }}
-                            {% if form.del_reason.errors %}
-                                {% for error in form.del_reason.errors %}
-                                    <span class="help-block badge">{{ error }}</span>
-                                {% endfor %}
-                            {% endif %}
                         </div>
                     </td>
                     <td>

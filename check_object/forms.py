@@ -1211,9 +1211,10 @@ class CheckObjectDeleteForm(forms.Form):
     del_reason = forms.ChoiceField(
         required=True,
         label =_(u'删除原因'),
-        choices=((u'del_reason_3',u'超龄删除'),
+        choices=((u'none',u'请选择'),
                  (u'del_reason_1',u'离婚删除'),
                  (u'del_reason_2',u'调离删除'),
+                 (u'del_reason_3',u'超龄删除'),
                  (u'del_reason_4',u'因病致绝育删除'),
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
@@ -1237,7 +1238,11 @@ class CheckObjectDeleteForm(forms.Form):
             raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象，如果确实需要删除，请先失效本次检查结果，然后在删除')
         else:
             return id_copy
-    
+    def clean_del_reason(self):
+        data_copy = self.data.get('del_reason', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
     def delete(self):
         if self.id_object is not None:
             self.id_object.is_active = False
