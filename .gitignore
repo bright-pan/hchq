@@ -27,3 +27,5 @@ static/images/thumbnails/null
 .pydevproject
 
 .idea/*
+
+nginx/logs/*
