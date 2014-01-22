@@ -1,1 +1,28 @@
 {% extends "my_layout.html" %}
+
+
+{% block css_media %}
+    <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block js_media %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-zh-CN.js"></script>
+    <script>
+        $(function () {
+            $("#id_check_project_date_from").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#id_check_project_date_to").datepicker("option", "minDate", selectedDate);
+                }
+            });
+            $("#id_check_project_date_to").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeYear: true,
+                onClose: function (selectedDate) {
+                    $("#id_check_project_date_from").datepicker("option", "maxDate", selectedDate);
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -137,6 +137,7 @@ class CheckObjectAddForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -145,6 +146,7 @@ class CheckObjectAddForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     address = forms.CharField(
         max_length=128,
         required=False,
@@ -660,6 +662,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：上环选避孕环方式'),
         )
     ctp_method.widget.attrs['class'] = 'form-control'
+
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -668,6 +671,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -676,6 +680,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     address = forms.CharField(
         max_length=128,
         required=False,
@@ -1408,6 +1413,7 @@ class CheckObjectSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -1416,6 +1422,7 @@ class CheckObjectSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     modify_start_time = forms.DateField(
         required=False,
         label=_(u'修改开始时间'),
@@ -1423,6 +1430,7 @@ class CheckObjectSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     modify_start_time.widget.attrs['class'] = 'form-control'
+    modify_start_time.widget.attrs['id'] = 'id_modify_start_time'
     modify_end_time  = forms.DateField(
         required=False,
         label=_(u'修改结束时间'),
@@ -1430,6 +1438,7 @@ class CheckObjectSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     modify_end_time.widget.attrs['class'] = 'form-control'
+    modify_end_time.widget.attrs['id'] = 'id_modify_end_time'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),

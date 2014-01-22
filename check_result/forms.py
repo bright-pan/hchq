@@ -469,6 +469,7 @@ class CheckResultSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -477,6 +478,7 @@ class CheckResultSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
@@ -550,6 +552,7 @@ class CheckResultSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     start_time.widget.attrs['class'] = 'form-control'
+    start_time.widget.attrs['id'] = 'id_start_time'
     end_time  = forms.DateField(
         required=False,
         label=_(u'结束时间'),
@@ -557,7 +560,7 @@ class CheckResultSearchForm(forms.Form):
         input_formats = ('%Y-%m-%d',)
         )
     end_time.widget.attrs['class'] = 'form-control'
-
+    end_time.widget.attrs['id'] = 'id_end_time'
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
