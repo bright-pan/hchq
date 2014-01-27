@@ -317,7 +317,7 @@ class CheckResultSpecialDetailAddForm(forms.Form):
             return False
         result = "%s" % (self.cleaned_data['special'])
 
-        CheckResult.objects.filter(check_object=check_object).update(is_latest=False)
+        CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
         CheckResult.objects.create(check_object=check_object,
                                    check_project=check_project,
                                    checker=user,
@@ -513,10 +513,10 @@ class CheckResultSearchForm(forms.Form):
         choices=((u'none', u'未知'),
                  (u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
-                 (u'special_3', u'其他原因'),
                  (u'special_4', u'单位担保'),
                  (u'special_5', u'医学手术证明'),
                  (u'special_6', u'外地环孕检证明'),
+                 (u'special_3', u'其他原因'),
                  ),
         )
     special.widget.attrs['class'] = 'form-control'
