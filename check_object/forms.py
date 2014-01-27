@@ -1221,6 +1221,7 @@ class CheckObjectDeleteForm(forms.Form):
                  (u'del_reason_2',u'调离删除'),
                  (u'del_reason_3',u'超龄删除'),
                  (u'del_reason_4',u'因病致绝育删除'),
+                 (u'del_reason_5',u'其他原因删除'),
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )

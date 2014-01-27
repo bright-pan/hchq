@@ -261,10 +261,10 @@ class CheckResultSpecialDetailAddForm(forms.Form):
         choices=((u'none', u'请选择'),
                 (u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
-                 (u'special_3', u'其他原因'),
                  (u'special_4', u'单位担保'),
                  (u'special_5', u'医学手术证明'),
                  (u'special_6', u'外地环孕检证明'),
+                 (u'special_3', u'其他原因'),
                  ),
         help_text=_(u'生小孩则选生小孩'),
         )

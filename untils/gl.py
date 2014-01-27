@@ -207,6 +207,7 @@ check_object_del_reason = {u'del_reason_1':u'离婚删除',
                           u'del_reason_2':u'调离删除',
                           u'del_reason_3':u'超龄删除',
                           u'del_reason_4':u'因病致绝育删除',
+                          u'del_reason_5':u'其他原因删除',
                           }
 #check_object_init_flag = False
 ################################################
