@@ -43,18 +43,45 @@
 
 
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <table class="table table-bordered table-striped table-hover">
                     <caption>检查对象信息</caption>
                     <thead>
                     <tr>
-                        <th colspan="2">{{ check_object.name }} | {{ check_object.id_number }}</th>
+                        <th colspan="3">{{ check_object.name }} | {{ check_object.id_number }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <th>妻子姓名<br>身份证号</th>
-                        <td>{{ check_object.name }}<br>{{ check_object.id_number }}</td>
+                        <th class="col-md-3">妻子姓名<br>身份证号</th>
+                        <td class="col-md-5">{{ check_object.name }}<br>{{ check_object.id_number }}</td>
+                        <td rowspan="9" class="col-md-4">
+                            <div class="thumbnail">
+                                <h4 class="text-center">检查对象相片</h4>
+                                <img src="{{ check_object.photo.url }}"/>
+
+                                <div class="caption">
+                                    <div class="text-center">
+                                        <p>{{ check_object.name }}的照片</p>
+
+                                        <p>{{ check_object.id_number }}</p>
+                                        {% if perms.department.cr_report %}
+                                            <form method="post" action="#">{% csrf_token %}
+                                                <button type="submit" value="打印证明" name="submit" class="btn btn-primary btn-block">打印证明
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if perms.department.role_management %}
+                                            <form method="post" action="#">{% csrf_token %}
+                                                <button type="submit" value="检查结果失效" name="submit" class="btn btn-primary btn-block">检查结果失效
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                    </td>
                     </tr>
                     <tr>
                         <th>服务区域<br>单位部门</th>
@@ -143,32 +170,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-md-4">
-                <div class="thumbnail">
-                    <h4 class="text-center">检查对象相片</h4>
-                    <img src="{{ check_object.photo.url }}"/>
 
-                    <div class="caption">
-                        <div class="text-center">
-                            <p>{{ check_object.name }}的照片</p>
-
-                            <p>{{ check_object.id_number }}</p>
-                            {% if perms.department.cr_report %}
-                                <form method="post" action="#">{% csrf_token %}
-                                    <button type="submit" value="打印证明" name="submit" class="btn btn-primary btn-block">打印证明
-                                    </button>
-                                </form>
-                            {% endif %}
-                            {% if perms.department.role_management %}
-                                <form method="post" action="#">{% csrf_token %}
-                                    <button type="submit" value="检查结果失效" name="submit" class="btn btn-primary btn-block">检查结果失效
-                                    </button>
-                                </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     {% else %}
         <div class="alert alert-danger">

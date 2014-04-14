@@ -1019,18 +1019,12 @@ class CheckResultSearchForm(forms.Form):
     def query_check_project(self, query_set=None):
         try:
             check_project_id = int(self.cleaned_data['check_project'])
-            try:
-                check_project = CheckProject.objects.get(pk=check_project_id)
-            except ObjectDoesNotExist:
-                try:
-                    check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-                except ObjectDoesNotExist:
-                    pass
         except ValueError:
-            try:
-                check_project = CheckProject.objects.get(is_setup=True, is_active=True)
-            except ObjectDoesNotExist:
-                pass
+            return query_set
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id)
+        except ObjectDoesNotExist:
+            return query_set
 
         if query_set is None:
             return query_set
