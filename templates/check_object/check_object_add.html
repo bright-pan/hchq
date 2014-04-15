@@ -1,5 +1,76 @@
 {% extends "check_object/check_object_layout.html" %}
 
+{% block photo %}
+    <script type="text/javascript">
+        $(function () {
+            var photo_ready = false;
+
+            webcam.set_swf_url("{{ MEDIA_URL }}js/jpegcam/webcam.swf");
+            webcam.set_quality(100); // JPEG quality (1 - 100)
+            webcam.set_shutter_sound(true, "{{ MEDIA_URL }}js/jpegcam/shutter.mp3"); // play shutter click sound
+            webcam.set_api_url("{% url check_object_add_camera %}");
+            $("#id_camera_frame").html(webcam.get_html(320, 240));
+            webcam.set_hook('onComplete', function my_completion_handler(response) {
+                // extract URL out of PHP output
+                photo_ready = true;
+                $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                // reset camera for another shot
+                webcam.reset();
+            });
+
+            $("#id_camera_freeze").click(function () {
+                webcam.freeze();
+            });
+            $("#id_camera_reset").click(function () {
+                webcam.reset();
+            });
+            $("#id_camera_upload").click(function () {
+                webcam.upload();
+            });
+            $("#id_camera_configure").click(function () {
+                webcam.configure();
+            });
+
+            var csrf_token = $("#csrf_token >div >input").attr("value");
+            new AjaxUpload("id_my_uploader", {
+                action: "{% url check_object_add_uploader %}",
+                name: "photo",
+                data: {
+                    csrfmiddlewaretoken: csrf_token
+                },
+                onSubmit: function (file, ext) {
+                    if (ext && /^(jpg|png|jpeg|gif)$/.test(ext)) {
+                        /* Setting data */
+                        $("#id_uploader_msg").text("正在上传文件：" + file);
+                        this.disable();
+                    } else {
+                        // extension is not allowed
+                        $("#id_uploader_msg").text("请上传jpg|png|jpeg|gif格式的文件");
+                        // cancel upload
+                        return false;
+                    }
+                },
+                onComplete: function (file) {
+                    photo_ready = true;
+                    $("#id_uploader_msg").text("已成功上传文件：" + file);
+                    $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                    $("#id_uploader_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                    this.enable();
+                }
+            });
+            $("#id_check_object_form_add").submit(function () {
+                if (photo_ready == true) {
+                    return true;
+                }
+                else {
+                    $("#id_check_object_add_submit_error").text("请先上传照片或者拍照！").show().fadeOut(5000);
+                    return false;
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block panel_heading %}
     <h3 class="panel-title">检查对象添加</h3>
 {% endblock %}
