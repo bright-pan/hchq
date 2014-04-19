@@ -223,11 +223,11 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
     page_title = u'编辑检查结果'
     user = get_user(request)
     if request.method == 'POST':
-        print "************************"
+        #print "************************"
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
         if submit_value == u'确定':
-            print "************************"
+            #print "************************"
             check_result_id = int(post_data.get(u'id', False))
             check_result_object = CheckObject.objects.get(pk=check_result_id)
             check_result_detail_add_form = CheckResultDetailAddForm(post_data)
@@ -235,11 +235,11 @@ def check_result_detail_add(request, template_name='my.html', next='/', check_re
             if check_result_detail_add_form.is_valid():
 
                 check_result_detail_add_form.detail_add(user)
-                print "************************"
+                #print "************************"
                 return HttpResponseRedirect("check_result/show/%s/add/" % check_result_id)
             else:
-                print check_result_detail_add_form.errors
-                print "fffffffff************************"
+                #print check_result_detail_add_form.errors
+                #print "fffffffff************************"
                 return render_to_response(template_name,
                                           {'detail_add_form': check_result_detail_add_form,
                                            'result': check_result_object,

@@ -11,17 +11,29 @@
         <div class="col-md-10">
     {% if result %}
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                     <tr>
-                        <th colspan="2">{{ result.name }} | {{ result.id_number }}</th>
+                        <th colspan="3">{{ result.name }} | {{ result.id_number }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <th>妻子姓名<br>身份证号</th>
-                        <td>{{ result.name }}<br>{{ result.id_number }}</td>
+                        <th class="col-md-3">妻子姓名<br>身份证号</th>
+                        <td class="col-md-5">{{ result.name }}<br>{{ result.id_number }}</td>
+                        <td rowspan="10" class="col-md-4">
+                            <div class="thumbnail">
+                                <h4 class="text-center">检查对象相片</h4>
+                                <img src="{{ result.photo.url }}"/>
+                                <div class="caption">
+                                    <div class="text-center">
+                                    <p>{{ result.name }}的照片</p>
+                                    <p>{{ result.id_number }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <th>服务区域<br>单位部门</th>
@@ -86,18 +98,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-            <div class="col-md-4">
-                <div class="thumbnail">
-                    <h4 class="text-center">检查对象相片</h4>
-                    <img src="{{ result.photo.url }}"/>
-                    <div class="caption">
-                        <div class="text-center">
-                        <p>{{ result.name }}的照片</p>
-                        <p>{{ result.id_number }}</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     {% else %}
