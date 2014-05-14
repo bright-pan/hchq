@@ -894,8 +894,10 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
                 #query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
                 #                                                                                                                     updated_at__lt=check_project_endtime,
                 #                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
-                query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-                
+                #query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+                query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object)
+                query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+
                 if query_set_not_check_object_in_department:
                     department_report = DepartmentReport(query_set_not_check_object_in_department)
                     department_report.check_project = check_project
@@ -980,8 +982,10 @@ def check_object_not_service_area_department_report(query_set=None, request=None
             #query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
             #                                                                                                                         updated_at__lt=check_project_endtime,
             #                                                                                                                         ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
-            query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-            
+            #query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+            query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object)
+            query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+
             if query_set_not_check_object_in_department:
                 department_report = DepartmentReport(query_set_not_check_object_in_department)
                 department_report.check_project = check_project

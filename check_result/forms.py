@@ -1133,8 +1133,7 @@ class CheckResultSearchForm(forms.Form):
         query_set = self.query_is_family(query_set)
         query_set = self.query_ctp_method_time(query_set)
         query_set = self.query_wedding_time(query_set)
-        query_set.order_by('check_object.id')
-        
-        
+        #query_set = query_set.order_by('check_object.id')
+        query_set = query_set.order_by("-check_time")
         return query_set
 

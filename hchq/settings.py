@@ -221,10 +221,8 @@ CHECK_RESULT_PER_PAGE = 12
 ACCOUNT_DEFAULT_EMAIL = u'loststriker@gmail.com'
 ACCOUNT_DEFAULT_PASSWORD = u'123456'
 
-DEBUG = TEMPLATE_DEBUG = True
-
-#DEBUG = TEMPLATE_DEBUG = False
-#SESSION_EXPIRE_AT_BROWSER_CLOSE = True                 # Whether a user's session cookie expires when the Web browser is closed.
+DEBUG = TEMPLATE_DEBUG = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True                 # Whether a user's session cookie expires when the Web browser is closed.
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_PASSWORD = 'hchq2011django'

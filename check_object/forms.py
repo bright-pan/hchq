@@ -1895,7 +1895,8 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_wedding_time(query_set)
         query_set = self.query_modify_start_time(query_set)
         query_set = self.query_modify_end_time(query_set)
-
+        #query_set = query_set.order_by("id")
+        query_set = query_set.order_by("-updated_at")
         return query_set
 
     def unsearch(self):
@@ -1922,7 +1923,7 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_wedding_time(query_set)
         query_set = self.query_modify_start_time(query_set)
         query_set = self.query_modify_end_time(query_set)
-
+        query_set = query_set.order_by("-updated_at")
         return query_set
     
 
