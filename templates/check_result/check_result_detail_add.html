@@ -1,316 +1,118 @@
 {% extends "check_result/check_result_layout.html" %}
 {% load check_result_filter %}
 {% load check_object_filter %}
-{% block header_describe %}{% endblock %}
-{% block media %}
-<link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.6.custom.min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-                $.getJSON("{% url service_area_name_ajax %}",
-                          {
-                          },
-                          function(data) {
-                                  $("#id_service_area_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 12,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
-                                  $("#id_mate_service_area_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 12,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
 
-                          });
-                $("#id_service_area_name").blur(function() {
-                                service_area_name_old = '';
-                                service_area_name = $("#id_service_area_name").val();
-                                if (service_area_name != '' && service_area_name != service_area_name_old)
-                                {
-//                                        alert('********');
-                                        service_area_name_old = service_area_name;
-                                        $("#id_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 12,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                                                  matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
-                                }
-                                
-                        });
-                $("#id_mate_service_area_name").blur(function() {
-                                mate_service_area_name_old = '';
-                                mate_service_area_name = $("#id_mate_service_area_name").val();
-                                if (mate_service_area_name != '' && mate_service_area_name != mate_service_area_name_old)
-                                {
-//                                        alert('********');
-                                        mate_service_area_name_old = mate_service_area_name;
-                                        $("#id_mate_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_mate_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_mate_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 12,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                                                  matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
-                                }
-                                
-                        });
-
-        });
-</script>
+{% block panel_heading %}
+    <h3 class="panel-title">检查结果详细编辑</h3>
 {% endblock %}
 
-{% block teaser %}
-{% load cache %}
-{% cache 500 check_result_detail_add user.username %}
-<div class="nav_hlist">
-<ul>
-  {% if perms.department.role_management %}
-  <li><a href="{% url check_result_special_add 1 %}">特殊检查结果添加</a></li>
-  {% endif %}
-
-  {% if perms.department.cr_add %}
-  <li class="active"><strong>检查结果录入</strong></li>
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  {% endif %}
-  {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
-  {% endif %}
-</ul>
-</div>
-{% endcache %}
-{% endblock %}
-{% block main %}
-<div class="subcolumns">
-  <div class="c75l">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-      {% if result %}
-      
-        <div class="subcolumns">
-          <div class="c60l">
-            <div class="subc">
-              <table border="0" cellpadding="0" cellspacing="0" class="full">
-                <caption>
-                  检查对象
-                </caption>
-                <thead>
-                  <tr><th scope="col" colspan="2">{{ result.name }} | {{ result.id_number }}</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>妻子姓名<br>身份证号</td>
-                    <td>{{ result.name }}<br>{{ result.id_number }}</td>
-                  </tr>
-                  <tr>
-                    <td>服务区域<br>单位部门</td>
-                    <td>{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
-                  </tr>
-                  <tr>
-                    <td>家属<br>结婚时间<br>家庭住址</td>
-                    {% if result.is_family %} 
-                    <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
-                    {% else %}
-                    <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
-                    {% endif %}
-                  </tr>
-                  <tr>
-                    <td>丈夫姓名<br>身份证号</td>
-                    <td>{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
-                  </tr>
-                  <tr>
-                    <td>服务区域<br>单位部门</td>
-                    <td>{{ result.mate_service_area_department.service_area.name }}<br>{{ result.mate_service_area_department.department.name }}</td>
-                  </tr>
-                  <tr>
-                    <td>避孕方式<br>实施时间</td>
-                    <td>{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
-                  </tr>
-                  <tr>
-                    <td>孩子1<br>孩子2<br>孩子3</td>
-                    <td>
-                      {% if result.children_1_name %}
-                      {{ result.children_1_name }}|{% if result.children_1_sex == "m" %}男{% else %}女{% endif %}|{{ result.children_1_id_number }}
-                      {% else %}
-                      {% endif %}
-                      <br>
-                      {% if result.children_2_name %}
-                      {{ result.children_2_name }}|{% if result.children_2_sex == "m" %}男{% else %}女{% endif %}|{{ result.children_2_id_number }}
-                      {% else %}
-                      {% endif %}
-                      <br>
-                      {% if result.children_3_name %}
-                      {{ result.children_3_name }}|{% if result.children_3_sex == "m" %}男{% else %}女{% endif %}|{{ result.children_3_id_number }}
-                      {% else %}
-                      {% endif %}
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>创建人员</td>
-                    <td>{{ result.creater.username }}</td>
-                  </tr>
-                  <tr>
-                    <td>创建时间</td>
-                    <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
-                  </tr>
-                  <tr>
-                    <td>更新时间</td>
-                    <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
-                  </tr>
-                </tbody>
-              </table>
+{% block panel_body %}
+    <div class="row">
+        <div class="col-md-10">
+    {% if result %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th colspan="3">{{ result.name }} | {{ result.id_number }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th class="col-md-3">妻子姓名<br>身份证号</th>
+                        <td class="col-md-5">{{ result.name }}<br>{{ result.id_number }}</td>
+                        <td rowspan="10" class="col-md-4">
+                            <div class="thumbnail">
+                                <h4 class="text-center">检查对象相片</h4>
+                                <img src="{{ result.photo.url }}"/>
+                                <div class="caption">
+                                    <div class="text-center">
+                                    <p>{{ result.name }}的照片</p>
+                                    <p>{{ result.id_number }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>服务区域<br>单位部门</th>
+                        <td>{{ result.service_area_department.service_area.name }}
+                            <br>{{ result.service_area_department.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>家属<br>结婚时间<br>家庭住址</th>
+                        {% if result.is_family %}
+                            <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
+                        {% else %}
+                            <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>丈夫姓名<br>身份证号</th>
+                        <td>{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>服务区域<br>单位部门</th>
+                        <td>{{ result.mate_service_area_department.service_area.name }}
+                            <br>{{ result.mate_service_area_department.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>避孕方式<br>实施时间</th>
+                        <td>{{ result.ctp_method|ctp_local }}
+                            <br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+                    </tr>
+                    <tr>
+                        <th>孩子1<br>孩子2<br>孩子3</th>
+                        <td>
+                            {% if result.children_1_name %}
+                                {{ result.children_1_name }}|{% if result.children_1_sex == 'm' %}男{% else %}女
+                            {% endif %}|{{ result.children_1_id_number }}
+                            {% else %}
+                            {% endif %}
+                            <br>
+                            {% if result.children_2_name %}
+                                {{ result.children_2_name }}|{% if result.children_2_sex == 'm' %}男{% else %}女
+                            {% endif %}|{{ result.children_2_id_number }}
+                            {% else %}
+                            {% endif %}
+                            <br>
+                            {% if result.children_3_name %}
+                                {{ result.children_3_name }}|{% if result.children_3_sex == 'm' %}男{% else %}女
+                            {% endif %}|{{ result.children_3_id_number }}
+                            {% else %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>创建人员</th>
+                        <td>{{ result.creater.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    <tr>
+                        <th>更新时间</th>
+                        <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-          </div>
-          <div class="c40r">
-            <div class="subc">
-              <div class="center">
-                <br>
-                <img src="{{ result.photo.url }}"/>
-                <p>{{ result.name }}的照片</p>
-                <p>{{ result.id_number }}</p>          
-                <hr>
-              </div>
-            </div>
-          </div>
         </div>
-      
-      {% else %}
-      <p class="warning">对不起，该检查对象不存在！</p>
-      {% endif %}
-      
-    </div>          
-  </div>         
-  <div class="c25r">
-    <div class="subc">
-      <!-- Insert your subtemplate content here -->
-      {% with detail_add_form as form %}
-      <form method="post" action="{% url check_result_detail_add %}" class="yform full" id="id_form_detail_add">{% csrf_token %}
-        <div class="note">
-          <fieldset>
-            <legend>检查结果信息</legend>
-			<fieldset>
-            <legend>{{ form.pregnant.label_tag }}</legend>
-            <p class="dimmed">{{ form.pregnant.help_text}}</p>
-            {% if form.pregnant.errors %}
-            <div class="type-select error">
-              <strong class="message">{{ form.pregnant.errors }}</strong>
-              {{ form.pregnant }}
-            </div>
-            {% else %}
-            <div class="type-select">
-              {{ form.pregnant }}
-            </div>
-            {% endif %}
-			</fieldset>
-			<fieldset>
-            <legend>{{ form.ring.label_tag }}</legend>
-			<p class="dimmed">{{ form.ring.help_text}}</p>
-            {% if form.ring.errors %}
-            <div class="type-select error">
-              <strong class="message">{{ form.ring.errors }}</strong>
-              {{ form.ring }}
-            </div>
-            {% else %}
-            <div class="type-select">
-              {{ form.ring }}
-            </div>
-            {% endif %}
-			</fieldset>
-			<fieldset>
-            <legend>{{ form.pregnant_period.label_tag }}</legend>
-			<p class="dimmed">{{ form.pregnant_period.help_text}}</p>
-            {% if form.pregnant_period.errors %}
-            <div class="type-text error">
-              <strong class="message">{{ form.pregnant_period.errors }}</strong>
-              {{ form.pregnant_period }}
-            </div>
-            {% else %}
-            <div class="type-text">
-              {{ form.pregnant_period }}
-            </div>
-            {% endif %}
-			</fieldset>
-			<fieldset>
-            <legend>{{ form.checker.label_tag }}</legend>
-			<p class="dimmed">{{ form.checker.help_text}}</p>
-            {% if form.checker.errors %}
-            <div class="type-select error">
-              <strong class="message">{{ form.checker.errors }}</strong>
-              {{ form.checker }}
-            </div>
-            {% else %}
-            <div class="type-select">
-              {{ form.checker }}
-            </div>
-            {% endif %}
-          </fieldset>
-          {{ form.id }}
-          <div class="center">
-            <input type="submit"  name="submit" value="确定" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-            <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-            <span id="id_submit_error"></span>
-          </div>
-      </form>
-      {% endwith %}
+    {% else %}
+        <div class="alert alert-danger">
+            <p>对不起，该检查对象不存在！</p>
+        </div>
+    {% endif %}
+        </div>
 
-      </div>          
-    </div>         
-  </div>       
-</div>
+        <div class="col-md-2">
+        {% with detail_add_form as form %}
+            {% include 'check_result/check_result_detail_add_form.html' %}
+        {% endwith %}
+        </div>
+    </div>
+
 {% endblock %}
 

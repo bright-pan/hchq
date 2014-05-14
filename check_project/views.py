@@ -8,11 +8,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.check_project.forms import *
-from hchq.check_project.models import CheckProject
-from hchq.service_area.models import ServiceArea
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from check_project.forms import *
+from check_project.models import CheckProject
+from service_area.models import ServiceArea
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
 
 
@@ -465,4 +465,3 @@ def check_project_list(request, template_name='my.html', next='/', check_project
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
-

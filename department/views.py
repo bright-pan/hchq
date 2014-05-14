@@ -10,10 +10,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.department.forms import DepartmentAddForm, DepartmentModifyForm, DepartmentDeleteForm, DepartmentSearchForm
-from hchq.department.models import Department
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from department.forms import DepartmentAddForm, DepartmentModifyForm, DepartmentDeleteForm, DepartmentSearchForm
+from department.models import Department
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
 
 
@@ -342,11 +342,11 @@ def department_list(request, template_name='my.html', next='/', department_page=
     单位部门查询视图
     """
     page_title = u'查询单位部门'
-
     if request.method == 'POST':
         post_data = request.POST.copy()
         department_search_form = DepartmentSearchForm(post_data)
         if department_search_form.is_valid():
+
             department_search_form.save_to_session(request)
             if department_search_form.is_null() is False:
                 if department_search_form.fuzzy_search() is False:
@@ -405,22 +405,15 @@ def department_name_ajax(request, template_name='my.html', next='/'):
     if request.is_ajax():
         result = []
         if request.method == 'GET':
-
             if request.GET.has_key('service_area_name'):
                 service_area_name = request.GET['service_area_name']
-#                print '***********************'
-#                print type(service_area_name)
+                query_set = Department.objects.filter(is_active=True)
                 if service_area_name == u'':
-#                    print '******************8'
                     pass
                 else:    
-                    query_set = Department.objects.filter(is_active=True,
-                                                          department_to_service_area__service_area__name=service_area_name,
-                                                          department_to_service_area__is_active=True).order_by('name')
-                    result = [ x.name for x in query_set]
-#                    print '$$$$$$$$$$$$$'
-#                    print result
-
+                    query_set = query_set.filter(department_to_service_area__service_area__name=service_area_name,
+                                                 department_to_service_area__is_active=True).order_by('name')
+                result = [ x.name for x in query_set]
             else:
                 pass
         else:

@@ -1,8 +1,8 @@
 #% -*- coding: utf-8 -*-
 #coding=utf-8
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('hchq.report.views',
+urlpatterns = patterns('report.views',
 
        (r'check_or_not/$',
        'report_check_or_not',

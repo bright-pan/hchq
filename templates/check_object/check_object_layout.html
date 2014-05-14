@@ -1,25 +1,103 @@
 {% extends "my_layout.html" %}
 
-
-{% block header_describe %}{% endblock %}
-
-{% block nav %}
-{% load cache %}
-{% cache 500 check_object_layout user.username %}
-<ul>
-  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
-  <li class="active"><strong>检查对象管理</strong></li>
-  {% endif %}
-  {% if perms.department.cr_list or perms.department.cr_add %}
-  <li><a href="{% url check_result_list 1 %}">检查结果管理</a></li>
-  {% endif %}
-  {% if perms.department.cr_report %}
-  <li><a href="{% url report_statistics %}">数据统计报表</a></li>
-  {% endif %}
-</ul>
-{% endcache %}
+{% block css_media %}
+    <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="{{ MEDIA_URL }}css/patch.css" rel="stylesheet" type="text/css"/>
 {% endblock %}
+{% block js_media %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-zh-CN.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/file_upload/ajaxupload.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jpegcam/webcam.js"></script>
 
-{% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
-{% block col3_content %}{% endblock %}
+    <script>
+        $(function () {
+            $("#id_service_area_name").click(function () {
+                $.getJSON("{% url service_area_name_ajax %}", function
+                        (json) {
+                    $("#id_service_area_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
+            $("#id_department_name").click(function () {
+                $.getJSON("{% url department_name_ajax %}",
+                        {service_area_name: $("#id_service_area_name").val()}, function (json) {
+                            $("#id_department_name").autocomplete({
+                                minLength: 0,
+                                source: json,
+                                focus: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                },
+                                select: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                }
+                            });
+                        });
+            });
+            $("#id_mate_service_area_name").click(function () {
+                $.getJSON("{% url service_area_name_ajax %}", function
+                        (json) {
+                    $("#id_mate_service_area_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_mate_service_area_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_mate_service_area_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
+            $("#id_mate_department_name").click(function () {
+                $.getJSON("{% url department_name_ajax %}",
+                        {service_area_name: $("#id_mate_service_area_name").val()}, function (json) {
+                            $("#id_mate_department_name").autocomplete({
+                                minLength: 0,
+                                source: json,
+                                focus: function (event, ui) {
+                                    $("#id_mate_department_name").val(ui.item.value);
+                                    return false;
+                                },
+                                select: function (event, ui) {
+                                    $("#id_mate_department_name").val(ui.item.value);
+                                    return false;
+                                }
+                            });
+                        });
+            });
+            $("#id_ctp_method_time").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeYear: true
+            });
+            $("#id_wedding_time").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeYear: true
+            });
+            $("#id_modify_start_time").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeYear: true
+            });
+            $("#id_modify_end_time").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeYear: true
+            });
+        });
+    </script>
+    {% block photo %}
+    {% endblock %}
+{% endblock %}

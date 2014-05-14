@@ -7,12 +7,12 @@ check_object.update(is_active=True)
 
 
 
-ALTER TABLE check_object ADD COLUMN thumbnail varchar(100);
-UPDATE check_object SET thumbnail='images/thumbnails';
-ALTER TABLE check_object MODIFY thumbnail varchar(100) NOT NULL;
+#ALTER TABLE check_object ADD COLUMN thumbnail varchar(100);
+#UPDATE check_object SET thumbnail='images/thumbnails';
+#ALTER TABLE check_object MODIFY thumbnail varchar(100) NOT NULL;
 
-from hchq.check_object.models import *
-from hchq.untils import gl
+from check_object.models import *
+from untils import gl
 from django.core.files.storage import default_storage
 from PIL import Image,ImageDraw,ImageFont
 from hchq import settings

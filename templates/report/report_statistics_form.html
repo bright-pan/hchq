@@ -1,0 +1,83 @@
+<form method="post" action="#">{% csrf_token %}
+    <fieldset>
+        <legend>检查项目报表生成条件</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group {% if form.check_project.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.check_project.label }}</label>
+                    {{ form.check_project }}
+                    {% if form.check_project.errors %}
+                        {% for error in form.check_project.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.check_project.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="checkbox {% if form.has_department_info.errors %} has-error {% endif %}">
+                    <label>{{ form.has_department_info }}{{ form.has_department_info.label }}</label>
+                    {% if form.has_department_info.errors %}
+                        {% for error in form.has_department_info.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.has_department_info.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="checkbox {% if form.has_pregnant_info.errors %} has-error {% endif %}">
+                    <label>{{ form.has_pregnant_info }}{{ form.has_pregnant_info.label }}</label>
+                    {% if form.has_pregnant_info.errors %}
+                        {% for error in form.has_pregnant_info.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.has_pregnant_info.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="checkbox {% if form.has_special_info.errors %} has-error {% endif %}">
+                    <label>{{ form.has_special_info }}{{ form.has_special_info.label }}</label>
+                    {% if form.has_special_info.errors %}
+                        {% for error in form.has_special_info.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.has_special_info.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="checkbox {% if form.has_check.errors %} has-error {% endif %}">
+                    <label>{{ form.has_check }}{{ form.has_check.label }}</label>
+                    {% if form.has_check.errors %}
+                        {% for error in form.has_check.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.has_check.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="checkbox {% if form.has_not.errors %} has-error {% endif %}">
+                    <label>{{ form.has_not }}{{ form.has_not.label }}</label>
+                    {% if form.has_not.errors %}
+                        {% for error in form.has_not.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.has_not.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <button type="submit" value="生成项目报表" name="submit" class="btn btn-lg btn-primary btn-block">生成项目报表</button>
+    </fieldset>
+</form>

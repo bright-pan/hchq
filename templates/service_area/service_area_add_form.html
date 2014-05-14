@@ -1,0 +1,18 @@
+<form method="post" action="#">
+    {% csrf_token %}
+    <fieldset>
+        <legend>请输入服务区域名称</legend>
+        <div class="form-group {% if form.service_area_name.errors %} has-error {% endif %}">
+            <label class="control-label">{{ form.service_area_name.label }}</label>
+            {{ form.service_area_name }}
+            {% if form.service_area_name.errors %}
+                {% for error in form.service_area_name.errors %}
+                    <span class="help-block badge">{{ error }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="help-block">{{ form.service_area_name.help_text }}</span>
+            {% endif %}
+        </div>
+        <button type="submit" value="添加" name="submit" class="btn btn-primary btn-lg btn-block">添加</button>
+    </fieldset>
+</form>

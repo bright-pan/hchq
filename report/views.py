@@ -9,10 +9,10 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.check_project.models import CheckProject
-from hchq.service_area.models import ServiceArea
-from hchq.report.forms import *
-from hchq.report.check_project_report import check_project_report
+from check_project.models import CheckProject
+from service_area.models import ServiceArea
+from report.forms import *
+from report.check_project_report import check_project_report
 
 @csrf_protect
 @login_required
@@ -62,7 +62,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
-        if submit_value == u'已检人员':
+        if submit_value == u'已检对象':
             report_check_or_not_form = ReportCheckOrNotForm(post_data)
             report_check_or_not_form.init_check_project()
             report_check_or_not_form.init_permission(user)
@@ -75,7 +75,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                            },
                                           context_instance=RequestContext(request))
         else:
-            if submit_value == u'未检人员':
+            if submit_value == u'未检对象':
                 report_check_or_not_form = ReportCheckOrNotForm(post_data)
                 report_check_or_not_form.init_check_project()
                 report_check_or_not_form.init_permission(user)
@@ -88,7 +88,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                },
                                               context_instance=RequestContext(request))
             else:
-                if submit_value == u'有孕人员':
+                if submit_value == u'有孕对象':
                     report_check_or_not_form = ReportCheckOrNotForm(post_data)
                     report_check_or_not_form.init_check_project()
                     report_check_or_not_form.init_permission(user)
@@ -101,7 +101,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                },
                                               context_instance=RequestContext(request))
                 else:
-                    if submit_value == u'特殊检查人员':
+                    if submit_value == u'特殊检查对象':
                         report_check_or_not_form = ReportCheckOrNotForm(post_data)
                         report_check_or_not_form.init_check_project()
                         report_check_or_not_form.init_permission(user)
@@ -114,7 +114,20 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                        },
                                                       context_instance=RequestContext(request))
                     else:
-                        raise Http404('Invalid Request!')                
+                        if submit_value == u'总检查对象':
+                            report_check_or_not_form = ReportCheckOrNotForm(post_data)
+                            report_check_or_not_form.init_check_project()
+                            report_check_or_not_form.init_permission(user)
+                            if report_check_or_not_form.is_valid():
+                                return report_check_or_not_form.has_total_report(request)
+                            else:
+                                return render_to_response(template_name,
+                                                          {'report_form': report_check_or_not_form,
+                                                           'page_title': page_title,
+                                                           },
+                                                          context_instance=RequestContext(request))
+                        else:
+                            raise Http404('Invalid Request!')                   
     else:
         report_check_or_not_form = ReportCheckOrNotForm()
         report_check_or_not_form.init_check_project()

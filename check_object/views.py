@@ -11,11 +11,11 @@ from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from PIL import Image
-from hchq.check_object.forms import *
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from check_object.forms import *
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
-from hchq.report.check_object_report import *
+from report.check_object_report import *
 # Create your views here.
 @csrf_protect
 @login_required
@@ -280,7 +280,23 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
                 else:
                     results_page = None
             else:
-                raise Http404('Invalid Request!')                
+                if submit_value == u'打印检查对象报表':
+                    check_object_search_form = CheckObjectSearchForm(post_data)
+                    if check_object_search_form.is_valid():
+                        check_object_search_form.data_to_session(request)
+                        check_object_search_form.init_from_session(request)
+                        query_set = check_object_search_form.search()
+                        return check_object_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': check_object_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')
         return render_to_response(template_name,
                                   {'search_form': check_object_search_form,
                                    'modify_form': check_object_modify_form,
@@ -352,7 +368,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
                 if check_object is not None:
                     return HttpResponseRedirect("check_object/show/%s/modify/" % check_object.id)
                 else:
-                    print '&&&&&&&&&&&&&&&&&&&&'
+                    #print '&&&&&&&&&&&&&&&&&&&&'
                     raise Http404('Invalid Request!')
             else:
                 check_object_id = int(check_object_detail_modify_form.data.get('id'))
@@ -406,7 +422,23 @@ def check_object_delete(request, template_name='my.html', next='/', check_object
                 else:
                     results_page = None
             else:
-                raise Http404('Invalid Request!')                
+                if submit_value == u'打印检查对象报表':
+                    check_object_search_form = CheckObjectSearchForm(post_data)
+                    if check_object_search_form.is_valid():
+                        check_object_search_form.data_to_session(request)
+                        check_object_search_form.init_from_session(request)
+                        query_set = check_object_search_form.search()
+                        return check_object_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': check_object_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+                else:
+                    raise Http404('Invalid Request!')
         return render_to_response(template_name,
                                   {'search_form': check_object_search_form,
                                    'delete_form': check_object_delete_form,
@@ -441,6 +473,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
     """
     page_title = u'查询检查对象'
     if request.method == 'POST':
+
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
         if submit_value == u'查询':
@@ -494,7 +527,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
 @csrf_protect
 @login_required
 @permission_required('department.co_list')
-def check_object_invaild(request, template_name='my.html', next='/', check_object_page='1',):
+def check_object_invalid(request, template_name='my.html', next='/', check_object_page='1',):
     """
     已删对象查询视图
     """

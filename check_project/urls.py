@@ -1,7 +1,7 @@
 #coding=utf-8
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('hchq.check_project.views',
+urlpatterns = patterns('check_project.views',
 
        (r'add/(?P<check_project_page>\d{1,4})/$',
        'check_project_add',

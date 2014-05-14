@@ -2,7 +2,7 @@
 set today=%date:~0,4%%date:~5,2%%date:~8,2%
 set sql=hchq_%today%.sql
 set backup_path=E:\work\mysql_backup
-set mysql_bin=C:\Program Files\MySQL\MySQL Server 5.1\bin
+set mysql_bin=C:\Program Files\MySQL\MySQL Server 5.6\bin
 C:
 cd %mysql_bin%
 echo backup %sql%...

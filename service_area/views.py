@@ -10,11 +10,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.service_area.forms import *
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from service_area.forms import *
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
 
 
@@ -255,6 +255,7 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
                 service_area_delete_form.service_area_delete()
             else:
                 pass
+
             data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
                     'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
                     }        

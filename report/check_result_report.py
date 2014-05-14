@@ -13,19 +13,23 @@ from reportlab.lib.colors import navy, yellow, red
 from geraldo.generators import PDFGenerator
 from django.http import HttpResponse
 
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import CheckObject
-from hchq.check_result.models import CheckResult
+from check_project.models import CheckProject
+from check_object.models import CheckObject
+from check_result.models import CheckResult
+from check_result.templatetags import check_result_filter
 
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line, Image
 
-from hchq.untils import gl
+from untils import gl
     
 class CheckResultReport(Report):
     title = u'检查结果报表'
     page_size = landscape(A4)
     check_project = None
+    qs_check_object = None
+    qs_check_result = None
+    
     class band_page_header(ReportBand):
         height = 2.5*cm
         elements = [
@@ -68,25 +72,7 @@ class CheckResultReport(Report):
     def get_result_value(self, instance=None):
         if instance is None:
             return u''
-        value_list = instance.result.split()
-#    print value_list
-        value_len = len(value_list)
-        if value_len == 3:
-            if gl.check_result_local.has_key(value_list[0]) and gl.check_result_local.has_key(value_list[1]):
-                if value_list[2] == u'None':
-                    return u'%s|%s' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]])
-                else:
-                    return u'%s|%s|%s周' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]], value_list[2])
-            else:
-                return u'未知结果'
-        else:
-            if value_len == 1:
-                if gl.check_result_local.has_key(value_list[0]):
-                    return u'%s' % (gl.check_result_local[value_list[0]])
-                else:
-                    return u'未知结果'
-            else:
-                return u'未知结果'
+        return check_result_filter.local(instance.result)        
 
     def get_family_value(self, instance = None):
         if instance is not None:
@@ -99,21 +85,14 @@ class CheckResultReport(Report):
             return u''
 
     def get_service_area_total_count(self, value=None, service_area=None):
-        if service_area is None or self.check_project is None:
+        if service_area is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department__service_area=service_area).count()
-        check_result = CheckResult.objects.filter(is_latest=True, check_project=self.check_project).filter(check_object__service_area_department__service_area=service_area)
+        
+        check_object_count = self.qs_check_object.filter(service_area_department__service_area=service_area).count()
+        check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=service_area)
         check_count = check_result.count()
-        pregnant_count = check_result.filter(result__startswith='pregnant').count()    
-        special_count = check_result.filter(result__startswith='special').count()    
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
@@ -126,25 +105,18 @@ class CheckResultReport(Report):
 
         return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
     def get_department_total_count(self, value=None, service_area_department=None):
-        if service_area_department is None or self.check_project is None:
+        if service_area_department is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department=service_area_department).count()
-        check_result = CheckResult.objects.filter(is_latest=True, check_project=self.check_project).filter(check_object__service_area_department=service_area_department)
+        
+        check_object_count = self.qs_check_object.filter(service_area_department=service_area_department).count()
+        check_result = self.qs_check_result.filter(check_object__service_area_department=service_area_department)
         check_count = check_result.count()
-        pregnant_count = check_result.filter(result__startswith='pregnant').count()    
-        special_count = check_result.filter(result__startswith='special').count()    
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
-            print complete_radio, check_count, check_object_count
+            #print complete_radio, check_count, check_object_count
         else:
             not_check_count = 0
             if check_object_count == 0:

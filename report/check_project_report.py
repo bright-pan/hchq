@@ -16,19 +16,22 @@ from django.db.models import Avg, Max, Min, Count
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line
 
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import CheckObject
-from hchq.check_result.models import CheckResult
-from hchq.service_area.models import *
-from hchq.report.check_result_report import CheckResultReport
+from check_project.models import CheckProject
+from check_object.models import CheckObject
+from check_result.models import CheckResult
+from service_area.models import *
+from report.check_result_report import CheckResultReport
 from django.db.models import ObjectDoesNotExist
 
-from hchq.untils import gl
+from untils import gl
 
 class CheckProjectReport(Report):
     title = u'江西省会昌县环孕检统计报表'
     page_size = landscape(A4)
     check_project = None
+    qs_check_object = None
+    qs_check_result = None
+
     class band_page_header(ReportBand):
         height = 2.5*cm
         elements = [
@@ -62,25 +65,25 @@ class CheckProjectReport(Report):
         auto_expand_height = True
 
     def get_check_count(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_result is None:
             return u''
-        check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department__service_area=instance)
-        check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
-        pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
-        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+
+        check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=instance)
+        
+        check_count = check_result.count()
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         return u'%s(%s|%s)' % (check_count, pregnant_count, special_count)
 
     def get_not_check_count(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23, 59, 59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department__service_area=instance).count()
-        check_count = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department__service_area=instance).aggregate(Count('check_object', distinct=True))['check_object__count']
+        
+        check_object_count = self.qs_check_object.filter(service_area_department__service_area=instance).count()
+
+        check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=instance)
+        check_count = check_result.count()
+        
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
         else:
@@ -88,44 +91,30 @@ class CheckProjectReport(Report):
         return u'%s' % not_check_count
 
     def get_check_object_count(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_object is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department__service_area=instance).count()
+        
+        check_object_count = self.qs_check_object.filter(service_area_department__service_area=instance).count()
 
         return u'%s' % check_object_count
 
     def get_total_count(self, value=None):
-        if self.check_project is None:
+        if self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).count()
 
-        check_result = CheckResult.objects.filter(check_project=self.check_project)
-        check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
-        pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
-        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+        check_object_count = self.qs_check_object.count()
+
+        check_result = self.qs_check_result
+        check_count = check_result.count()
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
         else:
             not_check_count = 0
             if check_object_count == 0:
-                return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (check_project.name,
+                return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：------' % (self.check_project.name,
                                                                                                                          check_count,
                                                                                                                          pregnant_count,
                                                                                                                          special_count,
@@ -143,17 +132,14 @@ class CheckProjectReport(Report):
     
 
     def get_complete_radio(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23, 59, 59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department__service_area=instance).count()
+        
+        check_object_count = self.qs_check_object.filter(service_area_department__service_area=instance).count()
 
-        check_count = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department__service_area=instance).aggregate(Count('check_object', distinct=True))['check_object__count']
+        check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=instance)
+        check_count = check_result.count()
+        
         if check_object_count > check_count:
             complete_radio = (check_count / check_object_count) * 100.0
         else:
@@ -163,12 +149,13 @@ class CheckProjectReport(Report):
                 complete_radio = 100.00
         return u'%.2f%%' % complete_radio
 
-    
-
 class ServiceAreaReport(Report):
     title = u'会昌县检查项目统计报表'
     page_size = landscape(A4)
     check_project = None
+    qs_check_object = None
+    qs_check_result = None
+    
     class band_page_header(ReportBand):
         height = 2.5*cm
         elements = [
@@ -202,21 +189,14 @@ class ServiceAreaReport(Report):
         auto_expand_height = True
 
     def get_service_area_total_count(self, value=None, service_area=None):
-        if service_area is None or self.check_project is None:
+        if service_area is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department__service_area=service_area).count()
-        check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department__service_area=service_area)
-        check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
-        pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
-        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+        
+        check_object_count = self.qs_check_object.filter(service_area_department__service_area=service_area).count()
+        check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=service_area)
+        check_count = check_result.count()
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
@@ -230,28 +210,22 @@ class ServiceAreaReport(Report):
         return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
 
     def get_department_check_count(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_result is None:
             return u''
-        check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department=instance)
-        check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
-        pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']
-        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+        check_result = self.qs_check_result.filter(check_object__service_area_department=instance)
+        check_count = check_result.count()
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         return u'%s(%s|%s)' % (check_count, pregnant_count, special_count)
 
     def get_department_not_check_count(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department=instance).count()
 
-        check_count = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department=instance).aggregate(Count('check_object', distinct=True))['check_object__count']
+        check_object_count = self.qs_check_object.filter(service_area_department=instance).count()
+
+        check_result = self.qs_check_result.filter(check_object__service_area_department=instance)
+        check_count = check_result.count()
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
         else:
@@ -261,32 +235,20 @@ class ServiceAreaReport(Report):
 
 
     def get_department_check_object_count(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_object is None :
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department=instance).count()
+
+        check_object_count = self.qs_check_object.filter(service_area_department=instance).count()
         return u'%s' % check_object_count
 
     def get_department_complete_radio(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department=instance).count()
-        check_count = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department=instance).aggregate(Count('check_object', distinct=True))['check_object__count']
+        
+        check_object_count = self.qs_check_object.filter(service_area_department=instance).count()
+
+        check_result = self.qs_check_result.filter(check_object__service_area_department=instance)
+        check_count = check_result.count()
         if check_object_count > check_count:
             complete_radio = (check_count / check_object_count) * 100.0
         else:
@@ -298,7 +260,7 @@ class ServiceAreaReport(Report):
         return u'%.2f%%' % complete_radio
 
     def get_department_name(self, instance=None):
-        if instance is None or self.check_project is None:
+        if instance is None:
             return u''
         return u'%s' % instance.department.name
 
@@ -307,6 +269,9 @@ class DepartmentReport(Report):
     title = u'会昌县检查项目统计报表'
     page_size = landscape(A4)
     check_project = None
+    qs_check_object = None
+    qs_check_result = None
+
     class band_page_header(ReportBand):
         height = 2.9*cm
         elements = [
@@ -348,21 +313,14 @@ class DepartmentReport(Report):
         auto_expand_height = True
 
     def get_department_total_count(self, value=None, service_area_department=None):
-        if service_area_department is None or self.check_project is None:
+        if service_area_department is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        check_project_endtime = datetime.datetime(self.check_project.end_time.year,
-                                                   self.check_project.end_time.month,
-                                                   self.check_project.end_time.day,
-                                                   23,
-                                                   59,
-                                                   59)
-        check_object_count = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                       updated_at__lt=check_project_endtime,
-                                                                                                       ).filter(service_area_department=service_area_department).count()
-        check_result = CheckResult.objects.filter(check_project=self.check_project).filter(check_object__service_area_department=service_area_department).order_by('check_object.id')
-        check_count = check_result.aggregate(Count('check_object', distinct=True))['check_object__count']
-        pregnant_count = check_result.filter(result__startswith='pregnant').aggregate(Count('check_object', distinct=True))['check_object__count']    
-        special_count = check_result.filter(result__startswith='special').aggregate(Count('check_object', distinct=True))['check_object__count']
+
+        check_object_count = self.qs_check_object.filter(service_area_department=service_area_department).count()
+        check_result = self.qs_check_result.filter(check_object__service_area_department=service_area_department)
+        check_count = check_result.count()
+        pregnant_count = check_result.filter(result__startswith='pregnant').count()
+        special_count = check_result.filter(result__contains='special').count()
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
             complete_radio = (check_count / check_object_count) * 100.0
@@ -421,6 +379,9 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                                                       check_project.end_time.month,
                                                       check_project.end_time.day,
                                                       23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
         
@@ -434,6 +395,8 @@ def check_project_report(query_set=None, request=None, has_department_info=False
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         if request.user.has_perm('department.unlocal'):
             check_project_report = CheckProjectReport(query_set)
+            check_project_report.qs_check_object = qs_check_object
+            check_project_report.qs_check_result = qs_check_result
             check_project_report.check_project = check_project
             check_project_report.author = request.user.username
             check_project_report.band_page_header.elements += [
@@ -465,6 +428,8 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             if has_department_info is True:
                 if query_set_service_area_department:
                     service_area_report = ServiceAreaReport(query_set_service_area_department)
+                    service_area_report.qs_check_object = qs_check_object
+                    service_area_report.qs_check_result = qs_check_result
                     service_area_report.check_project = check_project
                     service_area_report.author = request.user.username
                     service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
@@ -494,12 +459,15 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             else:
                 pass
             if has_pregnant_info is True:
-                query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='pregnant').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
+                #query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='pregnant').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
+                query_set_check_result = qs_check_result.filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='pregnant').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
                 if query_set_check_result:
                     check_result_report = CheckResultReport(query_set_check_result)
                     check_result_report.check_project = check_project
+                    check_result_report.qs_check_object = qs_check_object
+                    check_result_report.qs_check_result = qs_check_result
                     check_result_report.author = request.user.username
-                    check_result_report.title = u'%s - 有孕人员名单' % service_area_object.name
+                    check_result_report.title = u'%s - 有孕对象名单' % service_area_object.name
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -529,10 +497,13 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             else:
                 pass
             if has_special_info is True:
-                query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='special').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
+                #query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='special').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
+                query_set_check_result = qs_check_result.filter(check_object__service_area_department__service_area=service_area_object).filter(result__contains='special').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
                 if query_set_check_result:
                     check_result_report = CheckResultReport(query_set_check_result)
                     check_result_report.check_project = check_project
+                    check_result_report.qs_check_object = qs_check_object
+                    check_result_report.qs_check_result = qs_check_result
                     check_result_report.author = request.user.username
                     check_result_report.title = u'%s - 特殊检查名单' % service_area_object.name
                     check_result_report.band_page_header.elements += [
@@ -566,14 +537,17 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             if has_check is True or has_not is True:
                 for service_area_department_object in query_set_service_area_department:
                     if has_not is True:
-                        query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                                                             updated_at__lt=check_project_endtime,
-                                                                                                                                             ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
+                        #query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                        #                                                                                                                     updated_at__lt=check_project_endtime,
+                        #                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
+                        query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
                         if query_set_not_check_object_in_department:
                             department_report = DepartmentReport(query_set_not_check_object_in_department)
+                            department_report.qs_check_object = qs_check_object
+                            department_report.qs_check_result = qs_check_result
                             department_report.check_project = check_project
                             department_report.author = request.user.username
-                            department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.title = u'%s - %s - 未检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                             department_report.band_page_header.elements += [
                                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -601,14 +575,18 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                         else:
                             pass
                     if has_check is True:
-                        query_set_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                                                             updated_at__lt=check_project_endtime,
-                                                                                                                                             ).filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project).order_by('id')
+                        #query_set_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                        #                                                                                                                     updated_at__lt=check_project_endtime,
+                        #                                                                                                                     ).filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project).order_by('id')
+                        query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+                        
                         if query_set_check_object_in_department:
                             department_report = DepartmentReport(query_set_check_object_in_department)
+                            department_report.qs_check_object = qs_check_object
+                            department_report.qs_check_result = qs_check_result
                             department_report.check_project = check_project
                             department_report.author = request.user.username
-                            department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                            department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                             department_report.band_page_header.elements += [
                                 Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                                       style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -657,7 +635,9 @@ def check_project_report(query_set=None, request=None, has_department_info=False
     return response
 
 def check_object_check_service_area_report(query_set=None, request=None, check_project_id=None):
-
+    response = cache.get('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -665,16 +645,16 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
                                                       check_project.end_time.month,
                                                       check_project.end_time.day,
                                                       23, 59, 59)
-
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -688,6 +668,8 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.qs_check_object = qs_check_object
+                service_area_report.qs_check_result = qs_check_result
                 service_area_report.check_project = check_project
                 service_area_report.author = request.user.username
                 service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
@@ -714,14 +696,14 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                                                     updated_at__lt=check_project_endtime,
-                                                                                                                                     ).filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project).order_by('id')
-                if query_set_not_check_object_in_department:
-                    department_report = DepartmentReport(query_set_not_check_object_in_department)
+                query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+                if query_set_check_object_in_department:
+                    department_report = DepartmentReport(query_set_check_object_in_department)
                     department_report.check_project = check_project
+                    department_report.qs_check_object = qs_check_object
+                    department_report.qs_check_result = qs_check_result
                     department_report.author = request.user.username
-                    department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     department_report.band_page_header.elements += [
                         Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -766,7 +748,9 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
     return response
 
 def check_object_check_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -774,15 +758,16 @@ def check_object_check_service_area_department_report(query_set=None, request=No
                                                       check_project.end_time.month,
                                                       check_project.end_time.day,
                                                       23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -793,14 +778,15 @@ def check_object_check_service_area_department_report(query_set=None, request=No
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                                                     updated_at__lt=check_project_endtime,
-                                                                                                                                     ).filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project).order_by('id')
-            if query_set_not_check_object_in_department:
-                department_report = DepartmentReport(query_set_not_check_object_in_department)
+            query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+                
+            if query_set_check_object_in_department:
+                department_report = DepartmentReport(query_set_check_object_in_department)
                 department_report.check_project = check_project
+                department_report.qs_check_object = qs_check_object
+                department_report.qs_check_result = qs_check_result                
                 department_report.author = request.user.username
-                department_report.title = u'%s - %s - 已检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -845,7 +831,9 @@ def check_object_check_service_area_department_report(query_set=None, request=No
     return response
 
 def check_object_not_service_area_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -853,19 +841,19 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
                                                       check_project.end_time.month,
                                                       check_project.end_time.day,
                                                       23, 59, 59)
+
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
-        
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
@@ -876,6 +864,8 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
+                service_area_report.qs_check_object = qs_check_object
+                service_area_report.qs_check_result = qs_check_result
                 service_area_report.author = request.user.username
                 service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
                 service_area_report.band_page_header.elements += [
@@ -901,14 +891,20 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                                                     updated_at__lt=check_project_endtime,
-                                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
+                #query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                #                                                                                                                     updated_at__lt=check_project_endtime,
+                #                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
+                #query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+                query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object)
+                query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+
                 if query_set_not_check_object_in_department:
                     department_report = DepartmentReport(query_set_not_check_object_in_department)
                     department_report.check_project = check_project
+                    department_report.qs_check_object = qs_check_object
+                    department_report.qs_check_result = qs_check_result
                     department_report.author = request.user.username
-                    department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.title = u'%s - %s - 未检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     department_report.band_page_header.elements += [
                         Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -953,7 +949,9 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
     return response
 
 def check_object_not_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -961,15 +959,16 @@ def check_object_not_service_area_department_report(query_set=None, request=None
                                                       check_project.end_time.month,
                                                       check_project.end_time.day,
                                                       23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -980,14 +979,20 @@ def check_object_not_service_area_department_report(query_set=None, request=None
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
-                                                                                                                                     updated_at__lt=check_project_endtime,
-                                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
+            #query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+            #                                                                                                                         updated_at__lt=check_project_endtime,
+            #                                                                                                                         ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
+            #query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+            query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object)
+            query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+
             if query_set_not_check_object_in_department:
                 department_report = DepartmentReport(query_set_not_check_object_in_department)
                 department_report.check_project = check_project
+                department_report.qs_check_object = qs_check_object
+                department_report.qs_check_result = qs_check_result
                 department_report.author = request.user.username
-                department_report.title = u'%s - %s - 未检人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.title = u'%s - %s - 未检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1031,19 +1036,25 @@ def check_object_not_service_area_department_report(query_set=None, request=None
     cache.set('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 def check_object_service_area_has_pregnant_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+            check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                      check_project.end_time.month,
+                                                      check_project.end_time.day,
+                                                      23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1058,6 +1069,8 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
+                service_area_report.qs_check_object = qs_check_object
+                service_area_report.qs_check_result = qs_check_result
                 service_area_report.author = request.user.username
                 service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
                 service_area_report.band_page_header.elements += [
@@ -1083,12 +1096,14 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant', is_latest=True).order_by('check_object.id')
+                query_set_check_result_has_pregnant_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
                 if query_set_check_result_has_pregnant_in_department:
                     check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
                     check_result_report.check_project = check_project
+                    check_result_report.qs_check_object = qs_check_object
+                    check_result_report.qs_check_result = qs_check_result
                     check_result_report.author = request.user.username
-                    check_result_report.title = u'%s-%s-有孕人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    check_result_report.title = u'%s-%s-有孕对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1133,19 +1148,26 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
     return response
 
 def check_object_service_area_department_has_pregnant_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+            check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                      check_project.end_time.month,
+                                                      check_project.end_time.day,
+                                                      23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1156,12 +1178,15 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
+            query_set_check_result_has_pregnant_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
+            #query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
             if query_set_check_result_has_pregnant_in_department:
                 check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
                 check_result_report.check_project = check_project
+                check_result_report.qs_check_object = qs_check_object
+                check_result_report.qs_check_result = qs_check_result                
                 check_result_report.author = request.user.username
-                check_result_report.title = u'%s-%s-有孕人员名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                check_result_report.title = u'%s-%s-有孕对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 check_result_report.band_page_header.elements += [
                     Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1205,19 +1230,26 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
     cache.set('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 def check_object_service_area_has_special_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+            check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                      check_project.end_time.month,
+                                                      check_project.end_time.day,
+                                                      23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
         
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1233,6 +1265,8 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
                 service_area_report.author = request.user.username
+                service_area_report.qs_check_object = qs_check_object
+                service_area_report.qs_check_result = qs_check_result                
                 service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
                 service_area_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
@@ -1257,12 +1291,14 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
+                query_set_check_result_has_special_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__contains='special').order_by('check_object.id')
                 if query_set_check_result_has_special_in_department:
                     check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
                     check_result_report.check_project = check_project
+                    check_result_report.qs_check_object = qs_check_object
+                    check_result_report.qs_check_result = qs_check_result   
                     check_result_report.author = request.user.username
-                    check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    check_result_report.title = u'%s-%s-特殊检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     check_result_report.band_page_header.elements += [
                         Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                               style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1307,19 +1343,26 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
     return response
 
 def check_object_service_area_department_has_special_report(query_set=None, request=None, check_project_id=None):
-    
+    response = cache.get('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+            check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                      check_project.end_time.month,
+                                                      check_project.end_time.day,
+                                                      23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
     else:
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-        response = cache.get('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
-        if response is not None:
-            return response
+
         response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
             return response
@@ -1330,12 +1373,15 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
+            #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
+            query_set_check_result_has_special_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__contains='special').order_by('check_object.id')
             if query_set_check_result_has_special_in_department:
                 check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
                 check_result_report.check_project = check_project
+                check_result_report.qs_check_object = qs_check_object
+                check_result_report.qs_check_result = qs_check_result                
                 check_result_report.author = request.user.username
-                check_result_report.title = u'%s-%s-特殊检查名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                check_result_report.title = u'%s-%s-特殊检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 check_result_report.band_page_header.elements += [
                     Label(text=u'', top=1*cm, left=0, width=BAND_WIDTH,
                           style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
@@ -1377,5 +1423,199 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         return response
 
     cache.set('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
+    return response
+
+def check_object_service_area_report(query_set=None, request=None, check_project_id=None):
+    response = cache.get('check_object_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+            check_project_endtime = datetime.datetime(check_project.end_time.year,check_project.end_time.month,check_project.end_time.day,23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
+
+    if query_set is not None and request is not None and query_set:
+
+        response = HttpResponse(mimetype='application/pdf')
+        if check_project == None:
+            return response
+        
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        query_set_service_area = query_set
+        for service_area_object in query_set_service_area:
+            query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            if query_set_service_area_department:
+                service_area_report = ServiceAreaReport(query_set_service_area_department)
+                service_area_report.check_project = check_project
+                service_area_report.author = request.user.username
+                service_area_report.qs_check_object = qs_check_object
+                service_area_report.qs_check_result = qs_check_result                
+                service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
+                service_area_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: service_area_report.get_service_area_total_count(text, service_area=service_area_object)),
+                    ]
+                service_area_report.band_detail.elements = [
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=0.5*cm),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=3.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_name(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=9.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_check_count(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=14.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_not_check_count(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=19.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_check_object_count(instance)),
+                    ObjectValue(attribute_name='id', top=0.2*cm, left=24.5*cm,
+                                get_value=lambda instance: service_area_report.get_department_complete_radio(instance)),
+
+                    ]
+                canvas = service_area_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
+            for service_area_department_object in query_set_service_area_department:
+                #print query_set_service_area_department
+                query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
+                if query_set_check_object_in_department:
+                    department_report = DepartmentReport(query_set_check_object_in_department)
+                    department_report.check_project = check_project
+                    department_report.qs_check_object = qs_check_object
+                    department_report.qs_check_result = qs_check_result
+                    department_report.author = request.user.username
+                    department_report.title = u'%s - %s - 总检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                    department_report.band_page_header.elements += [
+                        Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                              style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                              get_value=lambda text: department_report.get_department_total_count(text, service_area_department=service_area_department_object)),
+                        ]
+                    department_report.band_detail.elements = [
+                        ObjectValue(attribute_name='id', top=0.3*cm, left=0.5*cm),
+                        ObjectValue(attribute_name='name', top=0.1*cm, left=2*cm),
+                        ObjectValue(attribute_name='id_number', top=0.5*cm, left=2*cm),
+                        ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                        ObjectValue(attribute_name='mate_name', top=0.1*cm, left=12*cm),
+                        ObjectValue(attribute_name='mate_id_number', top=0.5*cm, left=12*cm),
+                        ObjectValue(attribute_name='mate_service_area_department.service_area.name', top=0.1*cm, left=16.2*cm),
+                        ObjectValue(attribute_name='mate_service_area_department.department.name', top=0.5*cm, left=16.2*cm),
+                        ObjectValue(attribute_name='is_family', top=0.1*cm, left=22*cm,
+                                    get_value=lambda instance: instance.is_family and u'是' or u'否'),
+                        ObjectValue(attribute_name='wedding_time', top=0.5*cm, left=22*cm),
+                        ObjectValue(attribute_name='ctp_method', top=0.1*cm, left=25*cm,
+                                    get_value=lambda instance: department_report.get_ctp_value(instance)),
+                        ObjectValue(attribute_name='ctp_method_time', top=0.5*cm, left=25*cm),
+                        ]
+                    canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+                else:
+                    pass
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        cover_report.generate_by(PDFGenerator, canvas=canvas)
+        
+    else:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
+
+    cache.set('check_object_service_area_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
+    return response
+
+def check_object_service_area_department_report(query_set=None, request=None, check_project_id=None):
+    #print check_project_id
+    response = cache.get('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
+    if response is not None:
+        return response
+    if check_project_id is not None:
+        try:
+            check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
+            check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                      check_project.end_time.month,
+                                                      check_project.end_time.day,
+                                                      23, 59, 59)
+            qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                       updated_at__lt=check_project_endtime)
+            qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
+        except ObjectDoesNotExist:
+            check_project = None
+    else:
+        check_project = None
+
+    if query_set is not None and request is not None and query_set:
+
+        response = HttpResponse(mimetype='application/pdf')
+        if check_project == None:
+            return response
+        
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        query_set_service_area_department = query_set
+        for service_area_department_object in query_set_service_area_department:
+            #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
+            query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
+            if query_set_check_object_in_department:
+                department_report = DepartmentReport(query_set_check_object_in_department)
+                department_report.check_project = check_project
+                department_report.qs_check_object = qs_check_object
+                department_report.qs_check_result = qs_check_result
+                department_report.author = request.user.username
+                department_report.title = u'%s - %s - 总检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
+                department_report.band_page_header.elements += [
+                    Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
+                          style={'fontName': 'yahei', 'fontSize': 8, 'alignment': TA_RIGHT, 'textColor': red},
+                          get_value=lambda text: department_report.get_department_total_count(text, service_area_department=service_area_department_object)),
+                    ]
+                department_report.band_detail.elements = [
+                    ObjectValue(attribute_name='id', top=0.3*cm, left=0.5*cm),
+                    ObjectValue(attribute_name='name', top=0.1*cm, left=2*cm),
+                    ObjectValue(attribute_name='id_number', top=0.5*cm, left=2*cm),
+                    ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=6.2*cm),
+                    ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=6.2*cm),
+                    ObjectValue(attribute_name='mate_name', top=0.1*cm, left=12*cm),
+                    ObjectValue(attribute_name='mate_id_number', top=0.5*cm, left=12*cm),
+                    ObjectValue(attribute_name='mate_service_area_department.service_area.name', top=0.1*cm, left=16.2*cm),
+                    ObjectValue(attribute_name='mate_service_area_department.department.name', top=0.5*cm, left=16.2*cm),
+                    ObjectValue(attribute_name='is_family', top=0.1*cm, left=22*cm,
+                                get_value=lambda instance: instance.is_family and u'是' or u'否'),
+                    ObjectValue(attribute_name='wedding_time', top=0.5*cm, left=22*cm),
+                    ObjectValue(attribute_name='ctp_method', top=0.1*cm, left=25*cm,
+                                get_value=lambda instance: department_report.get_ctp_value(instance)),
+                    ObjectValue(attribute_name='ctp_method_time', top=0.5*cm, left=25*cm),
+                    ]
+                canvas = department_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
+            else:
+                pass
+            cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        cover_report.title = u'%s' % check_project.name
+        cover_report.generate_by(PDFGenerator, canvas=canvas)
+        
+    else:
+        cover_report = CoverReport(query_set)
+        cover_report.author = request.user.username
+        if check_project is not None:
+            cover_report.title = u'%s' % check_project.name
+        else:
+            cover_report.title = u'无效报表'
+        cover_report.generate_by(PDFGenerator, filename=response)
+        return response
+
+    cache.set('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
     return response
 

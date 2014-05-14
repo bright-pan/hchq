@@ -188,6 +188,7 @@ session_check_object_mate_service_area_name = u'session_check_object_mate_servic
 session_check_object_mate_department_name = u'session_check_object_mate_department_name'
 session_check_object_is_fuzzy = u'session_check_object_is_fuzzy'
 session_check_object_ctp_method = u'session_check_object_ctp_method'
+session_check_object_del_reason = u'session_check_object_del_reason'
 session_check_object_ctp_method_time = u'session_check_object_ctp_method_time'
 session_check_object_wedding_time = u'session_check_object_wedding_time'
 session_check_object_modify_start_time = u'session_check_object_modify_start_time'
@@ -201,6 +202,13 @@ check_object_ctp_local = {u'method_0':u'未使用',
                           u'method_2':u'避孕药方式',
                           u'method_3':u'其他方式',
                       }
+
+check_object_del_reason = {u'del_reason_1':u'离婚删除',
+                          u'del_reason_2':u'调离删除',
+                          u'del_reason_3':u'超龄删除',
+                          u'del_reason_4':u'因病致绝育删除',
+                          u'del_reason_5':u'其他原因删除',
+                          }
 #check_object_init_flag = False
 ################################################
 
@@ -216,13 +224,19 @@ session_check_result_check_project = u'session_check_result_check_project'
 session_check_result_start_time = u'session_check_result_start_time'
 session_check_result_end_time = u'session_check_result_end_time'
 
-check_result_local = {u'pregnant':u'有孕',
+check_result_local = {u'None':u'',
+                      u'invalid':u'本次失效',
+                      u'pregnant':u'有孕',
                       u'unpregnant':u'无孕',
                       u'ring':u'有环',
                       u'unring':u'无环',
                       u'special_1':u'生小孩子三个月内',
                       u'special_2':u'生病住院',
                       u'special_3':u'其他原因',
+                      u'special_4':u'单位担保',
+                      u'special_5':u'医学手术证明',
+                      u'special_6':u'外地环孕检证明',
                       }
 
+check_result_pregnant_number_re_pattern = ur'(^[\d]{2}$)|(^[\d]{1}$)'
 

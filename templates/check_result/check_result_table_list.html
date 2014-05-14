@@ -1,55 +1,54 @@
 {% load check_result_filter %}
-<table border="0" cellpadding="0" cellspacing="0" class="full">
-  <caption>检查结果</caption>
-  <thead>
-    <tr><th scope="col" colspan="7">检查结果查询(共{{ results_page.paginator.count}}项)</th></tr>
-  </thead>
-  <tbody>
+{% load check_object_filter %}
+<table class="table table-bordered table-striped table-hover">
+    <thead>
     <tr>
-      <th scope="col">照片</th>
-      <th scope="col">妻子姓名<br>身份证号</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">丈夫姓名<br>身份证号</th>
-      <th scope="col">服务区域<br>单位部门</th>
-      <th scope="col">检查人员<br>检查项目</th>
-      <th scope="col">检查结果<br>检查时间</th>
+        <th colspan="8">检查结果<span class="badge">{{ results_page.paginator.count }}</span></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th>照片</th>
+        <th>妻子姓名<br>身份证号</th>
+        <th>服务区域<br>单位部门</th>
+        <th>丈夫姓名<br>身份证号</th>
+        <th>服务区域<br>单位部门</th>
+        <th>避孕措施<br>实施时间</th>
+        <th>检查人员<br>检查项目</th>
+        <th>检查结果<br>检查时间</th>
     </tr>
     {% for result in results_page.object_list %}
-    <tr>
-      <td><a href="{{ result.get_absolute_url }}"><img src="{{ result.check_object.thumbnail.url }}" width="47" height="41"/></a></td>
-      <td>{% if result.check_object.is_family %}{{ result.check_object.name }}(家属){% else %}{{ result.check_object.name }}{% endif %}<br><a href="{{ result.get_absolute_url }}">{{ result.check_object.id_number }}</a></td>
-      <td>{{ result.check_object.service_area_department.service_area.name }}<br>{{ result.check_object.service_area_department.department.name }}</td>
-      <td>{{ result.check_object.mate_name }}<br>{{ result.check_object.mate_id_number }}</td>
-      <td>{{ result.check_object.mate_service_area_department.service_area.name }}<br>{{ result.check_object.mate_service_area_department.department.name }}</td>
-      <td>{{ result.checker.username }}<br>{{ result.check_project.name }}</td>
-      <td>{{ result.result|local }}<br>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
+        <tr>
+            <td class="col-xs-1"><a class="thumbnail" href="{{ result.get_absolute_url }}"><img src="{{ result.check_object.thumbnail.url }}" width="47"
+                                                             height="41"/></a></td>
+            <td class="col-xs-1">{% if result.check_object.is_family %}{{ result.check_object.name }}<span class="badge">家属</span>{% else %}
+                {{ result.check_object.name }}{% endif %}<br><a
+                    href="{{ result.get_absolute_url }}">{{ result.check_object.id_number }}</a></td>
+            <td class="col-xs-2">{{ result.check_object.service_area_department.service_area.name }}
+            <br>{{ result.check_object.service_area_department.department.name }}</td>
+            <td class="col-xs-1">{{ result.check_object.mate_name }}<br>{{ result.check_object.mate_id_number }}</td>
+            <td class="col-xs-2">{{ result.check_object.mate_service_area_department.service_area.name }}
+            <br>{{ result.check_object.mate_service_area_department.department.name }}</td>
+            <td class="col-xs-1">{{ result.check_object.ctp_method|ctp_local }}<br>{{ result.check_object.ctp_method_time|date:"Y-m-d" }}</td>
+            <td class="col-xs-2">{{ result.checker.username }}<br>{{ result.check_project.name }}</td>
+            <td class="col-xs-2">{{ result.result|local }}<br>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
 
-    </tr>
+        </tr>
     {% empty %}
-    <p class="warning">没有检查结果可以查询！</p>
+        <div class="alert alert-danger">
+            <p>没有检查结果可以查询！</p>
+        </div>
     {% endfor %}
-  </tbody>
+    </tbody>
 </table>
-<div class="pagination">
-  {% if results_page.has_previous %}
-  <span>
-    <a href="{% url check_result_list results_page.previous_page_number %}">上一页</a>
-  </span>
-  {% else %}
-  <span class="disable">
-    上一页
-  </span>
-  {% endif %}
-  <span class="current">
-    第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
-  </span>
-  {% if results_page.has_next %}
-  <span>
-    <a href="{% url check_result_list results_page.next_page_number %}">下一页</a>
-  </span>
-  {% else %}
-  <span class="disable">
-    下一页
-  </span>          
-  {% endif %}
-</div>
+
+<ul class="pagination">
+    <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+        <a href="{% url check_result_list results_page.previous_page_number %}">上一页</a>
+    </li>
+    <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+            class="sr-only">(current)</span></a></li>
+    <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+        <a href="{% url check_result_list results_page.next_page_number %}">下一页</a>
+    </li>
+</ul>

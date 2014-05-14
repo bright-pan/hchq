@@ -21,3 +21,11 @@ static/images/thumbnails/*.JPG
 static/images/thumbnails/*.BMP
 static/images/thumbnails/*.bmp
 static/images/thumbnails/null
+
+.settings/*
+.project
+.pydevproject
+
+.idea/*
+
+nginx/logs/*

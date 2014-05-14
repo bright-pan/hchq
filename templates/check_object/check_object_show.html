@@ -1,155 +1,126 @@
 {% extends "check_object/check_object_layout.html" %}
 {% load check_object_filter %}
-{% block header_describe %}{% endblock %}
 
-{% block teaser %}
-{% load cache %}
-{% cache 500 check_object_show user.username %}
-<div class="nav_hlist">
-<ul>
-  {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
-  <li class="active"><strong>检查对象详情</strong></li>
-  {% endif %}
-  {% if perms.department.co_list %}
-  <li><a href="{% url check_object_invaild 1 %}">已删对象查询</a></li>
-  {% endif %}
-  {% if perms.department.co_delete %}
-  <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
-  {% endif %}
-  {% if perms.department.co_modify %}
-  <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
-  {% endif %}
-  {% if perms.department.co_add %}
-  <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
-  {% endif %}
-  {% if perms.department.co_list %}
-  <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
-  {% endif %}
-</ul>
-</div>
-{% endcache %}
+{% block panel_heading %}
+    <h3 class="panel-title">检查对象详情</h3>
 {% endblock %}
 
-{% block main %}
-<!-- Insert your subtemplate content here -->
-{% if result %}
+{% block panel_body %}
+    {% if success %}
+        {% if success == 'add' %}
+            <div class="alert alert-success">
+                <p>检查对象 {{ result.name }} | {{ result.id_number }} 已成功添加, 详情如下！</p>
+            </div>
+        {% endif %}
+        {% if success == 'modify' %}
+            <div class="alert alert-success">
+                <p>检查对象 {{ result.name }} | {{ result.id_number }} 已成功修改, 详情如下！</p>
+            </div>
+        {% endif %}
+    {% endif %}
 
-{% if success != 'false' %}
-{% if success == 'add' %}
-<script type="text/javascript">
-  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-  if (is_chrome)
-  {
-  document.write("<br><br>");
-  }
-</script>
-
-
-<p class="warning">检查对象【{{ result.name }} | {{ result.id_number }}】已成功添加, 详情如下！</p>
-{% else %}
-{% if success == 'modify' %}
-<script type="text/javascript">
-  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-  if (is_chrome)
-  {
-  document.write("<br><br>");
-  }
-</script>
-<p class="warning">检查对象【{{ result.name }} | {{ result.id_number }}】已成功修改, 详情如下！</p>
-{% else %}
-{% endif %}
-{% endif %}
-{% else %}
-{% endif %}
-
-  <div class="subcolumns">
-    <div class="c75l">
-      <div class="subc">
-        <table border="0" cellpadding="0" cellspacing="0" class="full">
-          <caption>
-            检查对象
-          </caption>
-          <thead>
-            <tr><th scope="col" colspan="2">{{ result.name }} | {{ result.id_number }}</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>妻子姓名<br>身份证号</td>
-              <td>{{ result.name }}<br>{{ result.id_number }}</td>
-            </tr>
-            <tr>
-              <td class="odd">服务区域<br>单位部门</td>
-              <td class="odd">{{ result.service_area_department.service_area.name }}<br>{{ result.service_area_department.department.name }}</td>
-            </tr>
-            <tr>
-              <td>家属<br>结婚时间<br>家庭住址</td>
-              {% if result.is_family %} 
-              <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
-              {% else %}
-              <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
-              {% endif %}
-            </tr>
-            <tr>
-              <td class="odd">丈夫姓名<br>身份证号</td>
-              <td class="odd">{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
-            </tr>
-            <tr>
-              <td>服务区域<br>单位部门</td>
-              <td>{{ result.mate_service_area_department.service_area.name }}<br>{{ result.mate_service_area_department.department.name }}</td>
-            </tr>
-            <tr>
-              <td class="odd">避孕方式<br>实施时间</td>
-              <td class="odd">{{ result.ctp_method|ctp_local }}<br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
-            </tr>
-            <tr>
-              <td>孩子1<br>孩子2<br>孩子3</td>
-              <td>
-                {% if result.children_1_name %}
-                {{ result.children_1_name }}|{% if result.children_1_sex == 'm' %}男{% else %}女{% endif %}|{{ result.children_1_id_number }}
-                {% else %}
-                {% endif %}
-                <br>
-                {% if result.children_2_name %}
-                {{ result.children_2_name }}|{% if result.children_2_sex == 'm' %}男{% else %}女{% endif %}|{{ result.children_2_id_number }}
-                {% else %}
-                {% endif %}
-                <br>
-                {% if result.children_3_name %}
-                {{ result.children_3_name }}|{% if result.children_3_sex == 'm' %}男{% else %}女{% endif %}|{{ result.children_3_id_number }}
-                {% else %}
-                {% endif %}
-              </td>
-            </tr>
-            <tr>
-              <td>创建人员</td>
-              <td>{{ result.creater.username }}</td>
-            </tr>
-            <tr>
-              <td class="odd">创建时间</td>
-              <td class="odd">{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
-            </tr>
-            <tr>
-              <td>更新时间</td>
-              <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="c25r">
-      <div class="subc">
-        <div class="center">
-          <br>
-          <img src="{{ result.photo.url }}"/>
-          <p>{{ result.name }}的照片</p>
-          <p>{{ result.id_number }}</p>          
-          <br>
+    {% if result %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th colspan="3">{% if result.is_family %}{{ result.name }}<span class="badge">家属</span>{% else %}
+                            {{ result.name }}{% endif %} | {{ result.id_number }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th class="col-md-3">妻子姓名<br>身份证号</th>
+                        <td class="col-md-5">{% if result.is_family %}{{ result.name }}<span class="badge">家属</span>{% else %}
+                            {{ result.name }}{% endif %}<br>{{ result.id_number }}</td>
+                        <td rowspan="10" class="col-md-4">
+                            <div class="thumbnail">
+                                <h4 class="text-center">检查对象相片</h4>
+                                <img src="{{ result.photo.url }}"/>
+                                <div class="caption">
+                                    <div class="text-center">
+                                    <p>{{ result.name }}的照片</p>
+                                    <p>{{ result.id_number }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>服务区域<br>单位部门</th>
+                        <td>{{ result.service_area_department.service_area.name }}
+                            <br>{{ result.service_area_department.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>家属<br>结婚时间<br>家庭住址</th>
+                        {% if result.is_family %}
+                            <td>是<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
+                        {% else %}
+                            <td>否<br>{{ result.wedding_time|date:"Y-m-d" }}<br>{{ result.address }}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>丈夫姓名<br>身份证号</th>
+                        <td>{{ result.mate_name }}<br>{{ result.mate_id_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>服务区域<br>单位部门</th>
+                        <td>{{ result.mate_service_area_department.service_area.name }}
+                            <br>{{ result.mate_service_area_department.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>避孕方式<br>实施时间</th>
+                        <td>{{ result.ctp_method|ctp_local }}
+                            <br>{{ result.ctp_method_time|date:"Y-m-d" }}</td>
+                    </tr>
+                    <tr>
+                        <th>孩子1<br>孩子2<br>孩子3</th>
+                        <td>
+                            {% if result.children_1_name %}
+                                {{ result.children_1_name }}|{% if result.children_1_sex == 'm' %}男{% else %}女
+                            {% endif %}|{{ result.children_1_id_number }}
+                            {% else %}
+                            {% endif %}
+                            <br>
+                            {% if result.children_2_name %}
+                                {{ result.children_2_name }}|{% if result.children_2_sex == 'm' %}男{% else %}女
+                            {% endif %}|{{ result.children_2_id_number }}
+                            {% else %}
+                            {% endif %}
+                            <br>
+                            {% if result.children_3_name %}
+                                {{ result.children_3_name }}|{% if result.children_3_sex == 'm' %}男{% else %}女
+                            {% endif %}|{{ result.children_3_id_number }}
+                            {% else %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>创建人员</th>
+                        <td>{{ result.creater.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ result.created_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    {% if not result.is_active %}
+                        <tr>
+                            <th>删除原因</th>
+                            <td>{{ result.del_reason|del_reason_local }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <th>更新时间</th>
+                        <td>{{ result.updated_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-{% else %}
-<p class="warning">对不起，该检查对象不存在！</p>
-{% endif %}
+    {% else %}
+        <div class="alert alert-danger">
+            <p>对不起，该检查对象不存在！</p>
+        </div>
+    {% endif %}
 {% endblock %}
-

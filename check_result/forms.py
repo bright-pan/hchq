@@ -7,11 +7,11 @@ from PIL import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from hchq.untils import gl
-from hchq.account.models import UserProfile
-from hchq.check_object.models import *
-from hchq.check_result.models import CheckResult
-from hchq.check_project.models import CheckProject
+from untils import gl
+from account.models import UserProfile
+from check_object.models import *
+from check_result.models import CheckResult
+from check_project.models import CheckProject
 from hchq import settings
 import re
 import datetime
@@ -51,21 +51,32 @@ class CheckResultDetailAddForm(forms.Form):
     pregnant = forms.ChoiceField(
         required=True,
         label =_(u'孕检(*)'),
-        widget=forms.RadioSelect(),
-        choices=((u'pregnant', u'有孕'),
+        choices=((u'none', u'请选择'),
+                 (u'pregnant', u'有孕'),
                  (u'unpregnant', u'无孕'),
                  ),
         help_text=_(u'例如:有孕选有孕'),
         )
+    pregnant.widget.attrs['class'] = 'form-control'
     ring = forms.ChoiceField(
         required=True,
         label =_(u'环检(*)'),
-        widget=forms.RadioSelect(),
-        choices=((u'ring', u'有环'),
+        choices=((u'none', u'请选择'),
+                 (u'ring', u'有环'),
                  (u'unring', u'无环'),
                  ),
         help_text=_(u'例如:有环选有环'),
         )
+    ring.widget.attrs['class'] = 'form-control'
+    special = forms.ChoiceField(
+        required=False,
+        label =_(u'特殊检查'),
+        choices=((u'none', u'请选择'),
+                 (u'special_4', u'单位担保'),
+                 ),
+        help_text=_(u'例如:担保则选择'),
+        )
+    special.widget.attrs['class'] = 'form-control'
     pregnant_period = forms.IntegerField(
         required=False,
         label=_(u'怀孕周期'),
@@ -73,14 +84,13 @@ class CheckResultDetailAddForm(forms.Form):
         max_value=50,
         min_value=1,
         )
-
+    pregnant_period.widget.attrs['class'] = 'form-control'
     checker = forms.ChoiceField(
         required=True,
-        widget=forms.RadioSelect(),
         label =_(u'检查人员(*)'),
         help_text=_(u'例如:张三'),
         )
-
+    checker.widget.attrs['class'] = 'form-control'
     id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.check_object_name_error_messages,
@@ -98,43 +108,77 @@ class CheckResultDetailAddForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return id_copy
+    def clean_pregnant(self):
+        data_copy = self.data.get('pregnant', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
+
+    def clean_ring(self):
+        data_copy = self.data.get('ring', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
+
+    def clean_special(self):
+        data_copy = self.data.get('special', u'none')
+        if data_copy == u'none':
+            data_copy = ''
+        return data_copy
+
+    def clean_checker(self):
+        data_copy = self.data.get('checker', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
 
     def init_value(self, user=None, check_object=None):
         if user is not None and check_object is not None:
-            
-            choices = ()
+            choices = (('none', u'请选择'),)
             if user.is_superuser is False:
-                service_area = user.get_profile().service_area_department.service_area
-                query_set = UserProfile.objects.filter(service_area_department__service_area=service_area,
-                                                       is_checker=True,
-                                                       user__is_active=True,
-                                                       user__is_superuser=False,
-                                                       user__is_staff=False)
+                if user.has_perm('department.unlocal'):
+                    service_area = user.get_profile().service_area_department.service_area
+                    query_set = UserProfile.objects.filter(service_area_department__service_area=service_area,
+                                                           is_checker=True,
+                                                           user__is_active=True,
+                                                           user__is_superuser=False,
+                                                           user__is_staff=False)
+                else:
+                    query_set = UserProfile.objects.filter(is_checker=True,
+                                                           user__is_active=True,
+                                                           user__is_superuser=False,
+                                                           user__is_staff=False,
+                                                           user__username=user.username)
             else:
                 query_set = UserProfile.objects.filter(is_checker=True,
                                                        user__is_active=True,
                                                        user__is_superuser=False,
                                                        user__is_staff=False)
-                                
+
             size = query_set.count()
             for query in query_set:
                 choices += (str(query.user.pk), query.user.username),
                 
             self.fields['checker'].choices = choices
-            self.fields['checker'].widget.attrs['size'] = size
-            
-            self.fields['pregnant'].choices = ((u'pregnant', u'有孕'),
-                                              (u'unpregnant', u'无孕'),
-                                              )
-            self.fields['pregnant'].widget.attrs['size'] = u'2'
-            self.fields['ring'].choices = ((u'ring', u'有环'),
-                                           (u'unring', u'无环'),
-                                           )
-            self.fields['ring'].widget.attrs['size'] = u'2'
+            # self.fields['checker'].widget.attrs['size'] = size
+
+            # self.fields['pregnant'].choices = ((u'pregnant', u'有孕'),
+            #                                   (u'unpregnant', u'无孕'),
+            #                                   )
+            # self.fields['pregnant'].widget.attrs['size'] = u'4'
+            #
+            # self.fields['ring'].choices = ((u'ring', u'有环'),
+            #                                (u'unring', u'无环'),
+            #                                )
+            # self.fields['ring'].widget.attrs['size'] = u'2'
+            #
+            # self.fields['special'].choices = ((u'special_4', u'单位担保'),
+            #                                )
+            # self.fields['special'].widget.attrs['size'] = u'4'
+
             self.fields['id'].widget.attrs['value'] = check_object.id
             return True
         else:
-
             return False
         
     def get_check_project(self):
@@ -160,9 +204,17 @@ class CheckResultDetailAddForm(forms.Form):
             checker = User.objects.get(pk=checker_id)
         except ObjectDoesNotExist:
             return False
-        result = "%s %s %s" % (self.cleaned_data['pregnant'],self.cleaned_data['ring'],self.cleaned_data['pregnant_period'])
 
-        CheckResult.objects.filter(check_object=check_object).update(is_latest=False)
+        result = u''
+        result += self.cleaned_data['pregnant'] + u' '
+        result += self.cleaned_data['ring'] + u' '
+        
+        if self.cleaned_data['pregnant_period'] is not None:
+            result += u'%s' % self.cleaned_data['pregnant_period']
+        if self.cleaned_data['special']:
+            result += u' ' + self.cleaned_data['special']
+
+        CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
         CheckResult.objects.create(check_object=check_object,
                                    check_project=check_project,
                                    checker=checker,
@@ -206,13 +258,17 @@ class CheckResultSpecialDetailAddForm(forms.Form):
     special = forms.ChoiceField(
         required=True,
         label =_(u'特殊检查原因(*)'),
-        widget=forms.RadioSelect(),
-        choices=((u'special_1', u'生小孩子三个月内'),
+        choices=((u'none', u'请选择'),
+                (u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
+                 (u'special_4', u'单位担保'),
+                 (u'special_5', u'医学手术证明'),
+                 (u'special_6', u'外地环孕检证明'),
                  (u'special_3', u'其他原因'),
                  ),
         help_text=_(u'生小孩则选生小孩'),
         )
+    special.widget.attrs['class'] = 'form-control'
 
     id = forms.CharField(
         widget=forms.HiddenInput(),
@@ -231,13 +287,17 @@ class CheckResultSpecialDetailAddForm(forms.Form):
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return id_copy
+    def clean_special(self):
+        data_copy = self.data.get('special', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
 
     def init_value(self, user=None, check_object=None):
         if user is not None and check_object is not None:
             self.fields['id'].widget.attrs['value'] = check_object.id
             return True
         else:
-
             return False
         
     def get_check_project(self):
@@ -257,7 +317,7 @@ class CheckResultSpecialDetailAddForm(forms.Form):
             return False
         result = "%s" % (self.cleaned_data['special'])
 
-        CheckResult.objects.filter(check_object=check_object).update(is_latest=False)
+        CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
         CheckResult.objects.create(check_object=check_object,
                                    check_project=check_project,
                                    checker=user,
@@ -304,7 +364,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'妻子姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -318,11 +378,12 @@ class CheckResultSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=False,
         label=_(u'服务区域'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -331,7 +392,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -347,12 +408,12 @@ class CheckResultSearchForm(forms.Form):
                  (u'false', u'否'),
                  ),
         )
-
+    is_family.widget.attrs['class'] = 'form-control'
     mate_name = forms.CharField(
         max_length=64,
         required=False,
         label=_(u'丈夫姓名'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -366,11 +427,12 @@ class CheckResultSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=False,
         label=_(u'服务区域'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -379,7 +441,7 @@ class CheckResultSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -398,6 +460,7 @@ class CheckResultSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -405,6 +468,8 @@ class CheckResultSearchForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -412,7 +477,8 @@ class CheckResultSearchForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
-
+    wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
@@ -431,6 +497,7 @@ class CheckResultSearchForm(forms.Form):
                  (u'unpregnant', u'无孕'),
                  ),
         )
+    pregnant.widget.attrs['class'] = 'form-control'
     ring = forms.ChoiceField(
         required=True,
         label =_(u'环检'),
@@ -439,15 +506,20 @@ class CheckResultSearchForm(forms.Form):
                  (u'unring', u'无环'),
                  ),
         )
+    ring.widget.attrs['class'] = 'form-control'
     special = forms.ChoiceField(
         required=True,
         label =_(u'特殊原因'),
         choices=((u'none', u'未知'),
                  (u'special_1', u'生小孩子三个月内'),
                  (u'special_2', u'生病住院'),
+                 (u'special_4', u'单位担保'),
+                 (u'special_5', u'医学手术证明'),
+                 (u'special_6', u'外地环孕检证明'),
                  (u'special_3', u'其他原因'),
                  ),
         )
+    special.widget.attrs['class'] = 'form-control'
     pregnant_period = forms.IntegerField(
         required=False,
         label=_(u'怀孕周期'),
@@ -455,35 +527,40 @@ class CheckResultSearchForm(forms.Form):
         max_value=50,
         min_value=1,
         )
-
+    pregnant_period.widget.attrs['class'] = 'form-control'
     checker = forms.CharField(
         required=False,
         max_length=10,
         label =_(u'检查人员'),
         )
+    checker.widget.attrs['class'] = 'form-control'
     recorder = forms.CharField(
         required=False,
         max_length=10,
         label =_(u'记录人员'),
         )
+    recorder.widget.attrs['class'] = 'form-control'
     check_project = forms.ChoiceField(
         required=True,
         label =_(u'检查项目'),
         )
+    check_project.widget.attrs['class'] = 'form-control'
     start_time = forms.DateField(
         required=False,
         label=_(u'开始时间'),
         help_text=_(u'例如：2010-10-25'),
         input_formats = ('%Y-%m-%d',)
         )
+    start_time.widget.attrs['class'] = 'form-control'
+    start_time.widget.attrs['id'] = 'id_start_time'
     end_time  = forms.DateField(
         required=False,
         label=_(u'结束时间'),
         help_text=_(u'例如：2010-10-25'),
         input_formats = ('%Y-%m-%d',)
         )
-
-
+    end_time.widget.attrs['class'] = 'form-control'
+    end_time.widget.attrs['id'] = 'id_end_time'
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -503,7 +580,7 @@ class CheckResultSearchForm(forms.Form):
         return id_number_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -541,7 +618,7 @@ class CheckResultSearchForm(forms.Form):
 
     def clean_mate_service_area_name(self):
         try:
-           mate_service_area_name_copy = self.data.get('mate_service_area_name')
+            mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -562,10 +639,10 @@ class CheckResultSearchForm(forms.Form):
         try:
             ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
+            raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['form_error'])
         if ctp_method_time_copy is not None:
             if ctp_method_time_copy > datetime.datetime.now().date():
-                raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
+                raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['logic_error'])
         return ctp_method_time_copy
     def clean_wedding_time(self):
         try:
@@ -900,7 +977,7 @@ class CheckResultSearchForm(forms.Form):
         if special == u'none':
             pass
         else:
-            query_set = query_set.filter(result__startswith=special)
+            query_set = query_set.filter(result__contains=special)
         return query_set
     def query_pregnant(self, query_set=None):
         pregnant = self.cleaned_data['pregnant']
@@ -948,7 +1025,7 @@ class CheckResultSearchForm(forms.Form):
             check_project = CheckProject.objects.get(pk=check_project_id)
         except ObjectDoesNotExist:
             return query_set
-        
+
         if query_set is None:
             return query_set
 
@@ -1029,14 +1106,14 @@ class CheckResultSearchForm(forms.Form):
         else:
             self.is_fuzzy = False
 
-        #query_set = CheckResult.objects.filter(is_latest=True)
-        query_set = CheckResult.objects.all()
+        query_set = CheckResult.objects.filter(is_latest=True)
+        #query_set = CheckResult.objects.all()
         
+        query_set = self.query_check_project(query_set)        
         query_set = self.query_pregnant(query_set)
         query_set = self.query_special(query_set)
         query_set = self.query_ring(query_set)
         query_set = self.query_pregnant_period(query_set)
-        query_set = self.query_check_project(query_set)
         query_set = self.query_checker(query_set)
         query_set = self.query_recorder(query_set)
         query_set = self.query_start_time(query_set)
@@ -1056,8 +1133,7 @@ class CheckResultSearchForm(forms.Form):
         query_set = self.query_is_family(query_set)
         query_set = self.query_ctp_method_time(query_set)
         query_set = self.query_wedding_time(query_set)
-        query_set.order_by('check_object.id')
-        
-        
+        #query_set = query_set.order_by('check_object.id')
+        query_set = query_set.order_by("-check_time")
         return query_set
 

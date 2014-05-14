@@ -1,0 +1,13 @@
+{% extends "check_object/check_object_layout.html" %}
+
+{% block panel_heading %}
+    <h3 class="panel-title">已删对象查询</h3>
+{% endblock %}
+
+{% block panel_body %}
+    {% with search_form as form %}
+        {% include "check_object/check_object_invalid_search_form.html" %}
+    {% endwith %}
+    <br>
+    {% include "check_object/check_object_table_invalid.html" %}
+{% endblock %}
