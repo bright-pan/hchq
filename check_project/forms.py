@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.check_project.models import CheckProject
-from hchq.untils import gl
+from check_project.models import CheckProject
+from check_result.models import CheckResult
+from untils import gl
 import re
 
 class CheckProjectAddForm(forms.Form):
@@ -21,7 +22,7 @@ class CheckProjectAddForm(forms.Form):
         max_length=64,
         required=True, 
         label=_(u'检查项目名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -35,6 +36,8 @@ class CheckProjectAddForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_start_time.widget.attrs['class'] = 'form-control'
+    check_project_start_time.widget.attrs['id'] = 'id_check_project_date_from'
     check_project_end_time = forms.DateField(
         required=True,
         label=_(u'结束时间'),
@@ -42,6 +45,8 @@ class CheckProjectAddForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_end_time.widget.attrs['class'] = 'form-control'
+    check_project_end_time.widget.attrs['id'] = 'id_check_project_date_to'
     def clean_check_project_name(self):
         try:
             self.check_project_name_copy = self.data.get('check_project_name')
@@ -147,6 +152,8 @@ class CheckProjectDetailModifyForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_start_time.widget.attrs['class'] = 'form-control'
+    check_project_start_time.widget.attrs['id'] = 'id_check_project_date_from'
     check_project_end_time = forms.DateField(
         required=True,
         label=_(u'结束时间'),
@@ -154,6 +161,8 @@ class CheckProjectDetailModifyForm(forms.Form):
         error_messages = gl.check_project_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    check_project_end_time.widget.attrs['class'] = 'form-control'
+    check_project_end_time.widget.attrs['id'] = 'id_check_project_date_to'
     check_project_id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.check_project_name_error_messages,
@@ -227,6 +236,11 @@ class CheckProjectDeleteForm(forms.Form):
             except ValueError:
                 raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
             self.check_project_id_object = CheckProject.objects.get(pk=self.check_project_id_copy)
+            check_result_count = CheckResult.objects.filter(check_project=self.check_project_id_object, is_latest=True).count()
+            if check_result_count >= 1:
+                raise forms.ValidationError(u'该检查项目已有有效的检查结果，无法删除该对象，如果确实需要删除，请先失效所有检查结果，然后在删除')
+            else:
+                pass
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         return self.check_project_id_copy
@@ -251,7 +265,7 @@ class CheckProjectSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'检查项目名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 

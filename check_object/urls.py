@@ -1,6 +1,6 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('hchq.check_object.views',
+urlpatterns = patterns('check_object.views',
 
        (r'add/(?P<check_object_page>\d{1,8})/$',
        'check_object_add',
@@ -45,11 +45,16 @@ urlpatterns = patterns('hchq.check_object.views',
        'check_object_list',
        {'template_name' : 'check_object/check_object_list.html', 'next': '/check_object/person_management', },
        'check_object_list'),
+                       
+       (r'invalid/(?P<check_object_page>\d{1,8})/$',
+       'check_object_invalid',
+       {'template_name' : 'check_object/check_object_invalid.html', 'next': '/check_object/person_management', },
+       'check_object_invalid'),
 
        (r'detail_modify/$',
        'check_object_detail_modify',
        {'template_name' : 'check_object/check_object_detail_modify.html', 'next': 'check_object/modify/1', },
        'check_object_detail_modify'),
-                        
+
 ) 
 

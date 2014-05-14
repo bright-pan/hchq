@@ -1,138 +1,62 @@
 {% extends "my_layout.html" %}
-{% load cache %}
-{% cache 500 account_layout_media %}
-{% block media %}
-<link href="{{ MEDIA_URL }}css/auto_complete/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.autocomplete.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-                $.getJSON("{% url role_name_ajax %}",
-                          {
-                          },
-                          function(data) {
-                                  $("#id_role_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
 
-                          });
-                $.getJSON("{% url service_area_name_ajax %}",
-                          {
-                          },
-                          function(data) {
-                                  $("#id_service_area_name").autocomplete(data, {
-                                          minChars: 0,
-                                                          max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                          scrollHeight: 220,
-                                                          formatItem: function(data, i, total) {
-                                                          // don't show the current month in the list of values (for whatever reason)
-                                                          //if ( data[0] == months[new Date().getMonth()] ) 
-                                                          //return false;
-                                                          return data[0];
-                                                  }
-                                          });
-
-                          });
-                service_area_name_old = '';
-                $("#id_department_name").focus(function() {
-
-                                service_area_name = $("#id_service_area_name").val();
-                                if (service_area_name != '' && service_area_name != service_area_name_old)
-                                {
-//                                        alert('********');
-                                        service_area_name_old = service_area_name;
-                                        $("#id_department_name").unautocomplete();
-                                        $.getJSON("{% url department_name_ajax %}",
-                                                  {
-                                                  service_area_name :$("#id_service_area_name").val()
-                                                                  },
-                                                  function(data) {
-                                                          $("#id_department_name").autocomplete(data, {
-                                                                  minChars: 0,
-                                                                                  max: 200,
-//                                                          autoFill: true,
-//                                                          mustMatch: true,
-                                                          matchContains: true,
-                                                                                  scrollHeight: 220,
-                                                                                  formatItem: function(data, i, total) {
-                                                                                  // don't show the current month in the list of values (for whatever reason)
-                                                                                  //if ( data[0] == months[new Date().getMonth()] ) 
-                                                                                  //return false;
-                                                                                  return data[0];
-                                                                          }
-                                                                  });
-
-                                                  });
-
+{% block css_media %}
+    <link href="{{ MEDIA_URL }}css/ui-lightness/jquery-ui-min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block js_media %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-min.js"></script>
+    <script>
+        $(function () {
+            $("#id_service_area_name").click(function () {
+                $.getJSON("{% url service_area_name_ajax %}", function
+                        (json) {
+                    $("#id_service_area_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_service_area_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
+            $("#id_department_name").click(function () {
+                $.getJSON("{% url department_name_ajax %}",
+                        {service_area_name: $("#id_service_area_name").val()}, function (json) {
+                            $("#id_department_name").autocomplete({
+                                minLength: 0,
+                                source: json,
+                                focus: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
+                                },
+                                select: function (event, ui) {
+                                    $("#id_department_name").val(ui.item.value);
+                                    return false;
                                 }
-                                
+                            });
                         });
-
+            });
+            $("#id_role_name").click(function () {
+                $.getJSON("{% url role_name_ajax %}", function (json) {
+                    $("#id_role_name").autocomplete({
+                        minLength: 0,
+                        source: json,
+                        focus: function (event, ui) {
+                            $("#id_role_name").val(ui.item.value);
+                            return false;
+                        },
+                        select: function (event, ui) {
+                            $("#id_role_name").val(ui.item.value);
+                            return false;
+                        }
+                    });
+                });
+            });
         });
-</script>
+    </script>
 {% endblock %}
-{% endcache %}
-{% block header_describe %}{% endblock %}
-
-{% block nav %}
-{% load cache %}
-{% cache 500 account_layout user.username %}
-<ul>
-  <li><a href="{% url account_person_management %}">个人管理</a></li>
-  {% if perms.department.sd_management %}
-  <li><a href="{% url service_area_list 1 %}">服务区域管理</a></li>
-  <li><a href="{% url department_list 1 %}">单位部门管理</a></li>
-  {% endif %}
-  {% if perms.department.role_management %}
-  <li><a href="{% url account_role_list 1 %}">角色权限管理</a></li>
-  {% endif %}
-  {% if perms.department.role_management %}
-  <li><a href="{% url check_project_list 1 %}">检查项目管理</a></li>
-  {% endif %}
-  {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
-  <li class="active"><strong>系统用户管理</strong></li>
-  {% endif %}
-  {% if perms.department.co_list %}
-  <li><a href="{% url check_object_list 1 %}">进入系统</a></li>
-  {% else %}
-  {% if perms.department.co_add %}
-  <li><a href="{% url check_object_add 1 %}">进入系统</a></li>
-  {% else %}
-  {% if perms.department.co_modify %}
-  <li><a href="{% url check_object_modify 1 %}">进入系统</a></li>
-  {% else %}
-  {% if perms.department.co_delete %}
-  <li><a href="{% url check_object_delete 1 %}">进入系统</a></li>
-  {% else %}
-  {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">进入系统</a></li>
-  {% else %}
-  {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">进入系统</a></li>
-  {% else %}  
-  {% endif %}
-  {% endif %}  
-  {% endif %}
-  {% endif %}  
-  {% endif %}
-  {% endif %}
-</ul>
-{% endcache %}
-{% endblock %}
-
-{% block teaser %}{% endblock %}
-{% block col1_content %}{% endblock %}
-{% block col3_content %}{% endblock %}

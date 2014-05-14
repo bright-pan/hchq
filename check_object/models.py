@@ -1,7 +1,7 @@
 #coding=utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from hchq.service_area.models import ServiceAreaDepartment
+from service_area.models import ServiceAreaDepartment
 import caching.base
 # Create your models here.
 
@@ -10,6 +10,7 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     id_number = models.CharField(max_length=18, unique=True)
     service_area_department = models.ForeignKey(ServiceAreaDepartment, related_name='check_object')
     photo = models.ImageField(upload_to='images/photos')
+    thumbnail = models.ImageField(upload_to='images/thumbnails')
     is_family = models.BooleanField(default=False)
     address = models.CharField(max_length=128, null=True)
     mate_name = models.CharField(max_length=128)
@@ -19,6 +20,7 @@ class CheckObject(caching.base.CachingMixin, models.Model):
     ctp_method = models.CharField(max_length=10, null=True)
     ctp_method_time = models.DateField(null=True)
     creater = models.ForeignKey(User)
+    del_reason = models.CharField(max_length=128, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

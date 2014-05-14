@@ -1,0 +1,22 @@
+{% extends "check_result/check_result_layout.html" %}
+
+{% block panel_heading %}
+    <h3 class="panel-title">特殊检查结果添加</h3>
+{% endblock %}
+
+{% block panel_body %}
+    {% with search_form as form %}
+        {% include "check_object/check_object_search_form.html" %}
+    {% endwith %}
+    {% with add_form as form %}
+        {% for error in form.id.errors %}
+            <br>
+            <div class="alert alert-danger"><p>{{ error }}</p></div>
+        {% empty %}
+            <br>
+        {% endfor %}
+        {% include 'check_result/check_result_table_special_add.html' %}
+    {% endwith %}
+{% endblock %}
+
+

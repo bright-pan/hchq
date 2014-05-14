@@ -2,19 +2,37 @@
 
 from django import template
 from django.template.defaultfilters import stringfilter
-from hchq.untils import gl
-
+from untils import gl
+import re
 register = template.Library()
 
 @register.filter
 @stringfilter
 def local(value):
     value_list = value.split()
-#    print value_list
-    if gl.check_result_local.has_key(value_list[0]) and gl.check_result_local.has_key(value_list[1]) and len(value_list) == 3:
-        if value_list[2] == u'None':
-            return u'%s|%s' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]])
+    value = u''
+    #print value_list
+    for i in value_list:
+        if gl.check_result_local.has_key(i):
+            key_value = gl.check_result_local[i]
+            if key_value:
+                if i == value_list[-1]:
+                    value += key_value
+                else:
+                    value += key_value + u'|'
         else:
-            return u'%s|%s|%s周' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]], value_list[2])
-    else:
-        return u''
+            if i == value_list[-1]:
+                if re.match(gl.check_result_pregnant_number_re_pattern, i):
+                    value += i + u'周'
+                else:
+                    value += u'未知结果 '
+            else:
+                if re.match(gl.check_result_pregnant_number_re_pattern, i):
+                    value += i + u'周|'
+                else:
+                    value += u'未知结果 |'
+
+    if not value:
+        value = u'未知结果'
+    
+    return value

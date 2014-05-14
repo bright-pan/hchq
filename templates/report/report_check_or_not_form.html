@@ -1,0 +1,65 @@
+<form method="post" action="#">{% csrf_token %}
+    <fieldset>
+        <legend>检查对象信息</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group {% if form.check_project.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.check_project.label }}</label>
+                    {{ form.check_project }}
+                    {% if form.check_project.errors %}
+                        {% for error in form.check_project.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.check_project.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group {% if form.service_area_name.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.service_area_name.label }}</label>
+                    {{ form.service_area_name }}
+                    {% if form.service_area_name.errors %}
+                        {% for error in form.service_area_name.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.service_area_name.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group {% if form.department_name.errors %} has-error {% endif %}">
+                    <label class="control-label">{{ form.department_name.label }}</label>
+                    {{ form.department_name }}
+                    {% if form.department_name.errors %}
+                        {% for error in form.department_name.errors %}
+                            <span class="help-block badge">{{ error }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="help-block">{{ form.department_name.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <button type="submit" value="总检查对象" name="submit" class="btn btn-lg btn-primary btn-block">总检查对象</button>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" value="已检对象" name="submit" class="btn btn-lg btn-primary btn-block">已检对象</button>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" value="未检对象" name="submit" class="btn btn-lg btn-primary btn-block">未检对象</button>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" value="有孕对象" name="submit" class="btn btn-lg btn-primary btn-block">有孕对象</button>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" value="特殊检查对象" name="submit" class="btn btn-lg btn-primary btn-block">特殊检查对象</button>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </fieldset>
+</form>

@@ -10,11 +10,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 
-from hchq.service_area.forms import *
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from service_area.forms import *
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
 
 
@@ -30,7 +30,7 @@ def service_area_add(request, template_name='my.html', next='/', service_area_pa
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             service_area_add_form = ServiceAreaAddForm(post_data)
             if service_area_add_form.is_valid():
@@ -151,7 +151,7 @@ def service_area_modify(request, template_name='my.html', next='/', service_area
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             service_area_modify_form = ServiceAreaModifyForm(post_data)
             if service_area_modify_form.is_valid():
@@ -248,13 +248,14 @@ def service_area_delete(request, template_name='my.html', next='/', service_area
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             service_area_delete_form = ServiceAreaDeleteForm(post_data)
             if service_area_delete_form.is_valid():
                 service_area_delete_form.service_area_delete()
             else:
                 pass
+
             data = {'service_area_name':request.session.get(gl.session_service_area_name, u''),
                     'is_fuzzy':request.session.get(gl.session_service_area_is_fuzzy, False),
                     }        
@@ -430,7 +431,7 @@ def service_area_department_add(request, template_name='my.html', next='/', serv
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加关联':
             service_area_department_add_form = ServiceAreaDepartmentAddForm(post_data)
             service_area_department_add_form.fields['service_area_department_name'].choices = choices
@@ -554,7 +555,7 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除关联':
             service_area_department_delete_form = ServiceAreaDepartmentDeleteForm(post_data)
             if service_area_department_delete_form.is_valid():
@@ -668,7 +669,7 @@ def service_area_department_list(request, template_name='my.html', next='/', ser
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         service_area_department_search_form = ServiceAreaDepartmentSearchForm(post_data)
         if service_area_department_search_form.is_valid():
             service_area_department_search_form.save_to_session(request)

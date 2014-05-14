@@ -1,105 +1,18 @@
 {% extends "report/report_layout.html" %}
-{% block header_describe %}{% endblock %}
-{% block teaser %}
-{% load cache %}
-{% cache 500 report_statistics user.username %}
-<div class="nav_hlist">
-<ul>
-  {% if perms.department.cr_report %}
-  <li class="active"><strong>检查项目数据统计</strong></li>
-  {% endif %}
-  {% if perms.department.cr_report %}
-  <li><a href="{% url report_check_or_not %}">检查对象数据统计</a></li>
-  {% endif %}
-</ul>
-</div>
-{% endcache %}
+
+{% block panel_heading %}
+    <h3 class="panel-title">检查项目数据统计</h3>
 {% endblock %}
 
-{% block main %}
-<script type="text/javascript">
-  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-  if (is_chrome)
-  {
-  document.write("<br><br>");
-  }
-</script>
-<p class="warning">
-  1. 如果选择单位统计则每个服务区域中的各个单位部门都会做数据统计。<br>
-  2. 如果选择单位统计，并且选择已检人员或则未检人员则对每个单位做数据统计的同时，并且生成已检人员或未检人员的名单。<br>
-  3. 请谨慎使用包含人员名单的选项，这可能需要等待几分钟的时间，并且导致系统压力很大，所以建议在不进行环孕检项目的时候，或者下班以后使用这项功能。
-</p>
-
-{% with report_form as form %}
-<form method="post" action="" class="yform full" id="id_form_report">{% csrf_token %}
-  <fieldset>
-    <legend>检查项目报表生成条件</legend>
-    <div class="subcolumns">
-      <div class="c50l">
-        <div class="subc">
-          <!-- Insert your subtemplate content here -->
-          {% if form.check_project.errors %}
-          <div class="type-select error">
-            <strong class="message">{{ form.check_project.errors }}</strong>
-            {{ form.check_project.label_tag }}<p class="dimmed">{{ form.check_project.help_text}}</p>
-            {{ form.check_project }}
-          </div>
-          {% else %}
-          <div class="type-select">
-            {{ form.check_project.label_tag }}<p class="dimmed">{{ form.check_project.help_text}}</p>
-            {{ form.check_project }}
-          </div>
-          {% endif %}
-          {% if form.has_department_info.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.has_department_info.errors }}</strong>
-            {{ form.has_department_info.label_tag }}<br><p class="dimmed">{{ form.has_department_info.help_text}}</p><br>
-            {{ form.has_department_info }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.has_department_info.label_tag }}<br><p class="dimmed">{{ form.has_department_info.help_text}}</p>
-            {{ form.has_department_info }}
-          </div>
-          {% endif %}          
-        </div>
-      </div>
-      <div class="c50r">
-        <div class="subc">
-          <!-- Insert your subtemplate content here -->
-          {% if form.has_check.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.has_check.errors }}</strong>
-            {{ form.has_check.label_tag }}<br><p class="dimmed">{{ form.has_check.help_text}}</p><br>
-            {{ form.has_check }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.has_check.label_tag }}<br><p class="dimmed">{{ form.has_check.help_text}}</p>
-            {{ form.has_check }}
-          </div>
-          {% endif %}
-          {% if form.has_not.errors %}
-          <div class="type-check error">
-            <strong class="message">{{ form.has_not.errors }}</strong>
-            {{ form.has_not.label_tag }}<br><p class="dimmed">{{ form.has_not.help_text}}</p><br>
-            {{ form.has_not }}
-          </div>
-          {% else %}
-          <div class="type-check">
-            {{ form.has_not.label_tag }}<br><p class="dimmed">{{ form.has_not.help_text}}</p>
-            {{ form.has_not }}
-          </div>
-          {% endif %}
-
-        </div>
-      </div>
+{% block panel_body %}
+    <div class="alert alert-info">
+        <p>
+            1. 如果选择单位统计则每个服务区域中的各个单位部门都会做数据统计。<br>
+            2. 如果选择单位统计，并且选择已检对象或则未检对象则对每个单位做数据统计的同时，并且生成已检对象或未检对象的名单。<br>
+            3. 请谨慎使用包含对象名单的选项，这可能需要等待几分钟的时间，并且导致系统压力很大，所以建议在不进行环孕检项目的时候，或者下班以后使用这项功能。
+        </p>
     </div>
-  </fieldset>
-  <div class="center">
-    <input type="submit"  name="submit" value="生成项目报表" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-    <input type="reset" value="重置" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-  </div>
-</form>
-{% endwith %}
+    {% with report_form as form %}
+        {% include "report/report_statistics_form.html" %}
+    {% endwith %}
 {% endblock %}

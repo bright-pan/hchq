@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.department.models import Department
-from hchq.service_area.models import ServiceAreaDepartment
-from hchq.untils import gl
+from department.models import Department
+from check_object.models import CheckObject
+from service_area.models import ServiceAreaDepartment
+from untils import gl
 import re
 
 class DepartmentAddForm(forms.Form):
@@ -19,9 +20,8 @@ class DepartmentAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'单位部门名称'), 
-        widget=forms.Textarea(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'3',
                                      }
                               ), 
         help_text=_(u'例如：县委/政法委，公安局，...'),
@@ -67,7 +67,7 @@ class DepartmentModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'新单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -145,6 +145,11 @@ class DepartmentDeleteForm(forms.Form):
             self.department_id_object = Department.objects.get(pk=self.department_id_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        exist_test = CheckObject.objects.filter(service_area_department__department = self.department_id_object, is_active=True).exists()
+        if exist_test is True:
+            raise forms.ValidationError(u'你无法删除该单位，因为该单位已经包含了检查对象，请将包含该单位的服务区域的所有检查对象移除以后再删除。')
+        else:
+            pass
         return self.department_id_copy
 
     def department_delete(self):
@@ -167,7 +172,7 @@ class DepartmentSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 

@@ -3,17 +3,21 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.check_object.models import *
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from check_object.models import *
+from check_project.models import *
+from check_result.models import *
 from hchq import settings
 import re
 import datetime
+
+
 
 class CheckObjectAddForm(forms.Form):
     """
@@ -29,7 +33,7 @@ class CheckObjectAddForm(forms.Form):
         max_length=64,
         required=True, 
         label=_(u'妻子姓名(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -43,11 +47,12 @@ class CheckObjectAddForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
         label=_(u'服务区域(*)'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -55,8 +60,8 @@ class CheckObjectAddForm(forms.Form):
     department_name = forms.CharField(
         max_length=128,
         required=True, 
-        label=_(u'单位部门(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        label=_(u'单位部门(*)'),
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -65,7 +70,7 @@ class CheckObjectAddForm(forms.Form):
         )
     is_family = forms.CharField(
         required=True,
-        label =_(u'家属(*)'),
+        label =_(u'家属'),
         help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
@@ -77,7 +82,7 @@ class CheckObjectAddForm(forms.Form):
         max_length=64,
         required=True,
         label=_(u'丈夫姓名(*)'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -91,11 +96,12 @@ class CheckObjectAddForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=True,
         label=_(u'服务区域(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -104,7 +110,7 @@ class CheckObjectAddForm(forms.Form):
         max_length=128,
         required=True, 
         label=_(u'单位部门(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -122,6 +128,7 @@ class CheckObjectAddForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -129,6 +136,8 @@ class CheckObjectAddForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -136,11 +145,13 @@ class CheckObjectAddForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     address = forms.CharField(
         max_length=128,
         required=False,
         label=_(u'家庭住址'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -150,8 +161,8 @@ class CheckObjectAddForm(forms.Form):
     children_1_name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        label=_(u'孩子1姓名'),
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -164,18 +175,19 @@ class CheckObjectAddForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_1_sex.widget.attrs['class'] = 'form-control'
     children_1_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_1_id_number.widget.attrs['class'] = 'form-control'
     children_2_name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        label=_(u'孩子2姓名'),
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -188,18 +200,19 @@ class CheckObjectAddForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_2_sex.widget.attrs['class'] = 'form-control'
     children_2_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_2_id_number.widget.attrs['class'] = 'form-control'
     children_3_name = forms.CharField(
         max_length=64,
         required=False, 
-        label=_(u'姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        label=_(u'孩子3姓名'),
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -212,13 +225,14 @@ class CheckObjectAddForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_3_sex.widget.attrs['class'] = 'form-control'
     children_3_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_3_id_number.widget.attrs['class'] = 'form-control'
     def clean_name(self):
         try:
             name_copy = self.data.get('name')
@@ -243,7 +257,7 @@ class CheckObjectAddForm(forms.Form):
         
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -298,7 +312,7 @@ class CheckObjectAddForm(forms.Form):
 
     def clean_mate_service_area_name(self):
         try:
-           mate_service_area_name_copy = self.data.get('mate_service_area_name')
+            mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -338,10 +352,10 @@ class CheckObjectAddForm(forms.Form):
         try:
             ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
+            raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['form_error'])
         if ctp_method_time_copy is not None:
             if ctp_method_time_copy > datetime.datetime.now().date():
-                raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
+                raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['logic_error'])
         return ctp_method_time_copy
     
     def clean_wedding_time(self):
@@ -428,9 +442,30 @@ class CheckObjectAddForm(forms.Form):
             except IOError:
                 return None
             file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            file_thumbnail_path = file_path.replace('photos', 'thumbnails')
             default_storage.delete(file_path)
+            default_storage.delete(file_thumbnail_path)
+            file_temp_name = file_temp.name.replace('\\', '/')
+            font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+            try:
+                img = Image.open(file_temp_name)
+            except IOError:
+                img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+            draw = ImageDraw.Draw(img)
+            draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+            draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
+            del draw
+            img.save(file_temp_name,"JPEG")
+            
             default_storage.save(file_path, file_temp)
+            img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+            img.save(file_temp_name + '.thumbnail',"JPEG")
+            default_storage.save(file_thumbnail_path, file_temp)
             file_temp.close()
+            del img
             del file_temp
             try:
                 check_object = CheckObject.objects.get(is_active=False, id_number=self.cleaned_data['id_number'])
@@ -438,6 +473,7 @@ class CheckObjectAddForm(forms.Form):
 #                print self.cleaned_data['wedding_time'], self.cleaned_data['address']
                 check_object = CheckObject.objects.create(name=self.cleaned_data['name'],
                                                           photo=file_path,
+                                                          thumbnail=file_thumbnail_path,
                                                           id_number=self.cleaned_data['id_number'],
                                                           service_area_department=self.service_area_department_object,
                                                           is_family=is_family_value,
@@ -463,6 +499,7 @@ class CheckObjectAddForm(forms.Form):
             check_object.is_active =True
             check_object.name=self.cleaned_data['name']
             check_object.photo=file_path
+            check_object.thumbnail=file_thumbnail_path
             check_object.service_area_department=self.service_area_department_object
             check_object.is_family=is_family_value
             check_object.mate_name=self.cleaned_data['mate_name']
@@ -471,16 +508,16 @@ class CheckObjectAddForm(forms.Form):
             check_object.ctp_method = self.cleaned_data['ctp_method']
             check_object.ctp_method_time = self.cleaned_data['ctp_method_time']
             check_object.wedding_time = self.cleaned_data['wedding_time']
-            check_object.address = self.cleaned_data['address'],
-            check_object.children_1_name = self.cleaned_data['children_1_name'],
-            check_object.children_1_sex = self.cleaned_data['children_2_sex'],
-            check_object.children_1_id_number = self.cleaned_data['children_1_id_number'],
-            check_object.children_2_name = self.cleaned_data['children_2_name'],
-            check_object.children_2_sex = self.cleaned_data['children_2_sex'],
-            check_object.children_2_id_number = self.cleaned_data['children_2_id_number'],
-            check_object.children_3_name = self.cleaned_data['children_3_name'],
-            check_object.children_3_sex = self.cleaned_data['children_3_sex'],
-            check_object.children_3_id_number = self.cleaned_data['children_3_id_number'],
+            check_object.address = self.cleaned_data['address']
+            check_object.children_1_name = self.cleaned_data['children_1_name']
+            check_object.children_1_sex = self.cleaned_data['children_2_sex']
+            check_object.children_1_id_number = self.cleaned_data['children_1_id_number']
+            check_object.children_2_name = self.cleaned_data['children_2_name']
+            check_object.children_2_sex = self.cleaned_data['children_2_sex']
+            check_object.children_2_id_number = self.cleaned_data['children_2_id_number']
+            check_object.children_3_name = self.cleaned_data['children_3_name']
+            check_object.children_3_sex = self.cleaned_data['children_3_sex']
+            check_object.children_3_id_number = self.cleaned_data['children_3_id_number']
             check_object.creater = user
             check_object.save()
             return check_object
@@ -524,12 +561,12 @@ class CheckObjectDetailModifyForm(forms.Form):
     mate_service_area_department_object = None
     ctp_method_time_copy = None
     wedding_time_copy = None
-    
+
     name = forms.CharField(
         max_length=64,
         required=True, 
         label=_(u'妻子姓名(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -543,11 +580,12 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
         label=_(u'服务区域(*)'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -556,7 +594,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         max_length=128,
         required=True, 
         label=_(u'单位部门(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -565,7 +603,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         )
     is_family = forms.CharField(
         required=True,
-        label =_(u'家属(*)'),
+        label =_(u'家属'),
         help_text=_(u'例如：对象没有单位则打勾'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'is_family',
@@ -577,7 +615,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         max_length=64,
         required=True,
         label=_(u'丈夫姓名(*)'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -591,11 +629,12 @@ class CheckObjectDetailModifyForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=True,
         label=_(u'服务区域(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -604,7 +643,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         max_length=128,
         required=True, 
         label=_(u'单位部门(*)'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -622,6 +661,8 @@ class CheckObjectDetailModifyForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
+
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -629,6 +670,8 @@ class CheckObjectDetailModifyForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -636,11 +679,13 @@ class CheckObjectDetailModifyForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
     address = forms.CharField(
         max_length=128,
         required=False,
         label=_(u'家庭住址'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -650,7 +695,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -663,18 +708,19 @@ class CheckObjectDetailModifyForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_1_sex.widget.attrs['class'] = 'form-control'
     children_1_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_1_id_number.widget.attrs['class'] = 'form-control'
     children_2_name = forms.CharField(
         max_length=64,
         required=False, 
         label=_(u'姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -687,18 +733,19 @@ class CheckObjectDetailModifyForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_2_sex.widget.attrs['class'] = 'form-control'
     children_2_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    children_2_id_number.widget.attrs['class'] = 'form-control'
     children_3_name = forms.CharField(
         max_length=64,
         required=False, 
         label=_(u'姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -711,14 +758,14 @@ class CheckObjectDetailModifyForm(forms.Form):
                  (u'w', u'女'),
                  ),
         )
-
+    children_3_sex.widget.attrs['class'] = 'form-control'
     children_3_id_number = forms.CharField(
         max_length=18,
         required=False,
         label=_(u'身份证号'),
         error_messages = gl.check_object_id_number_error_messages,
         )
-
+    children_3_id_number.widget.attrs['class'] = 'form-control'
     id = forms.CharField(
         widget=forms.HiddenInput(),
         error_messages = gl.check_object_name_error_messages,
@@ -733,12 +780,17 @@ class CheckObjectDetailModifyForm(forms.Form):
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
         return name_copy
     def clean_id_number(self):
-        self.fields['id_number'].widget.attrs['readonly'] = True
-        return self.cleaned_data['id_number']
+        try:
+            id_number_copy = self.data.get('id_number')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['form_error'])
+        if re.match(gl.check_object_id_number_add_re_pattern, id_number_copy) is None:
+            raise forms.ValidationError(gl.check_object_id_number_error_messages['format_error'])
+        return id_number_copy
     
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -833,10 +885,10 @@ class CheckObjectDetailModifyForm(forms.Form):
         try:
             ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
+            raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['form_error'])
         if ctp_method_time_copy is not None:
             if ctp_method_time_copy > datetime.datetime.now().date():
-                raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
+                raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['logic_error'])
         return ctp_method_time_copy
     
     def clean_wedding_time(self):
@@ -915,6 +967,7 @@ class CheckObjectDetailModifyForm(forms.Form):
         return id_copy
 
     def data_from_object(self, modify_object=None, user=None):
+#        gl.check_object_init_flag = True
         data = {}
         if modify_object is not None and user is not None:
 
@@ -1018,12 +1071,106 @@ class CheckObjectDetailModifyForm(forms.Form):
                 file_temp = default_storage.open(u'images/photos/temp/%s.temp' % request.user.username)
             except IOError:
                 return None
-            file_path = u'images/photos/%s.jpg' % check_object.id_number
+            file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            file_thumbnail_path = file_path.replace('photos', 'thumbnails')
+            if self.cleaned_data['id_number'] != check_object.id_number:
+                default_storage.delete(check_object.photo.name)
+                default_storage.delete(check_object.thumbnail.name)
+
             default_storage.delete(file_path)
+            default_storage.delete(file_thumbnail_path)
+            file_temp_name = file_temp.name.replace('\\', '/')
+            font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+            try:
+                img = Image.open(file_temp_name)
+            except IOError:
+                img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                if img.mode != "RGB":
+                    img = img.convert("RGB")
+                img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+            draw = ImageDraw.Draw(img)
+            draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+            draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
+            del draw
+            img.save(file_temp_name,"JPEG")
             default_storage.save(file_path, file_temp)
+            img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+            img.save(file_temp_name + '.thumbnail',"JPEG")
+            default_storage.save(file_thumbnail_path, file_temp)
+
             file_temp.close()
+            del img
             del file_temp
             request.session[gl.session_check_object_detail_modify_uploader] = u''
+        else:
+            file_path = u'images/photos/%s.jpg' % self.cleaned_data['id_number']
+            file_thumbnail_path = file_path.replace('photos', 'thumbnails')
+            if self.cleaned_data['id_number'] != check_object.id_number:
+                default_storage.delete(file_path)
+                default_storage.delete(file_thumbnail_path)
+                try:
+                    file_temp = default_storage.open(check_object.photo.name)
+                except IOError:
+                    return None
+                file_temp_name = file_temp.name.replace('\\', '/')
+                font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+                try:
+                    img = Image.open(file_temp_name)
+                except IOError:
+                    img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                    if img.mode != "RGB":
+                        img = img.convert("RGB")
+                    img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+                draw = ImageDraw.Draw(img)
+                draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+                draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
+                del draw
+                img.save(file_temp_name,"JPEG")
+                default_storage.save(file_path, file_temp)
+
+                img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+                img.save(file_temp_name + '.thumbnail',"JPEG")
+                default_storage.save(file_thumbnail_path, file_temp)
+                                
+                file_temp.close()
+                default_storage.delete(check_object.photo.name)
+                default_storage.delete(check_object.thumbnail.name)
+
+                del img
+                del file_temp
+            else:
+                if self.cleaned_data['name'] != check_object.name:
+                    try:
+                        file_temp = default_storage.open(check_object.photo.name)
+                    except IOError:
+                        return None
+                    file_temp_name = file_temp.name.replace('\\', '/')
+                    font = ImageFont.truetype('%s/static/fonts/MSYH.TTF' % settings.CURRENT_PATH,12)
+                    try:
+                        img = Image.open(file_temp_name)
+                    except IOError:
+                        img = Image.open('%s/static/images/photo.jpg' % settings.CURRENT_PATH)
+                        if img.mode != "RGB":
+                            img = img.convert("RGB")
+                        img.resize(gl.check_object_image_size,Image.ANTIALIAS)
+                    draw = ImageDraw.Draw(img)
+                    draw.rectangle([gl.check_object_rect_mark, gl.check_object_image_size], fill=gl.check_object_rect_mark_color)
+                    draw.text(gl.check_object_text_mark, u'%s %s' % (self.cleaned_data['name'], self.cleaned_data['id_number']) ,gl.check_object_text_mark_color,font=font)
+                    del draw
+                    img.save(file_temp_name,"JPEG")
+                    default_storage.save(file_path, file_temp)
+
+                    img.thumbnail(gl.check_object_thumbnail_size, Image.ANTIALIAS)
+                    img.save(file_temp_name + '.thumbnail',"JPEG")
+                    default_storage.save(file_thumbnail_path, file_temp)
+
+                    file_temp.close()
+
+                    del img
+                    del file_temp
+                else:
+                    pass
+                
 
         if self.cleaned_data['is_family'] == u'is_family':
             is_family_value = True
@@ -1032,6 +1179,9 @@ class CheckObjectDetailModifyForm(forms.Form):
 
         check_object.is_active =True
         check_object.name=self.cleaned_data['name']
+        check_object.photo=file_path
+        check_object.thumbnail=file_thumbnail_path
+        check_object.id_number=self.cleaned_data['id_number']
         check_object.service_area_department=self.service_area_department_object
         check_object.is_family=is_family_value
         check_object.mate_name=self.cleaned_data['mate_name']
@@ -1063,7 +1213,19 @@ class CheckObjectDeleteForm(forms.Form):
         widget=forms.HiddenInput(),
         error_messages = gl.check_object_name_error_messages,
         )
-    
+    del_reason = forms.ChoiceField(
+        required=True,
+        label =_(u'删除原因'),
+        choices=((u'none',u'请选择'),
+                 (u'del_reason_1',u'离婚删除'),
+                 (u'del_reason_2',u'调离删除'),
+                 (u'del_reason_3',u'超龄删除'),
+                 (u'del_reason_4',u'因病致绝育删除'),
+                 (u'del_reason_5',u'其他原因删除'),
+                 ),
+        help_text=_(u'例如：上环选避孕环方式'),
+        )
+    del_reason.widget.attrs['class'] = 'form-control'
     def clean_id(self):
         try:
             try:
@@ -1073,11 +1235,54 @@ class CheckObjectDeleteForm(forms.Form):
             self.id_object = CheckObject.objects.get(pk=id_copy, is_active=True)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
-        return id_copy
-
+        try:
+            check_project = CheckProject.objects.get(is_setup=True, is_active=True)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(u'系统严重错误，检查项目未启动，请联系管理员！')
+        check_result_count = CheckResult.objects.filter(check_object=self.id_object, check_project=check_project, is_latest=True).count()
+        if check_result_count >= 1:
+            raise forms.ValidationError(u'该检查对象在此次检查项目中已经检查，无法删除该对象，如果确实需要删除，请先失效本次检查结果，然后在删除')
+        else:
+            return id_copy
+    def clean_del_reason(self):
+        data_copy = self.data.get('del_reason', u'none')
+        if data_copy == u'none':
+            raise forms.ValidationError(u'请选择正确的选项！！！')
+        return data_copy
     def delete(self):
         if self.id_object is not None:
             self.id_object.is_active = False
+            self.id_object.del_reason = self.data.get('del_reason')
+            self.id_object.save()
+            return True
+        else:
+            return False
+
+class CheckObjectRestoreForm(forms.Form):
+    """
+    检查对象恢复表单
+    """
+    id_object = None
+
+    id = forms.CharField(
+        widget=forms.HiddenInput(),
+        error_messages = gl.check_object_name_error_messages,
+        )
+    
+    def clean_id(self):
+        try:
+            try:
+                id_copy = int(self.data.get('id'))
+            except ValueError:
+                raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+            self.id_object = CheckObject.objects.get(pk=id_copy, is_active=False)
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.check_object_name_error_messages['form_error'])
+        return id_copy
+
+    def restore(self):
+        if self.id_object is not None:
+            self.id_object.is_active = True
             self.id_object.save()
             return True
         else:
@@ -1092,7 +1297,7 @@ class CheckObjectSearchForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'妻子姓名'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -1106,11 +1311,12 @@ class CheckObjectSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    id_number.widget.attrs['class'] = 'form-control'
     service_area_name = forms.CharField(
         max_length=128,
         required=False,
         label=_(u'服务区域'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -1119,7 +1325,7 @@ class CheckObjectSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -1135,12 +1341,12 @@ class CheckObjectSearchForm(forms.Form):
                  (u'false', u'否'),
                  ),
         )
-
+    is_family.widget.attrs['class'] = 'form-control'
     mate_name = forms.CharField(
         max_length=64,
         required=False,
         label=_(u'丈夫姓名'),
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -1154,11 +1360,12 @@ class CheckObjectSearchForm(forms.Form):
         help_text=_(u'例如：360733199009130025'),
         error_messages = gl.check_object_id_number_error_messages,
         )
+    mate_id_number.widget.attrs['class'] = 'form-control'
     mate_service_area_name = forms.CharField(
         max_length=128,
         required=False,
         label=_(u'服务区域'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -1167,7 +1374,7 @@ class CheckObjectSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -1186,6 +1393,19 @@ class CheckObjectSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：上环选避孕环方式'),
         )
+    ctp_method.widget.attrs['class'] = 'form-control'
+    del_reason = forms.ChoiceField(
+        required=False,
+        label =_(u'删除原因'),
+        choices=((u'none', u'未知'),
+                 (u'del_reason_1',u'离婚删除'),
+                 (u'del_reason_2',u'调离删除'),
+                 (u'del_reason_3',u'超龄删除'),
+                 (u'del_reason_4',u'因病致绝育删除'),
+                 ),
+        help_text=_(u'例如：上环选避孕环方式'),
+        )
+    del_reason.widget.attrs['class'] = 'form-control'
     ctp_method_time = forms.DateField(
         required=False,
         label=_(u'实施时间'),
@@ -1193,6 +1413,8 @@ class CheckObjectSearchForm(forms.Form):
         error_messages = gl.check_object_ctp_method_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
+    ctp_method_time.widget.attrs['class'] = 'form-control'
+    ctp_method_time.widget.attrs['id'] = 'id_ctp_method_time'
     wedding_time = forms.DateField(
         required=False,
         label=_(u'结婚时间'),
@@ -1200,7 +1422,24 @@ class CheckObjectSearchForm(forms.Form):
         error_messages = gl.check_object_wedding_time_error_messages,
         input_formats = ('%Y-%m-%d',)
         )
-
+    wedding_time.widget.attrs['class'] = 'form-control'
+    wedding_time.widget.attrs['id'] = 'id_wedding_time'
+    modify_start_time = forms.DateField(
+        required=False,
+        label=_(u'修改开始时间'),
+        help_text=_(u'例如：2010-10-25'),
+        input_formats = ('%Y-%m-%d',)
+        )
+    modify_start_time.widget.attrs['class'] = 'form-control'
+    modify_start_time.widget.attrs['id'] = 'id_modify_start_time'
+    modify_end_time  = forms.DateField(
+        required=False,
+        label=_(u'修改结束时间'),
+        help_text=_(u'例如：2010-10-25'),
+        input_formats = ('%Y-%m-%d',)
+        )
+    modify_end_time.widget.attrs['class'] = 'form-control'
+    modify_end_time.widget.attrs['id'] = 'id_modify_end_time'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
@@ -1230,7 +1469,7 @@ class CheckObjectSearchForm(forms.Form):
         return id_number_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -1268,7 +1507,7 @@ class CheckObjectSearchForm(forms.Form):
 
     def clean_mate_service_area_name(self):
         try:
-           mate_service_area_name_copy = self.data.get('mate_service_area_name')
+            mate_service_area_name_copy = self.data.get('mate_service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -1289,10 +1528,10 @@ class CheckObjectSearchForm(forms.Form):
         try:
             ctp_method_time_copy = self.cleaned_data.get('ctp_method_time')
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['form_error'])
+            raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['form_error'])
         if ctp_method_time_copy is not None:
             if ctp_method_time_copy > datetime.datetime.now().date():
-                raise forms.ValidationError(gl.check_project_ctp_method_time_error_messages['logic_error'])
+                raise forms.ValidationError(gl.check_object_ctp_method_time_error_messages['logic_error'])
         return ctp_method_time_copy
     def clean_wedding_time(self):
         try:
@@ -1319,6 +1558,7 @@ class CheckObjectSearchForm(forms.Form):
         request.session[gl.session_check_object_mate_service_area_name] = self.cleaned_data['mate_service_area_name']
         request.session[gl.session_check_object_mate_department_name] = self.cleaned_data['mate_department_name']
         request.session[gl.session_check_object_ctp_method] = self.cleaned_data['ctp_method']
+        request.session[gl.session_check_object_del_reason] = self.cleaned_data['del_reason']
         if self.cleaned_data['ctp_method_time'] is not None:
             request.session[gl.session_check_object_ctp_method_time] = self.cleaned_data['ctp_method_time'].isoformat()
         else:
@@ -1335,6 +1575,15 @@ class CheckObjectSearchForm(forms.Form):
         else:
 #            print u'false'
             request.session[gl.session_check_object_is_fuzzy] = False
+        if self.cleaned_data['modify_start_time'] is not None:
+            request.session[gl.session_check_object_modify_start_time] = self.cleaned_data['modify_start_time'].isoformat()
+        else:
+            request.session[gl.session_check_object_modify_start_time] = u''
+        if self.cleaned_data['modify_end_time'] is not None:
+            request.session[gl.session_check_object_modify_end_time] = self.cleaned_data['modify_end_time'].isoformat()
+        else:
+            request.session[gl.session_check_object_modify_end_time] = u''
+
         return True
     
     def data_from_session(self, request):
@@ -1354,8 +1603,11 @@ class CheckObjectSearchForm(forms.Form):
         data['mate_service_area_name'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         data['mate_department_name'] = request.session.get(gl.session_check_object_mate_department_name, u'')
         data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'none')
+        data['del_reason'] = request.session.get(gl.session_check_object_del_reason, u'none')
         data['ctp_method_time'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         data['wedding_time'] = request.session.get(gl.session_check_object_wedding_time, u'')
+        data['modify_start_time'] = request.session.get(gl.session_check_object_modify_start_time, u'')
+        data['modify_end_time'] = request.session.get(gl.session_check_object_modify_end_time, u'')
         data['is_fuzzy'] = request.session.get(gl.session_check_object_is_fuzzy, False)
 
 #        print data['is_fuzzy']
@@ -1376,8 +1628,11 @@ class CheckObjectSearchForm(forms.Form):
         self.fields['mate_service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         self.fields['mate_department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_department_name, u'')
         self.fields['ctp_method'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method, u'none')
+        self.fields['del_reason'].widget.attrs['value'] = request.session.get(gl.session_check_object_del_reason, u'none')
         self.fields['ctp_method_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         self.fields['wedding_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_wedding_time, u'')
+        self.fields['modify_start_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_modify_start_time, u'')
+        self.fields['modify_end_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_modify_end_time, u'')
         is_fuzzy = request.session.get(gl.session_check_object_is_fuzzy, False)
         if is_fuzzy == u'is_fuzzy':
             self.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
@@ -1552,6 +1807,19 @@ class CheckObjectSearchForm(forms.Form):
             query_set = query_set.filter(ctp_method=ctp_method)
             
         return query_set
+
+    def query_del_reason(self, query_set=None):
+        del_reason = self.cleaned_data['del_reason']
+
+        if query_set is None:
+            return query_set
+        
+        if del_reason == u'none':
+            pass
+        else:
+            query_set = query_set.filter(del_reason=del_reason)
+            
+        return query_set
     
     def query_ctp_method_time(self, query_set=None):
         ctp_method_time = self.cleaned_data['ctp_method_time']
@@ -1578,6 +1846,32 @@ class CheckObjectSearchForm(forms.Form):
             query_set = query_set.filter(wedding_time=wedding_time)
         
         return query_set
+
+    def query_modify_start_time(self, query_set=None):
+        start_time = self.cleaned_data['modify_start_time']
+
+        if query_set is None:
+            return query_set
+
+        if start_time == None:
+            pass
+        else:
+            start_time = datetime.datetime(start_time.year, start_time.month, start_time.day)
+            query_set = query_set.filter(updated_at__gte=start_time)
+        
+        return query_set
+    def query_modify_end_time(self, query_set=None):
+        end_time = self.cleaned_data['modify_end_time']
+        if query_set is None:
+            return query_set
+
+        if end_time == None:
+            pass
+        else:
+            end_time = datetime.datetime(end_time.year, end_time.month, end_time.day, 23, 59, 59)
+            query_set = query_set.filter(updated_at__lte=end_time)
+        return query_set
+
     
     def search(self):
 
@@ -1587,7 +1881,6 @@ class CheckObjectSearchForm(forms.Form):
             self.is_fuzzy = False
 
         query_set = CheckObject.objects.filter(is_active=True)
-        
         query_set = self.query_name(query_set)
         query_set = self.query_id_number(query_set)
         query_set = self.query_mate_name(query_set)
@@ -1600,5 +1893,38 @@ class CheckObjectSearchForm(forms.Form):
         query_set = self.query_is_family(query_set)
         query_set = self.query_ctp_method_time(query_set)
         query_set = self.query_wedding_time(query_set)
-        
+        query_set = self.query_modify_start_time(query_set)
+        query_set = self.query_modify_end_time(query_set)
+        #query_set = query_set.order_by("id")
+        query_set = query_set.order_by("-updated_at")
         return query_set
+
+    def unsearch(self):
+
+        if self.cleaned_data['is_fuzzy'] == u'is_fuzzy':
+            self.is_fuzzy = True
+        else:
+            self.is_fuzzy = False
+
+        query_set = CheckObject.objects.filter(is_active=False)
+        
+        query_set = self.query_name(query_set)
+        query_set = self.query_id_number(query_set)
+        query_set = self.query_mate_name(query_set)
+        query_set = self.query_mate_id_number(query_set)
+        query_set = self.query_service_area_name(query_set)
+        query_set = self.query_department_name(query_set)
+        query_set = self.query_mate_service_area_name(query_set)
+        query_set = self.query_mate_department_name(query_set)
+        query_set = self.query_ctp_method(query_set)
+        query_set = self.query_del_reason(query_set)
+        query_set = self.query_is_family(query_set)
+        query_set = self.query_ctp_method_time(query_set)
+        query_set = self.query_wedding_time(query_set)
+        query_set = self.query_modify_start_time(query_set)
+        query_set = self.query_modify_end_time(query_set)
+        query_set = query_set.order_by("-updated_at")
+        return query_set
+    
+
+

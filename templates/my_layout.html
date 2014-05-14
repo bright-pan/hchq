@@ -1,87 +1,205 @@
 {% extends "base.html" %}
 
-{% block site_wrapper %}
-  <div class="page_margins">
-    <div class="page">
-      <div id="header">
-        <div id="topnav">
-        {% block topnav %}
-        你好,<a href="{% url account_person_management %}">{{ user.username }}</a> | <a href="{% url account_logout %}">退出</a> | <a href="#">通知</a> | <a href="#">下载</a>
-        {% endblock %}
-        </div>
-        {% load cache %}
-        {% cache 500 header %}
-        <div id="vbox">
-        <h1><img src="{{ MEDIA_URL }}images/logo_64.png" />{{ site_name }}</h1>
-        </div>
-        {% endcache %}        
-        {% load cache %}
-        {% cache 500 check_project_nav %}
-        <div id="header_describe">
-          {% if check_project != None %}
-          <div style="text-align:right; color: #2E6E9E; background: transparent; border: 0">
-            <p>
-              <strong>{{ check_project.name }}</strong>
-              <strong>{{ check_project.start_time|date:"Y-m-d" }}</strong> - 
-              <strong>{{ check_project.end_time|date:"Y-m-d" }}</strong> | 
-              <strong>今天日期 {% now "Y-m-d" %}</strong>
-            </p>
-          </div>
-          {% else %}
-          <div style="text-align:right; color: #2E6E9E; background: transparent; border: 0">
-            <p>
-              <strong>尚未启用项目</strong> | 
-              <strong>今天日期 {% now "Y-m-d" %}</strong>
-            </p>
-          </div>
-          {% endif %}
-
-          
-          {% block header_describe %}
-          
-          {% endblock %}
-        </div>
+{% block topnav %}
+    {% if user.is_authenticated %}
+        <li><a href="{% url account_person_management %}">你好，{{ user.username }}</a></li>
+        <li><a href="{% url account_logout %}">退出</a></li>
+    {% else %}
+        <li><a href="{% url account_login %}">登入</a></li>
+    {% endif %}
+    <li><a href="#">通知</a></li>
+    <li><a href="#">下载</a></li>
+{% endblock %}
+{% block check_project_info %}
+    <div class="text-right">
+        {% if user.is_authenticated %}
+            {% load cache %} {% cache 500 check_project_nav %}
+            {% if check_project != None %}
+                {% if check_project_time == 'error' %}
+                    <span class="label label-danger">{{ check_project.name }} {{ check_project.start_time|date:"Y-m-d" }} - {{ check_project.end_time|date:"Y-m-d" }} | 今天日期 {% now "Y-m-d" %}</span>
+                {% else %}
+                    <span class="label label-info">{{ check_project.name }} {{ check_project.start_time|date:"Y-m-d" }} - {{ check_project.end_time|date:"Y-m-d" }} | 今天日期 {% now "Y-m-d" %}</span>
+                {% endif %}
+            {% else %}
+                <span class="label label-danger">尚未启用项目 | 今天日期 {% now "Y-m-d" %}</span>
+            {% endif %}
         {% endcache %}
-      </div>
-      <div id="nav">
-        <!-- skiplink anchor: navigation -->
-        <a id="navigation" name="navigation"></a>
-        <div class="hlist">
-          <!-- main navigation: horizontal list -->
-          {% block nav %}{% endblock %}
-        </div>
-      </div>
-      {% block teaser %}
-
-      {% endblock %}
-      <div id="main">
-        {% block main %}
-        <div id="col1">
-          <div id="col1_content" class="clearfix">
-            <!-- add your content here -->
-            {% block col1_content %}
-            {% endblock %}
-          </div>
-        </div>
-        <div id="col3">
-          <div id="col3_content" class="clearfix">
-            <!-- add your content here -->
-            {% block col3_content %}
-            {% endblock %}
-          </div>            
-          <!-- IE Column Clearing -->
-          <div id="ie_clearing"> &#160; </div>
-        </div>
-        {% endblock %}
-      </div>
-      <!-- begin: #footer -->
-      {% load cache %}
-      {% cache 500 footer %}
-      <div id="footer">
-        <p>©2010-2011 江西省会昌县人口与计划生育委员会</p>
-        <img  src="{{ MEDIA_URL }}images/django_site.gif"/>
-      </div>
-      {% endcache %}
+        {% endif %}
     </div>
-  </div>
+{% endblock %}
+
+{% block nav %}
+    {% if user.is_authenticated %}
+        {% load cache %}
+        {% cache 500 person_layout user.username %}
+            <div class="btn-group">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown">
+                        个人管理<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{% url account_person_management %}">个人资料</a></li>
+                        {% if user.username != '003' %}
+                            <li><a href="{% url account_person_password_modify %}">密码修改</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if perms.department.sd_management %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            服务区域管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url service_area_list 1 %}">服务区域查询</a></li>
+                            <li><a href="{% url service_area_add 1 %}">服务区域添加</a></li>
+                            <li><a href="{% url service_area_modify 1 %}">服务区域修改</a></li>
+                            <li><a href="{% url service_area_delete 1 %}">服务区域删除</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            单位部门管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url department_list 1 %}">单位部门查询</a></li>
+                            <li><a href="{% url department_add 1 %}">单位部门添加</a></li>
+                            <li><a href="{% url department_modify 1 %}">单位部门修改</a></li>
+                            <li><a href="{% url department_delete 1 %}">单位部门删除</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if perms.department.role_management %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            角色权限管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url account_role_list 1 %}">角色查询</a></li>
+                            <li><a href="{% url account_role_add 1 %}">角色添加</a></li>
+                            <li><a href="{% url account_role_modify 1 %}">角色修改</a></li>
+                            <li><a href="{% url account_role_delete 1 %}">角色删除</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if perms.department.role_management %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            检查项目管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url check_project_list 1 %}">检查项目查询</a></li>
+                            <li><a href="{% url check_project_add 1 %}">检查项目添加</a></li>
+                            <li><a href="{% url check_project_modify 1 %}">检查项目修改</a></li>
+                            <li><a href="{% url check_project_delete 1 %}">检查项目删除</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if perms.department.account_list or perms.department.account_add or perms.department.account_modify or perms.department.account_delete %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            系统用户管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% if perms.department.account_list %}
+                                <li><a href="{% url account_list 1 %}">系统用户查询</a></li>
+                            {% endif %}
+                            {% if perms.department.account_add %}
+                                <li><a href="{% url account_add 1 %}">系统用户添加</a></li>
+                            {% endif %}
+                            {% if perms.department.account_modify %}
+                                <li><a href="{% url account_modify 1 %}">系统用户修改</a></li>
+                            {% endif %}
+                            {% if perms.department.account_delete %}
+                                <li><a href="{% url account_delete 1 %}">系统用户删除</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <!-- <a type="button" class="btn btn-info">进入系统</a> -->
+                {% if perms.department.co_list or perms.department.co_add or perms.department.co_modify or perms.department.co_delete %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            检查对象管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% if perms.department.co_list %}
+                                <li><a href="{% url check_object_list 1 %}">检查对象查询</a></li>
+                            {% endif %}
+                            {% if perms.department.co_add %}
+                                <li><a href="{% url check_object_add 1 %}">检查对象添加</a></li>
+                            {% endif %}
+                            {% if perms.department.co_modify %}
+                                <li><a href="{% url check_object_modify 1 %}">检查对象修改</a></li>
+                            {% endif %}
+                            {% if perms.department.co_delete %}
+                                <li><a href="{% url check_object_delete 1 %}">检查对象删除</a></li>
+                            {% endif %}
+                            {% if perms.department.co_list %}
+                                <li><a href="{% url check_object_invalid 1 %}">已删对象查询</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if perms.department.cr_list or perms.department.cr_add %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            检查结果管理<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% if perms.department.cr_list %}
+                                <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
+                            {% endif %}
+                            {% if perms.department.cr_add %}
+                                <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
+                            {% endif %}
+                            {% if perms.department.role_management %}
+                                <li><a href="{% url check_result_special_add 1 %}">特殊检查结果添加</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if perms.department.cr_report %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown">
+                            数据报表统计<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% if perms.department.unlocal %}
+                                <li><a href="{% url report_statistics %}">检查项目数据统计</a></li>
+                            {% endif %}
+                            {% if perms.department.cr_report %}
+                                <li><a href="{% url report_check_or_not %}">检查对象数据统计</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endcache %}
+    {% endif %}
+{% endblock %}
+
+{% block site_wrapper %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {% block panel_heading %}
+                    {% endblock %}
+                </div>
+                <div class="panel-body">
+                    {% block panel_body %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

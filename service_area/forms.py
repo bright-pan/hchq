@@ -5,9 +5,11 @@ from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from django.db import IntegrityError
 
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from service_area.models import ServiceAreaDepartment
+
+from untils import gl
 import re
 
 class ServiceAreaAddForm(forms.Form):
@@ -19,9 +21,8 @@ class ServiceAreaAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'服务区域名称'), 
-        widget=forms.Textarea(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'3',
                                      }
                               ), 
         help_text=_(u'例如：周田，周田乡/西江镇...'),
@@ -67,7 +68,7 @@ class ServiceAreaModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'新服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -143,6 +144,11 @@ class ServiceAreaDeleteForm(forms.Form):
             self.service_area_id_object = ServiceArea.objects.get(pk=self.service_area_id_copy)
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+        exist_test = ServiceAreaDepartment.objects.filter(service_area = self.service_area_id_object, is_active=True).exists()
+        if exist_test is True:
+            raise forms.ValidationError(u'你无法删除该服务区域，因为该服务区域已经关联了单位部门，请将该服务区域的所有单位部门删除以后再删除该服务区域。')
+        else:
+            pass
         return self.service_area_id_copy
 
     def service_area_delete(self):
@@ -165,7 +171,7 @@ class ServiceAreaSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -223,7 +229,7 @@ class ServiceAreaDepartmentAddForm(forms.Form):
     service_area_department_name = forms.MultipleChoiceField(
         required=True,
         label=_(u'单位部门名称'), 
-        widget=forms.SelectMultiple( attrs={'class':'',
+        widget=forms.SelectMultiple( attrs={'class':'form-control',
                                            'size':'30',},
                                     ), 
         help_text=_(u'帮助：按住键盘Ctrl键为多选！'),
@@ -265,7 +271,7 @@ class ServiceAreaDepartmentSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -336,9 +342,9 @@ class ServiceAreaDepartmentDeleteForm(forms.Form):
             try:
                 self.service_area_department_id_copy = int(self.data.get('service_area_department_id'))
             except ValueError:
-                raise forms.ValidationError(gl.service_area_department_name_error_messages['form_error'])
+                raise forms.ValidationError(gl.department_name_error_messages['form_error'])
         except ObjectDoesNotExist:
-            raise forms.ValidationError(gl.service_area_department_name_error_messages['form_error'])
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
         return self.service_area_department_id_copy
 
     def service_area_department_delete(self, service_area=None):

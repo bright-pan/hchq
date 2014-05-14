@@ -9,15 +9,112 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.contrib.auth.models import *
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
-from hchq.account.forms import *
-from hchq.untils.my_paginator import pagination_results
-from hchq.untils import gl
+from account.forms import *
+from untils.my_paginator import pagination_results
+from untils import gl
 from hchq import settings
-from hchq.report.user_report import user_report
+from report.user_report import user_report
+
+from check_project.models import CheckProject
+from check_object.models import CheckObject
+from check_result.models import CheckResult
+
 # Create your views here.
+import pygal
+from pygal.style import LightGreenStyle
+import datetime
+
+class MyConfig(pygal.Config):
+    width=1024
+    height=768
+    x_label_rotation=90
+    human_readable = True
+    truncate_label=100
+    margin = 60
+    legend_box_size=18
+    style=LightGreenStyle
+
+def get_service_area_statistics():
+    service_area_statistics = cache.get('service_area_statistics')
+    if service_area_statistics is None:
+        service_area_statistics = {}
+        check_project = CheckProject.objects.get(is_setup=True)
+        check_project_endtime = datetime.datetime(check_project.end_time.year,
+                                                  check_project.end_time.month,
+                                                  check_project.end_time.day,
+                                                  23, 59, 59)
+        qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                   updated_at__lt=check_project_endtime)
+        qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
+        qs_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
+
+        service_area_statistics["qs_check_object"] = qs_check_object.count()
+        service_area_statistics["qs_check_result"] = qs_check_result.count()
+        service_area_statistics['check_project_name'] = check_project.name
+        service_area_name_list = []
+        check_object_count_list = []
+        check_count_list = []
+        pregnant_count_list = []
+        special_count_list = []
+        for service_area_object in qs_service_area:
+            service_area_name_list.append(service_area_object.name)
+            check_object_count = qs_check_object.filter(service_area_department__service_area=service_area_object).count()
+            check_object_count_list.append(check_object_count)
+            check_result = qs_check_result.filter(check_object__service_area_department__service_area=service_area_object)
+            check_count = check_result.count()
+            check_count_list.append(check_count)
+            pregnant_count = check_result.filter(result__startswith='pregnant').count()
+            pregnant_count_list.append(pregnant_count)
+            special_count = check_result.filter(result__contains='special').count()
+            special_count_list.append(special_count)
+        service_area_statistics["service_area_name"] = service_area_name_list
+        service_area_statistics["check_object_count"] = check_object_count_list
+        service_area_statistics["check_count"] = check_count_list
+        service_area_statistics["pregnant_count"] = pregnant_count_list
+        service_area_statistics["special_count"] = special_count_list
+        cache.set('service_area_statistics', service_area_statistics, 2*60*60)
+    return service_area_statistics
+
+@cache_page(60*60)
+def get_bar_chart(request, template_name = 'account/login.html', next='/'):
+    service_area_statistics = get_service_area_statistics()
+    my_config = MyConfig()
+    bar_chart = pygal.Bar(my_config)
+    bar_chart.title = u'%s-各服务区域统计' % service_area_statistics.get('check_project_name',u'无检查项目')
+    bar_chart.x_labels = service_area_statistics["service_area_name"]
+    bar_chart.add(u"总人数", service_area_statistics["check_object_count"])
+    bar_chart.add(u'已检人数', service_area_statistics["check_count"])
+    return HttpResponse(bar_chart.render(), content_type='image/svg+xml')
+
+@cache_page(60*60)
+def get_pie_chart(request, template_name = 'account/login.html', next='/'):
+    service_area_statistics = get_service_area_statistics()
+    my_config = MyConfig()
+    pie_chart = pygal.Pie(my_config)
+    pie_chart.title = u'%s-总完成度' % service_area_statistics.get('check_project_name',u'无检查项目')
+    pie_chart.add(u'已检对象', service_area_statistics.get('qs_check_result',0)*1.0/service_area_statistics.get('qs_check_object',1))
+    pie_chart.add(u'未检对象', (service_area_statistics.get('qs_check_object',0) - service_area_statistics.get('qs_check_result',0))*1.0/service_area_statistics.get('qs_check_object',1))
+    return HttpResponse(pie_chart.render(), content_type='image/svg+xml')
+
+@cache_page(60*60)
+def get_dot_chart(request, template_name = 'account/login.html', next='/'):
+    service_area_statistics = get_service_area_statistics()
+    my_config = MyConfig()
+    dot_chart = pygal.Dot(my_config)
+    dot_chart.title = u'%s-各类人数统计' % service_area_statistics.get('check_project_name',u'无检查项目')
+    dot_chart.x_labels = service_area_statistics["service_area_name"]
+    dot_chart.add(u"总人数", service_area_statistics["check_object_count"])
+    dot_chart.add(u'已检人数', service_area_statistics["check_count"])
+    dot_chart.add(u'有孕人数', service_area_statistics["pregnant_count"])
+    dot_chart.add(u'特检人数', service_area_statistics["special_count"])
+    return HttpResponse(dot_chart.render(), content_type='image/svg+xml')
+
 def my_layout_test(request, template_name = 'my.html'):
     return render_to_response(template_name, context_instance=RequestContext(request))
+
 
 @csrf_protect
 @never_cache
@@ -27,16 +124,19 @@ def login(request, template_name = 'account/login.html', next='/'):
     login_form = None
     if request.method == 'POST':
         post_data = request.POST.copy()
+        #print(request.META['HTTP_ORIGIN'] + next)
         login_form = LoginForm(post_data)
         if login_form.is_valid():
             from django.contrib.auth import login
             login(request, login_form.get_user())
+            #return HttpResponseRedirect(request.META['HTTP_ORIGIN'] + next)
             return HttpResponseRedirect(next)
         else:
-            return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
+            pass
     else:
         login_form = LoginForm()
-        return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
+    
+    return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
 
 def exit(request, template_name = 'my.html', next = '/'):
     from django.contrib.auth import logout
@@ -61,31 +161,26 @@ def person_password_modify(request, template_name = '', next = '/'):
                 return HttpResponseRedirect(next)
             else:
                 fault = True
-                return render_to_response(template_name,
-                                          {'form': modify_password_form,
-                                           'fault': fault,
-                                           'page_title': page_title},
-                                          context_instance=RequestContext(request))
+                pass
         else:
-            return render_to_response(template_name,
-                                      {'form': modify_password_form,
-                                       'fault': fault,
-                                       'page_title': page_title},
-                                      context_instance=RequestContext(request))
+            pass
     else:
         modify_password_form = ModifyPasswordForm()
-        return render_to_response(template_name,
-                                  {'form': modify_password_form,
-                                   'fault': fault,
-                                   'page_title': page_title},
-                                  context_instance=RequestContext(request))        
+
+    return render_to_response(template_name,
+                              {'form': modify_password_form,
+                               'fault': fault,
+                               'page_title': page_title},
+                              context_instance=RequestContext(request))        
 
 
 @login_required
 def person_management(request, template_name = 'my.html', next = '/'):
     
     page_title = u'个人信息'
-    return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))    
+    return render_to_response(template_name, 
+                              {'page_title': page_title},
+                              context_instance=RequestContext(request))    
 
 @csrf_protect
 @login_required
@@ -105,7 +200,7 @@ def role_add(request, template_name='my.html', next='/', role_page='1'):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             role_add_form = RoleAddForm(post_data)
             if role_add_form.is_valid():
@@ -196,7 +291,7 @@ def role_delete(request, template_name='my.html', next='/', role_page='1',):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             role_delete_form = RoleDeleteForm(post_data)
             if role_delete_form.is_valid():
@@ -288,7 +383,7 @@ def role_modify(request, template_name='my.html', next='/', role_page='1',):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             role_modify_form = RoleModifyForm(post_data)
             if role_modify_form.is_valid():
@@ -456,7 +551,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
     
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加关联':
             role_permission_add_form = RolePermissionAddForm(post_data)
             role_permission_add_form.fields['role_permission_name'].choices = choices
@@ -578,7 +673,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除关联':
             role_permission_delete_form = RolePermissionDeleteForm(post_data)
             if role_permission_delete_form.is_valid():
@@ -692,7 +787,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         role_permission_search_form = RolePermissionSearchForm(post_data)
         if role_permission_search_form.is_valid():
             role_permission_search_form.save_to_session(request)
@@ -767,7 +862,7 @@ def account_add(request, template_name='my.html', next='/', account_page='1'):
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'添加':
             account_add_form = AccountAddForm(post_data)
             if account_add_form.is_valid():
@@ -810,7 +905,7 @@ def account_show(request, template_name='', next='', account_index='1'):
     success = False
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'密码重置':
             try:
                 account_id = int(account_index)
@@ -856,7 +951,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
     user = get_user(request)
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'编辑':
             account_modify_form = AccountModifyForm(post_data)
             if account_modify_form.is_valid():
@@ -892,7 +987,24 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                 else:
                     results_page = None
             else:
-                raise Http404('Invalid Request!')                
+                if submit_value == u'导出用户报表':
+                    account_search_form = AccountSearchForm(post_data)
+                    if account_search_form.is_valid():
+                        account_search_form.data_to_session(request)
+                        account_search_form.init_from_session(request)
+                        query_set = account_search_form.search(request)
+                        return user_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': account_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+
+                else:
+                    raise Http404('Invalid Request!')
         return render_to_response(template_name,
                                   {'search_form': account_search_form,
                                    'modify_form': account_modify_form,
@@ -928,7 +1040,7 @@ def account_detail_modify(request, template_name='my.html', next='/', account_pa
     page_title = u'编辑系统用户'
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'修改':
             account_detail_modify_form = AccountDetailModifyForm(post_data)
             if account_detail_modify_form.is_valid():
@@ -963,7 +1075,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
 
     if request.method == 'POST':
         post_data = request.POST.copy()
-        submit_value = post_data[u'submit']
+        submit_value = post_data.get(u'submit', False)
         if submit_value == u'删除':
             account_delete_form = AccountDeleteForm(post_data)
             if account_delete_form.is_valid():
@@ -989,7 +1101,24 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
                 else:
                     results_page = None
             else:
-                raise Http404('Invalid Request!')                
+                if submit_value == u'导出用户报表':
+                    account_search_form = AccountSearchForm(post_data)
+                    if account_search_form.is_valid():
+                        account_search_form.data_to_session(request)
+                        account_search_form.init_from_session(request)
+                        query_set = account_search_form.search(request)
+                        return user_report(query_set, request)
+                    else:
+                        results_page = None
+                        return render_to_response(template_name,
+                                                  {'search_form': account_search_form,
+                                                   'page_title': page_title,
+                                                   'results_page': results_page,
+                                                   },
+                                                  context_instance=RequestContext(request))
+
+                else:
+                    raise Http404('Invalid Request!')
         return render_to_response(template_name,
                                   {'search_form': account_search_form,
                                    'delete_form': account_delete_form,

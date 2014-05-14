@@ -4,10 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import *
 from django.db.models import ObjectDoesNotExist
 
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.account.models import UserProfile
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from account.models import UserProfile
 from hchq import settings
 import re
 
@@ -22,7 +22,7 @@ class LoginForm(forms.Form):
         max_length=30,
         required=True, 
         label=_(u'用户名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：张三, 张三A, 张三1'),
         error_messages = gl.account_name_error_messages,
@@ -31,9 +31,9 @@ class LoginForm(forms.Form):
         max_length=30,
         required=True, 
         label=_(u'用户密码'), 
-        widget=forms.PasswordInput(attrs={'class':'',
+        widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'例如：123456, pa123456'),
+        help_text=_(u'例如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     
@@ -79,37 +79,37 @@ class ModifyPasswordForm(forms.Form):
         max_length=30,
         required=True, 
         label=_(u'旧密码'), 
-        widget=forms.PasswordInput(attrs={'class':'',
+        widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     password_new = forms.CharField(
         max_length=30,
         required=True, 
         label=_(u'新密码'), 
-        widget=forms.PasswordInput(attrs={'class':'',
+        widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
     password_confirm = forms.CharField(
         max_length=30,
         required=True, 
         label=_(u'确认新密码'), 
-        widget=forms.PasswordInput(attrs={'class':'',
+        widget=forms.PasswordInput(attrs={'class':'form-control',
                                           'size':'30',}), 
-        help_text=_(u'请重新输入密码，例如：123456, pa123456'),
+        help_text=_(u'比如：可以用字母与数字相结合'),
         error_messages = gl.account_password_error_messages,
         )
-    def clean_password_new(self):
+    def clean_password_old(self):
         try:
             password_old_copy = self.data.get('password_old')
             if re.match(gl.account_password_re_pattern, password_old_copy ) is None:
                 raise forms.ValidationError(gl.account_password_error_messages['format_error'])
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.account_password_error_messages['password_form_error'])
-        return password_new_copy
+        return password_old_copy
     
     def clean_password_new(self):
         try:
@@ -159,7 +159,7 @@ class RoleSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'角色名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：技术人员，区域主任'),
         error_messages = gl.role_name_error_messages,
@@ -218,9 +218,8 @@ class RoleAddForm(forms.Form):
         max_length=500,
         required=True, 
         label=_(u'角色名称'), 
-        widget=forms.Textarea(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
-                                     'rows':'3',
                                      }
                               ), 
         help_text=_(u'例如：技术人员，区域主任/检查人员...'),
@@ -270,6 +269,8 @@ class RoleDeleteForm(forms.Form):
             except ValueError:
                 raise forms.ValidationError(gl.role_name_error_messages['form_error'])
             self.role_id_object = Group.objects.get(pk=self.role_id_copy)
+            if User.objects.filter(groups=self.role_id_object).count() >= 1:
+                raise forms.ValidationError(u"已有用户使用该角色，无法删除！")
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.role_name_error_messages['form_error'])
         return self.role_id_copy
@@ -296,7 +297,7 @@ class RoleModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'新角色名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：技术人员，区域主管...'),
         error_messages = gl.role_name_error_messages,
@@ -347,8 +348,8 @@ class RolePermissionAddForm(forms.Form):
     role_permission_name = forms.MultipleChoiceField(
         required=True,
         label=_(u'权限名称'), 
-        widget=forms.SelectMultiple( attrs={'class':'',
-                                           'size':'30',},
+        widget=forms.SelectMultiple( attrs={'class':'form-control',
+                                           'size':'15',},
                                     ), 
         help_text=_(u'帮助：按住键盘Ctrl键为多选！'),
         error_messages = gl.permission_name_error_messages,
@@ -388,7 +389,7 @@ class RolePermissionSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'权限名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',
                                       }
                                ), 
@@ -488,7 +489,7 @@ class AccountAddForm(forms.Form):
         max_length=64,
         required=True, 
         label=_(u'系统用户名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -499,7 +500,7 @@ class AccountAddForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'角色名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：技术人员，区域主管...'),
         error_messages = gl.role_name_error_messages,
@@ -508,7 +509,7 @@ class AccountAddForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -517,7 +518,7 @@ class AccountAddForm(forms.Form):
         max_length=128,
         required=True, 
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -528,7 +529,7 @@ class AccountAddForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'联系方式'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -573,7 +574,7 @@ class AccountAddForm(forms.Form):
         return role_name_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -697,7 +698,7 @@ class AccountDetailModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'角色名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：技术人员，区域主管...'),
         error_messages = gl.role_name_error_messages,
@@ -706,7 +707,7 @@ class AccountDetailModifyForm(forms.Form):
         max_length=128,
         required=True,
         label=_(u'服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -715,7 +716,7 @@ class AccountDetailModifyForm(forms.Form):
         max_length=128,
         required=True, 
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -726,7 +727,7 @@ class AccountDetailModifyForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'联系方式'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -762,7 +763,7 @@ class AccountDetailModifyForm(forms.Form):
         return role_name_copy
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -868,11 +869,11 @@ class AccountDeleteForm(forms.Form):
             except ValueError:
 
                 raise forms.ValidationError(gl.account_name_error_messages['form_error'])
-            print id_copy
+            #print id_copy
             self.id_object = User.objects.get(pk=id_copy, is_active=True, is_superuser=False, is_staff=False)
             
         except ObjectDoesNotExist:
-            print "$$$$$$$$$$$$$$$$$"
+            #print "$$$$$$$$$$$$$$$$$"
             raise forms.ValidationError(gl.account_name_error_messages['form_error'])
         return id_copy
 
@@ -895,7 +896,7 @@ class AccountSearchForm(forms.Form):
         max_length=64,
         required=False, 
         label=_(u'系统用户名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -906,7 +907,7 @@ class AccountSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'角色名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：技术人员，区域主管...'),
         error_messages = gl.role_name_error_messages,
@@ -915,7 +916,7 @@ class AccountSearchForm(forms.Form):
         max_length=128,
         required=False,
         label=_(u'服务区域名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：周田，周田乡...'),
         error_messages = gl.service_area_name_error_messages,
@@ -924,7 +925,7 @@ class AccountSearchForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门名称'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -940,6 +941,7 @@ class AccountSearchForm(forms.Form):
                  ),
         help_text=_(u'例如：未知代表所有人员'),
         )
+    is_checker.widget.attrs['class'] = 'form-control'
     is_fuzzy = forms.CharField(
         required=True,
         label =_(u'模糊查询'),
@@ -971,7 +973,7 @@ class AccountSearchForm(forms.Form):
 
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
         if re.match(gl.service_area_name_search_re_pattern, service_area_name_copy) is None:

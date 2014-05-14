@@ -7,16 +7,16 @@ from PIL import Image
 from StringIO import StringIO
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from hchq.untils import gl
-from hchq.service_area.models import ServiceArea, ServiceAreaDepartment
-from hchq.department.models import Department
-from hchq.check_project.models import CheckProject
-from hchq.check_object.models import *
+from untils import gl
+from service_area.models import ServiceArea, ServiceAreaDepartment
+from department.models import Department
+from check_project.models import CheckProject
+from check_object.models import *
 from hchq import settings
 import re
 import datetime
 
-from hchq.report.check_project_report import *
+from report.check_project_report import *
 
 class ReportCheckOrNotForm(forms.Form):
     
@@ -25,8 +25,8 @@ class ReportCheckOrNotForm(forms.Form):
     service_area_name = forms.CharField(
         max_length=128,
         required=True,
-        label=_(u'服务区域'),
-        widget=forms.TextInput(attrs={'class':'',
+        label=_(u'服务区域(*)'),
+        widget=forms.TextInput(attrs={'class':'form-control',
                                       'size':'30',}), 
         help_text=_(u'例如：西江镇、周田乡'),
         error_messages = gl.service_area_name_error_messages,
@@ -35,7 +35,7 @@ class ReportCheckOrNotForm(forms.Form):
         max_length=128,
         required=False, 
         label=_(u'单位部门'), 
-        widget=forms.TextInput(attrs={'class':'',
+        widget=forms.TextInput(attrs={'class':'form-control',
                                      'size':'30',
                                      }
                               ), 
@@ -47,10 +47,10 @@ class ReportCheckOrNotForm(forms.Form):
         label =_(u'检查项目(*)'),
         help_text=_(u'选择一个合适的检查项目'),
         )
-
+    check_project.widget.attrs['class'] = 'form-control'
     def clean_service_area_name(self):
         try:
-           service_area_name_copy = self.data.get('service_area_name')
+            service_area_name_copy = self.data.get('service_area_name')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
 
@@ -89,7 +89,7 @@ class ReportCheckOrNotForm(forms.Form):
 
     def clean_check_project(self):
         try:
-           check_project_copy = self.data.get('check_project')
+            check_project_copy = self.data.get('check_project')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         try:
@@ -127,8 +127,6 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return check_object_check_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-        return response
-
     def not_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
@@ -136,17 +134,56 @@ class ReportCheckOrNotForm(forms.Form):
         else:
             return check_object_not_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-        return response
+    def has_pregnant_report(self, request=None):
+        if self.service_area_department_object is None:
+            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
+            return check_object_service_area_has_pregnant_report(query_set, request, self.cleaned_data['check_project'])
+        else:
+            return check_object_service_area_department_has_pregnant_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
 
-    
+    def has_special_report(self, request=None):
+        if self.service_area_department_object is None:
+            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
+            return check_object_service_area_has_special_report(query_set, request, self.cleaned_data['check_project'])
+        else:
+            return check_object_service_area_department_has_special_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
+
+    def has_total_report(self, request=None):
+        if self.service_area_department_object is None:
+            query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
+            return check_object_service_area_report(query_set, request, self.cleaned_data['check_project'])
+        else:
+            return check_object_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project'])
+
 class ReportStatisticsForm(forms.Form):
 
     has_department_info = forms.CharField(
         required=True,
-        label =_(u'单位统计'),
-        help_text=_(u'打勾则对服务区域中的单位进行统计'),
+        label =_(u'单位数据统计'),
+        help_text=_(u'进行单位统计'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_department_info',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+
+    has_pregnant_info = forms.CharField(
+        required=True,
+        label =_(u'有孕对象名单'),
+        help_text=_(u'包含有孕名单'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_pregnant_info',
+                                          }, 
+                                   check_test=None,
+                                   ),
+        )
+    has_special_info = forms.CharField(
+        required=True,
+        label =_(u'特殊检查对象名单'),
+        help_text=_(u'包含特殊检查对象'),
+        widget=forms.CheckboxInput(attrs={'class':'',
+                                          'value':'has_special_info',
                                           }, 
                                    check_test=None,
                                    ),
@@ -155,7 +192,7 @@ class ReportStatisticsForm(forms.Form):
     has_check = forms.CharField(
         required=True,
         label =_(u'已检对象名单'),
-        help_text=_(u'打勾则包含已检对象名单'),
+        help_text=_(u'包含已检名单'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_check',
                                           }, 
@@ -165,7 +202,7 @@ class ReportStatisticsForm(forms.Form):
     has_not = forms.CharField(
         required=True,
         label =_(u'未检对象名单'),
-        help_text=_(u'打勾则包含未检对象名单'),
+        help_text=_(u'包含未检名单'),
         widget=forms.CheckboxInput(attrs={'class':'',
                                           'value':'has_not',
                                           }, 
@@ -177,9 +214,10 @@ class ReportStatisticsForm(forms.Form):
         label =_(u'检查项目(*)'),
         help_text=_(u'选择一个合适的检查项目'),
         )
+    check_project.widget.attrs['class'] = 'form-control'
     def clean_check_project(self):
         try:
-           check_project_copy = self.data.get('check_project')
+            check_project_copy = self.data.get('check_project')
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.check_project_name_error_messages['form_error'])
         try:
@@ -205,6 +243,15 @@ class ReportStatisticsForm(forms.Form):
         else:
             has_department_info = False
             
+        if self.cleaned_data['has_pregnant_info'] == u'has_pregnant_info':
+            has_pregnant_info = True
+        else:
+            has_pregnant_info = False
+        if self.cleaned_data['has_special_info'] == u'has_special_info':
+            has_special_info = True
+        else:
+            has_special_info = False
+            
         if self.cleaned_data['has_check'] == u'has_check':
             has_check = True
         else:
@@ -216,4 +263,4 @@ class ReportStatisticsForm(forms.Form):
             has_not = False
             
         query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-        return check_project_report(query_set, request, has_department_info, has_check, has_not, self.cleaned_data['check_project'])
+        return check_project_report(query_set, request, has_department_info, has_pregnant_info, has_special_info, has_check, has_not, self.cleaned_data['check_project'])

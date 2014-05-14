@@ -1,149 +1,182 @@
 {% extends "check_result/check_result_layout.html" %}
 {% load check_result_filter %}
 {% load check_object_filter %}
-{% block header_describe %}{% endblock %}
 
-{% block teaser %}
-{% load cache %}
-{% cache 500 check_result_show user.username %}
-<div class="nav_hlist">
-<ul>
-  {% if perms.department.cr_list or perms.department.cr_add %}
-  <li class="active"><strong>检查结果详情</strong></li>
-  {% endif %}
-  {% if perms.department.cr_add %}
-  <li><a href="{% url check_result_add 1 %}">检查结果添加</a></li>
-  {% endif %}
-  {% if perms.department.cr_list %}
-  <li><a href="{% url check_result_list 1 %}">检查结果查询</a></li>
-  {% endif %}
-</ul>
-</div>
-{% endcache %}
+{% block panel_heading %}
+    <h3 class="panel-title">检查结果详情</h3>
 {% endblock %}
 
-{% block main %}
-<hr>
-<!-- Insert your subtemplate content here -->
-{% if check_object %}
+{% block panel_body %}
+    {% if check_object %}
+        {% if success %}
+            {% if success == 'add' %}
+                <div class="alert alert-success">
+                    <p class="warning">检查对象 {{ check_object.name }} | {{ check_object.id_number }} 的检查结果已成功添加, 详情如下！</p>
+                </div>
+            {% endif %}
+            {% if success == 'invalid_success' %}
+                <div class="alert alert-success">
+                    <p class="warning">检查对象 {{ check_object.name }} | {{ check_object.id_number }} 的检查结果已成功失效, 详情如下！</p>
+                </div>
+            {% endif %}
+            {% if success == 'invalid_already' %}
+                <div class="alert alert-danger">
+                    <p class="warning">该检查对象已经无检查结果可以失效, 详情如下！</p>
+                </div>
+            {% endif %}
+            {% if success == 'invalid_time_error' %}
+                <div class="alert alert-danger">
+                    <p class="warning">不在当前检查项目的时间内，检查结果无法失效！</p>
+                </div>
+            {% endif %}
+            {% if success == 'invalid_project_error' %}
+                <div class="alert alert-danger">
+                    <p class="warning">当前没有检查项目启用，检查结果无法失效！</p>
+                </div>
+            {% endif %}
+            {% if success == 'invalid_result_error' %}
+                <div class="alert alert-danger">
+                    <p class="warning">当前无有效的检查结果，无法打印证明！</p>
+                </div>
+            {% endif %}
+        {% endif %}
 
-{% if success != 'false' %}
-{% if success == 'add' %}
-<script type="text/javascript">
-  var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
-  if (is_chrome)
-  {
-  document.write("<br><br>")
-  }
-</script>
-<p class="warning">检查对象【{{ check_object.name }} | {{ check_object.id_number }}】的检查结果已成功添加, 详情如下！</p>
-{% else %}
-{% endif %}
-{% else %}
-{% endif %}
 
-  <div class="subcolumns">
-    <div class="c75l">
-      <div class="subc">
-        <table border="0" cellpadding="0" cellspacing="0" class="full">
-          <caption>
-            检查对象
-          </caption>
-          <thead>
-            <tr><th scope="col" colspan="2">{{ check_object.name }} | {{ check_object.id_number }}</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="odd">妻子姓名<br>身份证号</td>
-              <td class="odd">{{ check_object.name }}<br>{{ check_object.id_number }}</td>
-            </tr>
-            <tr>
-              <td>服务区域<br>单位部门</td>
-              <td>{{ check_object.service_area_department.service_area.name }}<br>{{ check_object.service_area_department.department.name }}</td>
-            </tr>
-            <tr>
-              <td class="odd">家属<br>结婚时间<br>家庭住址</td>
-              <td class="odd">{% if check_object.is_family %}是{% else %}否{% endif %}<br>{{ check_object.wedding_time|date:"Y-m-d" }}<br>{{ check_object.address }}</td>
-            </tr>
-            <tr>
-              <td>丈夫姓名<br>身份证号</td>
-              <td>{{ check_object.mate_name }}<br>{{ check_object.mate_id_number }}</td>
-            </tr>
-            <tr>
-              <td class="odd">服务区域<br>单位部门</td>
-              <td class="odd">{{ check_object.mate_service_area_department.service_area.name }}<br>{{ check_object.mate_service_area_department.department.name }}</td>
-            </tr>
-            <tr>
-              <td>避孕方式<br>实施时间</td>
-              <td>{{ check_object.ctp_method|ctp_local }}<br>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
-            </tr>
-            <tr>
-              <td class="odd">创建人员</td>
-              <td class="odd">{{ check_object.creater.username }}</td>
-            </tr>
-            <tr>
-              <td>创建时间</td>
-              <td>{{ check_object.created_at|date:"Y-m-d H:i:s" }}</td>
-            </tr>
-            <tr>
-              <td class="odd">更新时间</td>
-              <td class="odd">{{ check_object.updated_at|date:"Y-m-d H:i:s" }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="c25r">
-      <div class="subc">
-        <div class="center">
-          <hr>
-          <img src="{{ check_object.photo.url }}"/>
-          <p>{{ check_object.name }}的照片</p>
-          <p>{{ check_object.id_number }}</p>
-          {% if perms.department.cr_report %}
-          <form method="post" action=".">{% csrf_token %}
-            <input type="submit" name="submit" value="打印证明" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only  ui-state-"/>
-          </form>
-          {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped table-hover">
+                    <caption>检查对象信息</caption>
+                    <thead>
+                    <tr>
+                        <th colspan="3">{% if check_object.is_family %}{{ check_object.name }}<span class="badge">家属</span>{% else %}
+                            {{ check_object.name }}{% endif %} | {{ check_object.id_number }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th class="col-md-3">妻子姓名<br>身份证号</th>
+                        <td class="col-md-5">{% if check_object.is_family %}{{ check_object.name }}<span class="badge">家属</span>{% else %}
+                            {{ check_object.name }}{% endif %}<br>{{ check_object.id_number }}</td>
+                        <td rowspan="9" class="col-md-4">
+                            <div class="thumbnail">
+                                <h4 class="text-center">检查对象相片</h4>
+                                <img src="{{ check_object.photo.url }}"/>
+
+                                <div class="caption">
+                                    <div class="text-center">
+                                        <p>{{ check_object.name }}的照片</p>
+
+                                        <p>{{ check_object.id_number }}</p>
+                                        {% if perms.department.cr_report %}
+                                            <form method="post" action="#">{% csrf_token %}
+                                                <button type="submit" value="打印证明" name="submit" class="btn btn-primary btn-block">打印证明
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        {% if perms.department.role_management %}
+                                            <form method="post" action="#">{% csrf_token %}
+                                                <button type="submit" value="检查结果失效" name="submit" class="btn btn-danger btn-block">检查结果失效
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                    </td>
+                    </tr>
+                    <tr>
+                        <th>服务区域<br>单位部门</th>
+                        <td>{{ check_object.service_area_department.service_area.name }}
+                            <br>{{ check_object.service_area_department.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>家属<br>结婚时间<br>家庭住址</th>
+                        <td>{% if check_object.is_family %}是{% else %}否{% endif %}
+                            <br>{{ check_object.wedding_time|date:"Y-m-d" }}<br>{{ check_object.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>丈夫姓名<br>身份证号</th>
+                        <td>{{ check_object.mate_name }}<br>{{ check_object.mate_id_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>服务区域<br>单位部门</th>
+                        <td>{{ check_object.mate_service_area_department.service_area.name }}
+                            <br>{{ check_object.mate_service_area_department.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>避孕方式<br>实施时间</th>
+                        <td>{{ check_object.ctp_method|ctp_local }}
+                            <br>{{ check_object.ctp_method_time|date:"Y-m-d" }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建人员</th>
+                        <td>{{ check_object.creater.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>创建时间</th>
+                        <td>{{ check_object.created_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    <tr>
+                        <th>更新时间</th>
+                        <td>{{ check_object.updated_at|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered table-striped table-hover">
+                    <caption>检查结果信息</caption>
+                    <thead>
+                    <tr>
+                        <th colspan="6">{{ check_object.name }} 的检查结果<span class="badge">{{ results.count }}</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th>编号</th>
+                        <th>检查项目</th>
+                        <th>检查结果</th>
+                        <th>检查时间</th>
+                        <th>检查人员</th>
+                        <th>微机录入人员</th>
+                    </tr>
+                    {% for result in results %}
+                        <tr {% if result.is_latest %}class="success"{% endif %}>
+                            <td>{{ forloop.counter }}</td>
+                            {% if result.is_latest %}
+                                <td>{{ result.check_project.name }}</td>
+                                <td>{{ result.result|local }}</td>
+                                <td>{{ result.check_time|date:"Y-m-d H:i:s" }}</td>
+                                <td>{{ result.checker.username }}</td>
+                                <td>{{ result.recorder.username }}</td>
+                            {% else %}
+                                <td>
+                                    <del>{{ result.check_project.name }}</del>
+                                </td>
+                                <td>
+                                    <del>{{ result.result|local }}</del>
+                                </td>
+                                <td>
+                                    <del>{{ result.check_time|date:"Y-m-d H:i:s" }}</del>
+                                </td>
+                                <td>
+                                    <del>{{ result.checker.username }}</del>
+                                </td>
+                                <td>
+                                    <del>{{ result.recorder.username }}</del>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% empty %}
+                        <th colspan="6"><p class="label label-danger">没有检查结果可以查询！</p></th>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-      </div>
-
-    </div>
-  </div>
-<div>
-<hr>
-  <table border="0" cellpadding="0" cellspacing="0" class="full">
-    <caption>检查结果</caption>
-    <thead>
-      <tr><th scope="col" colspan="6">【{{ check_object.name }}】的检查结果(共{{ results.count}}项)</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="col">编号</th>
-        <th scope="col">检查项目</th>
-        <th scope="col">检查结果</th>
-        <th scope="col">检查时间</th>
-        <th scope="col">检查人员</th>
-        <th scope="col">微机录入人员</th>
-      </tr>
-      {% for result in results %}
-      <tr>
-        <td {% if result.is_latest %}class="odd"{% endif %}>{{ forloop.counter }}</td>
-        {% if result.is_latest %}<td class="odd">{{ result.check_project.name }}</td>{% else %}<td><del>{{ result.check_project.name }}</del></td>{% endif %}
-        {% if result.is_latest %}<td class="odd">{{ result.result|local }}</td>{% else %}<td><del>{{ result.result|local }}</del></td>{% endif %}
-        {% if result.is_latest %}<td class="odd">{{ result.check_time|date:"Y-m-d H:i:s" }}</td>{% else %}<del><td>{{ result.check_time|date:"Y-m-d H:i:s" }}</del></td>{% endif %}
-        {% if result.is_latest %}<td class="odd">{{ result.checker.username }}</td>{% else %}<td><del>{{ result.checker.username }}</del></td>{% endif %}
-        {% if result.is_latest %}<td class="odd">{{ result.recorder.username }}</td>{% else %}<td><del>{{ result.recorder.username }}</del></td>{% endif %}
-      </tr>
-      {% empty %}
-      <th scope="col" colspan="6"><p class="warning">没有检查结果可以查询！</p></th>
-      {% endfor %}
-    </tbody>
-  </table>
-
-</div>
-{% else %}
-<p class="warning">对不起，该检查对象不存在！</p>
-{% endif %}
+    {% else %}
+        <div class="alert alert-danger">
+            <p>对不起，该检查对象不存在！</p>
+        </div>
+    {% endif %}
 {% endblock %}
-
