@@ -48,13 +48,15 @@
                     <caption>检查对象信息</caption>
                     <thead>
                     <tr>
-                        <th colspan="3">{{ check_object.name }} | {{ check_object.id_number }}</th>
+                        <th colspan="3">{% if check_object.is_family %}{{ check_object.name }}<span class="badge">家属</span>{% else %}
+                            {{ check_object.name }}{% endif %} | {{ check_object.id_number }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <th class="col-md-3">妻子姓名<br>身份证号</th>
-                        <td class="col-md-5">{{ check_object.name }}<br>{{ check_object.id_number }}</td>
+                        <td class="col-md-5">{% if check_object.is_family %}{{ check_object.name }}<span class="badge">家属</span>{% else %}
+                            {{ check_object.name }}{% endif %}<br>{{ check_object.id_number }}</td>
                         <td rowspan="9" class="col-md-4">
                             <div class="thumbnail">
                                 <h4 class="text-center">检查对象相片</h4>

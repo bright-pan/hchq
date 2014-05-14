@@ -22,7 +22,7 @@
         <tr>
             <td class="col-xs-1"><a class="thumbnail" href="{{ result.get_absolute_url }}"><img src="{{ result.photo.url }}" width="47" height="41"/></a>
             </td>
-            <td class="col-xs-1">{% if result.is_family %}{{ result.name }}(家属){% else %}
+            <td class="col-xs-1">{% if result.is_family %}{{ result.name }}<span class="badge">家属</span>{% else %}
                 {{ result.name }}{% endif %}<br><a href="{{ result.get_absolute_url }}">{{ result.id_number }}</a></td>
             <td class="col-xs-2">{{ result.service_area_department.service_area.name }}
             <br>{{ result.service_area_department.department.name }}</td>
