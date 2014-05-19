@@ -13,7 +13,7 @@
     {% for result in results_page.object_list %}
         <tr>
             <th>{{ result.id }}</th>
-            <td><a href="{{ result.get_absolute_url }}">{{ result.name }}</a></td>
+            <td><a href="{{ result.department.get_absolute_url }}">{{ result.department.name }}</a></td>
             <td>
                 <form method="post" action="#">{% csrf_token %}
                     <input type="hidden" name="service_area_department_id" value="{{ result.id }}"/>
