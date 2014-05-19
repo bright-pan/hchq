@@ -73,6 +73,7 @@ class CheckResultDetailAddForm(forms.Form):
         label =_(u'特殊检查'),
         choices=((u'none', u'请选择'),
                  (u'special_4', u'单位担保'),
+                 (u'special_6', u'外地环孕检证明'),
                  ),
         help_text=_(u'例如:担保则选择'),
         )
