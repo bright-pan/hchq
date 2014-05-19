@@ -417,12 +417,15 @@ def service_area_department_add(request, template_name='my.html', next='/', serv
 
     try:
         service_area = ServiceArea.objects.get(is_active=True, pk=int(service_area_index))
+        service_area_department = ServiceAreaDepartment.objects.all()
     except:
         raise Http404('search form error!')
+    #query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
 
     department_query_set = Department.objects.filter(is_active=True)
-    query_set_choices = department_query_set.exclude(department_to_service_area__service_area__pk=service_area.pk,
-                                                     department_to_service_area__is_active=True)
+    #query_set_choices = department_query_set.exclude(department_to_service_area__service_area__pk=service_area.pk,
+    #                                                 department_to_service_area__is_active=True)
+    query_set_choices = department_query_set.exclude(id__in = service_area_department.filter(service_area=service_area, is_active=True).values_list('department__id', flat=True))
     choices = ()
     for query in query_set_choices:
 #        print str(query.pk), query.name
@@ -551,7 +554,7 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
     except:
         raise Http404('search form error!')
 
-    department_query_set = Department.objects.filter(is_active=True)
+    service_area_department_query_set = ServiceAreaDepartment.objects.filter(service_area=service_area, is_active=True)
 
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -559,7 +562,7 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
         if submit_value == u'删除关联':
             service_area_department_delete_form = ServiceAreaDepartmentDeleteForm(post_data)
             if service_area_department_delete_form.is_valid():
-                service_area_department_delete_form.service_area_department_delete(service_area)
+                service_area_department_delete_form.service_area_department_delete()
             else:
                 pass
                                    
@@ -569,14 +572,13 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
 
             service_area_department_search_form = ServiceAreaDepartmentSearchForm(data)
             if service_area_department_search_form.is_valid():
-                query_set_temp = department_query_set.filter(department_to_service_area__service_area__pk=service_area.pk,
-                                                             department_to_service_area__is_active=True)
+                query_set_temp = service_area_department_query_set
                 if service_area_department_search_form.is_null() is False:
                     if service_area_department_search_form.fuzzy_search() is False:
-                        query_set = query_set_temp.filter(name__startswith=service_area_department_search_form.cleaned_data['service_area_department_name'])
+                        query_set = query_set_temp.filter(department__name__startswith=service_area_department_search_form.cleaned_data['service_area_department_name'])
                     else:
                         service_area_department_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                        query_set = query_set_temp.filter(name__icontains=service_area_department_search_form.cleaned_data['service_area_department_name'])
+                        query_set = query_set_temp.filter(department__name__icontains=service_area_department_search_form.cleaned_data['service_area_department_name'])
                 else:
                     query_set = query_set_temp
             else:
@@ -587,14 +589,13 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
                 service_area_department_search_form = ServiceAreaDepartmentSearchForm(post_data)
                 if service_area_department_search_form.is_valid():
                     service_area_department_search_form.save_to_session(request)
-                    query_set_temp = department_query_set.filter(department_to_service_area__service_area__pk=service_area.pk,
-                                                                 department_to_service_area__is_active=True)
+                    query_set_temp = service_area_department_query_set
                     if service_area_department_search_form.is_null() is False:
                         if service_area_department_search_form.fuzzy_search() is False:
-                            query_set = query_set_temp.filter(name__startswith=service_area_department_search_form.cleaned_data['service_area_department_name'])
+                            query_set = query_set_temp.filter(department__name__startswith=service_area_department_search_form.cleaned_data['service_area_department_name'])
                         else:
                             service_area_department_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                            query_set = query_set_temp.filter(name__icontains=service_area_department_search_form.cleaned_data['service_area_department_name'])
+                            query_set = query_set_temp.filter(department__name__icontains=service_area_department_search_form.cleaned_data['service_area_department_name'])
                     else:
                         query_set = query_set_temp
 
@@ -623,14 +624,13 @@ def service_area_department_delete(request, template_name='my.html', next='/', s
                 }
         service_area_department_search_form = ServiceAreaDepartmentSearchForm(data)
         if service_area_department_search_form.is_valid():
-            query_set_temp = department_query_set.filter(department_to_service_area__service_area__pk=service_area.pk,
-                                                         department_to_service_area__is_active=True)
+            query_set_temp = service_area_department_query_set
             if service_area_department_search_form.is_null() is False:
                 if service_area_department_search_form.fuzzy_search() is False:
-                    query_set = query_set_temp.filter(name__startswith=service_area_department_search_form.cleaned_data['service_area_department_name'])
+                    query_set = query_set_temp.filter(department__name__startswith=service_area_department_search_form.cleaned_data['service_area_department_name'])
                 else:
                     service_area_department_search_form.fields['is_fuzzy'].widget.attrs['checked'] = u'true'
-                    query_set = query_set_temp.filter(name__icontains=service_area_department_search_form.cleaned_data['service_area_department_name'])
+                    query_set = query_set_temp.filter(department__name__icontains=service_area_department_search_form.cleaned_data['service_area_department_name'])
             else:
                 query_set = query_set_temp
 

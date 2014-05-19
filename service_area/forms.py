@@ -7,6 +7,8 @@ from django.db import IntegrityError
 
 from service_area.models import ServiceArea, ServiceAreaDepartment
 from department.models import Department
+from check_result.models import CheckResult
+from check_object.models import CheckObject
 from service_area.models import ServiceAreaDepartment
 
 from untils import gl
@@ -343,15 +345,20 @@ class ServiceAreaDepartmentDeleteForm(forms.Form):
                 self.service_area_department_id_copy = int(self.data.get('service_area_department_id'))
             except ValueError:
                 raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+            counts = CheckResult.objects.filter(check_object__service_area_department__id = self.service_area_department_id_copy, is_latest=True).count()
+            #print counts
+            if counts > 0:
+                #print "**************"
+                raise forms.ValidationError(gl.department_name_error_messages['undelete'])
         except ObjectDoesNotExist:
             raise forms.ValidationError(gl.department_name_error_messages['form_error'])
         return self.service_area_department_id_copy
 
-    def service_area_department_delete(self, service_area=None):
+    def service_area_department_delete(self):
 
-        if service_area is not None and self.service_area_department_id_copy is not None:
+        if self.service_area_department_id_copy is not None:
             try:
-                service_area_department_id_object = ServiceAreaDepartment.objects.get(service_area=service_area, department__id = self.service_area_department_id_copy)
+                service_area_department_id_object = ServiceAreaDepartment.objects.get(id = self.service_area_department_id_copy)
             except ObjectDoesNotExist:
                 return False
             service_area_department_id_object.is_active = False

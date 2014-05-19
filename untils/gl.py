@@ -55,6 +55,7 @@ department_name_error_messages={'required': _(u'请输入单位部门名称！')
                                 'already_error': _(u'单位部门同名，请输入正确的单位部门名称！'),
                                 'not_exist_error': _(u'单位部门不存在'),
                                 'not_match_error': _(u'服务区域与单位部门未关联！'),
+                                'undelete':_(u'无法删除，该单位部门已被使用，请确保该部门没有在别的地方使用！'),
                                   }
 
 department_name_add_re_pattern = ur'^[\u4e00-\u9fa5/()（）、]+$'
