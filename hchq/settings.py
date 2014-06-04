@@ -221,7 +221,14 @@ CHECK_RESULT_PER_PAGE = 12
 ACCOUNT_DEFAULT_EMAIL = u'loststriker@gmail.com'
 ACCOUNT_DEFAULT_PASSWORD = u'123456'
 
-DEBUG = TEMPLATE_DEBUG = True
+import datetime
+
+if datetime.date.today() < datetime.date(2014, 10, 1):
+    DEBUG = TEMPLATE_DEBUG = True
+else:
+    DEBUG = TEMPLATE_DEBUG = False
+
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True                 # Whether a user's session cookie expires when the Web browser is closed.
 
 EMAIL_HOST = 'smtp.gmail.com'
