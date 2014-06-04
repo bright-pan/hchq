@@ -422,9 +422,19 @@ def check_project_report(query_set=None, request=None, has_department_info=False
         else:
             user_service_area_name = request.user.get_profile().service_area_department.service_area.name
             query_set_service_area = ServiceArea.objects.filter(is_active=True, name=user_service_area_name)
-            
+
+        qs_temp = []
+        for service_area_object in query_set_service_area:
+            if qs_check_object.filter(service_area_department__service_area = service_area_object).count() > 0 :
+                qs_temp.append(service_area_object)
+        query_set_service_area = qs_temp
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            qs_temp = []
+            for service_area_department_object in query_set_service_area_department:
+                if qs_check_object.filter(service_area_department = service_area_department_object).count() > 0 :
+                    qs_temp.append(service_area_department_object)
+            query_set_service_area_department = qs_temp
             if has_department_info is True:
                 if query_set_service_area_department:
                     service_area_report = ServiceAreaReport(query_set_service_area_department)
@@ -664,8 +674,18 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         cover_report.title = u'%s' % check_project.name
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area = query_set
+        qs_temp = []
+        for service_area_object in query_set_service_area:
+            if qs_check_object.filter(service_area_department__service_area = service_area_object).count() > 0 :
+                qs_temp.append(service_area_object)
+        query_set_service_area = qs_temp
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            qs_temp = []
+            for service_area_department_object in query_set_service_area_department:
+                if qs_check_object.filter(service_area_department = service_area_department_object).count() > 0 :
+                    qs_temp.append(service_area_department_object)
+            query_set_service_area_department = qs_temp
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.qs_check_object = qs_check_object
@@ -859,8 +879,18 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
         cover_report.title = u'%s' % check_project.name
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area = query_set
+        qs_temp = []
+        for service_area_object in query_set_service_area:
+            if qs_check_object.filter(service_area_department__service_area = service_area_object).count() > 0 :
+                qs_temp.append(service_area_object)
+        query_set_service_area = qs_temp
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            qs_temp = []
+            for service_area_department_object in query_set_service_area_department:
+                if qs_check_object.filter(service_area_department = service_area_department_object).count() > 0 :
+                    qs_temp.append(service_area_department_object)
+            query_set_service_area_department = qs_temp
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
@@ -1064,8 +1094,18 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
         cover_report.title = u'%s' % check_project.name
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area = query_set
+        qs_temp = []
+        for service_area_object in query_set_service_area:
+            if qs_check_object.filter(service_area_department__service_area = service_area_object).count() > 0 :
+                qs_temp.append(service_area_object)
+        query_set_service_area = qs_temp
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            qs_temp = []
+            for service_area_department_object in query_set_service_area_department:
+                if qs_check_object.filter(service_area_department = service_area_department_object).count() > 0 :
+                    qs_temp.append(service_area_department_object)
+            query_set_service_area_department = qs_temp
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
@@ -1259,8 +1299,18 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
         cover_report.title = u'%s' % check_project.name
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area = query_set
+        qs_temp = []
+        for service_area_object in query_set_service_area:
+            if qs_check_object.filter(service_area_department__service_area = service_area_object).count() > 0 :
+                qs_temp.append(service_area_object)
+        query_set_service_area = qs_temp
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            qs_temp = []
+            for service_area_department_object in query_set_service_area_department:
+                if qs_check_object.filter(service_area_department = service_area_department_object).count() > 0 :
+                    qs_temp.append(service_area_department_object)
+            query_set_service_area_department = qs_temp
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
@@ -1451,8 +1501,18 @@ def check_object_service_area_report(query_set=None, request=None, check_project
         cover_report.title = u'%s' % check_project.name
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area = query_set
+        qs_temp = []
+        for service_area_object in query_set_service_area:
+            if qs_check_object.filter(service_area_department__service_area = service_area_object).count() > 0 :
+                qs_temp.append(service_area_object)
+        query_set_service_area = qs_temp
         for service_area_object in query_set_service_area:
             query_set_service_area_department = ServiceAreaDepartment.objects.filter(service_area = service_area_object, is_active=True)
+            qs_temp = []
+            for service_area_department_object in query_set_service_area_department:
+                if qs_check_object.filter(service_area_department = service_area_department_object).count() > 0 :
+                    qs_temp.append(service_area_department_object)
+            query_set_service_area_department = qs_temp
             if query_set_service_area_department:
                 service_area_report = ServiceAreaReport(query_set_service_area_department)
                 service_area_report.check_project = check_project
