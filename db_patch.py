@@ -65,3 +65,39 @@ def thumbnail():
         print '$$$$$$$$'
         img.save(temp_file_name,"JPEG")
         
+
+#########################################################################
+#                  FIX check_result for service_area_department
+#########################################################################
+
+# ALTER TABLE `hchq`.`check_result`
+# ADD COLUMN
+# `service_area_department_id` INT(11) NOT NULL AFTER `is_latest`;
+#
+# 解决方法如下：
+# 打开Workbench的菜单[Edit]->[Preferences...]
+# 切换到[SQL Editor]页面
+# 把[Forbid UPDATE and DELETE statements without a WHERE clause (safe updates)]之前的对勾去掉
+# 点击[OK]按钮
+# 最后记得要重启一下sql editor,建立一个新的连接就可以了。
+# UPDATE `hchq`.`check_result` SET `service_area_department_id`='1' ;
+#
+#
+# ALTER TABLE `hchq`.`check_result`
+# ADD INDEX `service_area_department_id_refs_id_5079e70a_idx` (`service_area_department_id` ASC);
+# ALTER TABLE `hchq`.`check_result`
+# ADD CONSTRAINT `service_area_department_id_refs_id_5079e70a`
+#   FOREIGN KEY (`service_area_department_id`)
+#   REFERENCES `hchq`.`service_area_department` (`id`)
+#   ON DELETE RESTRICT
+#   ON UPDATE RESTRICT;
+
+# python manage.py shell
+#
+# from check_result.models import CheckResult
+#
+# cr = CheckResult.objects.all()
+# cr.count()
+# for i in cr:
+#    i.service_area_department = i.check_object.service_area_department
+#    i.save()

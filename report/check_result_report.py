@@ -43,8 +43,8 @@ class CheckResultReport(Report):
             Label(text=u"部门单位", top=1.9*cm, left=6.2*cm),
             Label(text=u"丈夫姓名", top=1.5*cm, left=11.5*cm),
             Label(text=u"身份证号", top=1.9*cm, left=11.5*cm),
-            Label(text=u"服务区域", top=1.5*cm, left=15.7*cm),
-            Label(text=u"部门单位", top=1.9*cm, left=15.7*cm),
+            Label(text=u"参检区域", top=1.5*cm, left=15.7*cm),
+            Label(text=u"参检单位", top=1.9*cm, left=15.7*cm),
             Label(text=u"检查人员", top=1.5*cm, left=21*cm),
             Label(text=u"检查项目", top=1.9*cm, left=21*cm),
             Label(text=u"检查结果", top=1.5*cm, left=24*cm),
@@ -89,7 +89,7 @@ class CheckResultReport(Report):
             return u''
         
         check_object_count = self.qs_check_object.filter(service_area_department__service_area=service_area).count()
-        check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=service_area)
+        check_result = self.qs_check_result.filter(service_area_department__service_area=service_area)
         check_count = check_result.count()
         pregnant_count = check_result.filter(result__startswith='pregnant').count()
         special_count = check_result.filter(result__contains='special').count()
@@ -109,7 +109,7 @@ class CheckResultReport(Report):
             return u''
         
         check_object_count = self.qs_check_object.filter(service_area_department=service_area_department).count()
-        check_result = self.qs_check_result.filter(check_object__service_area_department=service_area_department)
+        check_result = self.qs_check_result.filter(service_area_department=service_area_department)
         check_count = check_result.count()
         pregnant_count = check_result.filter(result__startswith='pregnant').count()
         special_count = check_result.filter(result__contains='special').count()
@@ -142,8 +142,8 @@ def check_result_report(query_set=None, request=None):
             ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
             ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
             ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-            ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-            ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+            ObjectValue(attribute_name='check_object.service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+            ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=15.7*cm),
             ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
             ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
             ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,

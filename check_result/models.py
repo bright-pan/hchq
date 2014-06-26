@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from check_object.models import CheckObject
 from check_project.models import CheckProject
+from service_area.models import ServiceAreaDepartment
 import caching.base
 # Create your models here.
 
@@ -10,6 +11,7 @@ class CheckResult(caching.base.CachingMixin, models.Model):
 
     check_object = models.ForeignKey(CheckObject, related_name='check_result')
     check_project = models.ForeignKey(CheckProject)
+    service_area_department = models.ForeignKey(ServiceAreaDepartment, related_name='check_result')
     result = models.CharField(max_length=128)
     checker = models.ForeignKey(User, related_name='check_result_checker')
     recorder = models.ForeignKey(User, related_name='check_result_recorder')

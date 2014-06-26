@@ -216,11 +216,20 @@ class CheckResultDetailAddForm(forms.Form):
             result += u' ' + self.cleaned_data['special']
 
         CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
-        CheckResult.objects.create(check_object=check_object,
-                                   check_project=check_project,
-                                   checker=checker,
-                                   recorder=user,
-                                   result=result,)
+        if check_object.is_family is False:
+            CheckResult.objects.create(check_object=check_object,
+                                       check_project=check_project,
+                                       checker=checker,
+                                       recorder=user,
+                                       result=result,
+                                       service_area_department=check_object.service_area_department)
+        else:
+            CheckResult.objects.create(check_object=check_object,
+                                       check_project=check_project,
+                                       checker=checker,
+                                       recorder=user,
+                                       result=result,
+                                       service_area_department=check_object.mate_service_area_department)
         return True
 
 
@@ -319,11 +328,20 @@ class CheckResultSpecialDetailAddForm(forms.Form):
         result = "%s" % (self.cleaned_data['special'])
 
         CheckResult.objects.filter(check_object=check_object, check_project=check_project).update(is_latest=False)
-        CheckResult.objects.create(check_object=check_object,
-                                   check_project=check_project,
-                                   checker=user,
-                                   recorder=user,
-                                   result=result,)
+        if check_object.is_family is False:
+            CheckResult.objects.create(check_object=check_object,
+                                       check_project=check_project,
+                                       checker=user,
+                                       recorder=user,
+                                       result=result,
+                                       service_area_department=check_object.service_area_department)
+        else:
+            CheckResult.objects.create(check_object=check_object,
+                                       check_project=check_project,
+                                       checker=user,
+                                       recorder=user,
+                                       result=result,
+                                       service_area_department=check_object.mate_service_area_department)
         return True
     
 class CheckResultDeleteForm(forms.Form):
@@ -397,6 +415,26 @@ class CheckResultSearchForm(forms.Form):
                                      'size':'30',
                                      }
                               ), 
+        help_text=_(u'例如：县委、政法委、公安局'),
+        error_messages = gl.department_name_error_messages,
+        )
+    check_service_area_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'参检区域'),
+        widget=forms.TextInput(attrs={'class':'form-control',
+                                      'size':'30',}),
+        help_text=_(u'例如：西江镇、周田乡'),
+        error_messages = gl.service_area_name_error_messages,
+        )
+    check_department_name = forms.CharField(
+        max_length=128,
+        required=False,
+        label=_(u'参检单位'),
+        widget=forms.TextInput(attrs={'class':'form-control',
+                                     'size':'30',
+                                     }
+                              ),
         help_text=_(u'例如：县委、政法委、公安局'),
         error_messages = gl.department_name_error_messages,
         )
@@ -598,6 +636,24 @@ class CheckResultSearchForm(forms.Form):
         if re.match(gl.department_name_search_re_pattern, department_name_copy) is None:
             raise forms.ValidationError(gl.department_name_error_messages['format_error'])
         return department_name_copy
+    def clean_check_service_area_name(self):
+        try:
+            check_service_area_name_copy = self.data.get('check_service_area_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.service_area_name_error_messages['form_error'])
+        if re.match(gl.service_area_name_search_re_pattern, check_service_area_name_copy) is None:
+            raise forms.ValidationError(gl.service_area_name_error_messages['format_error'])
+
+        return check_service_area_name_copy
+
+    def clean_check_department_name(self):
+        try:
+            check_department_name_copy = self.data.get('check_department_name')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError(gl.department_name_error_messages['form_error'])
+        if re.match(gl.department_name_search_re_pattern, check_department_name_copy) is None:
+            raise forms.ValidationError(gl.department_name_error_messages['format_error'])
+        return check_department_name_copy
 
     def clean_mate_name(self):
         try:
@@ -670,6 +726,8 @@ class CheckResultSearchForm(forms.Form):
         request.session[gl.session_check_object_mate_id_number] = self.cleaned_data['mate_id_number']
         request.session[gl.session_check_object_mate_service_area_name] = self.cleaned_data['mate_service_area_name']
         request.session[gl.session_check_object_mate_department_name] = self.cleaned_data['mate_department_name']
+        request.session[gl.session_check_object_check_service_area_name] = self.cleaned_data['check_service_area_name']
+        request.session[gl.session_check_object_check_department_name] = self.cleaned_data['check_department_name']
         request.session[gl.session_check_object_ctp_method] = self.cleaned_data['ctp_method']
 
         if self.cleaned_data['ctp_method_time'] is not None:
@@ -723,6 +781,8 @@ class CheckResultSearchForm(forms.Form):
         data['mate_id_number'] = request.session.get(gl.session_check_object_mate_id_number, u'')
         data['mate_service_area_name'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         data['mate_department_name'] = request.session.get(gl.session_check_object_mate_department_name, u'')
+        data['check_service_area_name'] = request.session.get(gl.session_check_object_check_service_area_name, u'')
+        data['check_department_name'] = request.session.get(gl.session_check_object_check_department_name, u'')
         data['ctp_method'] = request.session.get(gl.session_check_object_ctp_method, u'none')
         data['ctp_method_time'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         data['wedding_time'] = request.session.get(gl.session_check_object_wedding_time, u'')
@@ -754,6 +814,8 @@ class CheckResultSearchForm(forms.Form):
         self.fields['mate_id_number'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_id_number, u'')
         self.fields['mate_service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_service_area_name, u'')
         self.fields['mate_department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_mate_department_name, u'')
+        self.fields['check_service_area_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_check_service_area_name, u'')
+        self.fields['check_department_name'].widget.attrs['value'] = request.session.get(gl.session_check_object_check_department_name, u'')
         self.fields['ctp_method'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method, u'none')
         self.fields['ctp_method_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_ctp_method_time, u'')
         self.fields['wedding_time'].widget.attrs['value'] = request.session.get(gl.session_check_object_wedding_time, u'')
@@ -840,6 +902,39 @@ class CheckResultSearchForm(forms.Form):
                 query_set = query_set.filter(check_object__service_area_department__department__name__startswith=department_name)
             else:
                 query_set = query_set.filter(check_object__service_area_department__department__name__icontains=department_name)
+
+        return query_set
+    def query_check_service_area_name(self, query_set=None):
+        service_area_name = self.cleaned_data['check_service_area_name']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if service_area_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(service_area_department__service_area__name__startswith=service_area_name)
+            else:
+                query_set = query_set.filter(service_area_department__service_area__name__icontains=service_area_name)
+
+        return query_set
+
+    def query_check_department_name(self, query_set=None):
+        department_name = self.cleaned_data['check_department_name']
+        is_fuzzy = self.is_fuzzy
+
+        if query_set is None:
+            return query_set
+
+        if department_name == u'':
+            pass
+        else:
+            if is_fuzzy is False:
+                query_set = query_set.filter(service_area_department__department__name__startswith=department_name)
+            else:
+                query_set = query_set.filter(service_area_department__department__name__icontains=department_name)
 
         return query_set
 
@@ -1128,6 +1223,8 @@ class CheckResultSearchForm(forms.Form):
         query_set = self.query_mate_id_number(query_set)
         query_set = self.query_service_area_name(query_set)
         query_set = self.query_department_name(query_set)
+        query_set = self.query_check_service_area_name(query_set)
+        query_set = self.query_check_department_name(query_set)
         query_set = self.query_mate_service_area_name(query_set)
         query_set = self.query_mate_department_name(query_set)
         query_set = self.query_ctp_method(query_set)
