@@ -101,3 +101,52 @@ def thumbnail():
 # for i in cr:
 #    i.service_area_department = i.check_object.service_area_department
 #    i.save()
+
+import datetime
+from check_project.models import CheckProject
+from check_result.models import CheckResult
+from check_object.models import CheckObject
+from django.contrib.auth.models import User
+
+qs_cp = CheckProject.objects.filter(is_active=True)
+
+print qs_cp.count()
+user = User.objects.get(pk=1)
+result = u'invalid'
+for cp in qs_cp:
+    check_project_endtime = datetime.datetime(cp.end_time.year,
+                                              cp.end_time.month,
+                                              cp.end_time.day,
+                                              23, 59, 59)
+    qs_check_object = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
+                                                                                                updated_at__lt=check_project_endtime)
+    qs_check_result = CheckResult.objects.filter(check_project=cp)
+
+    for co in qs_check_object:
+        if qs_check_result.filter(check_object=co).count() < 0:
+            if co.is_family is False:
+                CheckResult.objects.create(check_object=co,
+                                           check_project=cp,
+                                           checker=user,
+                                           recorder=user,
+                                           result=result,
+                                           is_latest=False,
+                                           service_area_department=co.service_area_department)
+            else:
+                CheckResult.objects.create(check_object=co,
+                                           check_project=cp,
+                                           checker=user,
+                                           recorder=user,
+                                           result=result,
+                                           is_latest=False,
+                                           service_area_department=co.mate_service_area_department)
+
+
+1. 参检单位和区域自动补全功能。
+2. 增加检查项目的时候，预检查所有的对象，检查结果是无效的
+3. 检查对象增加和修改的时候，需要预检查这个对象，或者修改有效的检查结果。
+4. 增加检查对象和修改检查对象的时候，如果是家属则加入丈夫和妻子单位匹配校验。
+5. 找出所有家属中，丈夫和妻子单位不匹配的对象，并加以修改。
+6. 报表中的对象数量的计算需要重新来计算，包括所有报表中计算机制也需要替换。比如（check_object_check_service_area_report）
+7. 检查结果添加的语句无需区别家属还是非家属。
+这样做的目的就是为了是历史数据更加稳定，准确。

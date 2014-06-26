@@ -470,7 +470,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                 pass
             if has_pregnant_info is True:
                 #query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='pregnant').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
-                query_set_check_result = qs_check_result.filter(service_area_department__service_area=service_area_object).filter(result__startswith='pregnant').order_by(u'service_area_department__service_area__name').order_by('check_object.id')
+                query_set_check_result = qs_check_result.filter(service_area_department__service_area=service_area_object).filter(result__startswith='pregnant').order_by(u'service_area_department__service_area__name').order_by('check_object__id')
                 if query_set_check_result:
                     check_result_report = CheckResultReport(query_set_check_result)
                     check_result_report.check_project = check_project
@@ -508,7 +508,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                 pass
             if has_special_info is True:
                 #query_set_check_result = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department__service_area=service_area_object).filter(result__startswith='special').order_by(u'check_object__service_area_department__service_area__name').order_by('check_object.id')
-                query_set_check_result = qs_check_result.filter(service_area_department__service_area=service_area_object).filter(result__contains='special').order_by(u'service_area_department__service_area__name').order_by('check_object.id')
+                query_set_check_result = qs_check_result.filter(service_area_department__service_area=service_area_object).filter(result__contains='special').order_by(u'service_area_department__service_area__name').order_by('check_object__id')
                 if query_set_check_result:
                     check_result_report = CheckResultReport(query_set_check_result)
                     check_result_report.check_project = check_project
@@ -551,8 +551,8 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                         #                                                                                                                     updated_at__lt=check_project_endtime,
                         #                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
                         #query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-                        query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object)
-                        query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+                        query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object).distinct()
+                        query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True)).order_by('id')
 
                         if query_set_not_check_object_in_department:
                             department_report = DepartmentReport(query_set_not_check_object_in_department)
@@ -719,7 +719,7 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+                query_set_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
                 if query_set_check_object_in_department:
                     department_report = DepartmentReport(query_set_check_object_in_department)
                     department_report.check_project = check_project
@@ -801,7 +801,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
+            query_set_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
                 
             if query_set_check_object_in_department:
                 department_report = DepartmentReport(query_set_check_object_in_department)
@@ -928,8 +928,8 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
                 #                                                                                                                     updated_at__lt=check_project_endtime,
                 #                                                                                                                     ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
                 #query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-                query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object)
-                query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+                query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object).distinct()
+                query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True)).order_by('id')
 
                 if query_set_not_check_object_in_department:
                     department_report = DepartmentReport(query_set_not_check_object_in_department)
@@ -1016,8 +1016,9 @@ def check_object_not_service_area_department_report(query_set=None, request=None
             #                                                                                                                         updated_at__lt=check_project_endtime,
             #                                                                                                                         ).filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project).order_by('id')
             #query_set_not_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).exclude(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-            query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object)
-            query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True))
+
+            query_set_not_check_object_in_department = qs_check_object.filter(check_result__service_area_department=service_area_department_object).distinct()
+            query_set_not_check_object_in_department = query_set_not_check_object_in_department.exclude(id__in = qs_check_result.filter(check_project=check_project, is_latest=True).values_list('check_object__id', flat=True)).order_by('id')
 
             if query_set_not_check_object_in_department:
                 department_report = DepartmentReport(query_set_not_check_object_in_department)
@@ -1139,7 +1140,7 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_check_result_has_pregnant_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
+                query_set_check_result_has_pregnant_in_department = qs_check_result.filter(service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
                 if query_set_check_result_has_pregnant_in_department:
                     check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
                     check_result_report.check_project = check_project
@@ -1161,8 +1162,8 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
                         ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
                         ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
                         ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-                        ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-                        ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=15.7*cm),
                         ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
                         ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
                         ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
@@ -1221,7 +1222,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
-            query_set_check_result_has_pregnant_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
+            query_set_check_result_has_pregnant_in_department = qs_check_result.filter(service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
             #query_set_check_result_has_pregnant_in_department = CheckResult.objects.filter(check_project=check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
             if query_set_check_result_has_pregnant_in_department:
                 check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
@@ -1244,8 +1245,8 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
                     ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
                     ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
                     ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-                    ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-                    ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                    ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                    ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=15.7*cm),
                     ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
                     ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
                     ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
@@ -1344,7 +1345,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
             else:
                 pass
             for service_area_department_object in query_set_service_area_department:
-                query_set_check_result_has_special_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__contains='special').order_by('check_object.id')
+                query_set_check_result_has_special_in_department = qs_check_result.filter(service_area_department=service_area_department_object).filter(result__contains='special').order_by('check_object.id')
                 if query_set_check_result_has_special_in_department:
                     check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
                     check_result_report.check_project = check_project
@@ -1366,8 +1367,8 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
                         ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
                         ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
                         ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-                        ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-                        ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                        ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=15.7*cm),
                         ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
                         ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
                         ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
@@ -1427,7 +1428,7 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
-            query_set_check_result_has_special_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__contains='special').order_by('check_object.id')
+            query_set_check_result_has_special_in_department = qs_check_result.filter(service_area_department=service_area_department_object).filter(result__contains='special').order_by('check_object.id')
             if query_set_check_result_has_special_in_department:
                 check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
                 check_result_report.check_project = check_project
@@ -1449,8 +1450,8 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
                     ObjectValue(attribute_name='check_object.service_area_department.department.name', top=0.5*cm, left=6.2*cm),
                     ObjectValue(attribute_name='check_object.mate_name', top=0.1*cm, left=11.5*cm),
                     ObjectValue(attribute_name='check_object.mate_id_number', top=0.5*cm, left=11.5*cm),
-                    ObjectValue(attribute_name='check_object.mate_service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
-                    ObjectValue(attribute_name='check_object.mate_service_area_department.department.name', top=0.5*cm, left=15.7*cm),
+                    ObjectValue(attribute_name='service_area_department.service_area.name', top=0.1*cm, left=15.7*cm),
+                    ObjectValue(attribute_name='service_area_department.department.name', top=0.5*cm, left=15.7*cm),
                     ObjectValue(attribute_name='checker.username', top=0.1*cm, left=21*cm),
                     ObjectValue(attribute_name='check_project.name', top=0.5*cm, left=21*cm, width=3*cm),
                     ObjectValue(attribute_name='result', top=0.1*cm, left=24*cm,
@@ -1547,7 +1548,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
                 pass
             for service_area_department_object in query_set_service_area_department:
                 #print query_set_service_area_department
-                query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
+                query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('id')
                 if query_set_check_object_in_department:
                     department_report = DepartmentReport(query_set_check_object_in_department)
                     department_report.check_project = check_project
@@ -1631,7 +1632,7 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
-            query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('check_object.id')
+            query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).order_by('id')
             if query_set_check_object_in_department:
                 department_report = DepartmentReport(query_set_check_object_in_department)
                 department_report.check_project = check_project
