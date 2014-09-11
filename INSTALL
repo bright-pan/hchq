@@ -46,3 +46,11 @@ configure nginx for hchq
 configure crontab for mysql backup
 
 30 23	*	*	*	  cd ~/hchq/mysql_backup && ./mysql_backup.sh
+
+dist package:
+python -O -m compileall ../hchq
+find -name "*.py" -exec rm -f {} \;
+
+modify mysql root password:
+mysql -u root -p
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('hchq2010-2014*.*');
