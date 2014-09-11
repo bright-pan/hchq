@@ -1,0 +1,48 @@
+deb http://debian.ustc.edu.cn/ubuntu/ trusty main restricted universe multiverse
+deb http://debian.ustc.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
+deb http://debian.ustc.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
+deb http://debian.ustc.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
+deb http://debian.ustc.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
+deb-src http://debian.ustc.edu.cn/ubuntu/ trusty main restricted universe multiverse
+deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
+deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
+deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
+deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
+
+sudo apt-get update
+
+sudo apt-get install nginx
+
+sudo apt-get install memcached
+sudo apt-get install python-memcache
+
+sudo apt-get install mysql-server
+(User:root,Password:2011)
+sudo apt-get install mysql-client
+sudo apt-get install mysql-workbench
+sudo apt-get install python-mysqldb
+
+sudo apt-get install python-pip
+sudo apt-get install python-setuptools
+
+sudo apt-get install python-lxml
+sudo apt-get install python-pil
+sudo apt-get install python-reportlab
+sudo apt-get install python-greenlet
+sudo apt-get install python-gevent
+
+sudo pip install pygal
+sudo pip install pillow
+sudo pip install geraldo
+sudo pip install django-cache-machine
+sudo pip install django==1.4.15
+
+copy photo to hchq/static/images/
+
+import hchq database to mysql
+
+configure nginx for hchq
+
+configure crontab for mysql backup
+
+30 23	*	*	*	  cd ~/hchq/mysql_backup && ./mysql_backup.sh
