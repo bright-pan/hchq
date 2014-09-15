@@ -29,7 +29,7 @@
     {% endfor %}
     </tbody>
 </table>
-
+{% if results_page %}
 <ul class="pagination">
     <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
         <a href="{% url department_delete results_page.previous_page_number %}">上一页</a>
@@ -40,3 +40,4 @@
         <a href="{% url department_delete results_page.next_page_number %}">下一页</a>
     </li>
 </ul>
+{% endif %}

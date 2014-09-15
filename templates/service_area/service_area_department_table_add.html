@@ -23,26 +23,16 @@
     {% endfor %}
     </tbody>
 </table>
-<div class="pagination">
-    {% if results_page.has_previous %}
-        <span>
-    <a href="{% url service_area_department_add service_area_index results_page.previous_page_number %}">上一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    上一页
-  </span>
-    {% endif %}
-    <span class="current">
-    第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页
-  </span>
-    {% if results_page.has_next %}
-        <span>
-    <a href="{% url service_area_department_add service_area_index results_page.next_page_number %}">下一页</a>
-  </span>
-    {% else %}
-        <span class="disable">
-    下一页
-  </span>
-    {% endif %}
-</div>
+
+{% if results_page %}
+    <ul class="pagination">
+        <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+            <a href="{% url service_area_department_add service_area_index results_page.previous_page_number %}">上一页</a>
+        </li>
+        <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+                class="sr-only">(current)</span></a></li>
+        <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+            <a href="{% url service_area_department_add service_area_index results_page.next_page_number %}">下一页</a>
+        </li>
+    </ul>
+{% endif %}

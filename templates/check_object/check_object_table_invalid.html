@@ -49,14 +49,15 @@
     {% endfor %}
     </tbody>
 </table>
-
-<ul class="pagination">
-    <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
-        <a href="{% url check_object_invalid results_page.previous_page_number %}">上一页</a>
-    </li>
-    <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
-            class="sr-only">(current)</span></a></li>
-    <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
-        <a href="{% url check_object_invalid results_page.next_page_number %}">下一页</a>
-    </li>
-</ul>
+{% if results_page %}
+    <ul class="pagination">
+        <li class="{% if results_page.has_previous %} active {% else %} disabled {% endif %}">
+            <a href="{% url check_object_invalid results_page.previous_page_number %}">上一页</a>
+        </li>
+        <li class="disabled"><a href="#">第 {{ results_page.number }}/{{ results_page.paginator.num_pages }} 页<span
+                class="sr-only">(current)</span></a></li>
+        <li class="{% if results_page.has_next %} active {% else %} disabled {% endif %}">
+            <a href="{% url check_object_invalid results_page.next_page_number %}">下一页</a>
+        </li>
+    </ul>
+{% endif %}
