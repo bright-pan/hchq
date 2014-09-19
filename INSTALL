@@ -68,6 +68,9 @@ modify mysql root password:
 mysql -u root -p
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('hchq2010-2014*.*');
 
+/usr/local/mysql/bin/mysqldump -u username -p database > filename
+/usr/local/mysql/bin/mysql -u username -p database < filename
+
 gpg --keyserver keys.gnupg.net --search-key Bright Pan
 gpg -a --output hchq-5.1.tar.gz.rsa -r loststriker@gmail.com -e hchq-5.1.tar.gz
 gpg --output hchq.tar.gz -d hchq-5.1.tar.gz.rsa
