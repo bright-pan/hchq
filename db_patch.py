@@ -45,7 +45,7 @@ def photo():
 
 
 def thumbnail():
-    qs_co = CheckObject.objects.all()
+    qs_co = CheckObject.objects.filter(is_active=True)
     for co in qs_co:
         co.thumbnail = co.photo.name.replace('photos', 'thumbnails')
         co.save()
