@@ -75,5 +75,12 @@ gpg --keyserver keys.gnupg.net --search-key Bright Pan
 gpg -a --output hchq-5.1.tar.gz.rsa -r loststriker@gmail.com -e hchq-5.1.tar.gz
 gpg --output hchq.tar.gz -d hchq-5.1.tar.gz.rsa
 
+server:
 10.220.11.141
 hchq,hchq123456
+screen -ls
+screen -r ...
+c-a k 杀死当前会话
+c-a d 暂时退出
+
+先备份数据，然后在覆盖。
