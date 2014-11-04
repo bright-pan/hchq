@@ -19,7 +19,7 @@
     </tr>
     {% for result in results_page.object_list %}
         <tr>
-            <td class="col-xs-1"><a class="thumbnail" href="{{ result.get_absolute_url }}"><img src="{{ result.check_object.thumbnail.url }}" width="47"
+            <td class="col-xs-1"><a class="thumbnail" href="{{ result.get_absolute_url }}"><img src="{{ result.check_object.thumbnail.url|image_url_local }}" width="47"
                                                              height="41"/></a></td>
             <td class="col-xs-1">{% if result.check_object.is_family %}{{ result.check_object.name }}<span class="badge">家属</span>{% else %}
                 {{ result.check_object.name }}{% endif %}<br><a

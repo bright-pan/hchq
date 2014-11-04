@@ -13,7 +13,8 @@
             webcam.set_hook('onComplete', function my_completion_handler(response) {
                 // extract URL out of PHP output
                 photo_ready = true;
-                $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                var src = "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp?"+Math.random();
+                $("#id_check_object_photo").attr("src", src);
                 // reset camera for another shot
                 webcam.reset();
             });
@@ -53,8 +54,9 @@
                 onComplete: function (file) {
                     photo_ready = true;
                     $("#id_uploader_msg").text("已成功上传文件：" + file);
-                    $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
-                    $("#id_uploader_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                    var src = "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp?"+Math.random();
+                    $("#id_check_object_photo").attr("src", src);
+                    $("#id_uploader_check_object_photo").attr("src", src);
                     this.enable();
                 }
             });

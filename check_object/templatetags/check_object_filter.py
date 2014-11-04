@@ -23,3 +23,10 @@ def del_reason_local(value):
         return u'%s' % gl.check_object_del_reason[value]
     else:
         return u''
+
+@register.filter
+@stringfilter
+def image_url_local(value):
+    import random
+    return value + "?" + "".join(random.sample('abcdefghijklmnopqrstuvwxyz1234567890', 10))
+

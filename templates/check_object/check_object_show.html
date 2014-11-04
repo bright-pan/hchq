@@ -37,7 +37,7 @@
                         <td rowspan="10" class="col-md-4">
                             <div class="thumbnail">
                                 <h4 class="text-center">检查对象相片</h4>
-                                <img src="{{ result.photo.url }}"/>
+                                <img src="{{ result.photo.url|image_url_local }}"/>
                                 <div class="caption">
                                     <div class="text-center">
                                     <p>{{ result.name }}的照片</p>

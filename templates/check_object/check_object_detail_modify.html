@@ -1,9 +1,8 @@
 {% extends "check_object/check_object_layout.html" %}
-
+{% load check_object_filter %}
 {% block photo %}
     <script type="text/javascript">
         $(function () {
-            var photo_ready = false;
 
             webcam.set_swf_url("{{ MEDIA_URL }}js/jpegcam/webcam.swf");
             webcam.set_quality(100); // JPEG quality (1 - 100)
@@ -12,8 +11,8 @@
             $("#id_camera_frame").html(webcam.get_html(320, 240));
             webcam.set_hook('onComplete', function my_completion_handler(response) {
                 // extract URL out of PHP output
-                photo_ready = true;
-                $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                var src = "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp?"+Math.random();
+                $("#id_check_object_photo").attr("src", src);
                 // reset camera for another shot
                 webcam.reset();
             });
@@ -51,20 +50,11 @@
                     }
                 },
                 onComplete: function (file) {
-                    photo_ready = true;
                     $("#id_uploader_msg").text("已成功上传文件：" + file);
-                    $("#id_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
-                    $("#id_uploader_check_object_photo").attr("src", "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp");
+                    var src = "{{ MEDIA_URL }}images/photos/temp/{{ user.username }}.temp?"+Math.random();
+                    $("#id_check_object_photo").attr("src", src);
+                    $("#id_uploader_check_object_photo").attr("src", src);
                     this.enable();
-                }
-            });
-            $("#id_check_object_form_add").submit(function () {
-                if (photo_ready == true) {
-                    return true;
-                }
-                else {
-                    $("#id_check_object_add_submit_error").text("请先上传照片或者拍照！").show().fadeOut(5000);
-                    return false;
                 }
             });
         });
@@ -391,7 +381,7 @@
         <div class="col-md-3">
             <div class="thumbnail">
                 <h4 class="text-center">检查对象相片</h4>
-                <img id="id_check_object_photo" src="{{ check_object.photo.url }}"/>
+                <img id="id_check_object_photo" src="{{ check_object.photo.url|image_url_local }}"/>
 
                 <div class="caption">
                     <p class="text-center">
@@ -410,6 +400,8 @@
         </div>
         </div>
         {{ form.id }}
+
+        <span id="id_check_object_detail_modify_submit_error" class="label label-danger"></span>
         <button type="submit" value="修改" name="submit" class="btn btn-primary btn-lg btn-block">修改</button>
         </fieldset>
         </form>

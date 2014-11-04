@@ -64,6 +64,7 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
         if request.FILES.get('photo', False):
 
             data = request.FILES.get('photo', False)
+
             if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
                 raise Http404('Invalid Request!')
             try:
@@ -128,7 +129,7 @@ def check_object_detail_modify_uploader(request, template_name='my.html', next='
         if request.FILES.get('photo', False):
 
             data = request.FILES.get('photo', False)
-            
+
             if data.size >= settings.MAX_PHOTO_UPLOAD_SIZE:
                 raise Http404('Invalid Request!')
             try:
@@ -240,6 +241,7 @@ def check_object_modify(request, template_name='my.html', next_template_name='my
 #                print check_object_modify_object.id_number
                 check_object_data = CheckObjectDetailModifyForm().data_from_object(check_object_modify_object, user)
                 request.session[gl.session_check_object_detail_modify_id_number] = check_object_data[u'id_number']
+                request.session[gl.session_check_object_detail_modify_uploader] = ""
                 check_object_detail_modify_form = CheckObjectDetailModifyForm(check_object_data)
                 if check_object_detail_modify_form.is_valid():
                     check_object_detail_modify_form.init_from_object(check_object_modify_object, user)
