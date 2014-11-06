@@ -75,27 +75,21 @@ def get_mate_service_area_department(instance=None):
 
 def get_result(instance=None):
     if instance is not None:
-        result_object = instance.check_result.get(is_latest=True)
-        value_list = result_object.result.split()
-        if gl.check_result_local.has_key(value_list[0]) and gl.check_result_local.has_key(value_list[1]) and len(value_list) == 3:
-            if value_list[2] == u'None':
-                return u'%s|%s' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]])
-            else:
-                return u'%s|%s|%s周' % (gl.check_result_local[value_list[0]], gl.check_result_local[value_list[1]], value_list[2])
-        else:
-            return u''
+        result_object = instance.check_result.filter(is_latest=True).order_by('-id')[0]
+        from check_result.templatetags import check_result_filter
+        return check_result_filter.local(result_object.result)
     else:
         return u''
 
 def get_checker(instance=None):
     if instance is not None:
-        result_object = instance.check_result.get(is_latest=True)
+        result_object = instance.check_result.filter(is_latest=True).order_by('-id')[0]
         return u'%s' % result_object.checker.username
     else:
         return u''
 def get_check_service_area_department(instance=None):
     if instance is not None:
-        result_object = instance.check_result.get(is_latest=True)
+        result_object = instance.check_result.filter(is_latest=True).order_by('-id')[0]
         service_area_department_object = result_object.checker.get_profile().service_area_department
         return u'%s %s' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
     else:
@@ -103,7 +97,7 @@ def get_check_service_area_department(instance=None):
 
 def get_check_time(instance=None):
     if instance is not None:
-        result_object = instance.check_result.get(is_latest=True)
+        result_object = instance.check_result.filter(is_latest=True).order_by('-id')[0]
         return u'%s' % result_object.check_time
     else:
         return u''
