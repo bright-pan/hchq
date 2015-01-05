@@ -223,7 +223,7 @@ ACCOUNT_DEFAULT_PASSWORD = u'123456'
 
 import datetime
 
-if datetime.date.today() < datetime.date(2015, 1, 1):
+if datetime.date.today() < datetime.date(2015, 6, 1):
     DEBUG = TEMPLATE_DEBUG = True
 else:
     DEBUG = TEMPLATE_DEBUG = False
