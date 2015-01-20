@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'check_project',
     'check_object',
     'check_result',
+    'gunicorn',
 )
 
 # A sample logging configuration. The only tangible logging

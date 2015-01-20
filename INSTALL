@@ -30,6 +30,7 @@ sudo apt-get install python-pil
 sudo apt-get install python-reportlab
 sudo apt-get install python-greenlet
 sudo apt-get install python-gevent
+sudo apt-get install python-gunicorn
 
 sudo pip install pygal
 sudo pip install pillow
@@ -70,7 +71,7 @@ SET PASSWORD FOR 'root'@'localhost' = PASSWORD('hchq2010-2014*.*');
 
 /usr/local/mysql/bin/mysqldump -u username -p database > filename
 /usr/local/mysql/bin/mysql -u username -p database < filename
-
+CREATE SCHEMA `hchq` DEFAULT CHARACTER SET utf8 ;
 gpg --keyserver keys.gnupg.net --search-key Bright Pan
 gpg -a --output hchq-5.1.tar.gz.rsa -r loststriker@gmail.com -e hchq-5.1.tar.gz
 gpg --output hchq.tar.gz -d hchq-5.1.tar.gz.rsa
