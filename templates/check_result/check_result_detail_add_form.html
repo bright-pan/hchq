@@ -12,6 +12,17 @@
                 <span class="help-block">{{ form.pregnant.help_text }}</span>
             {% endif %}
         </div>
+        <div class="form-group {% if form.pregnant_period.errors %} has-error {% endif %}" id="id_div_{{ form.pregnant_period.name }}">
+            <label class="control-label">{{ form.pregnant_period.label }}</label>
+            {{ form.pregnant_period }}
+            {% if form.pregnant_period.errors %}
+                {% for error in form.pregnant_period.errors %}
+                    <span class="help-block badge">{{ error }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="help-block">{{ form.pregnant_period.help_text }}</span>
+            {% endif %}
+        </div>
         <div class="form-group {% if form.ring.errors %} has-error {% endif %}">
             <label class="control-label">{{ form.ring.label }}</label>
             {{ form.ring }}
@@ -21,17 +32,6 @@
                 {% endfor %}
             {% else %}
                 <span class="help-block">{{ form.ring.help_text }}</span>
-            {% endif %}
-        </div>
-        <div class="form-group {% if form.pregnant_period.errors %} has-error {% endif %}">
-            <label class="control-label">{{ form.pregnant_period.label }}</label>
-            {{ form.pregnant_period }}
-            {% if form.pregnant_period.errors %}
-                {% for error in form.pregnant_period.errors %}
-                    <span class="help-block badge">{{ error }}</span>
-                {% endfor %}
-            {% else %}
-                <span class="help-block">{{ form.pregnant_period.help_text }}</span>
             {% endif %}
         </div>
         {% if not perms.department.unlocal %}
