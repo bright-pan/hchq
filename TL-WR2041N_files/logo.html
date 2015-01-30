@@ -1,0 +1,52 @@
+<html><head><title>Logo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+<style type="text/css"><!--
+a.tp:visited{COLOR: #ffffff; TEXT-DECORATION: none; underline: none}
+a.tp:hover {COLOR: #ff4000; TEXT-DECORATION: none}
+a.tp:link {COLOR: #ffffff; TEXT-DECORATION: none; underline: none}
+.font {font-family: "Times New Roman", "宋体";	font-size: 12px;color: #FFFFFF;}
+--></style>
+<script language="JavaScript"><!-- 
+var newWin;
+var url="http://www.tp-link.com.cn";	//弹出页面的url
+if(window.parent == window)	//如果页面不在框架中，则跳转到url
+	window.location.href=url;
+function Click(){ window.event.returnValue=false;}
+document.oncontextmenu=Click;
+function NewW(){
+  if(newWin) newWin.close();   
+  newWin=window.open(url,"","scrollbars=yes,resizable=yes,toolbar=yes,status=yes,menubar=yes,scrollbar=yes,location=yes");	
+  return true;
+}
+function ShowUrl(){
+  status=url;
+  return true;
+}
+function EraseUrl(){
+	status="";
+	return true;
+}
+function dopop(){
+	if(document.forms[0].poped.value == 0){
+		window.open("wizard/wizard1.htm","","width=550,height=280,top=130,left=130");
+		document.forms[0].poped.value = 1;
+	}
+}
+//--></script>
+</head>
+<body leftmargin="0" topmargin="0" bgcolor="#0052A4">
+<table class="font" cellpadding="0" cellspacing="0" border="0" height="94" width="185">
+  <tbody><tr> 
+    <td align="left" bgcolor="#0052A4" height="74" valign="top" width="180"><a href="#" class="tp" onclick="return NewW();" onmouseover="return ShowUrl();" onmouseout="return EraseUrl();"><img src="logo_data/logo.html" border="0" height="74" width="180"></a></td>
+    <td bgcolor="#FFFFFF" width="5">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td colspan="2" bgcolor="#FFFFFF" height="5"> </td>
+  </tr>
+  <tr bgcolor="#0052A4"> 
+    <td colspan="2" height="15">
+	<form name="form1" method="post" action=""><input name="poped" id="poped" value="0" type="hidden"></form>
+	</td>
+  </tr>
+</tbody></table>
+</body></html>
