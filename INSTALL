@@ -13,6 +13,7 @@ sudo apt-get update
 
 sudo apt-get install nginx
 
+sudo apt-get install python-dev
 sudo apt-get install memcached
 sudo apt-get install python-memcache
 
@@ -28,15 +29,16 @@ sudo apt-get install python-setuptools
 sudo apt-get install python-lxml
 sudo apt-get install python-pil
 sudo apt-get install python-reportlab
-sudo apt-get install python-greenlet
-sudo apt-get install python-gevent
-sudo apt-get install python-gunicorn
 
-sudo pip install pygal
-sudo pip install pillow
-sudo pip install geraldo
-sudo pip install django-cache-machine
-sudo pip install django==1.4.15
+sudo pip install pip --upgrade
+sudo pip install greenlet --upgrade
+sudo pip install gevent --upgrade
+sudo pip install gunicorn --upgrade
+sudo pip install pygal --upgrade
+sudo pip install pillow --upgrade
+sudo pip install geraldo --upgrade
+sudo pip install django-cache-machine --upgrade
+sudo pip install django==1.4.17 --upgrade
 
 copy photo to hchq/static/images/
 
