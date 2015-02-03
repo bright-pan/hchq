@@ -1,6 +1,7 @@
 #coding=utf-8
 #file name is SimpleListReport.py
 import chinese #主要是为了解决ReportLab中文bug
+import sys
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
@@ -11,6 +12,8 @@ from django.http import HttpResponse
 
 from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line
+
+from untils import gl
 
 class UserReport(Report):
     title = u'系统用户报表'
@@ -29,7 +32,7 @@ class UserReport(Report):
             Label(text=u"检查人员", top=1.7*cm, left=21.5*cm),
             Label(text=u"登入时间", top=1.5*cm, left=23.7*cm),
             Label(text=u"创建时间", top=1.9*cm, left=23.7*cm),
-            
+
         ]
         borders = {'bottom': Line(stroke_color=navy)}
 
@@ -62,13 +65,11 @@ class UserReport(Report):
             ]
 
 def user_report(query_set=None, request=None):
-    response = HttpResponse(mimetype='application/pdf')
-#    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
     if query_set is not None and request is not None and query_set:
         report = UserReport(query_set)
         report.author = request.user.username
-        report.generate_by(PDFGenerator, filename=response)
-
+        report.generate_by(PDFGenerator, filename=filename)
     else:
         pass
-    return response
+    return filename

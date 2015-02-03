@@ -13,7 +13,7 @@ from django.core.files.base import ContentFile
 from PIL import Image
 from check_object.forms import *
 from untils.my_paginator import pagination_results
-from untils import gl
+from untils import gl, download
 from hchq import settings
 from report.check_object_report import *
 # Create your views here.
@@ -56,7 +56,7 @@ def check_object_add(request, template_name='my.html', next='/', check_object_pa
                                    'page_title': page_title,
                                    },
                                   context_instance=RequestContext(request))
-    
+
 @csrf_protect
 @login_required
 def check_object_add_uploader(request, template_name='my.html', next='/', check_object_page='1'):
@@ -91,7 +91,7 @@ def check_object_add_uploader(request, template_name='my.html', next='/', check_
             raise Http404('Invalid Request!')
     else:
         raise Http404('Invalid Request!')
-    
+
 @csrf_exempt
 @login_required
 def check_object_add_camera(request, template_name='my.html', next='/', check_object_page='1'):
@@ -121,7 +121,7 @@ def check_object_add_camera(request, template_name='my.html', next='/', check_ob
             raise Http404('Invalid Request!')
     else:
         raise Http404('Invalid Request!')
-    
+
 @csrf_protect
 @login_required
 def check_object_detail_modify_uploader(request, template_name='my.html', next='/', check_object_page='1'):
@@ -193,7 +193,7 @@ def check_object_detail_modify_camera(request, template_name='my.html', next='/'
     else:
         raise Http404('Invalid Request!')
 
-    
+
 @csrf_protect
 @login_required
 @user_passes_test(lambda u: (u.has_perm('department.co_list') or u.has_perm('department.co_modify') or u.has_perm('department.co_delete') or u.has_perm('department.co_add')))
@@ -205,7 +205,7 @@ def check_object_show(request, template_name='', next='', check_object_index='1'
 
     if request.method == 'POST':
         raise Http404('Invalid Request!')
-            
+
     else:
         try:
             check_object_id = int(check_object_index)
@@ -332,7 +332,7 @@ def check_object_detail_modify(request, template_name='my.html', next='/', check
     """
 
     page_title = u'编辑检查对象'
-    
+
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -500,7 +500,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
                     check_object_search_form.data_to_session(request)
                     check_object_search_form.init_from_session(request)
                     query_set = check_object_search_form.search()
-                    return check_object_report(query_set, request)
+                    return download.down_zipfile(check_object_report(query_set, request))
                 else:
                     results_page = None
                     return render_to_response(template_name,
@@ -510,7 +510,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
                                                },
                                               context_instance=RequestContext(request))
             else:
-                raise Http404('Invalid Request!')                
+                raise Http404('Invalid Request!')
     else:
         check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
         check_object_search_form.init_from_session(request)
@@ -525,7 +525,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
-    
+
 @csrf_protect
 @login_required
 @permission_required('department.co_list')
@@ -560,7 +560,7 @@ def check_object_invalid(request, template_name='my.html', next='/', check_objec
                     check_object_search_form.data_to_session(request)
                     check_object_search_form.init_from_session(request)
                     query_set = check_object_search_form.unsearch()
-                    return check_object_unreport(query_set, request)
+                    return download.down_zipfile(check_object_unreport(query_set, request))
                 else:
                     results_page = None
                     return render_to_response(template_name,
@@ -590,7 +590,7 @@ def check_object_invalid(request, template_name='my.html', next='/', check_objec
                                                },
                                               context_instance=RequestContext(request))
                 else:
-                    raise Http404('Invalid Request!')                
+                    raise Http404('Invalid Request!')
 
     else:
         check_object_search_form = CheckObjectSearchForm(CheckObjectSearchForm().data_from_session(request))
@@ -606,4 +606,3 @@ def check_object_invalid(request, template_name='my.html', next='/', check_objec
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
-    

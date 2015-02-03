@@ -10,11 +10,15 @@ from django.contrib.auth import get_user
 from django.db.models import ObjectDoesNotExist, Q
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.core.servers.basehttp import FileWrapper
+
+import os, tempfile, zipfile
+
 from PIL import Image
 from check_result.forms import *
 from check_object.forms import *
 from untils.my_paginator import pagination_results
-from untils import gl
+from untils import gl, download
 from hchq import settings
 from report.check_result_report import check_result_report
 from report.certification_report import certification_report
@@ -27,7 +31,7 @@ def check_result_add_uploader(request, template_name='my.html', next='/', check_
     raise Http404('Invalid Request!')
 def check_result_detail_modify_uploader(request, template_name='my.html', next='/', check_result_page='1'):
     raise Http404('Invalid Request!')
-    
+
 @csrf_protect
 @login_required
 @user_passes_test(lambda u: (u.has_perm('department.cr_list') or u.has_perm('department.cr_add')))
@@ -81,7 +85,7 @@ def check_result_show(request, template_name='', next='', next_error='my.html', 
                     page_title = u'受限制'
                     success = u'invalid_project_error'
                 results = CheckResult.objects.filter(check_object=check_object).order_by('-id')
-            else: 
+            else:
                 raise Http404('Invalid Request!')
     else:
         try:
@@ -113,9 +117,9 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
     检查结果修改视图
     """
     user = get_user(request)
-    
+
     page_title = u'选择检查对象'
-    
+
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -127,7 +131,7 @@ def check_result_add(request, template_name='my.html', next_template_name='my.ht
             if check_project is not None:
                 today = datetime.datetime.now().date()
                 if check_project.start_time <= today and today <= check_project.end_time:
-                
+
                     check_result_add_form = CheckResultAddForm(post_data)
                     if check_result_add_form.is_valid():
                         check_result_add_object = check_result_add_form.object()
@@ -288,7 +292,14 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                     check_result_search_form.data_to_session(request)
                     check_result_search_form.init_from_session(request)
                     query_set = check_result_search_form.search()
-                    return check_result_report(query_set, request)
+                    filename = check_result_report(query_set, request)
+                    #filename = '/home/bright/nanopb-0.3.1-linux-x86.tar.gz'
+                    #print __file__
+                    #wrapper = FileWrapper(file(filename))
+                    #response = HttpResponse(wrapper, content_type='text/plain')
+                    #response['Content-Length'] = os.path.getsize(filename)
+                    #
+                    return download.down_zipfile(filename)
                 else:
                     results_page = None
                     return render_to_response(template_name,
@@ -321,9 +332,9 @@ def check_result_special_add(request, template_name='my.html', next_template_nam
     特殊检查结果添加视图
     """
     user = get_user(request)
- 
+
     page_title = u'选择检查对象'
-    
+
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -335,7 +346,7 @@ def check_result_special_add(request, template_name='my.html', next_template_nam
             if check_project is not None:
                 today = datetime.datetime.now().date()
                 if check_project.start_time <= today and today <= check_project.end_time:
-                
+
                     check_result_special_add_form = CheckResultSpecialAddForm(post_data)
                     if check_result_special_add_form.is_valid():
                         check_result_special_add_object = check_result_special_add_form.object()
@@ -452,5 +463,3 @@ def check_result_special_detail_add(request, template_name='my.html', next='/', 
             raise Http404('Invalid Request!')
     else:
         raise Http404('Invalid Request!')
-
-    

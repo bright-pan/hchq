@@ -1,5 +1,7 @@
 #coding=utf-8
 #file name is SimpleListReport.py
+import sys
+
 import chinese #主要是为了解决ReportLab中文bug
 
 from reportlab.lib.pagesizes import A4
@@ -80,24 +82,22 @@ class CheckObjectReport(Report):
             ]
 
 def check_object_report(query_set=None, request=None):
-    response = HttpResponse(mimetype='application/pdf')
-#    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
     if query_set is not None and request is not None and query_set:
         report = CheckObjectReport(query_set)
         report.author = request.user.username
-        report.generate_by(PDFGenerator, filename=response)
+        report.generate_by(PDFGenerator, filename=filename)
     else:
         pass
-    return response
+    return filename
 
 def check_object_unreport(query_set=None, request=None):
-    response = HttpResponse(mimetype='application/pdf')
-#    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
     if query_set is not None and request is not None and query_set:
         report = CheckObjectReport(query_set)
         report.title = u'已删对象报表'
         report.author = request.user.username
-        report.generate_by(PDFGenerator, filename=response)
+        report.generate_by(PDFGenerator, filename=filename)
     else:
         pass
-    return response
+    return filename

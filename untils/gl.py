@@ -1,5 +1,8 @@
 #coding=utf-8
 from django.utils.translation import ugettext_lazy as _
+
+TEMP_PATH = u'temp/'
+
 ############################################################
 #系统用户表单
 ############################################################

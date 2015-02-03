@@ -23,7 +23,7 @@ def report_statistics(request, template_name='my.html', next='/', ):
     检查项目数据统计
     """
     page_title = u'检查项目数据统计'
-    
+
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -39,7 +39,7 @@ def report_statistics(request, template_name='my.html', next='/', ):
                                            },
                                           context_instance=RequestContext(request))
         else:
-            raise Http404('Invalid Request!')                
+            raise Http404('Invalid Request!')
     else:
         report_statistics_form = ReportStatisticsForm()
         report_statistics_form.init_check_project()
@@ -58,7 +58,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
     """
     page_title = u'检查对象数据统计'
     user = get_user(request)
-    
+
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -127,7 +127,7 @@ def report_check_or_not(request, template_name='my.html', next='/', ):
                                                            },
                                                           context_instance=RequestContext(request))
                         else:
-                            raise Http404('Invalid Request!')                   
+                            raise Http404('Invalid Request!')
     else:
         report_check_or_not_form = ReportCheckOrNotForm()
         report_check_or_not_form.init_check_project()

@@ -1,9 +1,9 @@
-#% -*- coding: utf-8 -*-
 #coding=utf-8
 #file name is SimpleListReport.py
-
 from __future__ import division
 
+import os
+import sys
 import chinese #主要是为了解决ReportLab中文bug
 import datetime
 from reportlab.lib.pagesizes import A4
@@ -22,14 +22,14 @@ from geraldo import Report, ReportBand, Label, ObjectValue, SystemField,\
     FIELD_ACTION_COUNT, BAND_WIDTH, landscape, Line, Image
 
 from untils import gl
-    
+
 class CheckResultReport(Report):
     title = u'检查结果报表'
     page_size = landscape(A4)
     check_project = None
     qs_check_object = None
     qs_check_result = None
-    
+
     class band_page_header(ReportBand):
         height = 2.5*cm
         elements = [
@@ -72,7 +72,7 @@ class CheckResultReport(Report):
     def get_result_value(self, instance=None):
         if instance is None:
             return u''
-        return check_result_filter.local(instance.result)        
+        return check_result_filter.local(instance.result)
 
     def get_family_value(self, instance = None):
         if instance is not None:
@@ -87,7 +87,7 @@ class CheckResultReport(Report):
     def get_service_area_total_count(self, value=None, service_area=None):
         if service_area is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department__service_area=service_area).count()
         check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=service_area)
         check_count = check_result.count()
@@ -103,11 +103,11 @@ class CheckResultReport(Report):
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)
     def get_department_total_count(self, value=None, service_area_department=None):
         if service_area_department is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department=service_area_department).count()
         check_result = self.qs_check_result.filter(check_object__service_area_department=service_area_department)
         check_count = check_result.count()
@@ -124,11 +124,10 @@ class CheckResultReport(Report):
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)
 
 def check_result_report(query_set=None, request=None):
-    response = HttpResponse(mimetype='application/pdf')
-#    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
     if query_set is not None and request is not None and query_set:
         report = CheckResultReport(query_set)
         report.author = request.user.username
@@ -150,8 +149,7 @@ def check_result_report(query_set=None, request=None):
                         get_value=lambda instance: report.get_result_value(instance)),
             ObjectValue(attribute_name='check_time', top=0.5*cm, left=24*cm),
             ]
-
-        report.generate_by(PDFGenerator, filename=response)
+        report.generate_by(PDFGenerator, filename=filename)
     else:
         pass
-    return response
+    return filename

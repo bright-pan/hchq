@@ -2,6 +2,8 @@
 
 from __future__ import division
 
+import sys
+
 import chinese #主要是为了解决ReportLab中文bug
 import datetime
 from reportlab.lib.pagesizes import A4
@@ -23,7 +25,7 @@ from service_area.models import *
 from report.check_result_report import CheckResultReport
 from django.db.models import ObjectDoesNotExist
 
-from untils import gl
+from untils import gl, download
 
 class CheckProjectReport(Report):
     title = u'江西省会昌县环孕检统计报表'
@@ -69,7 +71,7 @@ class CheckProjectReport(Report):
             return u''
 
         check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=instance)
-        
+
         check_count = check_result.count()
         pregnant_count = check_result.filter(result__startswith='pregnant').count()
         special_count = check_result.filter(result__contains='special').count()
@@ -78,12 +80,12 @@ class CheckProjectReport(Report):
     def get_not_check_count(self, instance=None):
         if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department__service_area=instance).count()
 
         check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=instance)
         check_count = check_result.count()
-        
+
         if check_object_count > check_count:
             not_check_count = check_object_count - check_count
         else:
@@ -93,7 +95,7 @@ class CheckProjectReport(Report):
     def get_check_object_count(self, instance=None):
         if instance is None or self.qs_check_object is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department__service_area=instance).count()
 
         return u'%s' % check_object_count
@@ -128,18 +130,18 @@ class CheckProjectReport(Report):
                                                                                                                  special_count,
                                                                                                                  not_check_count,
                                                                                                                  check_object_count,
-                                                                                                                 complete_radio)     
-    
+                                                                                                                 complete_radio)
+
 
     def get_complete_radio(self, instance=None):
         if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department__service_area=instance).count()
 
         check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=instance)
         check_count = check_result.count()
-        
+
         if check_object_count > check_count:
             complete_radio = (check_count / check_object_count) * 100.0
         else:
@@ -155,7 +157,7 @@ class ServiceAreaReport(Report):
     check_project = None
     qs_check_object = None
     qs_check_result = None
-    
+
     class band_page_header(ReportBand):
         height = 2.5*cm
         elements = [
@@ -191,7 +193,7 @@ class ServiceAreaReport(Report):
     def get_service_area_total_count(self, value=None, service_area=None):
         if service_area is None or self.qs_check_object is None or self.qs_check_result is None or self.check_project is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department__service_area=service_area).count()
         check_result = self.qs_check_result.filter(check_object__service_area_department__service_area=service_area)
         check_count = check_result.count()
@@ -207,7 +209,7 @@ class ServiceAreaReport(Report):
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)
 
     def get_department_check_count(self, instance=None):
         if instance is None or self.qs_check_result is None:
@@ -244,7 +246,7 @@ class ServiceAreaReport(Report):
     def get_department_complete_radio(self, instance=None):
         if instance is None or self.qs_check_object is None or self.qs_check_result is None:
             return u''
-        
+
         check_object_count = self.qs_check_object.filter(service_area_department=instance).count()
 
         check_result = self.qs_check_result.filter(check_object__service_area_department=instance)
@@ -331,7 +333,7 @@ class DepartmentReport(Report):
             else:
                 complete_radio = 100.00
 
-        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)            
+        return u'检查项目：%s | 总已检人数(有孕|特殊)：%s(%s|%s) | 总未检人数：%s | 总人数：%s | 总完成度：%.2f%%' % (self.check_project.name, check_count, pregnant_count, special_count, not_check_count, check_object_count, complete_radio)
 
     def get_ctp_value(self, instance=None):
         if instance is not None and gl.check_object_ctp_local.has_key(instance.ctp_method):
@@ -350,7 +352,7 @@ class CoverReport(Report):
                         style={'fontName': 'yahei', 'fontSize': 30, 'alignment': TA_CENTER, 'textColor': navy}),
             SystemField(expression=u'江 西 省 会 昌 县', top=7.5*cm, left=0, width=BAND_WIDTH,
                         style={'fontName': 'yahei', 'fontSize': 30, 'alignment': TA_CENTER, 'textColor': navy}),
-            
+
         ]
 
     class band_page_footer(ReportBand):
@@ -365,13 +367,8 @@ class CoverReport(Report):
 
 
 def check_project_report(query_set=None, request=None, has_department_info=False, has_pregnant_info=False, has_special_info=False, has_check=False, has_not=False, check_project_id=None):
-    response = cache.get('check_project_report_%s_%s_%s_%s_%s_%s_%s' % (request.user.id, check_project_id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not))
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
 
-    if response is not None:
-        return response
-    
-    response = HttpResponse(mimetype='application/pdf')
-    
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -384,15 +381,15 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             qs_check_result = CheckResult.objects.filter(check_project=check_project, is_latest=True)
         except ObjectDoesNotExist:
             check_project = None
-        
+
     else:
         check_project = None
-#    response['Content-Disposition'] = 'attachment; filename=user_report.pdf'
+
     if query_set is not None and request is not None and query_set:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         if request.user.has_perm('department.unlocal'):
             check_project_report = CheckProjectReport(query_set)
             check_project_report.qs_check_object = qs_check_object
@@ -417,7 +414,6 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                             get_value=lambda instance: check_project_report.get_complete_radio(instance)),
                 ]
             canvas = check_project_report.generate_by(PDFGenerator, canvas=canvas, return_canvas=True)
-#        check_project_report.generate_by(PDFGenerator, filename=response)
             query_set_service_area = ServiceArea.objects.filter(is_active=True).order_by('id')
         else:
             user_service_area_name = request.user.get_profile().service_area_department.service_area.name
@@ -543,7 +539,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                 else:
                     pass
             else:
-                pass            
+                pass
             if has_check is True or has_not is True:
                 for service_area_department_object in query_set_service_area_department:
                     if has_not is True:
@@ -589,7 +585,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
                         #                                                                                                                     updated_at__lt=check_project_endtime,
                         #                                                                                                                     ).filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project).order_by('id')
                         query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-                        
+
                         if query_set_check_object_in_department:
                             department_report = DepartmentReport(query_set_check_object_in_department)
                             department_report.qs_check_object = qs_check_object
@@ -629,8 +625,7 @@ def check_project_report(query_set=None, request=None, has_department_info=False
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -638,16 +633,13 @@ def check_project_report(query_set=None, request=None, has_department_info=False
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_project_report_%s_%s_%s_%s_%s_%s_%s' % (request.user.id, check_project_id, has_department_info, has_pregnant_info, has_special_info, has_check, has_not), response, 15*60)
-    return response
+    return filename
 
 def check_object_check_service_area_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -664,15 +656,13 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area = query_set
         qs_temp = []
         for service_area_object in query_set_service_area:
@@ -752,8 +742,8 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -761,16 +751,13 @@ def check_object_check_service_area_report(query_set=None, request=None, check_p
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_check_service_area_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_check_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -787,24 +774,22 @@ def check_object_check_service_area_department_report(query_set=None, request=No
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             query_set_check_object_in_department = qs_check_object.filter(service_area_department=service_area_department_object).filter(check_result__check_project=check_project, check_result__is_latest=True).order_by('id')
-                
+
             if query_set_check_object_in_department:
                 department_report = DepartmentReport(query_set_check_object_in_department)
                 department_report.check_project = check_project
                 department_report.qs_check_object = qs_check_object
-                department_report.qs_check_result = qs_check_result                
+                department_report.qs_check_result = qs_check_result
                 department_report.author = request.user.username
                 department_report.title = u'%s - %s - 已检对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 department_report.band_page_header.elements += [
@@ -835,8 +820,7 @@ def check_object_check_service_area_department_report(query_set=None, request=No
             cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -844,16 +828,13 @@ def check_object_check_service_area_department_report(query_set=None, request=No
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_check_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_not_service_area_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -869,15 +850,15 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
             check_project = None
     else:
         check_project = None
-        
+
     if query_set is not None and request is not None and query_set:
-        response = HttpResponse(mimetype='application/pdf')
+
         if check_project == None:
-            return response
+            return filename
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area = query_set
         qs_temp = []
         for service_area_object in query_set_service_area:
@@ -963,8 +944,8 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -972,16 +953,13 @@ def check_object_not_service_area_report(query_set=None, request=None, check_pro
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_not_service_area_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_not_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -998,15 +976,13 @@ def check_object_not_service_area_department_report(query_set=None, request=None
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             #query_set_not_check_object_in_department = CheckObject.objects.exclude(created_at__gt=check_project_endtime).exclude(is_active=False,
@@ -1051,8 +1027,8 @@ def check_object_not_service_area_department_report(query_set=None, request=None
             cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1060,15 +1036,13 @@ def check_object_not_service_area_department_report(query_set=None, request=None
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_not_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
+
 def check_object_service_area_has_pregnant_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1083,16 +1057,15 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
             check_project = None
     else:
         check_project = None
-        
+
     if query_set is not None and request is not None and query_set:
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area = query_set
         qs_temp = []
         for service_area_object in query_set_service_area:
@@ -1172,8 +1145,8 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1181,16 +1154,13 @@ def check_object_service_area_has_pregnant_report(query_set=None, request=None, 
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_service_area_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_service_area_department_has_pregnant_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1207,15 +1177,13 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             query_set_check_result_has_pregnant_in_department = qs_check_result.filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='pregnant').order_by('check_object.id')
@@ -1224,7 +1192,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
                 check_result_report = CheckResultReport(query_set_check_result_has_pregnant_in_department)
                 check_result_report.check_project = check_project
                 check_result_report.qs_check_object = qs_check_object
-                check_result_report.qs_check_result = qs_check_result                
+                check_result_report.qs_check_result = qs_check_result
                 check_result_report.author = request.user.username
                 check_result_report.title = u'%s-%s-有孕对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 check_result_report.band_page_header.elements += [
@@ -1255,8 +1223,7 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
             cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1264,15 +1231,13 @@ def check_object_service_area_department_has_pregnant_report(query_set=None, req
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_service_area_department_has_pregnant_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
+
 def check_object_service_area_has_special_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1287,17 +1252,15 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
             check_project = None
     else:
         check_project = None
-        
-    if query_set is not None and request is not None and query_set:
 
-        response = HttpResponse(mimetype='application/pdf')
+    if query_set is not None and request is not None and query_set:
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area = query_set
         qs_temp = []
         for service_area_object in query_set_service_area:
@@ -1316,7 +1279,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
                 service_area_report.check_project = check_project
                 service_area_report.author = request.user.username
                 service_area_report.qs_check_object = qs_check_object
-                service_area_report.qs_check_result = qs_check_result                
+                service_area_report.qs_check_result = qs_check_result
                 service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
                 service_area_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
@@ -1346,7 +1309,7 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
                     check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
                     check_result_report.check_project = check_project
                     check_result_report.qs_check_object = qs_check_object
-                    check_result_report.qs_check_result = qs_check_result   
+                    check_result_report.qs_check_result = qs_check_result
                     check_result_report.author = request.user.username
                     check_result_report.title = u'%s-%s-特殊检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                     check_result_report.band_page_header.elements += [
@@ -1377,8 +1340,8 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1386,16 +1349,13 @@ def check_object_service_area_has_special_report(query_set=None, request=None, c
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_service_area_has_special_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_service_area_department_has_special_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1412,15 +1372,13 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
@@ -1429,7 +1387,7 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
                 check_result_report = CheckResultReport(query_set_check_result_has_special_in_department)
                 check_result_report.check_project = check_project
                 check_result_report.qs_check_object = qs_check_object
-                check_result_report.qs_check_result = qs_check_result                
+                check_result_report.qs_check_result = qs_check_result
                 check_result_report.author = request.user.username
                 check_result_report.title = u'%s-%s-特殊检查对象名单' % (service_area_department_object.service_area.name, service_area_department_object.department.name)
                 check_result_report.band_page_header.elements += [
@@ -1460,8 +1418,8 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
             cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1469,16 +1427,13 @@ def check_object_service_area_department_has_special_report(query_set=None, requ
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_service_area_department_has_special_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_service_area_report(query_set=None, request=None, check_project_id=None):
-    response = cache.get('check_object_service_area_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1491,15 +1446,13 @@ def check_object_service_area_report(query_set=None, request=None, check_project
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area = query_set
         qs_temp = []
         for service_area_object in query_set_service_area:
@@ -1518,7 +1471,7 @@ def check_object_service_area_report(query_set=None, request=None, check_project
                 service_area_report.check_project = check_project
                 service_area_report.author = request.user.username
                 service_area_report.qs_check_object = qs_check_object
-                service_area_report.qs_check_result = qs_check_result                
+                service_area_report.qs_check_result = qs_check_result
                 service_area_report.title = u'%s - 环孕检统计报表' % service_area_object.name
                 service_area_report.band_page_header.elements += [
                     Label(text=u'', top=1.2*cm, left=0, width=BAND_WIDTH,
@@ -1580,8 +1533,8 @@ def check_object_service_area_report(query_set=None, request=None, check_project
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1589,17 +1542,13 @@ def check_object_service_area_report(query_set=None, request=None, check_project
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_service_area_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
+    return filename
 
 def check_object_service_area_department_report(query_set=None, request=None, check_project_id=None):
-    #print check_project_id
-    response = cache.get('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id))
-    if response is not None:
-        return response
+    filename = gl.TEMP_PATH + "%s_%s.pdf" % (sys._getframe().f_code.co_name, request.user.id)
+
     if check_project_id is not None:
         try:
             check_project = CheckProject.objects.get(pk=check_project_id, is_active=True)
@@ -1616,15 +1565,13 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
         check_project = None
 
     if query_set is not None and request is not None and query_set:
-
-        response = HttpResponse(mimetype='application/pdf')
         if check_project == None:
-            return response
-        
+            return filename
+
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        canvas = cover_report.generate_by(PDFGenerator, filename=response, return_canvas=True)
+        canvas = cover_report.generate_by(PDFGenerator, filename=filename, return_canvas=True)
         query_set_service_area_department = query_set
         for service_area_department_object in query_set_service_area_department:
             #query_set_check_result_has_special_in_department = CheckResult.objects.filter(check_project = check_project).filter(check_object__service_area_department=service_area_department_object).filter(result__startswith='special').order_by('check_object.id')
@@ -1664,8 +1611,8 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
             cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
         cover_report.title = u'%s' % check_project.name
-        cover_report.generate_by(PDFGenerator, canvas=canvas)
-        
+        cover_report.generate_by(PDFGenerator, canvas=canvas, filename=filename)
+
     else:
         cover_report = CoverReport(query_set)
         cover_report.author = request.user.username
@@ -1673,9 +1620,6 @@ def check_object_service_area_department_report(query_set=None, request=None, ch
             cover_report.title = u'%s' % check_project.name
         else:
             cover_report.title = u'无效报表'
-        cover_report.generate_by(PDFGenerator, filename=response)
-        return response
+        cover_report.generate_by(PDFGenerator, filename=filename)
 
-    cache.set('check_object_service_area_department_report_%s_%s' % (check_project_id, query_set[0].id), response, 15*60)
-    return response
-
+    return filename

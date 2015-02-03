@@ -14,7 +14,7 @@ from django.views.decorators.cache import cache_page
 
 from account.forms import *
 from untils.my_paginator import pagination_results
-from untils import gl
+from untils import gl, download
 from hchq import settings
 from report.user_report import user_report
 
@@ -135,7 +135,7 @@ def login(request, template_name = 'account/login.html', next='/'):
             pass
     else:
         login_form = LoginForm()
-    
+
     return render_to_response(template_name, {'form': login_form, 'page_title': page_title}, context_instance=RequestContext(request))
 
 def exit(request, template_name = 'my.html', next = '/'):
@@ -147,7 +147,7 @@ def exit(request, template_name = 'my.html', next = '/'):
 @login_required
 
 def person_password_modify(request, template_name = '', next = '/'):
-    
+
     page_title = u'修改密码'
     user = get_user(request)
     post_data = None
@@ -171,21 +171,21 @@ def person_password_modify(request, template_name = '', next = '/'):
                               {'form': modify_password_form,
                                'fault': fault,
                                'page_title': page_title},
-                              context_instance=RequestContext(request))        
+                              context_instance=RequestContext(request))
 
 
 @login_required
 def person_management(request, template_name = 'my.html', next = '/'):
-    
+
     page_title = u'个人信息'
-    return render_to_response(template_name, 
+    return render_to_response(template_name,
                               {'page_title': page_title},
-                              context_instance=RequestContext(request))    
+                              context_instance=RequestContext(request))
 
 @csrf_protect
 @login_required
 def test_person_password_modify(request, template_name = 'my.html', next = '/'):
-    
+
     page_title = u'密码修改'
     return render_to_response(template_name, {'page_title': page_title}, context_instance=RequestContext(request))
 
@@ -300,7 +300,7 @@ def role_delete(request, template_name='my.html', next='/', role_page='1',):
                 pass
             data = {'role_name':request.session.get(gl.session_role_name, u''),
                     'is_fuzzy':request.session.get(gl.session_role_is_fuzzy, False),
-                    }        
+                    }
             role_search_form = RoleSearchForm(data)
             if role_search_form.is_valid():
                 if role_search_form.is_null() is False:
@@ -347,7 +347,7 @@ def role_delete(request, template_name='my.html', next='/', role_page='1',):
         role_delete_form = RoleDeleteForm()
         data = {'role_name':request.session.get(gl.session_role_name, u''),
                 'is_fuzzy':request.session.get(gl.session_role_is_fuzzy, False),
-                }        
+                }
         role_search_form = RoleSearchForm(data)
         if role_search_form.is_valid():
             if role_search_form.is_null() is False:
@@ -439,7 +439,7 @@ def role_modify(request, template_name='my.html', next='/', role_page='1',):
         role_modify_form = RoleModifyForm()
         data = {'role_name':request.session.get(gl.session_role_name, u''),
                 'is_fuzzy':request.session.get(gl.session_role_is_fuzzy, False),
-                }        
+                }
         role_search_form = RoleSearchForm(data)
         if role_search_form.is_valid():
             if role_search_form.is_null() is False:
@@ -463,7 +463,7 @@ def role_modify(request, template_name='my.html', next='/', role_page='1',):
                                    },
                                   context_instance=RequestContext(request))
 
-    
+
 @csrf_protect
 @login_required
 @permission_required('department.role_management')
@@ -502,7 +502,7 @@ def role_list(request, template_name='my.html', next='/', role_page='1',):
     else:
         data = {'role_name':request.session.get(gl.session_role_name, u''),
                 'is_fuzzy':request.session.get(gl.session_role_is_fuzzy, False),
-                }        
+                }
         role_search_form = RoleSearchForm(data)
         if role_search_form.is_valid():
             if role_search_form.is_null() is False:
@@ -548,7 +548,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
 #        print str(query.pk), query.name
         choices += (str(query.pk), query.name),
 
-    
+
     if request.method == 'POST':
         post_data = request.POST.copy()
         submit_value = post_data.get(u'submit', False)
@@ -565,7 +565,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
                 role_permission_add_form.fields['role_permission_name'].choices = choices
             else:
                 pass
-                                   
+
             data = {'role_permission_name':request.session.get(gl.session_role_permission_name, u''),
                     'is_fuzzy':request.session.get(gl.session_role_permission_is_fuzzy, False),
                     }
@@ -628,7 +628,7 @@ def role_permission_add(request, template_name='my.html', next='/', role_permiss
         role_permission_search_form = RolePermissionSearchForm(data)
         if role_permission_search_form.is_valid():
             query_set_temp = permission_query_set.filter(group__pk=role.pk)
-            
+
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -680,7 +680,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
                 role_permission_delete_form.role_permission_delete(role)
             else:
                 pass
-                                   
+
             data = {'role_permission_name':request.session.get(gl.session_role_permission_name, u''),
                     'is_fuzzy':request.session.get(gl.session_role_permission_is_fuzzy, False),
                     }
@@ -706,7 +706,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
                 if role_permission_search_form.is_valid():
                     role_permission_search_form.save_to_session(request)
                     query_set_temp = permission_query_set.filter(group__pk=role.pk)
-                
+
                     if role_permission_search_form.is_null() is False:
                         if role_permission_search_form.fuzzy_search() is False:
                             query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -742,7 +742,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
         role_permission_search_form = RolePermissionSearchForm(data)
         if role_permission_search_form.is_valid():
             query_set_temp = permission_query_set.filter(group__pk=role.pk)
-            
+
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -768,7 +768,7 @@ def role_permission_delete(request, template_name='my.html', next='/', role_perm
                                    'role_name':role.name,
                                    },
                                   context_instance=RequestContext(request))
-    
+
 @csrf_protect
 @login_required
 @permission_required('department.role_management')
@@ -792,7 +792,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
         if role_permission_search_form.is_valid():
             role_permission_search_form.save_to_session(request)
             query_set_temp = permission_query_set.filter(group__pk=role.pk)
-            
+
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -801,7 +801,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
                     query_set = query_set_temp.filter(name__icontains=role_permission_search_form.cleaned_data['role_permission_name'])
             else:
                 query_set = query_set_temp
-                
+
         else:
 #                    query_set = role_permission.objects.filter(Q(is_active = True))
             query_set = None
@@ -824,7 +824,7 @@ def role_permission_list(request, template_name='my.html', next='/', role_permis
         role_permission_search_form = RolePermissionSearchForm(data)
         if role_permission_search_form.is_valid():
             query_set_temp = permission_query_set.filter(group__pk=role.pk)
-            
+
             if role_permission_search_form.is_null() is False:
                 if role_permission_search_form.fuzzy_search() is False:
                     query_set = query_set_temp.filter(name__startswith=role_permission_search_form.cleaned_data['role_permission_name'])
@@ -923,7 +923,7 @@ def account_show(request, template_name='', next='', account_index='1'):
                 success = False
         else:
             raise Http404('Invalid Request!')
-            
+
     else:
         try:
             account_id = int(account_index)
@@ -933,7 +933,7 @@ def account_show(request, template_name='', next='', account_index='1'):
             result = UserProfile.objects.get(pk=account_id, user__is_active=True, user__is_superuser=False, user__is_staff=False)
         except ObjectDoesNotExist:
             raise Http404('Invalid Request!')
-        
+
     return render_to_response(template_name,
                               {'result': result,
                                'success': success,
@@ -993,7 +993,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                         account_search_form.data_to_session(request)
                         account_search_form.init_from_session(request)
                         query_set = account_search_form.search(request)
-                        return user_report(query_set, request)
+                        return download.down_zipfile(user_report(query_set, request))
                     else:
                         results_page = None
                         return render_to_response(template_name,
@@ -1107,7 +1107,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
                         account_search_form.data_to_session(request)
                         account_search_form.init_from_session(request)
                         query_set = account_search_form.search(request)
-                        return user_report(query_set, request)
+                        return download.down_zipfile(user_report(query_set, request))
                     else:
                         results_page = None
                         return render_to_response(template_name,
@@ -1178,7 +1178,7 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
                     account_search_form.data_to_session(request)
                     account_search_form.init_from_session(request)
                     query_set = account_search_form.search(request)
-                    return user_report(query_set, request)
+                    return download.down_zipfile(user_report(query_set, request))
                 else:
                     results_page = None
                     return render_to_response(template_name,
@@ -1187,7 +1187,7 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
                                                'results_page': results_page,
                                                },
                                               context_instance=RequestContext(request))
-                
+
             else:
                 raise Http404('Invalid Request!')
     else:
@@ -1204,7 +1204,7 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
                                    'results_page': results_page,
                                    },
                                   context_instance=RequestContext(request))
-    
+
 @cache_page(60 * 15)
 def role_name_ajax(request, template_name='my.html', next='/'):
 
