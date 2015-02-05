@@ -6,6 +6,13 @@ from sendfile import sendfile
 
 def down_zipfile(request, path=None):
     if path:
+	response = HttpResponse()
+	name=path.split('/')[-1]
+	response['Content_Type']='application/octet-stream'
+	response["Content-Disposition"] = "attachment; filename=%s" % name
+	response['Content-Length'] = os.path.getsize(path)
+	response['X-Accel-Redirect'] = "/protected/%s" % name
+	return response
 	# send myfile.pdf as an attachment (with name myfile.pdf)
 	return sendfile(request, path, attachment=True)
 
