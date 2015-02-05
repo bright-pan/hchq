@@ -1,13 +1,13 @@
-deb http://debian.ustc.edu.cn/ubuntu/ trusty main restricted universe multiverse
-deb http://debian.ustc.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
-deb http://debian.ustc.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
-deb http://debian.ustc.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
-deb http://debian.ustc.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
-deb-src http://debian.ustc.edu.cn/ubuntu/ trusty main restricted universe multiverse
-deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
-deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
-deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
-deb-src http://debian.ustc.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
+deb https://debian.ustc.edu.cn/ubuntu/ trusty main restricted universe multiverse
+deb https://debian.ustc.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
+deb https://debian.ustc.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
+deb https://debian.ustc.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
+deb https://debian.ustc.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
+deb-src https://debian.ustc.edu.cn/ubuntu/ trusty main restricted universe multiverse
+deb-src https://debian.ustc.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
+deb-src https://debian.ustc.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
+deb-src https://debian.ustc.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
+deb-src https://debian.ustc.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
 
 sudo apt-get update
 
@@ -31,14 +31,15 @@ sudo apt-get install python-pil
 sudo apt-get install python-reportlab
 
 sudo pip install pip --upgrade
-sudo pip install greenlet --upgrade
-sudo pip install gevent --upgrade
-sudo pip install gunicorn --upgrade
-sudo pip install pygal --upgrade
-sudo pip install pillow --upgrade
-sudo pip install geraldo --upgrade
-sudo pip install django-cache-machine --upgrade
-sudo pip install django==1.4.17 --upgrade
+sudo pip install greenlet
+sudo pip install gevent
+sudo pip install gunicorn
+sudo pip install pygal
+sudo pip install pillow
+sudo pip install geraldo
+sudo pip install django-cache-machine
+sudo pip install django==1.4.17
+sudo pip install django-sendfile
 
 copy photo to hchq/static/images/
 

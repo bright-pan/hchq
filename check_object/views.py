@@ -500,7 +500,7 @@ def check_object_list(request, template_name='my.html', next='/', check_object_p
                     check_object_search_form.data_to_session(request)
                     check_object_search_form.init_from_session(request)
                     query_set = check_object_search_form.search()
-                    return download.down_zipfile(check_object_report(query_set, request))
+                    return download.down_zipfile(request, check_object_report(query_set, request))
                 else:
                     results_page = None
                     return render_to_response(template_name,
@@ -560,7 +560,7 @@ def check_object_invalid(request, template_name='my.html', next='/', check_objec
                     check_object_search_form.data_to_session(request)
                     check_object_search_form.init_from_session(request)
                     query_set = check_object_search_form.unsearch()
-                    return download.down_zipfile(check_object_unreport(query_set, request))
+                    return download.down_zipfile(request, check_object_unreport(query_set, request))
                 else:
                     results_page = None
                     return render_to_response(template_name,

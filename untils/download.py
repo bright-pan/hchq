@@ -2,9 +2,13 @@
 import os, tempfile, zipfile
 from django.core.servers.basehttp import FileWrapper
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden,Http404
+from sendfile import sendfile
 
-def down_zipfile(path=None):
+def down_zipfile(request, path=None):
     if path:
+	# send myfile.pdf as an attachment (with name myfile.pdf)
+	return sendfile(request, path, attachment=True)
+
 	filename = path.split('/')[-1]
 	temp = tempfile.TemporaryFile()
 	archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)

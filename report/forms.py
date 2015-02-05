@@ -123,37 +123,37 @@ class ReportCheckOrNotForm(forms.Form):
     def check_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return download.down_zipfile(check_object_check_service_area_report(query_set, request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_check_service_area_report(query_set, request, self.cleaned_data['check_project']))
         else:
-            return download.down_zipfile(check_object_check_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_check_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
 
     def not_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return download.down_zipfile(check_object_not_service_area_report(query_set, request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_not_service_area_report(query_set, request, self.cleaned_data['check_project']))
         else:
-            return download.down_zipfile(check_object_not_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_not_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
 
     def has_pregnant_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return download.down_zipfile(check_object_service_area_has_pregnant_report(query_set, request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_service_area_has_pregnant_report(query_set, request, self.cleaned_data['check_project']))
         else:
-            return download.down_zipfile(check_object_service_area_department_has_pregnant_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_service_area_department_has_pregnant_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
 
     def has_special_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return download.down_zipfile(check_object_service_area_has_special_report(query_set, request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_service_area_has_special_report(query_set, request, self.cleaned_data['check_project']))
         else:
-            return download.down_zipfile(check_object_service_area_department_has_special_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_service_area_department_has_special_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
 
     def has_total_report(self, request=None):
         if self.service_area_department_object is None:
             query_set = ServiceArea.objects.filter(name=self.cleaned_data['service_area_name'], is_active=True)
-            return download.down_zipfile(check_object_service_area_report(query_set, request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_service_area_report(query_set, request, self.cleaned_data['check_project']))
         else:
-            return download.down_zipfile(check_object_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
+            return download.down_zipfile(request, check_object_service_area_department_report([self.service_area_department_object], request, self.cleaned_data['check_project']))
 
 class ReportStatisticsForm(forms.Form):
 
@@ -263,4 +263,4 @@ class ReportStatisticsForm(forms.Form):
             has_not = False
 
         query_set = ServiceArea.objects.filter(is_active=True).order_by('id')
-        return download.down_zipfile(check_project_report(query_set, request, has_department_info, has_pregnant_info, has_special_info, has_check, has_not, self.cleaned_data['check_project']))
+        return download.down_zipfile(request, check_project_report(query_set, request, has_department_info, has_pregnant_info, has_special_info, has_check, has_not, self.cleaned_data['check_project']))

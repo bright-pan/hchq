@@ -993,7 +993,7 @@ def account_modify(request, template_name='my.html', next_template_name='my.html
                         account_search_form.data_to_session(request)
                         account_search_form.init_from_session(request)
                         query_set = account_search_form.search(request)
-                        return download.down_zipfile(user_report(query_set, request))
+                        return download.down_zipfile(request, user_report(query_set, request))
                     else:
                         results_page = None
                         return render_to_response(template_name,
@@ -1107,7 +1107,7 @@ def account_delete(request, template_name='my.html', next='/', account_page='1',
                         account_search_form.data_to_session(request)
                         account_search_form.init_from_session(request)
                         query_set = account_search_form.search(request)
-                        return download.down_zipfile(user_report(query_set, request))
+                        return download.down_zipfile(request, user_report(query_set, request))
                     else:
                         results_page = None
                         return render_to_response(template_name,
@@ -1178,7 +1178,7 @@ def account_list(request, template_name='my.html', next='/', account_page='1',):
                     account_search_form.data_to_session(request)
                     account_search_form.init_from_session(request)
                     query_set = account_search_form.search(request)
-                    return download.down_zipfile(user_report(query_set, request))
+                    return download.down_zipfile(request, user_report(query_set, request))
                 else:
                     results_page = None
                     return render_to_response(template_name,

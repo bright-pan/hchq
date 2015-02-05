@@ -299,7 +299,7 @@ def check_result_list(request, template_name='my.html', next='/', check_result_p
                     #response = HttpResponse(wrapper, content_type='text/plain')
                     #response['Content-Length'] = os.path.getsize(filename)
                     #
-                    return download.down_zipfile(filename)
+                    return download.down_zipfile(request, filename)
                 else:
                     results_page = None
                     return render_to_response(template_name,

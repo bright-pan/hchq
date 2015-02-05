@@ -136,7 +136,7 @@ INSTALLED_APPS = (
     #'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     #'django.contrib.admindocs',
-
+    'sendfile',
     # local app
     'untils',
     'account',
@@ -237,3 +237,16 @@ EMAIL_HOST_PASSWORD = 'hchq2011django'
 EMAIL_HOST_USER = 'hchq.django@gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+if datetime.date.today() < datetime.date(2015, 6, 1):
+    DEBUG = TEMPLATE_DEBUG = True
+else:
+    DEBUG = TEMPLATE_DEBUG = False
+
+
+# SENDFILE settings
+SENDFILE_BACKEND = 'sendfile.backends.development'
+#SENDFILE_BACKEND = 'sendfile.backends.xsendfile'
+#SENDFILE_BACKEND = 'sendfile.backends.nginx'
+SENDFILE_ROOT = os.path.join(CURRENT_PATH, 'temp')
+SENDFILE_URL = '/protected'
